@@ -1,6 +1,6 @@
 <div align="center">
 
-![screenshot](https://www.teamgenetix.ch/wp-content/uploads/2022/08/Banner.jpg)
+![screenshot](https://user-images.githubusercontent.com/11156050/222925646-74609c7e-f3e1-4c47-82b3-a95320f43dcf.png)
 
 [![GitHub issues](https://img.shields.io/github/issues/GenZHAW/GNX_Webapp)](Issues)
 &nbsp;&nbsp;&nbsp;&nbsp;
