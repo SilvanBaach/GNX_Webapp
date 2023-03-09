@@ -1,0 +1,24 @@
+{
+  "name": "gnxwebapp",
+  "version": "1.0.0",
+  "description": "<div align=\"center\">",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GenZHAW/GNX_Webapp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GenZHAW/GNX_Webapp/issues"
+  },
+  "homepage": "https://github.com/GenZHAW/GNX_Webapp#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^2.0.21"
+  }
+}
