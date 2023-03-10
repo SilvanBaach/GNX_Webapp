@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/GenZHAW/GNX_Webapp#readme",
   "dependencies": {
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "nodemon": "^2.0.21"
+    "nodemon": "^2.0.21",
+    "pg": "^8.10.0"
   }
 }
