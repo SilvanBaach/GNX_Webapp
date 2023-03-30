@@ -1,0 +1,1 @@
+import{_ as e,p as s,q as a,R as t}from"./framework-5866ffd3.js";const c={},o=t("p",null,"This is an example of a use case",-1),_=[o];function n(l,r){return s(),a("div",null,_)}const m=e(c,[["render",n],["__file","UseCasesExample.html.vue"]]);export{m as default};
