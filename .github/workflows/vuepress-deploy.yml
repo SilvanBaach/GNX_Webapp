@@ -6,7 +6,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@master
-
+    - name: Setup Pages
+      uses: actions/configure-pages@v3
     # run npm install
     - name: Install dependencies and build
       run: |
