@@ -14,11 +14,13 @@ jobs:
         npm install && npm run docs:build
 
     # move the dit folder to the root
-    - name: Move dist folder to root
-      run: |
-        mv ./docs/.vuepress/dist/* ./_site
+    #- name: Move dist folder to root
+    #  run: |
+    #    mv ./docs/.vuepress/dist/* ./_site
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v1
+      with:
+        path: ./docs/.vuepress/dist/
 
   # Deployment job
   deploy:
