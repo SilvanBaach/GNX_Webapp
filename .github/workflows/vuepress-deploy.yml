@@ -7,14 +7,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@master
 
-    - name: vuepress-deploy
-      uses: jenkey2011/vuepress-deploy@master
-      env:
-        ACCESS_TOKEN: ${{ secrets.VUEPRESS_ACCESS_TOKEN }}
-        #TARGET_REPO: username/repo
-        TARGET_BRANCH: master
-        BUILD_SCRIPT: npm install && npm run docs:build
-        BUILD_DIR: docs/.vuepress/dist/
+    # run npm install
+    - name: Install dependencies and build
+      run: |
+        npm install && npm run docs:build
 
     # move the dit folder to the root
     - name: Move dist folder to root
