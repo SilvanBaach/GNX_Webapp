@@ -13,5 +13,5 @@ jobs:
         ACCESS_TOKEN: ${{ secrets.VUEPRESS_ACCESS_TOKEN }}
         #TARGET_REPO: username/repo
         TARGET_BRANCH: master
-        BUILD_SCRIPT: npm && npm run docs:build
+        BUILD_SCRIPT: npm install && npm run docs:build
         BUILD_DIR: docs/.vuepress/dist/
