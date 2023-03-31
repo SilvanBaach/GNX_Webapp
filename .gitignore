@@ -5,6 +5,9 @@ __pycache__/
 
 # C extensions
 *.so
+.idea/
+.vscode/
+docs/.vuepress/dist/
 
 # Distribution / packaging
 .Python
@@ -28,6 +31,7 @@ share/python-wheels/
 MANIFEST
 node_modules/
 
+
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
@@ -45,6 +49,7 @@ htmlcov/
 .coverage
 .coverage.*
 .cache
+.temp
 nosetests.xml
 coverage.xml
 *.cover
