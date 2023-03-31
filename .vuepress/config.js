@@ -1,5 +1,6 @@
 module.exports = {
     // other config options...
+    base: "/GNX_Webapp/",
     plugins: [
         [
             'vuepress-plugin-cat',
