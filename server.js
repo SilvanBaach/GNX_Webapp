@@ -1,11 +1,24 @@
 const express = require('express');
-const {pool} = require('./backend/database/dbConfig');
+const {pool} = require('./js/serverJS/database/dbConfig.js');
+const port = process.env.PORT || 3000;
 const app = express();
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/frontend/index.html');
+/**
+ * MIDDLEWARE
+ */
+app.set('view engine', 'ejs');
+
+app.listen(port, () => {
+    console.log(`Genetix Webapp listening at http://localhost:${port}`);
 });
 
-app.listen(3000, () => {
-    console.log('Server listening on port 3000');
+/**
+ * MAIN ROUTES
+ */
+app.get('/', (req, res) => {
+    const someData = {
+        name: 'Genetix',
+        shortname: 'GNX',
+    }
+    res.render('index', {someData});
 });
