@@ -28,11 +28,11 @@ module.exports = {
             },
             {
                 text: "Bekannte Beschränkungen",
-                link: "/4_bekannte-beschränkungen/",
+                link: "/4_bekannte_beschraenkungen/",
             },
             {
                 text: "Verwendete Prinzipien",
-                link: "/5_verwendete-prinzipien/",
+                link: "/5_verwendete_prinzipien/",
             },
             {
                 text: "Architektur",
@@ -40,7 +40,7 @@ module.exports = {
             },
             {
                 text: "Externe Schnittstellen",
-                link: "/7_extern-schnittstellen/",
+                link: "/7_externe_schnittstellen/",
             },
             {
                 text: "Code",
@@ -52,7 +52,7 @@ module.exports = {
             },
             {
                 text: "Infrastruktur Architektur",
-                link: "/10_infrastruktur-architektur/",
+                link: "/10_infrastruktur_architektur/",
             },
             {
                 text: "Installation",
@@ -60,11 +60,11 @@ module.exports = {
             },
             {
                 text: "Operation und Support",
-                link: "/12_operation-und-support/",
+                link: "/12_operation_und_support/",
             },
             {
                 text: "Entschiedungs-Logbuch",
-                link: "/13_entschiedungs-logbuch/",
+                link: "/13_entscheidungs_logbuch/",
             },
         ],
         navbar: [],
