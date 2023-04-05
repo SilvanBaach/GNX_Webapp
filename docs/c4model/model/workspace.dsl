@@ -68,8 +68,8 @@ workspace "${ORGANISATION_NAME} Workspace" {
             # Big Picture
             this -> emailSystem "Sends emails using"
             tags "defaultColorWaveElement"
-            admin -> gnxWebApp "Uses 1"
-            user -> gnxWebApp "Uses 2"
+            admin -> gnxWebApp "Accesses"
+            user -> gnxWebApp "Accesses"
 
             # The database is a software system that is used by the expressServer to store data.
             db = container "DB" {
@@ -84,16 +84,16 @@ workspace "${ORGANISATION_NAME} Workspace" {
 
             webApp = container "WebApp" "The web application." {
                 webServer -> this "Deliveres static content"
-                gitHub -> webServer "Deploys"
+                gitHub -> webServer "Deploys latest"
                 tags "Web Browser, defaultColorWaveElement"
             }
-                
+
 
             # The expressServer is a software system that is used by the WebApp to access the database.
             expressServer = container "expressServer" "An expressServer to access the database." {
                 tags "defaultColorWaveElement"
 
-                this -> webApp "Accesses 1"
+                this -> webApp "Deliveres dynamic content"
 
 
                 # The signInController is a component that is used by the expressServer to handle sign in requests.
@@ -113,13 +113,13 @@ workspace "${ORGANISATION_NAME} Workspace" {
                     description "A component to handle security."
                     tags "defaultColorWaveElement"
                 }
-                
+
                 # The resetPasswordController is a component that is used by the expressServer to handle reset password requests.
                 resetPasswordController = component "ResetPasswordController" {
                     description "A controller to handle reset password requests."
                     tags "defaultColorWaveElement"
                 }
-                
+
                 # The loginController is a component that is used by the expressServer to handle login requests.
                 loginController = component "LoginController" {
                     description "A controller to handle login requests."
@@ -137,7 +137,7 @@ workspace "${ORGANISATION_NAME} Workspace" {
                 resetPasswordController -> securityComponent "Uses"
                 resetPasswordController -> emailComponent "Uses"
                 emailComponent -> emailSystem "Sends emails using"
-                securityComponent -> db "Accesses"
+                securityComponent -> db "Fetches data from"
 
             }
         }
