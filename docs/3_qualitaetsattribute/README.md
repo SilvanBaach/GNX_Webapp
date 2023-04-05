@@ -1,0 +1,4 @@
+
+# Qualitätsattribute
+
+TODO ALPEREN
