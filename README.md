@@ -38,11 +38,81 @@
 
 # GNX_Webapp
 
-**GNX_Webapp is a TODO**
+The aim of this project is to write a web application for Team Genetix.
+This should facilitate the internal communication and coordination of the individual teams, as well as make the work processes of the staff members smoother.
+The portal should also be a foundation for further ideas and projects in the future.
 
 ## Details 🔍
 
-**GNX_Webapp** is a TODO
+**Infrastructure**
+
+In the first phase, the project will be hosted by a member of Team Genetix.
+A Mac Mini (2012) with 1 TB of storage space is available for this purpose.
+This has more than enough power to provide some web services and file services on the internet.
+A Synology NAS is used as a backup device.
+If off-site backups are desired at a later date, a different backup strategy must be worked out.
+
+**Planned Features**
+
+**Administration**
+
+The following are the main use cases for the administration of the Genetix webapp:
+
+***Manage registration codes***
+
+It should be possible to create new registration codes, reactivate expired codes and deactivate valid codes.
+When creating a new code, it should also be possible to select which role is assigned to the new user after registration.
+Using this generated code, a new user can register in the web app within the next 24 hours.
+
+***User management***
+
+It should be possible to edit all user data, reset the password and lock and unlock users.
+Users should be displayed in a tabular view.
+
+***Team management***
+
+It should be possible to create new teams and edit or delete existing teams.
+A team should have at least one unique name and be assignable to a team type.
+
+***Team type management***
+
+It should be possible to create new team types and edit existing ones.
+However, it should not be possible to delete team types in the webapp itself.
+
+**Members**
+
+The main use cases for members are listed below:
+
+***Permissions***
+
+Each member can belong to any number of teams.
+The team types to which these teams are assigned define the permissions of the individual user.
+The permissions define which pages are accessible.
+
+***Registration***
+
+A new user account must first be created by a user who has administrative rights.
+When registering, the user should be able to enter various data, including place of residence, name and age.
+Registration should only be possible using a unique registration code that is valid for 24 hours.
+
+***Login***
+
+Each club member should be able to log in via a login page.
+The member should be able to enter their password incorrectly a maximum of 5 times before the user is locked out.
+There should also be the possibility to reset the password via the stored email address.
+
+***Dashboard***
+
+The dashboard should be the start page for every club member.
+It should display current information, links to social media channels and the next upcoming dates or events.
+
+***Calendar***
+
+The aim of the calendar is to allow teams to find internal training dates.
+It should be possible to configure time ranges, absences, ambiguities or availabilities for each day.
+It should also be possible to enter appointments as far into the future as required.
+A table should also be able to generate a list of the next upcoming trainings based on the calendar data entered.
+It should be possible to configure from how many participants the training will take place.
 
 <br >
 
@@ -79,9 +149,23 @@ You can find the documentation for the project in the [Wiki](https://linktodocum
 
 ## Possible Future Extension 💡
 
-* A
-* B
-* C
+**Statistics pages**
+
+Statistics pages are to be created for various teams.
+The information of the respective game via API is to be loaded into the web app, where it is then displayed.
+The game accounts are to be linked to the user.
+
+**Onlineshop**
+
+There is to be an online shop where members and, if necessary, guests can buy individual branded fan articles.
+In the first phase, payments and orders from suppliers should be made manually by the club administration.
+If desired, these parts could be automated in the future.
+
+**Fileshare -Version 2.0**
+
+The Fileshare is to be expanded to include a full authorisation system.
+This will enable individual members to upload data and release it via a link.
+The individual teams are also to receive a private folder in which they can share files.
 
 # Security 👮
 
