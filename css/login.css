@@ -1,0 +1,21 @@
+h1 {
+    margin-top: 8vh;
+}
+
+.teamImg {
+    margin: auto;
+    display: block;
+}
+
+form {
+    width: 100%;
+    margin-top: 3vh;
+}
+
+.button-container{
+    display: flex;
+    flex-direction: row;
+    width: 250px;
+    margin: auto;
+    column-gap: 10px;
+}
