@@ -3,13 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <title>GNX Webapp</title>
+    <link rel="stylesheet" href="../css/index.css">
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </head>
 <body>
-<h1>GNX Webapp EJS</h1>
+<div id="nav-placeholder"></div>
 
-<h2>Name: <%= someData.name%></h2>
-<h2>Shortname: <%= someData.shortname%></h2>
+<h1 class="big-title">Choose your Team</h1>
+<div class="content">
+    <form id="loginForm" class="loginForm">
+        <div class="teams">
+            <div class="teamicon">
+                <img class="teamlogo" src="../res/league.png" height="150" width="150" alt="league"/>
+                <p class="small-white-text">League of Legends</p>
+                <button type="submit" class="default login" id="league">Login ➔</button>
+            </div>
+            <div class="teamicon">
+                <img class="teamlogo" src="../res/apex.png" height="150" width="150" alt="apex"/>
+                <p class="small-white-text">Apex Legends</p>
+                <button type="submit" class="default login" id="apex">Login ➔</button>
+            </div>
+            <div class="teamicon">
+                <img class="teamlogo" src="../res/hearthstone.png" height="150" width="150" alt="hearthstone"/>
+                <p class="small-white-text">Hearthstone</p>
+                <button type="submit" class="default login" id="hearthstone">Login ➔</button>
+            </div>
+            <div class="teamicon">
+                <img class="teamlogo" src="../res/csgo.png" height="150" width="150" alt="csgo"/>
+                <p class="small-white-text">CS:GO</p>
+                <button type="submit" class="default login" id="csgo">Login ➔</button>
+            </div>
+            <div class="teamicon">
+                <img class="teamlogo" src="../res/streamer.png" height="150" width="150" alt="streamer"/>
+                <p class="small-white-text">Streamer</p>
+                <button type="submit" class="default login" id="streamer">Login ➔</button>
+            </div>
+            <div class="teamicon">
+                <img class="teamlogo" src="../res/staff.png" height="150" width="150" alt="staff"/>
+                <p class="small-white-text">Staff</p>
+                <button type="submit" class="default login" id="staff">Login ➔</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="register-container">
+    <div class="register-text">No Account yet?</div>
+    <a href="/register" class="register-text">Register here!</a>
+</div>
+
+<script>
+
+    function showToast() {
+        const searchParams = new URLSearchParams(window.location.search);
+        const message = searchParams.get('message')
+
+        if (message !== null) {
+            Toastify({
+                text: message,
+                duration: 3000,
+                newWindow: true,
+                close: true,
+                gravity: "top",
+                position: "right",
+                style: {
+                    fontFamily: "montserrat",
+                    fontSize: "1.3vh"
+                },
+            }).showToast();
+        }
+    }
+
+    $(document).ready(function () {
+        //Load the nav bar
+        $("#nav-placeholder").load("/html/nav.html");
+
+        <!-- Load the login page for the selected team -->
+        const form = $("#loginForm");
+        form.addEventListener('submit', (e) => {
+            const clickedButton = e.target.querySelector('button[type="submit"]:focus');
+            form.action = `/login/${clickedButton.id}`;
+        });
+        showToast();
+    });
+</script>
 </body>
 
 </html>
