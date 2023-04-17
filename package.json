@@ -29,6 +29,7 @@
     "pg": "^8.10.0"
   },
   "devDependencies": {
+    "supertest": "^6.3.3",
     "vuepress": "^2.0.0-beta.61"
   }
 }
