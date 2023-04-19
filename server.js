@@ -7,6 +7,8 @@ const app = express();
  */
 app.set('view engine', 'ejs');
 
+
+app.use(express.static(__dirname + '/'));
 /**
  * MAIN ROUTES
  */
@@ -16,6 +18,10 @@ app.get('/', (req, res) => {
         shortname: 'GNX',
     }
     res.render('index', { someData });
+});
+
+app.get('/login', (req, res) => {
+    res.render('login');
 });
 
 module.exports = app;
