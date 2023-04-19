@@ -22,8 +22,6 @@
     <div class="logo-details">
         <img class="bx bxl-c-plus-plus icon" src="/res/logo/logo_white.png"/>
         <div class="logo_name">Genetix</div>
-    </div>
-    <div class="logo-details">
         <i class='bx bx-menu' id="btn"></i>
     </div>
     <ul class="nav-list">
@@ -53,5 +51,24 @@
         </li>
     </ul>
 </div>
+
+<!-- NAVBAR SCRIPTS -->
+<script>
+    let sidebar = document.querySelector(".sidebar");
+    let closeBtn = document.querySelector("#btn");
+    let searchBtn = document.querySelector(".bx-search");
+    closeBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("open");
+        menuBtnChange();
+    });
+    function menuBtnChange() {
+        if (sidebar.classList.contains("open")) {
+            closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");
+        } else {
+            closeBtn.classList.replace("bx-menu-alt-right", "bx-menu");
+        }
+    }
+</script>
+
 </body>
 </html>
