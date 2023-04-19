@@ -1,0 +1,82 @@
+/* CSS Files for buttons */
+@import "../variables.css";
+
+.default {
+    background-color: transparent;
+    border: 2px solid var(--sea-blue);
+    border-radius: 15px;
+    box-sizing: border-box;
+    color: var(--sea-blue);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    height: 40px;
+    outline: none;
+    padding: 8px 20px;
+    text-align: center;
+    transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+    will-change: transform;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 10px;
+}
+
+.default:hover {
+    color: #fff;
+    background-color: var(--sea-blue);
+    box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+    transform: translateY(-2px);
+}
+
+.default:hover i {
+    color: #fff;
+}
+
+.red{
+    border-color: red;
+    color: red;
+}
+
+.red:hover{
+    color: #fff;
+    background-color: red;
+    border-color: red;
+}
+
+.green{
+    border-color: #007e14;
+    color: #007e14;
+}
+
+.green:hover {
+    color: #fff;
+    background-color: #00a217;
+    border-color: #00a217;
+}
+
+.login{
+    background-color: rgba(157, 46, 255, 0.39);
+    border-color: #9d2eff;
+    color: white;
+    margin: auto;
+    display: block;
+    width: 120px;
+}
+
+.login:hover{
+    color: #fff;
+    background-color: rgba(157, 46, 255);
+    border-color: #9d2eff;
+}
+
+.purple{
+    border-color: var(--helix-purple);
+    color: var(--helix-purple);
+}
+
+.purple:hover {
+    color: #fff;
+    background-color: var(--helix-purple);
+    border-color: var(--helix-purple);
+}
