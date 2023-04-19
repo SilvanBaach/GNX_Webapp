@@ -1,0 +1,11 @@
+:root {
+    --midnight-blue: #000F42;
+    --sea-blue: #31B7BC;
+    --helix-purple: #381A53;
+    --text-grey: #575756;
+    --montserrat-font: montserrat, serif;
+}
+
+* {
+    font-family: var(--montserrat-font);
+}

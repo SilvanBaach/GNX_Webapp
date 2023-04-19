@@ -1,0 +1,65 @@
+/* CSS Files for tables */
+@import "../variables.css";
+
+.styled-table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+    width: 100%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.styled-table thead th {
+    font-size: 1.2rem;
+}
+.styled-table thead tr {
+    background-color: var(--sea-blue);
+    color: #ffffff;
+    text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid var(--sea-blue);
+}
+
+.styled-table tbody tr.active-row {
+    font-weight: bold;
+    color: var(--sea-blue);
+}
+
+.text-center {
+    text-align: center;
+    justify-content: center;
+    margin: auto;
+}
+
+.table-btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    background-color: transparent;
+    border-width: 1px;
+}
+
+.btn-container{
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    column-gap: 10px;
+}
