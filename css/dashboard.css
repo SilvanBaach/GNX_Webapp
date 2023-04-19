@@ -44,6 +44,7 @@
 .sidebar.open .logo-details .icon,
 .sidebar.open .logo-details .logo_name{
     opacity: 1;
+    margin-left: 1px;
 }
 .sidebar .logo-details #btn{
     position: absolute;
@@ -154,12 +155,23 @@
     border-radius: 6px;
     margin-right: 10px;
 }
+.sidebar.open li.profile .name,
+.sidebar.open li.profile .job{
+    font-size: 15px;
+    font-weight: 400;
+    color: #fff;
+    white-space: nowrap;
+    visibility: visible;
+
+}
+
 .sidebar li.profile .name,
 .sidebar li.profile .job{
     font-size: 15px;
     font-weight: 400;
     color: #fff;
     white-space: nowrap;
+    visibility: hidden;
 }
 .sidebar li.profile .job{
     font-size: 12px;
@@ -170,15 +182,30 @@
     right: 0;
     transform: translateY(-50%);
     background: #1d1b31;
-    width: 100%;
-    height: 60px;
+    width: 90%;
     line-height: 60px;
-    border-radius: 0;
+    border: none;
     transition: all 0.5s ease;
     color: white;
+    align-self: center;
+}
+
+.sidebar .profile:hover #log_out{
+    border:2px solid white;
+    border-radius: 20px;
+    background: white;
+    color: black;
+    margin-right: 4px;
+    line-height: 40px;
 }
 .sidebar.open .profile #log_out{
     width: 50px;
     background: none;
 }
 
+.sidebar.open .profile:hover #log_out{
+    border:2px solid white;
+    border-radius: 20px;
+    background: white;
+    color: black;
+}
