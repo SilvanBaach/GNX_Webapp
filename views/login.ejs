@@ -3,19 +3,15 @@
 <head>
     <title>Login</title>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <link rel="stylesheet" href="../css/login.css">
+    <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
 <div id="nav-placeholder"></div>
 
 <h1 class="big-title">Login</h1>
 <img class="teamImg" id="teamImg" alt="logo" src="">
-<div>
-    <% if (messages.error) { %>
-        <p class="err-msg"><%= messages.error %></p>
-    <% } %>
-</div>
-<form action="/login/<%= teamname %>" method="POST">
+
+<form method="POST">
     <label for="username" class="label-login">Username</label>
     <input type="text" name="username" id="username" class="input-login" />
     <label for="password" class="label-login">Password</label>
@@ -28,19 +24,9 @@
 
 
 <script>
-
     $(document).ready(function() {
-
         //Load the nav bar
         $("#nav-placeholder").load("/html/nav.html");
-
-        //Load the correct Team Image
-        const teamImg = document.getElementById('teamImg');
-        teamImg.src = "/res/" + "<%= teamname %>" + ".png";
-
-        $("#back").click(function() {
-            window.location.href = "/";
-        });
     });
 </script>
 </body>
