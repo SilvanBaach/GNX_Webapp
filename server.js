@@ -22,5 +22,9 @@ app.get('/', (req, res) => {
         name: 'Genetix',
         shortname: 'GNX',
     }
-    res.render('dashboard', {someData});
+    res.render('index', {someData});
+});
+
+app.get('/dashboard', (req, res) => {
+    res.render('dashboard', {user: req.user});
 });
