@@ -7,6 +7,9 @@ const app = express();
  */
 app.set('view engine', 'ejs');
 
+app.listen(port, () => {
+    console.log(`Genetix Webapp listening at http://localhost:${port}`);
+});
 /**
  * MAIN ROUTES
  */
