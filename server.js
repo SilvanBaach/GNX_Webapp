@@ -1,5 +1,6 @@
 const express = require('express');
-const { pool } = require('./js/serverJS/database/dbConfig.js');
+const {pool} = require('./js/serverJS/database/dbConfig.js');
+const port = process.env.PORT || 3000;
 const app = express();
 
 /**
@@ -17,7 +18,7 @@ app.get('/', (req, res) => {
         name: 'Genetix',
         shortname: 'GNX',
     }
-    res.render('index', { someData });
+    res.render('index', {someData});
 });
 
 app.get('/login', (req, res) => {
@@ -25,3 +26,8 @@ app.get('/login', (req, res) => {
 });
 
 module.exports = app;
+
+
+app.get('/dashboard', (req, res) => {
+    res.render('dashboard', {user: req.user});
+});
