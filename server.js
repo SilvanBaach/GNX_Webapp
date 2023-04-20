@@ -14,20 +14,18 @@ app.use(express.static(__dirname + '/'));
  * MAIN ROUTES
  */
 app.get('/', (req, res) => {
-    const someData = {
-        name: 'Genetix',
-        shortname: 'GNX',
-    }
-    res.render('index', {someData});
+    res.render('index');
 });
 
 app.get('/login', (req, res) => {
     res.render('login');
 });
 
-module.exports = app;
-
-
 app.get('/dashboard', (req, res) => {
     res.render('dashboard', {user: req.user});
 });
+app.get('/register', (req, res) => {
+    res.render('register', {user: req.user});
+});
+
+module.exports = app;
