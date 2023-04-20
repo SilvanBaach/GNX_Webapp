@@ -8,12 +8,8 @@ const app = express();
  */
 app.set('view engine', 'ejs');
 
+
 app.use(express.static(__dirname + '/'));
-
-app.listen(port, () => {
-    console.log(`Genetix Webapp listening at http://localhost:${port}`);
-});
-
 /**
  * MAIN ROUTES
  */
@@ -24,6 +20,13 @@ app.get('/', (req, res) => {
     }
     res.render('index', {someData});
 });
+
+app.get('/login', (req, res) => {
+    res.render('login');
+});
+
+module.exports = app;
+
 
 app.get('/dashboard', (req, res) => {
     res.render('dashboard', {user: req.user});
