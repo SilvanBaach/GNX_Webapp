@@ -17,8 +17,9 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 
-app.get('/login', (req, res) => {
-    res.render('login');
+app.get('/login/:teamname', (req, res) => {
+    const teamname = req.params.teamname;
+    res.render('login', {teamname: teamname});
 });
 
 app.get('/dashboard', (req, res) => {

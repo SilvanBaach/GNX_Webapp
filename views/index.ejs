@@ -57,39 +57,16 @@
 </div>
 
 <script>
-
-    function showToast() {
-        const searchParams = new URLSearchParams(window.location.search);
-        const message = searchParams.get('message')
-
-        if (message !== null) {
-            Toastify({
-                text: message,
-                duration: 3000,
-                newWindow: true,
-                close: true,
-                gravity: "top",
-                position: "right",
-                style: {
-                    fontFamily: "montserrat",
-                    fontSize: "1.3vh"
-                },
-            }).showToast();
-        }
-    }
-
     $(document).ready(function () {
         //Load the nav bar
         $("#nav-placeholder").load("/html/nav.html");
 
         <!-- Load the login page for the selected team -->
-        const form = $("#loginForm");
-        form.addEventListener('submit', (e) => {
+        $("#loginForm").on('submit', (e) => {
             const clickedButton = e.target.querySelector('button[type="submit"]:focus');
-            form.action = `/login/${clickedButton.id}`;
+            $("#loginForm").attr("action", `/login/${clickedButton.id}`);
         });
 
-        showToast();
     });
 </script>
 </body>
