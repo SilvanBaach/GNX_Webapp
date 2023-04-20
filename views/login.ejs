@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+
+<div class="login-container">
+    <img class="teamImg" id="teamImg" alt="logo" src="">
+
+    <form method="POST">
+        <label for="username" class="label-login">Username</label>
+        <input type="text" name="username" id="username" class="input-login" />
+        <label for="password" class="label-login">Password</label>
+        <input type="password" name="password" id="password" class="input-login"/>
+        <div class="button-container">
+            <button type="button" id="back" class="default login">Back</button>
+            <button type="submit" class="default login">Login ➔</button>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    $(document).ready(function() {
+        //Load the nav bar
+        $("#nav-placeholder").load("/html/nav.html");
+    });
+</script>
+</body>
+</html>

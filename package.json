@@ -4,9 +4,9 @@
   "description": "<div align=\"center\">",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node start.js",
     "dev": "nodemon server.js",
-    "build": "node server.js",
+    "test": "jest",
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs"
   },
@@ -29,6 +29,7 @@
     "pg": "^8.10.0"
   },
   "devDependencies": {
+    "supertest": "^6.3.3",
     "vuepress": "^2.0.0-beta.61"
   }
 }
