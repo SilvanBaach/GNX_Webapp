@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node start.js",
-    "dev": "nodemon server.js",
+    "dev": "nodemon start.js",
     "test": "jest",
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs"
