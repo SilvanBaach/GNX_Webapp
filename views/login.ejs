@@ -12,8 +12,12 @@
 
 <h1 class="big-title">Login</h1>
 <img class="teamImg" id="teamImg">
-
-<form action="" method="POST">
+<div>
+    <% if (messages.error) { %>
+        <p class="err-msg"><%= messages.error %></p>
+    <% } %>
+</div>
+<form action="/login/<%= teamname %>" method="POST">
     <label for="username" class="label-login">Username</label>
     <input type="text" name="username" id="username" class="input-login" />
     <label for="password" class="label-login">Password</label>
