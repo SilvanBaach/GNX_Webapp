@@ -1,4 +1,5 @@
 <script src="/js/clientJS/imgUploadToDB.js"></script>
+<script src="/js/clientJS/passwordChecker.js"></script>
 
 <div class="text">Settings</div>
 <div class="content">
@@ -101,8 +102,9 @@
 <script>
     const input = document.getElementById("fileInput");
 
-    //Updates the profile picture
     $(document).ready(function () {
+
+        //Updates the profile picture
         input.addEventListener("change", (e) => {
             if (e.target.files.length > 0) {
                 updateProfilePicture(e, <%= user.id %>).then((result) => {
@@ -112,6 +114,45 @@
                     displayError(error);
                 });
             }
+        });
+
+        //Delete User logic
+        $("#deleteUser").click(function () {
+            //TODO: Add confirmation
+            //TODO: Add password check
+            //TODO: Delete the user
+            displayError("Uh oh - thats dangerous!");
+        });
+
+        //Update user logic
+
+        //Update password logic
+        $('#formPassword').submit(function(e) {
+            e.preventDefault();
+            const password1 = $('#password1').val();
+            const password2 = $('#password2').val();
+            if (password1 !== password2) {
+                displayError("Passwords do not match!");
+                return;
+            }
+            if (!isPasswordSecure(password1)) {
+                displayError("Password is not secure enough!");
+                return;
+            }
+
+            $.ajax({
+                url: '/user/updatePassword',
+                method: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    displaySuccess(response.message);
+                    $('#password1').val('');
+                    $('#password2').val('');
+                },
+                error: function(error) {
+                    displayError(error.responseJSON.message);
+                }
+            });
         });
     });
 </script>
