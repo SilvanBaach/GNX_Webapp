@@ -2,14 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>GNX Webapp</title>
+
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/components/button.css">
-    <link rel="icon" type="favicon" href="../res/fileIcons/Bildmarke_white.png">
-    <title>GNX Webapp</title>
-    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="icon" type="image/png" href="/res/logo/logo_white.png">
+
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="/js/clientJS/toastMessages.js"></script>
 </head>
 <body>
 <div id="nav-placeholder"></div>
@@ -58,15 +61,23 @@
 
 <script>
     $(document).ready(function () {
+
         //Load the nav bar
         $("#nav-placeholder").load("/html/nav.html");
 
-        <!-- Load the login page for the selected team -->
+        //Load the login page for the selected team
         $("#loginForm").on('submit', (e) => {
             const clickedButton = e.target.querySelector('button[type="submit"]:focus');
             $("#loginForm").attr("action", `/login/${clickedButton.id}`);
         });
 
+        //Display Toast Message if needed
+        const searchParams = new URLSearchParams(window.location.search);
+        const message = searchParams.get('message')
+
+        if (message !== null) {
+            displaySuccess(message);
+        }
     });
 </script>
 </body>
