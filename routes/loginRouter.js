@@ -8,6 +8,16 @@ module.exports = (passport) => {
     const router = express.Router();
 
     /**
+     * GET logout procedure
+     * Redirects to the index page and displays a toast message on the client side
+     */
+    router.get('/logout', (req, res) => {
+        req.session.destroy(function (err) {
+            res.redirect('/?message=You have been successfully logged out!');
+        });
+    });
+
+    /**
      * GET login page
      * Param: teamname - the teamname of the team the user wants to log in to
      */

@@ -2,9 +2,19 @@ const LocalStrategy = require("passport-local").Strategy;
 const { pool } = require("./database/dbConfig.js");
 const bcrypt = require("bcrypt");
 
+/**
+ * This function initializes the passport module
+ * It serves as the authenticater for the user
+ * @param passport the passport module
+ */
 function initialize(passport) {
-    console.log("Initialized");
 
+    /**
+     * This function authenticates the user
+     * @param username the username of the user
+     * @param password the password of the user
+     * @param done
+     */
     const authenticateUser = (username, password, done) => {
         console.log("Authenticating user: " + username)
         pool.query(
@@ -39,6 +49,9 @@ function initialize(passport) {
         );
     };
 
+    /**
+     * Defines the strategy for the passport module
+     */
     passport.use(
         new LocalStrategy(
             { usernameField: "username", passwordField: "password" },

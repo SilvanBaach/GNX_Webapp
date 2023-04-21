@@ -8,19 +8,19 @@
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/components/button.css">
-    <link rel="icon" type="favicon" href="../res/fileIcons/Bildmarke_white.png">
+    <link rel="icon" type="image/png" href="/res/logo/logo_white.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="icon" type="image/png" href="/res/logo/logo_white.png">
     <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
 
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-
+    <script src="/js/clientJS/dashboardSnippetLoader.js"></script>
 </head>
+
 <body>
 <div class="sidebar">
     <div class="logo-details">
@@ -56,20 +56,40 @@
         <li class="profile">
             <div class="profile-details">
                 <div class="name_job">
-                    <div class="name opentext">TestUser</div> <!-- TODO add code to get username -->
+                    <div class="name opentext"><%= user.username %></div>
                     <div class="job opentext">TestTeam</div> <!-- TODO add code to get Team name-->
                 </div>
             </div>
-            <form> <!-- TODO add action when clicking on button -->
+            <form action="/login/logout" method="GET">
                 <button type="submit" class="bx bx-log-out logout" id="log_out"></button>
             </form>
         </li>
     </ul>
 </div>
 
-<section class="home-section" id="home-section">
-    <p>Welcome <%= user.username %></p>
-</section>
+<section class="home-section" id="home-section"></section>
+
+<!-- DASHBOARD SNIPPET LOADING -->
+<script>
+
+    //Array with all available pages
+    const pages = [
+        {id: "home", url: "/dashboard/home", css: "/css/dashboard/home.css"}
+    ];
+
+    $(document).ready(function () {
+        loadPage("home", pages);
+
+        $(function () {
+            pages.forEach(page => {
+                $('#' + page.id).click(function (e) {
+                    e.preventDefault();
+                    loadPage(page.id, pages);
+                });
+            });
+        });
+    });
+</script>
 
 <!-- NAVBAR SCRIPTS -->
 <script>
@@ -80,6 +100,7 @@
         sidebar.classList.toggle("open");
         menuBtnChange();
     });
+
     function menuBtnChange() {
         if (sidebar.classList.contains("open")) {
             closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");
