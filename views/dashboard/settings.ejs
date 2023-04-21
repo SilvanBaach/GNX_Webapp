@@ -1,11 +1,14 @@
+<script src="/js/clientJS/imgUploadToDB.js"></script>
+
 <div class="text">Settings</div>
 <div class="content">
     <div class="shadow-box player-shadow-box">
-        <% if (user.picture) { %>
-            <img class="player-img" src="<%= user.picture %>" alt="profile picture"/>
+        <% if (typeof user.picture !== 'undefined' && user.picture) { %>
+            <img class="player-img" src="<%= user.picture %>" alt="profile picture" id="profilePicture"/>
         <% } else { %>
-            <img class="player-img" src="/res/others/blank_profile_picture.png" alt="blank profile picture"/>
+            <img class="player-img" src="/res/others/blank_profile_picture.png" alt="blank profile picture" id="profilePicture"/>
         <% } %>
+
         <p class="player-name"> <%= user.username %></p>
         <p class="team-name"> <%= user.team.displayname %></p>
         <div class="button-container">
@@ -94,3 +97,21 @@
         <h1 style="font-family: Orbitron, sans-serif;text-align: center">Placeholder</h1>
     </div>
 </div>
+
+<script>
+    const input = document.getElementById("fileInput");
+
+    //Updates the profile picture
+    $(document).ready(function () {
+        input.addEventListener("change", (e) => {
+            if (e.target.files.length > 0) {
+                updateProfilePicture(e, <%= user.id %>).then((result) => {
+                    displaySuccess(result.message);
+                    $('.player-img').attr("src", result.picture);
+                }).catch((error) => {
+                    displayError(error);
+                });
+            }
+        });
+    });
+</script>
