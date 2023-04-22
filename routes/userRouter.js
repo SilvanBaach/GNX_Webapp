@@ -42,6 +42,55 @@ router.post('/updatePassword', function (req, res) {
 });
 
 /**
+ * POST route for updating the information of a user
+ */
+router.post('/updateUser', function (req, res) {
+    const userId = req.user.id;
+    const formData = req.body;
+
+    updateUser(formData, userId).then(() => {
+        res.status(200).send({message: "Information updated successfully"});
+    }).catch(() => {
+        res.status(500).send({message: "There was an error updating the information! Please try again later."});
+    });
+});
+
+/**
+ * Updates the information of a user in the database
+ * This method is generic and can be used to update any field of the user
+ * @param formData the data of the user
+ * @param userId the id of the user
+ * @returns {Promise<*>}
+ */
+async function updateUser(formData, userId) {
+    const fields = ['fullName', 'email', 'phone', 'username', 'street', 'city', 'zip', 'steam', 'origin', 'riotgames', 'battlenet'];
+    const updates = [];
+    const password = formData.password;
+    delete formData.password;
+
+    fields.forEach(field => {
+        if (formData[field]) {
+            updates.push(`${field} = $${updates.length + 1}`);
+        }
+    });
+
+    if (updates.length) {
+        const query = `UPDATE account
+                       SET ${updates.join(', ')}
+                       WHERE id = $${updates.length + 1}`;
+        const values = Object.values(formData).filter(val => val);
+        pool.query(query, [...values, parseInt(userId)], (err, result) => {
+            if (err) {
+                console.log(err);
+                return -1;
+            }
+        });
+    }
+
+    return 0;
+}
+
+/**
  * Updates the picture of a user in the database
  * @param base64 the base64 string of the picture
  * @param userId the id of the user
