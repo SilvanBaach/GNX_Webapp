@@ -147,11 +147,13 @@
                 data: formData,
                 success: function(response) {
                     displaySuccess(response.message);
-                    const userData = {
-                        username: "<%= user.username %>",
-                    }
-                    if (formData.username !== userData.username) {
-                        $("#usernameBig").val(formData.username);
+
+                    console.log("New: " + formData.username);
+                    console.log("Old: " + $('#usernameBig').text());
+
+                    if (formData.username !== $('#usernameBig').text()) {
+                        console.log("Username changed");
+                        $('#usernameBig').text(formData.username);
                     }
                 },
                 error: function(error) {
