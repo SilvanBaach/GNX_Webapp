@@ -148,11 +148,7 @@
                 success: function(response) {
                     displaySuccess(response.message);
 
-                    console.log("New: " + formData.username);
-                    console.log("Old: " + $('#usernameBig').text());
-
                     if (formData.username !== $('#usernameBig').text()) {
-                        console.log("Username changed");
                         $('#usernameBig').text(formData.username);
                     }
                 },
