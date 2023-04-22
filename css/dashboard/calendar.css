@@ -1,0 +1,151 @@
+.shadow-box{
+    margin-left: 18px;
+    width: 90vw;
+    height: 560px;
+}
+
+.nav-btn-container{
+    display:flex;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.cal-container {
+    display: grid;
+    grid-template-rows: auto repeat(4, 1fr);
+    grid-template-columns: repeat(8, 1fr);
+}
+
+.grid-item {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    height: 125px;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.grid-header {
+    height: 75px;
+    background-color: #31B7BC;
+    color: #fff;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.current-week{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.current-date-text{
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.footer{
+    margin-top: 20px;
+}
+
+.date{
+    margin-top: 5px;
+    font-size: 0.9rem;
+}
+
+.grid-header-today{
+    height: 75px;
+    background-color: #381A53;
+    color: #fff;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.grid-item-today{
+    background-color: rgba(136, 136, 136, 0.17);
+}
+
+.edit {
+    color: #575756;
+    font-size: 0.85rem;
+    float: left;
+}
+
+.edit:hover {
+    color: red;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.cell-content-container{
+    width: 100%;
+}
+
+.edit-content-row{
+    display: flex;
+    justify-content: right;
+    width: 100%;
+}
+
+.edit{
+    font-size: 1rem;
+}
+
+.icon{
+    font-size: 2.5rem;
+    font-weight: 500;
+    border-radius: 50%;
+}
+
+.icon-grey{
+    border: 3px solid #575756;
+    background-color: #b4b3b3;
+}
+
+.icon-green{
+    border: 3px solid green;
+    background-color: #01bd01;
+}
+
+.icon-red{
+    border: 3px solid darkred;
+    background-color: red;
+}
+
+.icon-orange{
+    border: 3px solid darkorange;
+    background-color: orange;
+}
+
+.info-text{
+    font-size: 0.8rem;
+    font-weight: 400;
+    margin-top: 10px;
+}
+
+.sub-data-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+.btn-container{
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+.potential-container{
+    margin-top: 18px;
+}

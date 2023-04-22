@@ -25,4 +25,12 @@ router.get('/settings', function (req, res) {
     res.render('dashboard/settings.ejs', {user: req.user});
 });
 
+/**
+ * GET calendar page
+ */
+router.get('/calendar', function (req, res) {
+    res.render('dashboard/calendar.ejs', {user: req.user});
+});
+
+
 module.exports = router;

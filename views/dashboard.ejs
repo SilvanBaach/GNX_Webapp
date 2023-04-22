@@ -58,7 +58,7 @@
             <div class="profile-details">
                 <div class="name_job">
                     <div class="name opentext"><%= user.username %></div>
-                    <div class="job opentext">TestTeam</div> <!-- TODO add code to get Team name-->
+                    <div class="job opentext"><%= user.team.displayname %></div>
                 </div>
             </div>
             <form action="/login/logout" method="GET">
@@ -76,7 +76,8 @@
     //Array with all available pages
     const pages = [
         {id: "home", url: "/dashboard/home", css: "/css/dashboard/home.css"},
-        {id: "settings", url: "/dashboard/settings", css: "/css/dashboard/settings.css"}
+        {id: "settings", url: "/dashboard/settings", css: "/css/dashboard/settings.css"},
+        {id: "calendar", url: "/dashboard/calendar", css: "/css/dashboard/calendar.css"}
     ];
 
     $(document).ready(function () {
