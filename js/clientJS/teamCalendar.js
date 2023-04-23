@@ -24,8 +24,10 @@ function formatDate(date) {
  */
 function getMondayOfWeek(dateString) {
     const date = new Date(dateString);
-    const day = date.getDay();
-
+    let day = date.getDay();
+    if (day === 0) {
+        day = 7;
+    }
     const diff = date.getDate() - day + 1;
 
     return new Date(date.setDate(diff));
@@ -161,11 +163,17 @@ async function generateCalendar(users, currentDate, sessionUser, teamId) {
     $("#currentWeekText").text("Week " + formatDate(getMondayOfWeek(currentDate)) + " - " + formatDate(getSundayOfCurrentWeek(currentDate)));
 }
 
-/*function editDay(username, date, e){
+/**
+ * This method edits a presence of a specific day
+ * @param username the username of the user
+ * @param date the date that should be edited
+ * @param e the event that triggered the edit
+ */
+function editDay(username, date, e){
 
     //Configure Popup to edit day
     const popup = new Popup("popup-container-edit");
-    popup.displayInputPopupCustom("/res/edit.png", "Edit Day", "Save", "btnSave", '' +
+    popup.displayInputPopupCustom("/res/others/edit.png", "Edit Day", "Save", "btnSave", '' +
         '<label for="presenceType" class="input-label">Presence Type</label>' +
         '<select id="presenceType" class="input-field">' +
             '<option value="" disabled selected>Select Presence Type</option>' +
@@ -211,12 +219,12 @@ async function generateCalendar(users, currentDate, sessionUser, teamId) {
                 from = $("#from").val();
                 until = $("#until").val();
                 if (!from || !until) {
-                    displayError("Please fill all fields!");
+                    displayError("Please fill out all fields!");
                     return;
                 }
             }
         }else{
-            displayError("Please fill all fields!");
+            displayError("Please fill out all fields!");
             return;
         }
 
@@ -227,7 +235,7 @@ async function generateCalendar(users, currentDate, sessionUser, teamId) {
     });
 
     popup.open(e);
-}*/
+}
 
 /**
  * Loads all existing presence data from a team in a given time period
@@ -305,10 +313,19 @@ function getDataFromDay(date, username, teamData){
     return newHTML;
 }
 
-/*function saveDay(username, date, presenceType, from, until, comment){
+/**
+ * Saves presence data to the server
+ * @param username username of the user
+ * @param date date of the day
+ * @param presenceType which type of presence should get stored
+ * @param from start time of the presence
+ * @param until end time of the presence
+ * @param comment comment for the presence
+ */
+function saveDay(username, date, presenceType, from, until, comment){
     //ajax call to save data
     $.ajax({
-        url: "/savepresence",
+        url: "/presence/save",
         type: "POST",
         data: {
             username: username,
@@ -330,4 +347,4 @@ function getDataFromDay(date, username, teamData){
             displayError("Error saving data! Please try again later.")
         }
     });
-}*/
+}

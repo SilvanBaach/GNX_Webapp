@@ -80,7 +80,7 @@
         const sessionUser = userData.username
         const user = users.find(user => user.username === sessionUser)
 
-        generateCalendar(users, currentDate, sessionUser, user.id);
+        await generateCalendar(users, currentDate, sessionUser, user.id);
     }
 
     /**
