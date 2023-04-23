@@ -1,0 +1,190 @@
+<script src="/js/clientJS/imgUploadToDB.js"></script>
+<script src="/js/clientJS/passwordChecker.js"></script>
+
+<div class="text">Settings</div>
+<div class="content">
+    <div class="shadow-box player-shadow-box">
+        <% if (typeof user.picture !== 'undefined' && user.picture) { %>
+            <img class="player-img" src="<%= user.picture %>" alt="profile picture" id="profilePicture"/>
+        <% } else { %>
+            <img class="player-img" src="/res/others/blank_profile_picture.png" alt="blank profile picture" id="profilePicture"/>
+        <% } %>
+
+        <p class="player-name" id="usernameBig"> <%= user.username %></p>
+        <p class="team-name"> <%= user.team.displayname %></p>
+        <div class="button-container">
+            <button class="default red player-btn" id="deleteUser">Delete User</button>
+            <button class="default player-btn" id="upload">Upload
+                <i class="ri-upload-2-fill upload-icon"></i>
+                <input type="file" id="fileInput" accept="image/png, image/jpeg" class="file-input">
+            </button>
+        </div>
+    </div>
+    <div class="vert-shadow-box-container">
+        <div class="shadow-box personal-shadow-box">
+            <form id="formPersInfo" class="form">
+                <p class="purple-title">Personal Information</p>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fullName">Full Name*</label>
+                        <input type="text" id="fullName" name="fullName" class="input-left"
+                               value="<%= user.fullname %>">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-Mail*</label>
+                        <input type="email" id="email" name="email" value="<%= user.email %>">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="text" id="phone" name="phone" class="input-left" value="<%= user.phone %>">
+                    </div>
+                    <div class="form-group">
+                        <label for="username">Username*</label>
+                        <input type="text" id="username" name="username" value="<%= user.username %>">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="shadow-box personal-shadow-box">
+            <form id="formAdress" class="form">
+                <p class="purple-title">Address</p>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="street">Street</label>
+                        <input type="text" id="street" name="street" class="input-left"
+                               value="<%= user.street %>">
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" id="city" name="city" value="<%= user.city %>">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="zipcode">Zip Code</label>
+                        <input type="text" id="zipcode" name="zipcode" class="input-left" value="<%= user.zip %>">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="default submit">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="shadow-box password-shadow-box">
+        <form id="formPassword" class="form">
+            <p class="purple-title">Password</p>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="password1">New Password</label>
+                    <input type="password" id="password1" name="password1" class="input-left"
+                           value="">
+                </div>
+                <div class="form-group">
+                    <label for="password2">Repeat</label>
+                    <input type="password" id="password2" name="password2" value="">
+                </div>
+                <button type="submit" class="default submit">Update</button>
+            </div>
+        </form>
+    </div>
+    <div class="shadow-box whatever-shadow-box">
+        <h1 style="font-family: Orbitron, sans-serif;text-align: center">Placeholder</h1>
+    </div>
+</div>
+
+<script>
+    const input = document.getElementById("fileInput");
+
+    $(document).ready(function () {
+
+        //Updates the profile picture
+        input.addEventListener("change", (e) => {
+            if (e.target.files.length > 0) {
+                updateProfilePicture(e, <%= user.id %>).then((result) => {
+                    displaySuccess(result.message);
+                    $('.player-img').attr("src", result.picture);
+                }).catch((error) => {
+                    displayError(error);
+                });
+            }
+        });
+
+        //Delete User logic
+        $("#deleteUser").click(function () {
+            //TODO: Add confirmation
+            //TODO: Add password check
+            //TODO: Delete the user
+            displayError("Uh oh - thats dangerous!");
+        });
+
+        //Update user logic
+        $('#formAdress').submit(function(e) {
+            e.preventDefault();
+            const formData = {
+                fullName: $('#fullName').val(),
+                email: $('#email').val(),
+                phone: $('#phone').val(),
+                username: $('#username').val(),
+                street: $('#street').val(),
+                city: $('#city').val(),
+                zip: $('#zipcode').val()
+            };
+
+            if (formData.fullName === "" || formData.email === "" || formData.username === "") {
+                displayError("Please fill out all required fields!");
+                return;
+            }
+
+            $.ajax({
+                url: '/user/updateUser',
+                method: 'POST',
+                data: formData,
+                success: function(response) {
+                    displaySuccess(response.message);
+
+                    if (formData.username !== $('#usernameBig').text()) {
+                        $('#usernameBig').text(formData.username);
+                    }
+                },
+                error: function(error) {
+                    displayError(error.responseJSON.message);
+                }
+            });
+        });
+
+        //Update password logic
+        $('#formPassword').submit(function(e) {
+            e.preventDefault();
+            const password1 = $('#password1').val();
+            const password2 = $('#password2').val();
+            if (password1 !== password2) {
+                displayError("Passwords do not match!");
+                return;
+            }
+            if (!isPasswordSecure(password1)) {
+                displayError("Password is not secure enough!");
+                return;
+            }
+
+            $.ajax({
+                url: '/user/updatePassword',
+                method: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    displaySuccess(response.message);
+                    $('#password1').val('');
+                    $('#password2').val('');
+                },
+                error: function(error) {
+                    displayError(error.responseJSON.message);
+                }
+            });
+        });
+    });
+</script>
