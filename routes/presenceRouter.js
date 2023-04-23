@@ -24,12 +24,25 @@ router.get('/getPresenceListFromTeam/:teamId/:epochFrom/:epochUntil', function (
 /**
  * POST route for saving the presence data of a user
  */
-router.post('/save', async function (req, res) {
+router.post('/save',  function (req, res) {
     const data = req.body;
     savePresence(data).then(() => {
         res.status(200).send('Presence data saved successfully!');
     }).catch(() => {
         res.status(500).send("There was an error saving the presence data! Please try again later.");
+    });
+});
+
+/**
+ * GET route for getting the next trainings of a team
+ */
+router.get('/nextTrainings/:teamId',  function (req, res) {
+   const teamId = req.params.teamId;
+
+    getNextTrainings(teamId).then((result) => {
+        res.status(200).send(result.rows);
+    }).catch(() => {
+        res.status(500).send("There was an error getting the next trainings! Please try again later.");
     });
 });
 
@@ -41,7 +54,7 @@ router.post('/save', async function (req, res) {
  * @param until end of the time period
  * @returns {Promise<*>}
  */
-async function getPresenceFromTeam(teamId, from, until) {
+function getPresenceFromTeam(teamId, from, until) {
     return pool.query(`SELECT presence.*, account.username
                        FROM presence
                                 LEFT JOIN account ON account.id = presence.account_fk
@@ -63,6 +76,7 @@ async function savePresence(data) {
     const monthIndex = parseInt(parts[1], 10) - 1;
     const year = parseInt(parts[2], 10);
     const dateDat = new Date(year, monthIndex, day);
+    dateDat.setHours(0, 0, 0, 0);
     const date = Math.floor(dateDat.getTime() / 1000)
 
     //Check if the presence is already saved
@@ -76,6 +90,49 @@ async function savePresence(data) {
         //Update the presence
         return pool.query(`UPDATE presence SET state = $3, comment = $4, "from" = $5, until = $6 WHERE account_fk = (SELECT id FROM account WHERE username = $1) AND date = $2`,[username, date, data.state, data.comment, data.from, data.until]);
     }
+}
+
+function getNextTrainings(teamId) {
+   /*
+   WITH times AS (
+  SELECT CAST(EXTRACT(epoch FROM day AT TIME ZONE 'CEST') AS INTEGER) AS time_series,
+         to_char(to_timestamp(EXTRACT(epoch FROM day AT TIME ZONE 'CEST')), 'DD-MM-YYYY') AS readable_date
+  FROM generate_series(current_date, current_date + interval '14 days', '1 day') AS day
+),
+tmpData AS (
+  SELECT times.time_series, readable_date, account.username, presence.state,
+         CASE WHEN presence.from IS NULL THEN '00:00' ELSE presence.from END AS from,
+         CASE WHEN presence.until IS NULL THEN '23:59' ELSE presence.until END AS until
+  FROM account
+  LEFT JOIN teammembership ON teammembership.account_fk = account.id
+  CROSS JOIN times
+  LEFT JOIN presence ON presence.account_fk = account.id AND presence.date = times.time_series AND presence.state <> 2
+  WHERE teammembership.team_fk = 2 AND presence.date > EXTRACT(epoch FROM NOW()::timestamp)
+  ORDER BY time_series
+),
+counts AS (
+  SELECT time_series, COUNT(*) AS num_rows
+  FROM tmpData
+  GROUP BY time_series
+),
+
+tmpData2 AS(
+SELECT tmpData.*
+FROM tmpData
+JOIN counts ON tmpData.time_series = counts.time_series
+WHERE num_rows = (SELECT COUNT(*) FROM account LEFT JOIN teammembership ON teammembership.account_fk = account.id WHERE teammembership.team_fk=2)
+ORDER BY tmpData.time_series),
+
+tmpData3 AS (
+SELECT *, (SELECT MAX(x.from) FROM tmpData2 AS x WHERE x.time_series = tmpData2.time_series) AS starttime,
+(SELECT MIN(x.until) FROM tmpData2 AS x WHERE x.time_series = tmpData2.time_series) AS endtime
+FROM tmpData2)
+
+SELECT *, CASE WHEN (SELECT COUNT(*) FROM tmpData3 AS x WHERE x.time_series = tmpData3.time_series AND x.state = 3) > 0 THEN 'unsure' ELSE 'sure'  END AS trainingtype FROM tmpData3
+WHERE starttime < endtime
+
+
+    */
 }
 
 module.exports = router;
