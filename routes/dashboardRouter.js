@@ -26,6 +26,13 @@ router.get('/settings', function (req, res) {
 });
 
 /**
+ * GET calendar page
+ */
+router.get('/calendar', function (req, res) {
+    res.render('dashboard/calendar.ejs', {user: req.user});
+});
+
+/**
  * GET team-management page
  */
 router.get('/teammanagement', function (req, res) {
