@@ -25,4 +25,11 @@ router.get('/settings', function (req, res) {
     res.render('dashboard/settings.ejs', {user: req.user});
 });
 
+/**
+ * GET team-management page
+ */
+router.get('/teammanagement', function (req, res) {
+    res.render('dashboard/teammanagement.ejs', {user: req.user});
+});
+
 module.exports = router;
