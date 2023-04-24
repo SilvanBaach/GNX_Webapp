@@ -4,6 +4,7 @@
 const express = require('express');
 const router = express.Router();
 const {pool} = require('/js/serverJS/database/dbConfig.js');
+const util = require("util");
 
 /**
  * GET route for getting all team types
@@ -33,6 +34,23 @@ router.post('/insertteamtype', function (req, res) {
     });
 });
 
+/**
+ * POST route for updating a team type
+ */
+router.post('/updateteamtype', function (req, res) {
+    const formData = req.body;
+
+    updateTeamType(formData).then((result) => {
+        if (result === -1) {
+            res.status(500).send({message: "There was an error updating the team type! Please try again later."});
+        }else {
+            res.status(200).send({message: "Team type updated successfully"});
+        }
+    }).catch(() => {
+        res.status(500).send({message: "There was an error updating the team type! Please try again later."});
+    });
+});
+
 
 /**
  * Get all team types
@@ -49,6 +67,21 @@ function getTeamTypes() {
  */
 async function insertTeamType(data) {
     results = pool.query(`INSERT INTO teamtype (name, displayname) VALUES ($1,$2) RETURNING id`,[data.internalName, data.displayName]);
+
+    if (results.rowCount === 0) {
+        return -1;
+    }else {
+        return 0;
+    }
+}
+
+/**
+ * Update a team type
+ * @param data the data of the team type
+ * @returns {Promise<number>} a Promise that resolves to the id of the new team type
+ */
+function updateTeamType(data) {
+    results = pool.query(`UPDATE teamtype SET displayname = $1, name = $3 WHERE id = $2`,[data.displayName, data.id, data.internalName]);
 
     if (results.rowCount === 0) {
         return -1;
