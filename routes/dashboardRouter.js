@@ -32,4 +32,12 @@ router.get('/calendar', function (req, res) {
     res.render('dashboard/calendar.ejs', {user: req.user});
 });
 
+/**
+ * GET user-management page
+ */
+router.get('/usermanagement', function (req, res) {
+    res.render('dashboard/usermanagement.ejs', {user: req.user});
+});
+
+
 module.exports = router;

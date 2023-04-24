@@ -1,0 +1,85 @@
+.shadow-box{
+    margin-left: 18px;
+    width: 50vw;
+}
+
+.content {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    row-gap: 18px;
+    width: calc(100% - 78px);
+    margin-bottom: 18px;
+}
+
+.edit-box{
+    width: calc(100% - 78px - 50vw - 18px);
+    display: none;
+}
+
+.home-section{
+    width: calc(100% - 78px);
+}
+
+.new-code{
+    width: 170px;
+}
+
+.status-green{
+    background-color: green;
+}
+
+.status-red{
+    background-color: red;
+}
+
+.status-indicator{
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+}
+
+th i{
+    color: black;
+    margin: 0;
+    font-weight: bold;
+}
+
+.info-box{
+    display: flex;
+    column-gap: 10px;
+    align-items: center;
+}
+
+.info-img{
+    width: 15px;
+    height: 15px;
+}
+
+.info-text{
+    font-size: 0.9rem;
+}
+
+.profile-picture{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.pagination{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    column-gap: 10px;
+    margin-top: 20px;
+}
+
+.page-number-text{
+    font-weight: 700;
+}
+
+.navigation-btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

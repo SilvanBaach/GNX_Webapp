@@ -1,0 +1,114 @@
+<div class="text">User Management</div>
+<div class="content">
+    <!-- USERS LIST -->
+    <div class="shadow-box">
+        <p class="purple-title">Users</p>
+        <table id="user-table" class="styled-table">
+            <thead>
+            <tr>
+                <th>Username</th>
+                <th>Team</th>
+                <th>Fullname</th>
+                <th class="text-center">Picture</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- USER EDIT -->
+    <div class="shadow-box edit-box">
+        <p class="purple-title">Edit User</p>
+        <form id="form" class="form">
+            <input type="number" value="" style="display: none" id="userid"/>
+            <p class="purple-title-small">Personal Information</p>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="label-form" for="fullName">Full Name</label>
+                    <input class="input-form" type="text" id="fullName" name="fullName" value="">
+                </div>
+                <div class="form-group">
+                    <label class="label-form" for="email">E-Mail</label>
+                    <input class="input-form" type="email" id="email" name="email" value="">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="label-form" for="phone">Phone</label>
+                    <input class="input-form" type="text" id="phone" name="phone" value="">
+                </div>
+                <div class="form-group">
+                    <label class="label-form" for="username">Username</label>
+                    <input class="input-form" type="text" id="username" name="username" value="">
+                </div>
+            </div>
+            <p class="purple-title-small">Address</p>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="label-form" for="street">Street</label>
+                    <input class="input-form" type="text" id="street" name="street" value="">
+                </div>
+                <div class="form-group">
+                    <label class="label-form" for="city">City</label>
+                    <input class="input-form" type="text" id="city" name="city" value="">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="label-form" for="zip">Zip Code</label>
+                    <input class="input-form" type="text" id="zip" name="zip" value="">
+                </div>
+                <div class="form-group">
+                </div>
+            </div>
+            <p class="purple-title-small">Other</p>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="label-form" for="password">Password</label>
+                    <input class="input-form" type="password" id="password" name="password" value="">
+                </div>
+                <div class="form-group">
+                </div>
+            </div>
+        </form>
+        <div class="btn-container">
+            <button class="default red" id="delUser">Delete User</button>
+            <button type="submit" class="default submit" id="updateUser">Update</button>
+
+        </div>
+    </div>
+
+    <!-- REGISTRATION CODES -->
+    <div class="shadow-box">
+        <p class="purple-title">Registration Codes</p>
+        <button class="default green new-code" id="newRegistrationCode">
+            <i class="ri-add-circle-line ri-lg"></i>
+            Create new
+        </button>
+
+        <table id="registration-codes-table" class="styled-table">
+            <thead>
+            <tr>
+                <th>Registration Code</th>
+                <th>Expiration Date</th>
+                <th>Used</th>
+                <th>Team</th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <div class="info-box">
+            <img src="/res/info.png" alt="info" class="info-img"/>
+            <p class="info-text">Only Registration Codes from the past 7 days are getting displayed</p>
+        </div>
+    </div>
+</div>
+
+<div id="popup-container" class="popup-container"></div>
+<div id="popup-containerYesNo" class="popup-container"></div>
+<div id="popup-containerYesNoDelUser" class="popup-container"></div>
