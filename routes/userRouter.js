@@ -68,7 +68,7 @@ router.get('/getUserList/:teamId', function (req, res) {
     });
 });
 
- * Updates the information of a user in the database
+/** Updates the information of a user in the database
  * This method is generic and can be used to update any field of the user
  * @param formData the data of the user
  * @param userId the id of the user

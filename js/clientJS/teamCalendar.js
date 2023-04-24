@@ -127,7 +127,7 @@ async function generateCalendar(users, currentDate, sessionUser, teamId) {
                     '<div class="edit-content-row">' +
                     `<input type="text" value="${users[i].username}" style="display: none" id="inputUsername"/>` +
                     `<input type="text" value="${formatDate(getXDayOfWeek(currentDate, j - 1))}" style="display: none" id="inputDate"/>`;
-                //if(users[i].username === sessionUser) {
+                //if(users[i].username === sessionUser) { TODO: uncomment for final version
                     if (jDayObj.getTime() >= today.getTime()) {
                         innerHTML +=
                             '<a class="edit">' +
@@ -144,7 +144,7 @@ async function generateCalendar(users, currentDate, sessionUser, teamId) {
 
                 gridItem.innerHTML = innerHTML;
                 // Add click event handler to edit link
-                //if(users[i].username === sessionUser && jDayObj.getTime() >= today.getTime()) {
+                //if(users[i].username === sessionUser && jDayObj.getTime() >= today.getTime()) {TODO: uncomment for final version
                 if(jDayObj.getTime() >= today.getTime()) {
                     const editLink = gridItem.querySelector('.edit');
                     editLink.addEventListener('click', function (e) {
