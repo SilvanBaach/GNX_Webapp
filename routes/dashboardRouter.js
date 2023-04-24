@@ -18,4 +18,11 @@ router.get('/home', function (req, res) {
     res.render('dashboard/home.ejs', {user: req.user});
 });
 
+/**
+ * GET settings page
+ */
+router.get('/settings', function (req, res) {
+    res.render('dashboard/settings.ejs', {user: req.user});
+});
+
 module.exports = router;

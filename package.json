@@ -22,6 +22,7 @@
   "homepage": "https://github.com/GenZHAW/GNX_Webapp#readme",
   "dependencies": {
     "bcrypt": "^5.1.0",
+    "body-parser": "^1.20.2",
     "bootstrap": "^5.2.3",
     "dotenv": "^16.0.3",
     "ejs": "^3.1.9",
@@ -34,8 +35,8 @@
     "pg": "^8.10.0"
   },
   "devDependencies": {
+    "jest": "^29.5.0",
     "supertest": "^6.3.3",
-    "vuepress": "^2.0.0-beta.61",
-    "jest": "^29.5.0"
+    "vuepress": "^2.0.0-beta.61"
   }
 }
