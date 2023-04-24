@@ -40,7 +40,7 @@ app.use('/dashboard', dashboardRouter);
 app.use('/presence', presenceRouter);
 app.use('/user', userRouter);
 app.use('/team', teamRouter);
-app.use('/teamType', teamTypeRouter);
+app.use('/teamtype', teamTypeRouter);
 
 /**
  * MAIN ROUTES

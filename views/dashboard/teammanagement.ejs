@@ -1,3 +1,5 @@
+<script src="/js/clientJS/teammanagement.js"></script>
+
 <div class="text">Team Management</div>
 
 <div class="content">
@@ -102,6 +104,20 @@
 <div id="popup-containerTeamType" class="popup-container"></div>
 
 <script>
+    $(document).ready(function () {
+        //Load the data
+        loadTeamTypes();
 
+        $("#delTeam").click(function (e) {
+            deleteTeam(e, $("#teamId").val());
+        });
 
+        $("#updateTeam").click(function () {
+            updateTeam();
+        });
+
+        $("#updateTeamType").click(function () {
+            updateTeamType();
+        });
+    });
 </script>
