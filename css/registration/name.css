@@ -1,0 +1,49 @@
+.text {
+    font-weight: 400;
+}
+
+.title {
+    margin-bottom: 0;
+}
+
+.profile-picture{
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    display: block;
+    object-fit: cover;
+    margin: 5vh auto auto;
+}
+
+.upload{
+    width: 150px;
+    margin-top: 2vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 10px;
+    margin-bottom: 5vh;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: row;
+    column-gap: 30px;
+    justify-content: center;
+    margin-top: 5vh;
+}
+
+.next{
+    margin-top: 5vh;
+    width: 200px;
+}
+
+.file-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}

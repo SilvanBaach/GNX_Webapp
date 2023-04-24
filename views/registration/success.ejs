@@ -1,21 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <title>Registration Successful</title>
+
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/components/button.css">
+    <link rel="stylesheet" href="/css/registration/registrationsuccess.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <title>Registration Successful</title>
 </head>
 <body>
 <div id="nav-placeholder"></div>
 
 <h1 class="big-title title">Registration successful!</h1>
-<img src="/res/checkmark.png" class="success-img"/>
+<img src="/res/teams/checkmark.png" class="success-img" alt="Picture of a checkmark"/>
 
 <p class="small-white-text text">You can now log in via the button below</p>
 <button class="default login button" id="login">Login ➔</button>
+
+<script>
+    $(document).ready(function () {
+        // LOAD NAVIGATION BAR
+        $("#nav-placeholder").load("/html/nav.html");
+    });
+</script>
 
 </body>
 </html>
