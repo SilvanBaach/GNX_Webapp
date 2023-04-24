@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <title>Enter Name</title>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+
+<h1 class="big-title title">Hi, <%= userdata.username %></h1>
+
+<p class="small-white-text text">You are just a few steps away from completing your profile registration!</p>
+
+<button class="default login upload" id="upload">
+    Upload
+    <i class="ri-upload-2-fill upload-icon"></i>
+    <input type="file" id="fileInput" accept="image/png, image/jpeg" class="file-input">
+</button>
+
+<p class="small-white-text">Please enter your full name</p>
+<form action="/updateUser/<%= userdata.id %>/<%= userdata.registrationCode %>" method="POST">
+    <div class="form-row">
+        <div>
+            <label for="firstname" class="label-login">First Name *</label>
+            <input type="text" id="firstname" name="firstname" required class="input-login"/>
+        </div>
+        <div>
+            <label for="lastname" class="label-login">Last Name *</label>
+            <input type="text" id="lastname" name="lastname" required class="input-login"/>
+        </div>
+    </div>
+    <input type="submit" class="default login next" value="Next ➔"/>
+</form>
+
+<script>
+</script>
+</body>
+</html>
