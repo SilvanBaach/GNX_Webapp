@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/components/button.css">
     <link rel="stylesheet" href="/css/components/shadowbox.css">
+    <link rel="stylesheet" href="/css/components/popup.css">
+    <link rel="stylesheet" href="/css/components/table.css">
     <link rel="icon" type="image/png" href="/res/logo/logo_white.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
@@ -20,6 +22,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="/js/clientJS/dashboardSnippetLoader.js"></script>
     <script src="/js/clientJS/toastMessages.js"></script>
+    <script src="/js/clientJS/popupFactory.js"></script>
 </head>
 
 <body>
@@ -58,7 +61,7 @@
             <div class="profile-details">
                 <div class="name_job">
                     <div class="name opentext"><%= user.username %></div>
-                    <div class="job opentext">TestTeam</div> <!-- TODO add code to get Team name-->
+                    <div class="job opentext"><%= user.team.displayname %></div>
                 </div>
             </div>
             <form action="/login/logout" method="GET">
@@ -76,7 +79,8 @@
     //Array with all available pages
     const pages = [
         {id: "home", url: "/dashboard/home", css: "/css/dashboard/home.css"},
-        {id: "settings", url: "/dashboard/settings", css: "/css/dashboard/settings.css"}
+        {id: "settings", url: "/dashboard/settings", css: "/css/dashboard/settings.css"},
+        {id: "calendar", url: "/dashboard/calendar", css: "/css/dashboard/calendar.css"}
     ];
 
     $(document).ready(function () {

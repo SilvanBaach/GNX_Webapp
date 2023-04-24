@@ -56,7 +56,19 @@ router.post('/updateUser', function (req, res) {
 });
 
 /**
- * Updates the information of a user in the database
+ * GET route for getting the user list of a team
+ */
+router.get('/getUserList/:teamId', function (req, res) {
+    const teamId = req.params.teamId;
+
+    getUsersFromTeam(teamId).then((result) => {
+        res.status(200).send(result.rows);
+    }).catch(() => {
+        res.status(500).send({message: "There was an error getting the user list! Please try again later."});
+    });
+});
+
+/** Updates the information of a user in the database
  * This method is generic and can be used to update any field of the user
  * @param formData the data of the user
  * @param userId the id of the user
@@ -126,6 +138,15 @@ async function updateUserPassword(password, userId) {
             }
         });
     });
+}
+
+/**
+ * Gets all users from a team
+ * @param teamId the id of the team
+ * @returns {Promise<*>} a Promise that resolves to an array of users
+ */
+function getUsersFromTeam(teamId){
+    return  pool.query(`SELECT username, team.id FROM account LEFT JOIN teammembership AS tm ON tm.account_fk = account.id LEFT JOIN team ON team.id = tm.team_fk WHERE team.id = $1`,[teamId]);
 }
 
 module.exports = router;
