@@ -228,7 +228,7 @@ function getTeamTypeOptions() {
 
 function deleteTeam(e, id) {
     const popup = new Popup("popup-containerTeamDel");
-    popup.displayYesNoPopup("/res/alert.png", "Warning", "Are you sure you want to delete this team?", "Yes", "No", "btnTeamDelYes", "btnTeamDelNo");
+    popup.displayYesNoPopup("/res/others/alert.png", "Warning", "Are you sure you want to delete this team?", "Yes", "No", "btnTeamDelYes", "btnTeamDelNo");
     popup.open(e);
 
     $("#btnTeamDelYes").click(function (e) {
