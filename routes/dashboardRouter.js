@@ -32,5 +32,4 @@ router.get('/calendar', function (req, res) {
     res.render('dashboard/calendar.ejs', {user: req.user});
 });
 
-
 module.exports = router;
