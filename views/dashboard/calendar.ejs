@@ -29,10 +29,10 @@
         <table id="team-table" class="styled-table">
             <thead>
             <tr>
-                <th>Type</th>
                 <th>Date</th>
                 <th>From</th>
                 <th>Until</th>
+                <th>Type</th>
             </tr>
             </thead>
             <tbody>
@@ -73,36 +73,17 @@
      * @returns {Promise<void>}
      */
     async function buildCalendar(currentDate) {
-        await getUsers();
         const userData = {
             username: '<%= user.username %>',
+            teamId: '<%= user.team.id %>'
         };
+
+        const users = await getUsers(userData.teamId);
+
         const sessionUser = userData.username
         const user = users.find(user => user.username === sessionUser)
 
         await generateCalendar(users, currentDate, sessionUser, user.id);
-
-    }
-
-    /**
-     * Gets all users from the database from one team
-     * @returns {Promise<void>}
-     */
-    async function getUsers() {
-        const teamData = {
-            id: '<%= user.team.id %>'
-        };
-        const teamId = teamData.id;
-
-        await $.ajax({
-            url: "/user/getUserList/" + teamId,
-            type: "GET",
-            success: function (data) {
-                users = data;
-            },
-            error: function (data) {
-                console.log(data);
-            }
-        });
+        buildNextTrainingTable(userData.teamId)
     }
 </script>

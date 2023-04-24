@@ -349,3 +349,61 @@ function saveDay(username, date, presenceType, from, until, comment){
         }
     });
 }
+
+/**
+ * Gets all users from the database from one team
+ * @returns {Promise<void>}
+ */
+async function getUsers(teamId) {
+    let users;
+    await $.ajax({
+        url: "/user/getUserList/" + teamId,
+        type: "GET",
+        success: function (data) {
+            users = data;
+        },
+        error: function (data) {
+            console.log(data);
+        }
+    });
+
+    return users;
+}
+
+/**
+ * Builds the next training table for a team
+ * @param teamId id of the team
+ */
+function buildNextTrainingTable(teamId){
+    const url = "/presence/nextTrainings/" + teamId;
+    $.ajax({
+        url: url,
+        type: "GET",
+        success: function (data) {
+            const tableBody = $("#team-table tbody");
+            tableBody.empty();
+
+            data.forEach(function(training) {
+                    const tr = $("<tr></tr>");
+                    const tdDate = $("<td></td>").text(training.readable_date);
+                    const tdFrom = $("<td></td>").text(training.starttime);
+                    const tdUntil = $("<td></td>").text(training.endtime);
+                    const tdType = $("<td></td>");
+
+                    const statusIndicator = $("<div></div>").addClass("status-indicator");
+                    if (training.trainingtype === "sure") {
+                        statusIndicator.addClass("status-green");
+                    } else {
+                        statusIndicator.addClass("status-orange");
+                    }
+                    tdType.append(statusIndicator)
+
+                    tr.append(tdDate).append(tdFrom).append(tdUntil).append(tdType);
+                    tableBody.append(tr);
+                });
+        },
+        error: function (data) {
+            console.log(data);
+        }
+    });
+}
