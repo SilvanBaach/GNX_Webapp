@@ -121,7 +121,6 @@ class Popup {
      * @param e the event that triggered the opening of the popup
      */
     open(e) {
-        console.log(this.popupContainer)
         this.popupContainer.addClass('open-popup');
         e.preventDefault();
         e.stopPropagation();
