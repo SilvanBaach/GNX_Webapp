@@ -11,7 +11,7 @@
 <div id="nav-placeholder"></div>
 
 <h1 class="big-title">Login</h1>
-<img class="teamImg" id="teamImg">
+<img class="teamImg" id="teamImg" alt="Image from the Team" src="">
 <div>
     <% if (messages.error) { %>
         <p class="err-msg"><%= messages.error %></p>
@@ -28,6 +28,11 @@
     </div>
 </form>
 
+<div class="pwreset-container">
+    <div class="pwreset-text">Forgot the password?</div>
+    <a href="/resetPassword" class="pwreset-text">Reset here!</a>
+</div>
+
 
 <script>
     $(document).ready(function() {
@@ -41,8 +46,6 @@
         $("#back").click(function() {
             window.location.href = "/";
         });
-
-        //TODO check if user has reached max loggin attempts
     });
 </script>
 </body>
