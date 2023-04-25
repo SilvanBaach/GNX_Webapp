@@ -10,6 +10,7 @@ const presenceRouter = require('./routes/presenceRouter.js');
 const userRouter = require('./routes/userRouter.js');
 const teamRouter = require('./routes/teamRouter.js');
 const teamTypeRouter = require('./routes/teamTypeRouter.js');
+const registrationCodeRouter = require('./routes/registrationCodeRouter.js');
 
 /**
  * MIDDLEWARE
@@ -41,6 +42,7 @@ app.use('/presence', presenceRouter);
 app.use('/user', userRouter);
 app.use('/team', teamRouter);
 app.use('/teamtype', teamTypeRouter);
+app.use('/registrationcode', registrationCodeRouter);
 
 /**
  * MAIN ROUTES

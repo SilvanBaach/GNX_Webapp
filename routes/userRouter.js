@@ -5,6 +5,7 @@ const express = require('express');
 const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 const bcrypt = require("bcrypt");
+const util = require("util");
 
 /**
  * POST route for updating the profile picture of a user
@@ -65,6 +66,20 @@ router.get('/getUserList/:teamId', function (req, res) {
         res.status(200).send(result.rows);
     }).catch(() => {
         res.status(500).send({message: "There was an error getting the user list! Please try again later."});
+    });
+});
+
+router.get('/getusers', async (req, res) => {
+    const users = await getUsers();
+    res.send(users);
+});
+
+router.post('/deleteUser/:username', function (req, res) {
+    const username = req.params.username;
+    deleteUser(username).then(() => {
+        res.status(200).send({message: "User deleted successfully"});
+    }).catch(() => {
+        res.status(500).send({message: "There was an error deleting the user! Please try again later."});
     });
 });
 
@@ -147,6 +162,41 @@ async function updateUserPassword(password, userId) {
  */
 function getUsersFromTeam(teamId){
     return  pool.query(`SELECT username, team.id FROM account LEFT JOIN teammembership AS tm ON tm.account_fk = account.id LEFT JOIN team ON team.id = tm.team_fk WHERE team.id = $1`,[teamId]);
+}
+
+async function getUsers(){
+    //Get the Teamtype ID
+    const query = util.promisify(pool.query).bind(pool);
+    const results = await query(`SELECT DISTINCT account.*, team.displayname AS team_display, team.teamtype_fk AS team_teamtype_fk, team.weight AS team_weight
+                                 FROM account
+                                          LEFT JOIN teammembership AS tm ON tm.account_fk = account.id
+                                          LEFT JOIN team ON team.id = (
+                                     SELECT t2.id
+                                     FROM teammembership
+                                              LEFT JOIN team AS t2 ON t2.id = team_fk
+                                     WHERE account_fk = account.id
+                                     ORDER BY weight DESC
+                                     LIMIT 1
+                                 ) ORDER BY account.username, account.id`);
+
+    return results.rows.map(row => replaceNullWithHyphen(row));
+}
+
+function replaceNullWithHyphen(obj) {
+    for (const [key, value] of Object.entries(obj)) {
+        if (value === null) {
+            obj[key] = '-';
+        } else if (typeof value === 'object') {
+            replaceNullWithHyphen(value);
+        }
+    }
+    return obj;
+}
+
+function deleteUser(username){
+    return pool.query(`DELETE
+                 FROM account
+                 WHERE username = $1`, [username]);
 }
 
 module.exports = router;

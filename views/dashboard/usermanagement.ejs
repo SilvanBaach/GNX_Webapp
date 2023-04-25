@@ -1,3 +1,4 @@
+<script src="/js/clientJS/usermanagement.js"></script>
 <div class="text">User Management</div>
 <div class="content">
     <!-- USERS LIST -->
@@ -103,7 +104,7 @@
             </tbody>
         </table>
         <div class="info-box">
-            <img src="/res/info.png" alt="info" class="info-img"/>
+            <img src="/res/others/info.png" alt="info" class="info-img"/>
             <p class="info-text">Only Registration Codes from the past 7 days are getting displayed</p>
         </div>
     </div>
@@ -112,3 +113,49 @@
 <div id="popup-container" class="popup-container"></div>
 <div id="popup-containerYesNo" class="popup-container"></div>
 <div id="popup-containerYesNoDelUser" class="popup-container"></div>
+
+<script>
+    $(document).ready(function () {
+        const popup = new Popup("popup-container");
+        const dropdownPromise = fetchTeamTypes();
+        dropdownPromise.then(dropdownOptions => {
+            popup.displayDropdownPopup("/res/others/plus.png", "Create new Registration Code", "Create", "create", "teamDropdown", dropdownOptions);
+
+            loadRegistrationCodeTable();
+
+            $("#newRegistrationCode").click(function (e) {
+                popup.open(e);
+            });
+
+            $("#delUser").click(function (e) {
+                deleteUser(e);
+            });
+
+            $("#updateUser").click(function (e) {
+                updateUser();
+            });
+
+            $("#create").click(function () {
+                const dropdownVal = $("#teamDropdown").val()
+
+                //Create new Registration Code
+                $.ajax({
+                    url: '/registrationcode/generateNewRegistrationCode/' + dropdownVal,
+                    type: 'POST',
+                    success: function (data) {
+                        console.log("Registration code created")
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log("Error creating registration code:", errorThrown);
+                    }
+                });
+                popup.close();
+
+                //Reload page
+                loadRegistrationCodeTable();
+            });
+        });
+
+        loadUserTable();
+    });
+</script>

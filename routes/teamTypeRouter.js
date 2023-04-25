@@ -51,6 +51,10 @@ router.post('/updateteamtype', function (req, res) {
     });
 });
 
+router.get('/getteamtypeOptions', async (req, res) => {
+    const teamtypeOptions = await getTeamTypeOptions();
+    res.send(teamtypeOptions);
+});
 
 /**
  * Get all team types
@@ -76,6 +80,21 @@ function insertTeamType(data) {
  */
 function updateTeamType(data) {
     return pool.query(`UPDATE teamtype SET displayname = $1, name = $3 WHERE id = $2`,[data.displayName, data.id, data.internalName]);
+}
+
+async function getTeamTypeOptions() {
+    const query = util.promisify(pool.query).bind(pool);
+    const results = await query(`SELECT *
+                                 FROM teamtype`);
+
+    const options = results.rows.map((result) => {
+        return {
+            value: result.name,
+            label: result.displayname
+        };
+    });
+
+    return options;
 }
 
 module.exports = router;
