@@ -4,6 +4,7 @@
 const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
+const EmailSender = require('../js/serverJS/email/emailSender.js');
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 
 const passwordTokenDuration = 60 * 60; // 1 hour
@@ -20,13 +21,16 @@ router.get('/', (req, res) => {
  */
 router.post('/sendResetEmail', (req, res) => {
     const email = req.body.email;
-    console.log(email);
 
     //Generate reset password token
     const resetPasswordToken = crypto.randomBytes(32).toString('hex');
     const resetPasswordExpires = Math.floor(Date.now() / 1000) + passwordTokenDuration;
 
     setPassResetToken(resetPasswordToken, resetPasswordExpires, email);
+
+    //Send reset password email
+    let emailObj = new EmailSender();
+    emailObj.sendResetPasswordMail(email)
 
     res.status(200).send({message: "E-Mail sent successfully"});
 });
