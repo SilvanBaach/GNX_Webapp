@@ -120,12 +120,33 @@ function addBadLoginAttempt(userId, loginAttempts){
             }
         );
     }else{
-
+        //Just add the bad login attempt
+        pool.query(
+            `UPDATE account SET loginattempts = $1 WHERE id = $2`,
+            [badLoginAttempts, userId],
+            (err, results) => {
+                if (err) {
+                    throw err;
+                }
+            }
+        );
     }
 }
 
+/**
+ * Resets the bad login attempts for a user
+ * @param userId the id of the user
+ */
 function resetBadLoginAttempts(userId){
-
+    pool.query(
+        `UPDATE account SET loginattempts = 0 WHERE id = $1`,
+        [userId],
+        (err, results) => {
+            if (err) {
+                throw err;
+            }
+        }
+    );
 }
 
 module.exports = {initialize}
