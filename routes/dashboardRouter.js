@@ -40,4 +40,11 @@ router.get('/usermanagement', function (req, res) {
 });
 
 
+/**
+ * GET team-management page
+ */
+router.get('/teammanagement', function (req, res) {
+    res.render('dashboard/teammanagement.ejs', {user: req.user});
+});
+
 module.exports = router;

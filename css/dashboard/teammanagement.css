@@ -1,0 +1,19 @@
+.shadow-box{
+    margin-left: 18px;
+    width: 50vw;
+}
+
+.content {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    row-gap: 18px;
+    width: calc(100% - 78px);
+    margin-bottom: 18px;
+}
+
+.edit-box{
+    width: calc(100% - 78px - 50vw - 18px);
+    height: fit-content;
+    display: none;
+}

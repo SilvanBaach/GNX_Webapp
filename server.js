@@ -8,6 +8,8 @@ const loginRouter = require('./routes/loginRouter.js');
 const dashboardRouter = require('./routes/dashboardRouter.js');
 const presenceRouter = require('./routes/presenceRouter.js');
 const userRouter = require('./routes/userRouter.js');
+const teamRouter = require('./routes/teamRouter.js');
+const teamTypeRouter = require('./routes/teamTypeRouter.js');
 
 /**
  * MIDDLEWARE
@@ -37,6 +39,8 @@ app.use('/login', loginRouter(passport));
 app.use('/dashboard', dashboardRouter);
 app.use('/presence', presenceRouter);
 app.use('/user', userRouter);
+app.use('/team', teamRouter);
+app.use('/teamtype', teamTypeRouter);
 
 /**
  * MAIN ROUTES
