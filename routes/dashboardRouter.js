@@ -32,4 +32,11 @@ router.get('/calendar', function (req, res) {
     res.render('dashboard/calendar.ejs', {user: req.user});
 });
 
+/**
+ * GET dashboard page
+ */
+router.get('/fileshare', function (req, res) {
+    res.render('dashboard/fileshare.ejs', {user: req.user});
+});
+
 module.exports = router;

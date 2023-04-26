@@ -1,0 +1,75 @@
+<script src="/js/clientJS/fileshareClient.js"></script>
+
+<div class="title-container">
+    <p class="title">Fileshare</p>
+</div>
+
+<div class="path-container" id="path-container">
+    <div class="header-container">
+        <div class="path-text-container" id="path-text-container"></div>
+        <div class="button-container">
+            <form action="" method="post" enctype="multipart/form-data" id="upload-form">
+                <label class="default" for="file">Upload
+                    <i class="ri-upload-2-fill upload-icon"></i>
+                    <input type="file" name="file" id="file" multiple="multiple">
+                </label>
+            </form>
+            <button class="default green new-folder" id="new-folder" type="button">New Folder
+                <i class="ri-folder-add-fill upload-icon"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="fileshare-container" id="fileshare-container"></div>
+<div class="popup-container" id="popup-container-new-folder"></div>
+<div class="popup-container popup-container-delete" id="popup-container-delete"></div>
+
+<script>
+    $(document).ready(function () {
+        //Popup setup
+        const delPopup = deletePopupSetup();
+        const newFolderPopup = newFolderPopupSetup();
+
+        //Basic loading of fileshare when site is loaded
+        removeFileShareContent();
+        resetPathBar();
+        getFileListFromServer();
+
+        //Handles click event of directory-link
+        $(document).off('click', '#directory-link').on('click', '#directory-link', function (e) {
+            extendSubDir($(this).text());
+            removeFileShareContent();
+            getFileListFromServer();
+        });
+
+        //If a link in the path bar gets clicked
+        $(document).off('click', '#path-link').on('click', '#path-link', function (e) {
+            loadFolder($(this).data('path'));
+        });
+
+        //Delete file or folder
+        $(document).off('click', '#delete-file').on('click', '#delete-file', function (e) {
+            setDelPath($(this).data('path'));
+            delPopup.open(e);
+        });
+
+        //create new folder
+        $("#new-folder").click(function(e){
+            newFolderPopup.open(e);
+        });
+
+        //Upload file
+        $("#file").on("change", function() {
+            if ($("#file")[0].files.length > 10) {
+                displayError('You can only upload 10 files at a time!');
+            } else {
+                $("#upload-form").on('submit',(function(e) {
+                    e.preventDefault();
+                    uploadFiles(new FormData(this))
+                }));
+            }
+        });
+
+    });
+</script>
