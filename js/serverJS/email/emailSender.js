@@ -56,7 +56,7 @@ class EmailSender {
 
         let action = '';
         if (!isProduction) {
-            action = `http://localhost:3000/resetPassword/resetPassword/${token}`;
+            action = `http://localhost:3000/resetPassword/${token}`;
         } else {
             //TODO: Change this to the production url
             console.log('Running in production mode');

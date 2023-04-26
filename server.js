@@ -7,7 +7,7 @@ const flash = require('express-flash');
 const loginRouter = require('./routes/loginRouter.js');
 const dashboardRouter = require('./routes/dashboardRouter.js');
 const presenceRouter = require('./routes/presenceRouter.js');
-const userRouter = require('./routes/userRouter.js');
+const {router: userRouter} = require('./routes/userRouter.js');
 const registerRouter = require('./routes/registerRouter.js');
 const resetPasswordRouter = require('./routes/resetPasswordRouter.js');
 

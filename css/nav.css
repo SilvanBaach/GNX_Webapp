@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding:0;
-    background-image: url("../res/backgrounds/background_1.jpg");
+    background-image: url("/res/backgrounds/background_1.jpg");
     background-position: center center;
     background-size: cover;
     background-repeat: no-repeat;

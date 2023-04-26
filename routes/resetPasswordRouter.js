@@ -7,8 +7,9 @@ const crypto = require('crypto');
 const EmailSender = require('../js/serverJS/email/emailSender.js');
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 const util = require("util");
+const {getUserByToken, getUserByEmail} = require('../routes/userRouter.js');
 
-const passwordTokenDuration = 60 * 60; // 1 hour
+const passwordTokenDuration = process.env.RESET_PASSWORD_TOKEN_EXPIRATION_TIME;
 
 /**
  * GET reset password page
@@ -28,7 +29,8 @@ router.post('/sendResetEmail', async (req, res) => {
 
         //Generate reset password token
         const resetPasswordToken = crypto.randomBytes(32).toString('hex');
-        const resetPasswordExpires = Math.floor(Date.now() / 1000) + passwordTokenDuration;
+        let resetPasswordExpires = Math.floor(Date.now() / 1000);
+        resetPasswordExpires = resetPasswordExpires + parseInt(passwordTokenDuration);
 
         setPassResetToken(resetPasswordToken, resetPasswordExpires, email);
 
@@ -43,13 +45,13 @@ router.post('/sendResetEmail', async (req, res) => {
 /**
  * GET route for resetting the password
  */
-router.get('/resetPassword/:token', async (req, res) => {
+router.get('/:token', async (req, res) => {
     const user = await getUserByToken(req.params.token);
 
     if (user) {
-        console.log("User found");
+        console.log("Token is valid");
         if (!res.headersSent) {
-            res.redirect('/');
+            res.render('inputNewPassword.ejs', {token: req.params.token});
         }
     } else {
         if (!res.headersSent) {
@@ -57,7 +59,6 @@ router.get('/resetPassword/:token', async (req, res) => {
         }
     }
 });
-
 
 /**
  * Function which sets the reset password token and the reset password expires in the database
@@ -68,35 +69,5 @@ router.get('/resetPassword/:token', async (req, res) => {
 function setPassResetToken(resetPasswordToken, resetPasswordExpires, email) {
     pool.query(`UPDATE account SET resetpasswordtoken = $1, resetpasswordexpires = $2 WHERE email = $3`, [resetPasswordToken, resetPasswordExpires, email]);
 }
-
-/**
- * Gets a user by his email
- * @param email the email of the user
- * @returns {*} Promise that resolves to the user
- */
-async function getUserByEmail(email) {
-    const query = util.promisify(pool.query).bind(pool);
-    return query('SELECT * FROM account WHERE email = $1', [email]);
-}
-
-/**
- * Gets a user by his token and checks if the token is still valid
- * @param token the token of the user
- * @returns {Promise<*>} Promise that resolves to the user
- */
-async function getUserByToken(token) {
-    const query = util.promisify(pool.query).bind(pool);
-    const result = await query('SELECT * FROM account WHERE resetpasswordtoken = $1', [token]);
-
-    if (result.rows.length > 0) {
-        const user = result.rows[0];
-        const maxTime = Math.floor(Date.now() / 1000) + passwordTokenDuration;
-
-        if (user.resetpasswordexpires < maxTime) {
-            return user;
-        }
-    }
-}
-
 
 module.exports = router;
