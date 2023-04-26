@@ -35,11 +35,13 @@ function displayError(message)
     }).showToast();
 }
 
-function displaySuccess(message)
+function displaySuccess(message, duration)
 {
+    duration = duration || 3000;
+
     Toastify({
         text: message,
-        duration: 3000,
+        duration: duration,
         newWindow: true,
         close: true,
         gravity: "top",
