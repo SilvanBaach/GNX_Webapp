@@ -74,7 +74,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/nodejs-demo:latest
 
       - name: Run the image in a container
-        uses: jsonderulo/genetix@v3
+        uses: addnab/docker-run-action@v3
         with:
           image: ${{ secrets.DOCKERHUB_USERNAME }}/nodejs-demo:latest
           run: |
