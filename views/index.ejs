@@ -74,8 +74,11 @@
         //Display Toast Message if needed
         const searchParams = new URLSearchParams(window.location.search);
         const message = searchParams.get('message')
+        const type = searchParams.get('type')
 
-        if (message !== null) {
+        if (type && type === "error") {
+            displayError(message);
+        } else if (message !== null) {
             displaySuccess(message);
         }
     });
