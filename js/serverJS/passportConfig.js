@@ -2,6 +2,8 @@ const LocalStrategy = require("passport-local").Strategy;
 const { pool } = require("./database/dbConfig.js");
 const bcrypt = require("bcrypt");
 
+const MAX_LOGIN_ATTEMPTS = 5;
+
 /**
  * This function initializes the passport module
  * It serves as the authenticater for the user
@@ -18,7 +20,7 @@ function initialize(passport) {
     const authenticateUser = (username, password, done) => {
         console.log("Authenticating user: " + username)
         pool.query(
-            `SELECT account.id, username, password FROM account WHERE username = $1`,
+            `SELECT account.id, username, password, loginattempts, blocked FROM account WHERE username = $1`,
             [username],
             (err, results) => {
                 if (err) {
@@ -28,14 +30,24 @@ function initialize(passport) {
                 if (results.rows.length > 0) {
                     const user = results.rows[0];
 
+                    //Is the User Blocked?
+                    if (user.blocked) {
+                        return done(null, false, { message: "This User is blocked! Please contact staff." });
+                    }
+
                     bcrypt.compare(password, user.password, (err, isMatch) => {
                         if (err) {
                             console.log(err);
                         }
                         if (isMatch) {
+                            //All credentials are correct
+                            //Reset bad login attempts
+                            resetBadLoginAttempts(user.id)
                             return done(null, user);
                         } else {
                             //password is incorrect
+                            //Add a bad login attempt to the database
+                            addBadLoginAttempt(user.id, user.loginattempts)
                             return done(null, false, { message: "Password is incorrect" });
                         }
                     });
@@ -86,6 +98,55 @@ function initialize(passport) {
             });
         });
     });
+}
+
+/**
+ * Adds a bad login attempt to the database
+ * If the user has less than MAX_LOGIN_ATTEMPTS bad login attempts, the user is blocked
+ * @param userId the id of the user
+ * @param loginAttempts the number of bad login attempts before this one
+ */
+function addBadLoginAttempt(userId, loginAttempts){
+    const badLoginAttempts = loginAttempts + 1;
+    if (badLoginAttempts >= MAX_LOGIN_ATTEMPTS) {
+        //Block the user
+        pool.query(
+            `UPDATE account SET loginattempts = $1, blocked = true WHERE id = $2`,
+            [badLoginAttempts, userId],
+            (err, results) => {
+                if (err) {
+                    throw err;
+                }
+            }
+        );
+    }else{
+        //Just add the bad login attempt
+        pool.query(
+            `UPDATE account SET loginattempts = $1 WHERE id = $2`,
+            [badLoginAttempts, userId],
+            (err, results) => {
+                if (err) {
+                    throw err;
+                }
+            }
+        );
+    }
+}
+
+/**
+ * Resets the bad login attempts for a user
+ * @param userId the id of the user
+ */
+function resetBadLoginAttempts(userId){
+    pool.query(
+        `UPDATE account SET loginattempts = 0 WHERE id = $1`,
+        [userId],
+        (err, results) => {
+            if (err) {
+                throw err;
+            }
+        }
+    );
 }
 
 module.exports = {initialize}

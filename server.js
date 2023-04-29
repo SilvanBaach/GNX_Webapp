@@ -6,6 +6,10 @@ const session = require('express-session');
 const flash = require('express-flash');
 const loginRouter = require('./routes/loginRouter.js');
 const dashboardRouter = require('./routes/dashboardRouter.js');
+const presenceRouter = require('./routes/presenceRouter.js');
+const {router: userRouter} = require('./routes/userRouter.js');
+const registerRouter = require('./routes/registerRouter.js');
+const resetPasswordRouter = require('./routes/resetPasswordRouter.js');
 
 /**
  * MIDDLEWARE
@@ -33,7 +37,10 @@ app.use(passport.initialize());
  */
 app.use('/login', loginRouter(passport));
 app.use('/dashboard', dashboardRouter);
-app.use('/user', require('./routes/userRouter.js'));
+app.use('/presence', presenceRouter);
+app.use('/user', userRouter);
+app.use('/register', registerRouter);
+app.use('/resetPassword', resetPasswordRouter);
 
 /**
  * MAIN ROUTES
@@ -45,7 +52,6 @@ app.get('/', checkAuthenticated,(req, res) => {
 app.get('/register', (req, res) => {
     res.render('register');
 });
-
 
 /**
  * Checks if the user is authenticated

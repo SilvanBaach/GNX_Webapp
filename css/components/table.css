@@ -63,3 +63,21 @@
     align-items: center;
     column-gap: 10px;
 }
+
+.status-green{
+    background-color: green;
+}
+
+.status-red{
+    background-color: red;
+}
+
+.status-orange{
+    background-color: orange;
+}
+
+.status-indicator{
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+}

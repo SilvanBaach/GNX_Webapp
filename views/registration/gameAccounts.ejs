@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Link Game Accounts</title>
+
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/components/button.css">
+    <link rel="stylesheet" href="/css/registration/gameaccounts.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+
+<h1 class="big-title title">Game Accounts</h1>
+<p class="small-white-text text">Link your game accounts to see your individual game stats!</p>
+
+<form>
+    <div class="form-row">
+        <div>
+            <img src="/res/teams/steam.png" class="center-img"/>
+            <label for="steam" class="label-login">Steam</label>
+            <input type="text" id="steam" name="steam" class="input-login"/>
+        </div>
+        <div>
+            <img src="/res/teams/origin.png" class="center-img"/>
+            <label for="origin" class="label-login">Origin</label>
+            <input type="text" id="origin" name="origin" class="input-login"/>
+        </div>
+    </div>
+    <div class="form-row">
+        <div>
+            <img src="/res/teams/riotgames.png" class="center-img"/>
+            <label for="riotgames" class="label-login">Riot Games</label>
+            <input type="text" id="riotgames" name="riotgames" class="input-login"/>
+        </div>
+        <div>
+            <img src="/res/teams/battlenet.png" class="center-img"/>
+            <label for="battlenet" class="label-login">Battlenet</label>
+            <input type="text" id="battlenet" name="battlenet" class="input-login"/>
+        </div>
+    </div>
+    <div class="button-container">
+        <button class="default login button" id="skip">Skip ➔</button>
+        <input type="submit" class="default login button" value="Finish ➔"/>
+    </div>
+</form>
+
+<script>
+    // LOAD NAVIGATION BAR
+    $(document).ready(function () {
+        $("#nav-placeholder").load("/html/nav.html");
+    });
+
+</script>
+</body>
+
+</html>

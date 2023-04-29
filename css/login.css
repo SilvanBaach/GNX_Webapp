@@ -19,3 +19,22 @@ form {
     margin: auto;
     column-gap: 10px;
 }
+
+.pwreset-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    column-gap: 10px;
+    text-align: center;
+    width: 100%;
+    position: absolute;
+    bottom: 20px;
+}
+
+.pwreset-text{
+    color: white;
+    font-family: montserrat, serif;
+    font-size: 1rem;
+    text-align: center;
+}

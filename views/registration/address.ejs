@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Enter Address</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/components/button.css">
+    <link rel="stylesheet" href="/css/registration/address.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+
+<h1 class="big-title title">Address</h1>
+
+<img class="address-img" src="/res/teams/address.png"/>
+
+<form>
+    <div class="form-row">
+        <div>
+            <label for="street" class="label-login">Street</label>
+            <input type="text" id="street" name="street" class="input-login"/>
+        </div>
+        <div>
+            <label for="city" class="label-login">City</label>
+            <input type="text" id="city" name="city" class="input-login"/>
+        </div>
+        <div>
+            <label for="zip" class="label-login">ZIP Code</label>
+            <input type="number" id="zip" name="zip" class="input-login"/>
+        </div>
+    </div>
+    <div class="button-container">
+        <button class="default login button" id="skip">Skip ➔</button>
+        <input type="submit" class="default login button" value="Next ➔"/>
+    </div>
+</form>
+
+<script>
+    // LOAD NAVIGATION BAR
+    $(document).ready(function () {
+        $("#nav-placeholder").load("/html/nav.html");
+    });
+</script>
+</body>
+
+</html>
