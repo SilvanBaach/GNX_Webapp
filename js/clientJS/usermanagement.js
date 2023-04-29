@@ -120,20 +120,11 @@ async function loadUserTable() {
     buildUserTable();
 }
 
-const minPage = 0;
-let currentPage = 0;
-const itemsPerPage = 6;
-
 function buildUserTable(){
     const tableBody = $("#user-table tbody");
     tableBody.empty();
 
-    const maxPage = Math.ceil(userData.length / itemsPerPage);
-    const startIndex = currentPage * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const paginatedData = userData.slice(startIndex, endIndex);
-
-    paginatedData.forEach(function(account) {
+    userData.forEach(function(account) {
         const tr = $("<tr></tr>");
         const tdUsername = $("<td></td>").text(account.username);
         const tdTeam = $("<td></td>").text(account.team_displayname);
@@ -168,45 +159,6 @@ function buildUserTable(){
         tr.append(tdUsername).append(tdTeam).append(tdFullname).append(tdPicture).append(tdButton);
         tableBody.append(tr);
     });
-
-    if ($("#pagination").length === 0) {
-        const prevButton = $("<button></button>")
-            .addClass("default navigation-btn")
-            .append($("<i></i>").addClass("ri-arrow-left-s-line ri-2x"))
-            .append("Previous")
-            .on("click", function() {
-                if (currentPage > 0) {
-                    currentPage--;
-                    buildUserTable();
-                }
-            });
-
-        const nextButton = $("<button>Next</button>")
-            .addClass("default navigation-btn")
-            .append($("<i></i>").addClass("ri-arrow-right-s-line ri-2x"))
-            .on("click", function() {
-                if (endIndex < userData.length) {
-                    currentPage++;
-                    buildUserTable();
-                }
-            });
-
-        const pageNumberText = $("<span></span>")
-            .addClass("page-number-text")
-            .text(`${currentPage+1} / ${maxPage}`);
-
-        const pagination = $("<div></div>")
-            .addClass("pagination")
-            .attr("id", "pagination")
-            .append(prevButton)
-            .append(pageNumberText)
-            .append(nextButton);
-
-        $("#user-table").after(pagination);
-    } else {
-        const pageNumberText = $("#pagination .page-number-text");
-        pageNumberText.text(`${currentPage+1} / ${maxPage}`);
-    }
 }
 
 function editUser(username) {
