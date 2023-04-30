@@ -1,5 +1,7 @@
 let teamData;
 let teamTypeData;
+const teamsPerPage = 5;
+const teamTypesPerPage = 5;
 
 function popupSetup() {
     //Create Popups for Team / Type Creation
@@ -100,6 +102,7 @@ function buildTeamTable() {
         tr.append(tdInternalName).append(tdType).append(tdWeight).append(tdButton);
         tableBody.append(tr);
     });
+    setNumberOfTeamPages();
 }
 
 function buildTeamTypeTable() {
@@ -128,6 +131,8 @@ function buildTeamTypeTable() {
         tr.append(tdInternalName).append(tdDisplayName).append(tdButton);
         tableBody.append(tr);
     });
+
+    setNumberOfTeamTypePages();
 }
 
 async function createTeam(e, popupTeam) {
@@ -306,4 +311,26 @@ function updateTeamType(){
             displayError("Error updating Team type! Try reloading the page.")
         }
     });
+}
+
+function getNumberOfTeams() {
+    return teamData.length;
+}
+
+function getNumberOfTeamTypes() {
+    return teamTypeData.length;
+}
+
+function setNumberOfTeamPages(){
+    const numberOfTeams = getNumberOfTeams();
+    const numberOfPages = Math.ceil(numberOfTeams / teamsPerPage);
+    $(".team-page-number-text").text("1 / "+numberOfPages);
+    console.log(numberOfPages);
+}
+
+function setNumberOfTeamTypePages(){
+    const numberOfTeamTypes = getNumberOfTeamTypes();
+    const numberOfPages = Math.ceil(numberOfTeamTypes / teamTypesPerPage);
+    $(".teamtype-page-number-text").text("1 / "+numberOfPages);
+    console.log(numberOfPages);
 }
