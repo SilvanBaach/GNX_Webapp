@@ -1,12 +1,27 @@
 let teamData;
 let teamTypeData;
-const teamsPerPage = 5;
-const teamTypesPerPage = 5;
+let teamPager;
+let teamTypePager;
 
-function popupSetup() {
+function setupPagination() {
+    teamPager = $("#teamPager").anyPaginator({ onClick: buildTeamTable } );
+    teamPager.setDefaults({ itemsPerPage: 5, mode: 1, hideGoto: true, prevText: "&lsaquo; Previous", nextText: "Next &rsaquo;"})
+    teamPager.numItems(teamData.length);
+    buildTeamTable()
+
+    teamTypePager = $("#teamTypePager").anyPaginator({ onClick: buildTeamTypeTable });
+    teamTypePager.setDefaults({ itemsPerPage: 5, mode: 1, hideGoto: true, prevText: "&lsaquo; Previous", nextText: "Next &rsaquo;"})
+    teamTypePager.numItems(teamTypeData.length);
+    buildTeamTypeTable()
+}
+
+async function popupSetup() {
     //Create Popups for Team / Type Creation
     const popupTeam = new Popup("popup-containerTeam");
     const popupTeamType = new Popup("popup-containerTeamType");
+
+    await loadTeams();
+    await loadTeamTypes();
 
     popupTeam.displayInputPopupCustom("/res/others/plus.png", "Create Team", "Create", "btnCreateTeam",
         `<label for="TeamName" class="input-label">Name</label>` +
@@ -41,6 +56,8 @@ function popupSetup() {
     $("#btnCreateTeamType").click(function (e) {
         createTeamType(e, popupTeamType);
     });
+
+    setupPagination();
 }
 
 async function loadTeams() {
@@ -50,7 +67,6 @@ async function loadTeams() {
         cache: false,
         success: function (data) {
             teamData = data;
-            buildTeamTable();
         },
         error: function (data) {
             console.log(data);
@@ -65,9 +81,6 @@ async function loadTeamTypes() {
         cache: false,
         success: function (data) {
             teamTypeData = data;
-            buildTeamTypeTable();
-            loadTeams();
-            popupSetup();
         },
         error: function (data) {
             console.log(data);
@@ -76,10 +89,16 @@ async function loadTeamTypes() {
 }
 
 function buildTeamTable() {
-    const tableBody = $("#team-table tbody");
+    const tableBody = $("#teamData");
     tableBody.empty();
 
-    teamData.forEach(function (team) {
+    let start = (teamPager.currentPage() - 1) * teamPager.options.itemsPerPage + 1;
+    let stop  = start + teamPager.options.itemsPerPage - 1;
+
+    for (let i=start; i<=stop; i++){
+        team = teamData[i];
+        if (!team) break;
+
         const tr = $("<tr></tr>");
         const tdInternalName = $("<td></td>").text(team.displayname);
         const tdType = $("<td></td>").text(teamTypeData.find((teamtype) => teamtype.id === team.teamtype_fk).displayname);
@@ -101,12 +120,11 @@ function buildTeamTable() {
 
         tr.append(tdInternalName).append(tdType).append(tdWeight).append(tdButton);
         tableBody.append(tr);
-    });
-    setNumberOfTeamPages();
+    }
 }
 
 function buildTeamTypeTable() {
-    const tableBody = $("#teamtype-table tbody");
+    const tableBody = $("#teamTypeData");
     tableBody.empty();
 
     teamTypeData.forEach(function (teamType) {
@@ -131,8 +149,6 @@ function buildTeamTypeTable() {
         tr.append(tdInternalName).append(tdDisplayName).append(tdButton);
         tableBody.append(tr);
     });
-
-    setNumberOfTeamTypePages();
 }
 
 async function createTeam(e, popupTeam) {
@@ -311,26 +327,4 @@ function updateTeamType(){
             displayError("Error updating Team type! Try reloading the page.")
         }
     });
-}
-
-function getNumberOfTeams() {
-    return teamData.length;
-}
-
-function getNumberOfTeamTypes() {
-    return teamTypeData.length;
-}
-
-function setNumberOfTeamPages(){
-    const numberOfTeams = getNumberOfTeams();
-    const numberOfPages = Math.ceil(numberOfTeams / teamsPerPage);
-    $(".team-page-number-text").text("1 / "+numberOfPages);
-    console.log(numberOfPages);
-}
-
-function setNumberOfTeamTypePages(){
-    const numberOfTeamTypes = getNumberOfTeamTypes();
-    const numberOfPages = Math.ceil(numberOfTeamTypes / teamTypesPerPage);
-    $(".teamtype-page-number-text").text("1 / "+numberOfPages);
-    console.log(numberOfPages);
 }
