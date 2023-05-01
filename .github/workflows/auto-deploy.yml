@@ -98,7 +98,7 @@ jobs:
             echo "DB_HOST=192.168.0.245" >> /home/genetix/.env
             echo "DB_PORT=5432" >> /home/genetix/.env
             echo "DB_DATABASE_DEV=teamgenetix" >> /home/genetix/.env
-            echo "DB_DATABASE_PROD=TO_BE_DEFINED" >> /home/genetix/.env
+            echo "DB_DATABASE_PROD=teamgenetix" >> /home/genetix/.env
             echo "EMAIL_HOST=${{ secrets.MAIL_HOST }}" >> /home/genetix/.env
             echo "EMAIL_PORT=587" >> /home/genetix/.env
             echo "EMAIL_USERNAME=${{ secrets.MAIL_USERNAME }}" >> /home/genetix/.env
