@@ -83,6 +83,7 @@ jobs:
             echo ${{ steps.docker_build.outputs.digest }}
 
       - name: Create .env file
+        id: create-env
         run: |
           cat << EOF > .env
           DB_USER=${{ secrets.DB_USER }}
@@ -99,6 +100,7 @@ jobs:
           FILESHARE_ROOT_DIR=/filestorage
           ADDRESS=localhost
           EOF
+          echo "::set-output name=env::$(cat .env)"
 
       - name: Deploy to Ubuntu Server
         uses: appleboy/ssh-action@master
