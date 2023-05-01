@@ -91,7 +91,7 @@ jobs:
           script: |
             docker pull jsonderulo/genetix:latest
             docker stop gnxcontainer || true
-            docker rm gnxcontainer || true
+            docker rm gnxcontainer || true          
             
             echo "DB_USER=${{ secrets.DB_USER }}" > /home/genetix/.env
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> /home/genetix/.env
@@ -106,7 +106,7 @@ jobs:
             echo "RESET_PASSWORD_TOKEN_EXPIRATION_TIME=3600" >> /home/genetix/.env
             echo "FILESHARE_ROOT_DIR=/filestorage" >> /home/genetix/.env
             echo "ADDRESS=localhost" >> /home/genetix/.env
-            docker run -d --name gnxcontainer -p 80:3000 -v "/home/genetix/.env:/usr/src/app/.env" jsonderulo/genetix:latest
+            docker run -d --name gnxcontainer -p 80:3000  jsonderulo/genetix:latest
       
       
       
