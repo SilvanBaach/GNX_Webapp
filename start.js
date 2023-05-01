@@ -1,6 +1,6 @@
 const app = require('./server');
 
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 3000;
 const address = process.env.ADDRESS || '0.0.0.0'; // Add this line
 
 app.listen(port, address, () => { // Update this line
