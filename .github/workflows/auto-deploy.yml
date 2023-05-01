@@ -108,38 +108,15 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
-          env:
-            SSH: ${{ secrets.SERVER_PRIVATE_KEY }}
           script: |
-            sudo apt-get update
-            sudo apt-get install -y sshpass
-  
-            echo 'DB_USER=${{ secrets.DB_USER }}' >> config.env
-            echo 'DB_PASSWORD=${{ secrets.DB_PASSWORD }}' >> config.env
-            echo 'DB_HOST=192.168.0.245' >> config.env
-            echo 'DB_PORT=5432' >> config.env
-            echo 'DB_DATABASE_DEV=teamgenetix' >> config.env
-            echo 'DB_DATABASE_PROD=TO_BE_DEFINED' >> config.env
-            echo 'EMAIL_HOST=${{ secrets.MAIL_HOST }}' >> config.env
-            echo 'EMAIL_PORT=587' >> config.env
-            echo 'EMAIL_USERNAME=${{ secrets.MAIL_USERNAME }}' >> config.env
-            echo 'EMAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}' >> config.env
-            echo 'RESET_PASSWORD_TOKEN_EXPIRATION_TIME=3600' >> config.env
-            echo 'FILESHARE_ROOT_DIR=/filestorage' >> config.env
-            echo 'ADDRESS=localhost' >> config.env
-  
-            cat config.env # Display the content of the config.env file on the runner
-  
-            sshpass -p "${{ secrets.SERVER_PASSWORD }}" scp config.env "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/tmp/config.env"
-  
-            sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" "docker pull jsonderulo/genetix:latest"
-            sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" "docker stop gnxcontainer || true"
-            sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" "docker rm gnxcontainer || true"
-            sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" "docker create --name temp_container jsonderulo/genetix:latest"
-            sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" "sudo docker cp /tmp/config.env temp_container:/app/.env"
-            sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" "docker commit temp_container jsonderulo/genetix:with_env"
-            sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" "docker rm temp_container"
-            sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" "docker run -d --name gnxcontainer -p 80:3000 jsonderulo/genetix:with_env"
+            docker pull jsonderulo/genetix:latest
+            docker stop gnxcontainer || true
+            docker rm gnxcontainer || true
+            mkdir -p /opt/genetix/
+            printf '%s\n' '${{ steps.create-env.outputs.env }}' > /opt/genetix/.env # Update this line to use printf with a heredoc
+            cat /opt/genetix/.env # Add this line to display the content of the .env file on the server
+            docker run -d --name gnxcontainer -p 80:3000 -v "/opt/genetix/.env:/app/.env" jsonderulo/genetix:latest
+      
       
       
       
