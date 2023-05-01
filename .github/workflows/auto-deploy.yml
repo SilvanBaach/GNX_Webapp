@@ -102,6 +102,9 @@ jobs:
           EOF
           echo "::set-output name=env::$(cat .env)"
 
+      - name: Install sshpass
+        run: sudo apt-get update && sudo apt-get install -y sshpass
+
       - name: Deploy to Ubuntu Server
         uses: appleboy/ssh-action@master
         with:
@@ -111,7 +114,7 @@ jobs:
           script: |
             sudo apt-get update
             sudo apt-get install -y sshpass
-  
+    
             echo 'DB_USER=${{ secrets.DB_USER }}' >> config.env
             echo 'DB_PASSWORD=${{ secrets.DB_PASSWORD }}' >> config.env
             echo 'DB_HOST=192.168.0.245' >> config.env
@@ -125,11 +128,11 @@ jobs:
             echo 'RESET_PASSWORD_TOKEN_EXPIRATION_TIME=3600' >> config.env
             echo 'FILESHARE_ROOT_DIR=/filestorage' >> config.env
             echo 'ADDRESS=localhost' >> config.env
-  
+    
             cat config.env # Display the content of the config.env file on the runner
-  
+    
             sshpass -p "${{ secrets.SERVER_PASSWORD }}" scp config.env "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/tmp/config.env"
-  
+    
             sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" "docker pull jsonderulo/genetix:latest"
             sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" "docker stop gnxcontainer || true"
             sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" "docker rm gnxcontainer || true"
