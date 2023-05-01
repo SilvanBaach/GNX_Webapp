@@ -112,27 +112,29 @@ jobs:
             docker pull jsonderulo/genetix:latest
             docker stop gnxcontainer || true
             docker rm gnxcontainer || true
-            mkdir -p /opt/genetix/
-            echo "DB_USER=${{ secrets.DB_USER }}" > /opt/genetix/config.env
-            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> /opt/genetix/config.env
-            echo "DB_HOST=192.168.0.245" >> /opt/genetix/config.env
-            echo "DB_PORT=5432" >> /opt/genetix/config.env
-            echo "DB_DATABASE_DEV=teamgenetix" >> /opt/genetix/config.env
-            echo "DB_DATABASE_PROD=TO_BE_DEFINED" >> /opt/genetix/config.env
-            echo "EMAIL_HOST=${{ secrets.MAIL_HOST }}" >> /opt/genetix/config.env
-            echo "EMAIL_PORT=587" >> /opt/genetix/config.env
-            echo "EMAIL_USERNAME=${{ secrets.MAIL_USERNAME }}" >> /opt/genetix/config.env
-            echo "EMAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" >> /opt/genetix/config.env
-            echo "RESET_PASSWORD_TOKEN_EXPIRATION_TIME=3600" >> /opt/genetix/config.env
-            echo "FILESHARE_ROOT_DIR=/filestorage" >> /opt/genetix/config.env
-            echo "ADDRESS=localhost" >> /opt/genetix/config.env
+            sudo mkdir -p /opt/genetix/
+            echo 'DB_USER=${{ secrets.DB_USER }}' | sudo tee -a /opt/genetix/config.env
+            echo 'DB_PASSWORD=${{ secrets.DB_PASSWORD }}' | sudo tee -a /opt/genetix/config.env
+            echo 'DB_HOST=192.168.0.245' | sudo tee -a /opt/genetix/config.env
+            echo 'DB_PORT=5432' | sudo tee -a /opt/genetix/config.env
+            echo 'DB_DATABASE_DEV=teamgenetix' | sudo tee -a /opt/genetix/config.env
+            echo 'DB_DATABASE_PROD=TO_BE_DEFINED' | sudo tee -a /opt/genetix/config.env
+            echo 'EMAIL_HOST=${{ secrets.MAIL_HOST }}' | sudo tee -a /opt/genetix/config.env
+            echo 'EMAIL_PORT=587' | sudo tee -a /opt/genetix/config.env
+            echo 'EMAIL_USERNAME=${{ secrets.MAIL_USERNAME }}' | sudo tee -a /opt/genetix/config.env
+            echo 'EMAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}' | sudo tee -a /opt/genetix/config.env
+            echo 'RESET_PASSWORD_TOKEN_EXPIRATION_TIME=3600' | sudo tee -a /opt/genetix/config.env
+            echo 'FILESHARE_ROOT_DIR=/filestorage' | sudo tee -a /opt/genetix/config.env
+            echo 'ADDRESS=localhost' | sudo tee -a /opt/genetix/config.env
+
             cat /opt/genetix/config.env # Display the content of the config.env file on the server
 
             docker create --name temp_container jsonderulo/genetix:latest
-            docker cp /opt/genetix/config.env temp_container:/app/.env
+            sudo docker cp /opt/genetix/config.env temp_container:/app/.env
             docker commit temp_container jsonderulo/genetix:with_env
             docker rm temp_container
             docker run -d --name gnxcontainer -p 80:3000 jsonderulo/genetix:with_env
+      
       
       
       
