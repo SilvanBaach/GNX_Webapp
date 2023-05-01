@@ -126,8 +126,14 @@ jobs:
             echo "RESET_PASSWORD_TOKEN_EXPIRATION_TIME=3600" >> /opt/genetix/.env
             echo "FILESHARE_ROOT_DIR=/filestorage" >> /opt/genetix/.env
             echo "ADDRESS=localhost" >> /opt/genetix/.env
-            cat /opt/genetix/.env # Add this line to display the content of the .env file on the server
-            docker run -d --name gnxcontainer -p 80:3000 -v "/opt/genetix/.env:/app/.env" jsonderulo/genetix:latest
+            cat /opt/genetix/.env # Display the content of the .env file on the server
+
+            docker create --name temp_container jsonderulo/genetix:latest
+            docker cp /opt/genetix/.env temp_container:/app/.env
+            docker commit temp_container jsonderulo/genetix:with_env
+            docker rm temp_container
+            docker run -d --name gnxcontainer -p 80:3000 jsonderulo/genetix:with_env
+      
       
       
       
