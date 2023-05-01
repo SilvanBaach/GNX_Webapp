@@ -4,14 +4,28 @@ let teamPager;
 let teamTypePager;
 
 function setupPagination() {
-    teamPager = $("#teamPager").anyPaginator({ onClick: buildTeamTable } );
-    teamPager.setDefaults({ itemsPerPage: 5, mode: 1, hideGoto: true, prevText: "&lsaquo; Previous", nextText: "Next &rsaquo;"})
-    teamPager.numItems(teamData.length);
+    teamPager = $("#teamPager").anyPaginator({
+        itemsPerPage: 5,
+        mode: 1,
+        hideGoto: true,
+        prevText: "&lsaquo; Previous",
+        nextText: "Next &rsaquo;",
+        onClick: buildTeamTable,
+    });
+
+    teamPager.numItems(teamData.length)
     buildTeamTable()
 
-    teamTypePager = $("#teamTypePager").anyPaginator({ onClick: buildTeamTypeTable });
-    teamTypePager.setDefaults({ itemsPerPage: 5, mode: 1, hideGoto: true, prevText: "&lsaquo; Previous", nextText: "Next &rsaquo;"})
-    teamTypePager.numItems(teamTypeData.length);
+    teamTypePager = $("#teamTypePager").anyPaginator({
+        itemsPerPage: 5,
+        mode: 1,
+        hideGoto: true,
+        prevText: "&lsaquo; Previous",
+        nextText: "Next &rsaquo;",
+        onClick: buildTeamTypeTable,
+    });
+
+    teamTypePager.numItems(teamTypeData.length)
     buildTeamTypeTable()
 }
 
@@ -92,8 +106,10 @@ function buildTeamTable() {
     const tableBody = $("#teamData");
     tableBody.empty();
 
+
     let start = (teamPager.currentPage() - 1) * teamPager.options.itemsPerPage + 1;
     let stop  = start + teamPager.options.itemsPerPage - 1;
+
 
     for (let i=start; i<=stop; i++){
         team = teamData[i];
@@ -127,7 +143,13 @@ function buildTeamTypeTable() {
     const tableBody = $("#teamTypeData");
     tableBody.empty();
 
-    teamTypeData.forEach(function (teamType) {
+    let start = (teamTypePager.currentPage() - 1) * teamTypePager.options.itemsPerPage + 1;
+    let stop  = start + teamTypePager.options.itemsPerPage - 1;
+
+    for (let i=start; i<=stop; i++){
+        teamType = teamTypeData[i];
+        if (!teamType) break;
+
         const tr = $("<tr></tr>");
         const tdInternalName = $("<td></td>").text(teamType.name);
         const tdDisplayName = $("<td></td>").text(teamType.displayname);
@@ -148,7 +170,7 @@ function buildTeamTypeTable() {
 
         tr.append(tdInternalName).append(tdDisplayName).append(tdButton);
         tableBody.append(tr);
-    });
+    }
 }
 
 async function createTeam(e, popupTeam) {
