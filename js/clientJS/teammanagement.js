@@ -11,14 +11,10 @@ dataAccessors = {
 
     set teamData(data){
         this.team = data
-        buildTeamTable()
     },
     set teamTypeData(data){
         this.teamType = data
-        buildTeamTypeTable()
     }
-
-
 }
 
 let teamPager;
@@ -31,10 +27,11 @@ function setupPagination() {
         hideGoto: true,
         prevText: "&lsaquo; Previous",
         nextText: "Next &rsaquo;",
+        hideIfOne: false,
         onClick: buildTeamTable,
     });
 
-    teamPager.numItems(dataAccessors.team.length)
+    teamPager.numItems(dataAccessors.teamData.length)
     buildTeamTable()
 
     teamTypePager = $("#teamTypePager").anyPaginator({
@@ -43,10 +40,11 @@ function setupPagination() {
         hideGoto: true,
         prevText: "&lsaquo; Previous",
         nextText: "Next &rsaquo;",
+        hideIfOne: false,
         onClick: buildTeamTypeTable,
     });
 
-    teamTypePager.numItems(dataAccessors.teamType.length)
+    teamTypePager.numItems(dataAccessors.teamTypeData.length)
     buildTeamTypeTable()
 }
 
@@ -101,7 +99,7 @@ async function loadTeams() {
         type: "GET",
         cache: false,
         success: function (data) {
-            dataAccessors.team = data;
+            dataAccessors.teamData = data;
         },
         error: function (data) {
             console.log(data);
@@ -115,7 +113,7 @@ async function loadTeamTypes() {
         type: "GET",
         cache: false,
         success: function (data) {
-            dataAccessors.teamType = data;
+            dataAccessors.teamTypeData = data;
         },
         error: function (data) {
             console.log(data);
@@ -123,22 +121,24 @@ async function loadTeamTypes() {
     });
 }
 
-function buildTeamTable() {
+async function buildTeamTable() {
+    await loadTeams()
+    teamPager.numItems(dataAccessors.teamData.length)
+
     const tableBody = $("#teamData");
     tableBody.empty();
 
+    let start = (teamPager.currentPage() - 1) * teamPager.options.itemsPerPage;
+    let stop = start + teamPager.options.itemsPerPage - 1;
 
-    let start = (teamPager.currentPage() - 1) * teamPager.options.itemsPerPage + 1;
-    let stop  = start + teamPager.options.itemsPerPage - 1;
 
-
-    for (let i=start; i<=stop; i++){
-        team = dataAccessors.team[i];
+    for (let i = start; i <= stop; i++) {
+        team = dataAccessors.teamData[i];
         if (!team) break;
 
         const tr = $("<tr></tr>");
         const tdInternalName = $("<td></td>").text(team.displayname);
-        const tdType = $("<td></td>").text(dataAccessors.teamType.find((teamtype) => teamtype.id === team.teamtype_fk).displayname);
+        const tdType = $("<td></td>").text(dataAccessors.teamTypeData.find((teamtype) => teamtype.id === team.teamtype_fk).displayname);
         const tdWeight = $("<td></td>").text(team.weight);
 
         const tdButton = $("<td></td>");
@@ -160,15 +160,18 @@ function buildTeamTable() {
     }
 }
 
-function buildTeamTypeTable() {
+async function buildTeamTypeTable() {
+    await loadTeamTypes();
+    teamTypePager.numItems(dataAccessors.teamTypeData.length)
+
     const tableBody = $("#teamTypeData");
     tableBody.empty();
 
     let start = (teamTypePager.currentPage() - 1) * teamTypePager.options.itemsPerPage + 1;
-    let stop  = start + teamTypePager.options.itemsPerPage - 1;
+    let stop = start + teamTypePager.options.itemsPerPage - 1;
 
-    for (let i=start; i<=stop; i++){
-        teamType = dataAccessors.teamType[i];
+    for (let i = start; i <= stop; i++) {
+        teamType = dataAccessors.teamTypeData[i];
         if (!teamType) break;
 
         const tr = $("<tr></tr>");
@@ -209,9 +212,9 @@ async function createTeam(e, popupTeam) {
                 teamWeight: teamWeight
             },
             success: function () {
-                loadTeams();
                 displaySuccess("Inserted new team!");
                 popupTeam.close(e);
+                buildTeamTable()
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log("Error inserting team:", errorThrown);
@@ -236,9 +239,9 @@ function createTeamType(e, popupTeamType) {
                 displayName: displayName
             },
             success: function () {
-                loadTeamTypes();
                 displaySuccess("Inserted new team type!");
                 popupTeamType.close(e);
+                buildTeamTypeTable()
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log("Error inserting team type:", errorThrown);
@@ -251,7 +254,7 @@ function createTeamType(e, popupTeamType) {
 }
 
 function editTeamType(name) {
-    const teamType = dataAccessors.teamType.find((teamType) => teamType.name === name);
+    const teamType = dataAccessors.teamTypeData.find((teamType) => teamType.name === name);
     if (teamType) {
         // Show the edit box
         $("#teamTypeEdit").show();
@@ -264,8 +267,8 @@ function editTeamType(name) {
 }
 
 function editTeam(name) {
-    const team = dataAccessors.team.find((team) => team.displayname === name);
-    const teamTypeId = dataAccessors.teamType.find((teamtype) => teamtype.id === team.teamtype_fk).id
+    const team = dataAccessors.teamData.find((team) => team.displayname === name);
+    const teamTypeId = dataAccessors.teamTypeData.find((teamtype) => teamtype.id === team.teamtype_fk).id
     if (team) {
         // Show the edit box
         $("#teamEdit").show();
@@ -284,7 +287,7 @@ function editTeam(name) {
 
 function getTeamTypeOptions() {
     let options = "";
-    dataAccessors.teamType.forEach(function (teamType) {
+    dataAccessors.teamTypeData.forEach(function (teamType) {
         options += `<option value="${teamType.id}">${teamType.displayname}</option>`;
     });
     return options;
@@ -303,10 +306,10 @@ function deleteTeam(e, id) {
                 id: id
             },
             success: function () {
-                loadTeams();
                 displaySuccess("Deleted team!");
                 popup.close(e);
                 $("#teamEdit").hide();
+                buildTeamTable()
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log("Error deleting team:", errorThrown);
