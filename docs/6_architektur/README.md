@@ -1,4 +1,0 @@
-
-# Architektur
-
-TODO ALL
