@@ -111,5 +111,5 @@ jobs:
             docker stop gnxcontainer || true
             docker rm gnxcontainer || true
             echo '${{ steps.create-env.outputs.env }}' > .env
-            docker run -d --name gnxcontainer -p 80:3000 -v "$(pwd)/.env:/app/.env" jsonderulo/genetix:latest
+            docker run -d --name gnxcontainer -p 80:3000 -v "$(pwd)/.env:/.env" jsonderulo/genetix:latest
       
