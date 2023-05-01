@@ -93,20 +93,20 @@ jobs:
             docker stop gnxcontainer || true
             docker rm gnxcontainer || true
             
-            echo "DB_USER=${{ secrets.DB_USER }}" > ~/.env
-            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> ~/.env
-            echo "DB_HOST=192.168.0.245" >> ~/.env
-            echo "DB_PORT=5432" >> ~/.env
-            echo "DB_DATABASE_DEV=teamgenetix" >> ~/.env
-            echo "DB_DATABASE_PROD=TO_BE_DEFINED" >> ~/.env
-            echo "EMAIL_HOST=${{ secrets.MAIL_HOST }}" >> ~/.env
-            echo "EMAIL_PORT=587" >> ~/.env
-            echo "EMAIL_USERNAME=${{ secrets.MAIL_USERNAME }}" >> ~/.env
-            echo "EMAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" >> ~/.env
-            echo "RESET_PASSWORD_TOKEN_EXPIRATION_TIME=3600" >> ~/.env
-            echo "FILESHARE_ROOT_DIR=/filestorage" >> ~/.env
-            echo "ADDRESS=localhost" >> ~/.env
-            docker run -d --name gnxcontainer -p 80:3000 -v "~/.env:/app/.env" jsonderulo/genetix:latest
+            echo "DB_USER=${{ secrets.DB_USER }}" > .env
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+            echo "DB_HOST=192.168.0.245" >> .env
+            echo "DB_PORT=5432" >> .env
+            echo "DB_DATABASE_DEV=teamgenetix" >> .env
+            echo "DB_DATABASE_PROD=TO_BE_DEFINED" >> .env
+            echo "EMAIL_HOST=${{ secrets.MAIL_HOST }}" >> .env
+            echo "EMAIL_PORT=587" >> .env
+            echo "EMAIL_USERNAME=${{ secrets.MAIL_USERNAME }}" >> .env
+            echo "EMAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" >> .env
+            echo "RESET_PASSWORD_TOKEN_EXPIRATION_TIME=3600" >> .env
+            echo "FILESHARE_ROOT_DIR=/filestorage" >> .env
+            echo "ADDRESS=localhost" >> .env
+            docker run -d --name gnxcontainer -p 80:3000 -v ".env:/.env" jsonderulo/genetix:latest
       
       
       
