@@ -127,8 +127,6 @@ jobs:
             echo 'FILESHARE_ROOT_DIR=/filestorage' | sudo tee -a /opt/genetix/config.env
             echo 'ADDRESS=localhost' | sudo tee -a /opt/genetix/config.env
 
-            cat /opt/genetix/config.env # Display the content of the config.env file on the server
-
             docker create --name temp_container jsonderulo/genetix:latest
             sudo docker cp /opt/genetix/config.env temp_container:/app/.env
             docker commit temp_container jsonderulo/genetix:with_env
