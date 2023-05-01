@@ -95,7 +95,7 @@ jobs:
             
             echo "DB_USER=${{ secrets.DB_USER }}" > /home/genetix/.env
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> /home/genetix/.env
-            echo "DB_HOST=84.72.104.89" >> /home/genetix/.env
+            echo "DB_HOST=192.168.0.245" >> /home/genetix/.env
             echo "DB_PORT=5432" >> /home/genetix/.env
             echo "DB_DATABASE_DEV=teamgenetix" >> /home/genetix/.env
             echo "DB_DATABASE_PROD=teamgenetix" >> /home/genetix/.env
