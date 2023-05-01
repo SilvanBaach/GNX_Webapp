@@ -112,8 +112,10 @@ jobs:
             docker pull jsonderulo/genetix:latest
             docker stop gnxcontainer || true
             docker rm gnxcontainer || true
-            mkdir -p /opt/genetix/ # Add this line to create the directory
-            echo '${{ steps.create-env.outputs.env }}' > /opt/genetix/.env # Update this line to create the .env file in the new directory
-            docker run -d --name gnxcontainer -p 80:3000 -v "/opt/genetix/.env:/.env" jsonderulo/genetix:latest
+            mkdir -p /opt/genetix/
+            printf '%s\n' '${{ steps.create-env.outputs.env }}' > /opt/genetix/.env # Update this line to use printf with a heredoc
+            cat /opt/genetix/.env # Add this line to display the content of the .env file on the server
+            docker run -d --name gnxcontainer -p 80:3000 -v "/opt/genetix/.env:/app/.env" jsonderulo/genetix:latest
+      
       
       
