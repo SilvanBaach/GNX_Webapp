@@ -31,7 +31,9 @@ Der momentane Stand der offenen Issues wird besprochen.
 - Security Concept #13: Ist noch offen.
 - SSH connection to Server #14: Ist erledigt.
 - Install PostreSQL on Mac Mini #15: Ist erledigt.
+
 Nun werden neue Issues erstellt und zugeteilt.
+
 - Projektskizze Chapter 1 - 4 #16: Die Kapitel 1 bis 4 der Projektskizze werden durch @BadrOutiti (outitbad) und @silvanbaach (baachsil) geschrieben.
 - Projektskizze Chapter 5 #17: Kapitel 5 wird durch @armandoshala (shalaar3) geschrieben.
 - Projektskizze Chapter 6 #18: Kapitel 6 wird durch @omerasipi (asipiome) geschrieben.

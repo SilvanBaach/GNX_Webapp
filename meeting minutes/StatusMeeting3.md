@@ -27,6 +27,8 @@ Der momentane Stand der offenen Issues wird besprochen.
 - Projektskizze Chapter 6 #18: Ist noch offen
 - Projektskizze Chapter 7 #19: Ist noch offen.
 - Add Postgres Connection to Project #20: Ist noch offen.
+
 Nun werden neue Issues erstellt und zugeteilt.
+
 - Create Issues for the features #24: Wird übernommen von @silvanbaach (baachsil).
 

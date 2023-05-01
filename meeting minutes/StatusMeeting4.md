@@ -25,7 +25,9 @@ Der momentane Stand der offenen Issues wird besprochen.
 - Projektskizze Chapter 7 #19: Ist erledigt.
 - Add Postgres Connection to Project #20: Ist erledigt.
 - Create Issues for the features #24: Ist erledigt.
+
 Nun werden neue Issues erstellt und zugeteilt.
+
 - Revise Projektskizze #25: Wird gemacht durch @BadrOutiti (outitbad).
 - Write Software Guidebook #26: Wird übernommen von @Alperen1999 (sevicalp), @armandoshala (shalaar3) und @jondef (defiljon).
 - Build Pipline #27: Wird übernommen von @Dylanas (illikev1) und @omerasipi (asipiome).
