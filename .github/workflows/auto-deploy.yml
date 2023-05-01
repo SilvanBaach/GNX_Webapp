@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [ 18.x ]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     # build docker image and push to docker hub
     # only if the app build and test successfully
-    needs: [build_test]
+    needs: [ build_test ]
 
     steps:
       - name: checkout repo
@@ -82,14 +82,34 @@ jobs:
             echo "Testing the nodejs  app endpoints"
             echo ${{ steps.docker_build.outputs.digest }}
 
+      - name: Create .env file
+        run: |
+          cat << EOF > .env
+          DB_USER=${{ secrets.DB_USER }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          DB_HOST=192.168.0.245
+          DB_PORT=5432
+          DB_DATABASE_DEV=teamgenetix
+          DB_DATABASE_PROD=TO_BE_DEFINED
+          EMAIL_HOST=${{ secrets.MAIL_HOST }}
+          EMAIL_PORT=587
+          EMAIL_USERNAME=${{ secrets.MAIL_USERNAME }}
+          EMAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}
+          RESET_PASSWORD_TOKEN_EXPIRATION_TIME=3600
+          FILESHARE_ROOT_DIR=/filestorage
+          ADDRESS=localhost
+          EOF
+
       - name: Deploy to Ubuntu Server
         uses: appleboy/ssh-action@master
         with:
-            host: ${{ secrets.SERVER_HOST }}
-            username: ${{ secrets.SERVER_USER }}
-            password: ${{ secrets.SERVER_PASSWORD }}
-            script: |
-              docker pull jsonderulo/genetix:latest
-              docker stop gnxcontainer || true # Replace with your container name
-              docker rm gnxcontainer || true # Replace with your container name
-              docker run -d --name gnxcontainer -p 80:3000 jsonderulo/genetix:latest # Replace with your container name, port mapping, DockerHub username, and image name
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          script: |
+            docker pull your-dockerhub-username/your-image-name:latest
+            docker stop your-container-name || true
+            docker rm your-container-name || true
+            echo '${{ steps.create-env.outputs.env }}' > .env
+            docker run -d --name your-container-name -p 80:3000 -v "$(pwd)/.env:/app/.env" your-dockerhub-username/your-image-name:latest
+      
