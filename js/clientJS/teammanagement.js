@@ -1,5 +1,26 @@
-let teamData;
-let teamTypeData;
+dataAccessors = {
+    team: [],
+    teamType: [],
+    get teamData(){
+        return this.team
+    },
+
+    get teamTypeData(){
+        return this.teamType
+    },
+
+    set teamData(data){
+        this.team = data
+        buildTeamTable()
+    },
+    set teamTypeData(data){
+        this.teamType = data
+        buildTeamTypeTable()
+    }
+
+
+}
+
 let teamPager;
 let teamTypePager;
 
@@ -13,7 +34,7 @@ function setupPagination() {
         onClick: buildTeamTable,
     });
 
-    teamPager.numItems(teamData.length)
+    teamPager.numItems(dataAccessors.team.length)
     buildTeamTable()
 
     teamTypePager = $("#teamTypePager").anyPaginator({
@@ -25,7 +46,7 @@ function setupPagination() {
         onClick: buildTeamTypeTable,
     });
 
-    teamTypePager.numItems(teamTypeData.length)
+    teamTypePager.numItems(dataAccessors.teamType.length)
     buildTeamTypeTable()
 }
 
@@ -80,7 +101,7 @@ async function loadTeams() {
         type: "GET",
         cache: false,
         success: function (data) {
-            teamData = data;
+            dataAccessors.team = data;
         },
         error: function (data) {
             console.log(data);
@@ -94,7 +115,7 @@ async function loadTeamTypes() {
         type: "GET",
         cache: false,
         success: function (data) {
-            teamTypeData = data;
+            dataAccessors.teamType = data;
         },
         error: function (data) {
             console.log(data);
@@ -112,12 +133,12 @@ function buildTeamTable() {
 
 
     for (let i=start; i<=stop; i++){
-        team = teamData[i];
+        team = dataAccessors.team[i];
         if (!team) break;
 
         const tr = $("<tr></tr>");
         const tdInternalName = $("<td></td>").text(team.displayname);
-        const tdType = $("<td></td>").text(teamTypeData.find((teamtype) => teamtype.id === team.teamtype_fk).displayname);
+        const tdType = $("<td></td>").text(dataAccessors.teamType.find((teamtype) => teamtype.id === team.teamtype_fk).displayname);
         const tdWeight = $("<td></td>").text(team.weight);
 
         const tdButton = $("<td></td>");
@@ -147,7 +168,7 @@ function buildTeamTypeTable() {
     let stop  = start + teamTypePager.options.itemsPerPage - 1;
 
     for (let i=start; i<=stop; i++){
-        teamType = teamTypeData[i];
+        teamType = dataAccessors.teamType[i];
         if (!teamType) break;
 
         const tr = $("<tr></tr>");
@@ -230,7 +251,7 @@ function createTeamType(e, popupTeamType) {
 }
 
 function editTeamType(name) {
-    const teamType = teamTypeData.find((teamType) => teamType.name === name);
+    const teamType = dataAccessors.teamType.find((teamType) => teamType.name === name);
     if (teamType) {
         // Show the edit box
         $("#teamTypeEdit").show();
@@ -243,8 +264,8 @@ function editTeamType(name) {
 }
 
 function editTeam(name) {
-    const team = teamData.find((team) => team.displayname === name);
-    const teamTypeId = teamTypeData.find((teamtype) => teamtype.id === team.teamtype_fk).id
+    const team = dataAccessors.team.find((team) => team.displayname === name);
+    const teamTypeId = dataAccessors.teamType.find((teamtype) => teamtype.id === team.teamtype_fk).id
     if (team) {
         // Show the edit box
         $("#teamEdit").show();
@@ -263,7 +284,7 @@ function editTeam(name) {
 
 function getTeamTypeOptions() {
     let options = "";
-    teamTypeData.forEach(function (teamType) {
+    dataAccessors.teamType.forEach(function (teamType) {
         options += `<option value="${teamType.id}">${teamType.displayname}</option>`;
     });
     return options;
