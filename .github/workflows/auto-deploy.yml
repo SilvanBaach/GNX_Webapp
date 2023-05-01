@@ -82,29 +82,6 @@ jobs:
             echo "Testing the nodejs  app endpoints"
             echo ${{ steps.docker_build.outputs.digest }}
 
-      - name: Create .env file
-        id: create-env
-        run: |
-          cat << EOF > .env
-          DB_USER=${{ secrets.DB_USER }}
-          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-          DB_HOST=192.168.0.245
-          DB_PORT=5432
-          DB_DATABASE_DEV=teamgenetix
-          DB_DATABASE_PROD=TO_BE_DEFINED
-          EMAIL_HOST=${{ secrets.MAIL_HOST }}
-          EMAIL_PORT=587
-          EMAIL_USERNAME=${{ secrets.MAIL_USERNAME }}
-          EMAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}
-          RESET_PASSWORD_TOKEN_EXPIRATION_TIME=3600
-          FILESHARE_ROOT_DIR=/filestorage
-          ADDRESS=localhost
-          EOF
-          echo "::set-output name=env::$(cat .env)"
-
-      - name: Install sshpass
-        run: sudo apt-get update && sudo apt-get install -y sshpass
-
       - name: Deploy to Ubuntu Server
         uses: appleboy/ssh-action@master
         with:
