@@ -5,9 +5,9 @@ name: CI-CD
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ develop ]
+    branches: [ master ]
   pull_request:
-    branches: [ develop ]
+    branches: [ master ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -71,12 +71,12 @@ jobs:
           context: ./
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/genetix:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/genetixprod:latest
 
       - name: Run the image in a container
         uses: addnab/docker-run-action@v3
         with:
-          image: ${{ secrets.DOCKERHUB_USERNAME }}/genetix:latest
+          image: ${{ secrets.DOCKERHUB_USERNAME }}/genetixprod:latest
           run: |
             echo "runing the docker image"
             echo "Testing the nodejs  app endpoints"
@@ -89,9 +89,9 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
-            docker pull jsonderulo/genetix:latest
-            docker stop gnxcontainer || true
-            docker rm gnxcontainer || true          
+            docker pull jsonderulo/genetixprod:latest
+            docker stop gnxcontainerprod || true
+            docker rm gnxcontainerprod || true          
             
             echo "DB_USER=${{ secrets.DB_USER }}" > /home/genetix/.env
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> /home/genetix/.env
@@ -107,7 +107,7 @@ jobs:
             echo "FILESHARE_ROOT_DIR=/filestorage" >> /home/genetix/.env
             echo "LISTEN_ADDRESS=0.0.0.0" >> /home/genetix/.env
             echo "PORT=3000" >> /home/genetix/.env
-            docker run -d --name gnxcontainer -p 80:3000 -v "/home/genetix/.env:/usr/src/app/.env" jsonderulo/genetix:latest
+            docker run -d --name gnxcontainerprod -p 8080:3000 -v "/home/genetix/.env:/usr/src/app/.env" jsonderulo/genetixprod:latest
       
       
       
