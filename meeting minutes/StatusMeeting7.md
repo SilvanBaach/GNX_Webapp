@@ -49,3 +49,4 @@ Nun werden neue Issues erstellt und zugeteilt.
 - Dockerize #77: Wird übernommen von @omerasipi (asipiome).
 - Commit Messages müssen nun in dem Format gemacht werden wie es im README ist. Dies ist nicht mehr optional.
 
+
