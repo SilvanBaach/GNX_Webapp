@@ -47,4 +47,5 @@ Nun werden neue Issues erstellt und zugeteilt.
 - Make Logo go to start page #73: Wird übernommen von @silvanbaach (baachsil).
 - Refactor URL Param passing #74: Wird noch nicht zugewiesen.
 - Dockerize #77: Wird übernommen von @omerasipi (asipiome).
+- Commit Messages müssen nun in dem Format gemacht werden wie es im README ist. Dies ist nicht mehr optional.
 
