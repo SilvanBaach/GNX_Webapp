@@ -64,3 +64,9 @@ Das Drawboard ermöglicht es im Browser Team Taktikten zu besprechen. Es soll m�
 
 Auf dem Fileshare soll man Dokumente herunterladen bzw. hochladen können. Das Hochladen soll jedoch in einer ersten Version den Administratoren vorbehalten sein. Somit dient er Fileshare am Anfangt erst mal als Downloadportal für Vereinsressourcen.
 
+
+\
+\
+\
+\
+Für die Genetix Webapp sind die Ziele auf der einen Seite technischer Natur, da die Software bestimmte Funktionen bereitstellen soll, um die Verwaltung von Registrierungscodes, Benutzern, Teams und Mitgliedern zu ermöglichen. Auf der anderen Seite sind die Ziele auch wirtschaftlicher Natur, da die Software an andere Vereine lizenziert werden kann und somit ein Einkommen generieren kann. Ein Erfolg für die Genetix Webapp wäre erreicht, wenn die Software effektiv die Verwaltungsaufgaben erleichtert und von den Vereinsmitgliedern und Teams angenommen wird. Zudem wäre es ein Erfolg, wenn die Software erfolgreich an andere Vereine lizenziert wird und somit ein zusätzliches Einkommen für den Entwickler generiert wird. 
