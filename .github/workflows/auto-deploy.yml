@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [ 18.x ]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     # build docker image and push to docker hub
     # only if the app build and test successfully
-    needs: [build_test]
+    needs: [ build_test ]
 
     steps:
       - name: checkout repo
@@ -85,11 +85,36 @@ jobs:
       - name: Deploy to Ubuntu Server
         uses: appleboy/ssh-action@master
         with:
-            host: ${{ secrets.SERVER_HOST }}
-            username: ${{ secrets.SERVER_USER }}
-            password: ${{ secrets.SERVER_PASSWORD }}
-            script: |
-              docker pull jsonderulo/genetix:latest
-              docker stop gnxcontainer || true # Replace with your container name
-              docker rm gnxcontainer || true # Replace with your container name
-              docker run -d --name gnxcontainer -p 80:3000 jsonderulo/genetix:latest # Replace with your container name, port mapping, DockerHub username, and image name
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          script: |
+            docker pull jsonderulo/genetix:latest
+            docker stop gnxcontainer || true
+            docker rm gnxcontainer || true          
+            
+            echo "DB_USER=${{ secrets.DB_USER }}" > /home/genetix/.env
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> /home/genetix/.env
+            echo "DB_HOST=192.168.0.245" >> /home/genetix/.env
+            echo "DB_PORT=5432" >> /home/genetix/.env
+            echo "DB_DATABASE_DEV=teamgenetix" >> /home/genetix/.env
+            echo "DB_DATABASE_PROD=teamgenetix" >> /home/genetix/.env
+            echo "EMAIL_HOST=${{ secrets.MAIL_HOST }}" >> /home/genetix/.env
+            echo "EMAIL_PORT=587" >> /home/genetix/.env
+            echo "EMAIL_USERNAME=${{ secrets.MAIL_USERNAME }}" >> /home/genetix/.env
+            echo "EMAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" >> /home/genetix/.env
+            echo "RESET_PASSWORD_TOKEN_EXPIRATION_TIME=3600" >> /home/genetix/.env
+            echo "FILESHARE_ROOT_DIR=/filestorage" >> /home/genetix/.env
+            echo "LISTEN_ADDRESS=0.0.0.0" >> /home/genetix/.env
+            echo "PORT=3000" >> /home/genetix/.env
+            docker run -d --name gnxcontainer -p 80:3000 -v "/home/genetix/.env:/usr/src/app/.env" jsonderulo/genetix:latest
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
