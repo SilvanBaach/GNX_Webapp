@@ -107,8 +107,9 @@ jobs:
             echo "FILESHARE_ROOT_DIR=/filestorage" >> /home/genetix/.env
             echo "LISTEN_ADDRESS=0.0.0.0" >> /home/genetix/.env
             echo "PORT=3000" >> /home/genetix/.env
-            docker run -d --name gnxcontainer -p 80:3000 -v "/home/genetix/.env:/usr/src/app/.env" jsonderulo/genetix:latest
-      
+            docker run -d --name gnxcontainer -p 8080:3000 -v "/home/genetix/.env:/usr/src/app/.env" jsonderulo/genetix:latest
+            docker run -d -p 80:80 -p 443:443 --name traefik -v traefik.yml:/etc/traefik/traefik.yml traefik:v2.4
+
       
       
       
