@@ -40,6 +40,29 @@ Begründung: Die Verwendung von Bootstrap erleichtert die Entwicklung und Wartun
 Konsequenzen: Die Verwendung von Bootstrap erfordert eine Einarbeitung in das Framework und dessen Best Practices. Alle UI-Komponenten und -Layouts werden in Bootstrap entwickelt, um eine konsistente Anwendung zu gewährleisten. Änderungen am Design sollten immer im Einklang mit den Bootstrap-Konventionen und -Richtlinien stehen.
 
 
+##Architectural Decision Record (ADR) #4: Verwendung eines Mac Mini als Host für die Webapp
 
+Status: Angenommen
+
+Entscheidung: Ein Mac Mini wird als Host für die Webapp verwendet.
+
+Hintergrund: Die Entscheidung, einen Mac Mini als Host für die Webanwendung zu verwenden, basiert auf der Absicht, die Webanwendung nach der Fertigstellung selbst weiter zu betreiben. Da die Hochschule keine langfristige Serverlösung bietet, wurde entschieden, einen dedizierten Host zu verwenden, der von uns selbst betrieben werden kann. Der Mac Mini bietet auch ausreichend Leistung für die Entwicklung und den Betrieb einer Webanwendung. Der kleinere Formfaktor und das geringere Gewicht machen es einfacher, den Host zu transportieren und zu verwalten.
+
+Begründung: Die Verwendung eines dedizierten Hosts für die Webanwendung ermöglicht es uns, die Anwendung nach Abschluss des Projekts selbst weiter zu betreiben und zu warten. Da der Mac Mini als Host gewählt wurde, sind wir in der Lage, die Kontrolle über die Anwendung und ihre Daten zu behalten. Durch die Verwendung eines Hosts, der von uns selbst betrieben wird, können wir auch sicherstellen, dass die Anwendung jederzeit verfügbar ist und reibungslos funktioniert.
+
+Konsequenzen: Alle Entwickler arbeiten an der Entwicklung der Webanwendung auf ihren eigenen Geräten. Der Mac Mini wird als dedizierter Host für die Webanwendung verwendet und muss regelmäßig gewartet und aktualisiert werden.
+
+
+##Architectural Decision Record (ADR) #5: Verwendung von JavaScript als Programmiersprache
+
+Status: Angenommen
+
+Entscheidung: JavaScript wird als Programmiersprache für die Webanwendung verwendet.
+
+Hintergrund: JavaScript ist eine der beliebtesten Programmiersprachen für die Webentwicklung und wird von allen Teammitgliedern beherrscht. Es bietet eine Vielzahl von Frameworks und Bibliotheken, die die Entwicklung von Webanwendungen erleichtern und beschleunigen.
+
+Begründung: Die Verwendung von JavaScript als Programmiersprache erleichtert die Zusammenarbeit und ermöglicht es, schnell und effektiv zu entwickeln. Alle Teammitglieder beherrschen die Sprache und können somit effektiv an der Entwicklung der Webanwendung arbeiten. JavaScript bietet auch eine Vielzahl von Frameworks und Bibliotheken, die die Entwicklung von Webanwendungen erleichtern und beschleunigen.
+
+Konsequenzen: Alle Teammitglieder sind verpflichtet, JavaScript als Programmiersprache für die Webanwendung zu verwenden. Jeder Entwickler sollte sich mit den Best Practices und Konventionen der Sprache vertraut machen und sicherstellen, dass der Code konsistent und gut strukturiert ist. Es sollten Tools und Bibliotheken verwendet werden, die die Entwicklung von Webanwendungen erleichtern und beschleunigen.
 
 
