@@ -101,7 +101,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           source: "./Caddyfile"
-          target: "/opt/caddy/Caddyfile"
+          target: "/opt/caddy"
 
       - name: Deploy to Ubuntu Server
         uses: appleboy/ssh-action@master
@@ -110,13 +110,13 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |            
-            docker network rm reverse-proxy-network
-            docker network create --subnet=172.28.0.0/16 reverse-proxy-network
             docker pull jsonderulo/genetix:latest
             docker stop gnxcontainer || true
             docker rm gnxcontainer || true          
             docker stop caddy || true
             docker rm caddy || true      
+            docker network rm reverse-proxy-network
+            docker network create --subnet=172.28.0.0/16 reverse-proxy-network
             
             echo "DB_USER=${{ secrets.DB_USER }}" > /home/genetix/.env
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> /home/genetix/.env
