@@ -1,3 +1,3 @@
-webapp.teamgenetix.ch {                                                                                                                                         │{"level":"info","ts":1683137315.7592897,"msg":"autosaved config (load with --resume flag)","file":"/config/caddy/autosave.json"}
-        reverse_proxy /* http://gnxcontainer:3000                                                                                                               │{"level":"info","ts":1683137315.7593155,"msg":"serving initial configuration"}
+webapp.teamgenetix.ch {
+        reverse_proxy /* http://gnxcontainer:3000
 }

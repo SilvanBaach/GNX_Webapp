@@ -133,7 +133,7 @@ jobs:
             echo "LISTEN_ADDRESS=0.0.0.0" >> /home/genetix/.env
             echo "PORT=3000" >> /home/genetix/.env
             docker run -d --name gnxcontainer --network reverse-proxy-network -v "/home/genetix/.env:/usr/src/app/.env" jsonderulo/genetix:latest
-            docker run -d --name caddy --hostname caddy -p 80:80 -p 443:443 --network reverse-proxy-network -v /opt/caddy/data:/data -v /opt/caddy/config:/config -v /opt/caddy/Caddyfile:/etc/caddy/Caddyfile caddy:2.4.5
+            docker run -d --name caddy -p 80:80 -p 443:443 --network reverse-proxy-network -v /opt/caddy/data:/data -v /opt/caddy/config:/config -v /opt/caddy/Caddyfile:/etc/caddy/Caddyfile caddy:2.4.5
       
       
       
