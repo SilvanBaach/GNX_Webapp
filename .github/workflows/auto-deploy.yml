@@ -91,8 +91,12 @@ jobs:
           script: |
             mkdir -p /opt/caddy/data
             mkdir -p /opt/caddy/config
-            chgrp -R genetix /opt/caddy/
-            chmod -R 774 /opt/caddy/
+            chgrp genetix /opt/caddy/
+            chgrp genetix /opt/caddy/data
+            chgrp genetix /opt/caddy/config
+            chmod 774 /opt/caddy/
+            chmod 774 /opt/caddy/data
+            chmod 774 /opt/caddy/config
 
       - name: Copy caddy config file to Ubuntu server
         uses: appleboy/scp-action@master
