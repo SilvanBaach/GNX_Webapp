@@ -20,6 +20,9 @@ dataAccessors = {
 let teamPager;
 let teamTypePager;
 
+/**
+ * This method sets up the pagination for the team table and teamType table
+ */
 function setupPagination() {
     teamPager = $("#teamPager").anyPaginator({
         itemsPerPage: 5,
@@ -48,7 +51,11 @@ function setupPagination() {
     buildTeamTypeTable()
 }
 
-async function popupSetup() {
+/**
+ * This method sets up the whole teammanagement page by creating the popups and loading the teams and teamtypes.
+ * It also initializes the buttons.
+ */
+async function setup() {
     //Create Popups for Team / Type Creation
     const popupTeam = new Popup("popup-containerTeam");
     const popupTeamType = new Popup("popup-containerTeamType");
@@ -93,6 +100,9 @@ async function popupSetup() {
     setupPagination();
 }
 
+/**
+ * This method loads the Teams into the data accessor
+ */
 async function loadTeams() {
     await $.ajax({
         url: "/team/getteams",
@@ -107,6 +117,9 @@ async function loadTeams() {
     });
 }
 
+/**
+ * This method loads the TeamTypes into the data accessor
+ */
 async function loadTeamTypes() {
     await $.ajax({
         url: "/teamtype/getteamtypes",
@@ -121,6 +134,9 @@ async function loadTeamTypes() {
     });
 }
 
+/**
+ * This method builds the TeamTypeTable
+ */
 async function buildTeamTable() {
     await loadTeams()
     teamPager.numItems(dataAccessors.teamData.length)
@@ -166,6 +182,9 @@ async function buildTeamTable() {
     }
 }
 
+/**
+ * This method builds the TeamTypeTable
+ */
 async function buildTeamTypeTable() {
     await loadTeamTypes();
     teamTypePager.numItems(dataAccessors.teamTypeData.length)
@@ -207,7 +226,9 @@ async function buildTeamTypeTable() {
         tableBody.append(tr);
     }
 }
-
+/**
+ * Creates a new Team
+ */
 async function createTeam(e, popupTeam) {
     const teamName = $("#teamName").val();
     const teamType = $("#teamType").val();
@@ -236,7 +257,9 @@ async function createTeam(e, popupTeam) {
         displayError("Please fill in all fields!")
     }
 }
-
+/**
+ * Creates a new TeamType
+ */
 function createTeamType(e, popupTeamType) {
     const internalName = $("#teamTypeName").val();
     const displayName = $("#teamTypeDisplayName").val();
@@ -263,7 +286,9 @@ function createTeamType(e, popupTeamType) {
         displayError("Please fill in all fields!")
     }
 }
-
+/**
+ * Edits the data of a Team
+ */
 function editTeamType(name) {
     const teamType = dataAccessors.teamTypeData.find((teamType) => teamType.name === name);
     if (teamType) {
@@ -276,7 +301,9 @@ function editTeamType(name) {
         $("#teamTypeId").val(teamType.id);
     }
 }
-
+/**
+ * Edits the data of a Team
+ */
 function editTeam(name) {
     const team = dataAccessors.teamData.find((team) => team.displayname === name);
     const teamTypeId = dataAccessors.teamTypeData.find((teamtype) => teamtype.id === team.teamtype_fk).id
@@ -303,7 +330,9 @@ function getTeamTypeOptions() {
     });
     return options;
 }
-
+/**
+ * Deletes a Team
+ */
 function deleteTeam(e, id) {
     const popup = new Popup("popup-containerTeamDel");
     popup.displayYesNoPopup("/res/others/alert.png", "Warning", "Are you sure you want to delete this team?", "Yes", "No", "btnTeamDelYes", "btnTeamDelNo");
@@ -333,7 +362,9 @@ function deleteTeam(e, id) {
         popup.close(e);
     });
 }
-
+/**
+ * Updates the data of a Team
+ */
 function updateTeam(){
     const id = $("#teamId").val();
     const teamName = $("#name").val();
@@ -362,6 +393,9 @@ function updateTeam(){
     });
 }
 
+/**
+ * Updates the data of a TeamType
+ */
 function updateTeamType(){
     const id = $("#teamTypeId").val();
     const internalName = $("#internalName").val();
@@ -386,8 +420,4 @@ function updateTeamType(){
             displayError("Error updating Team type! Try reloading the page.")
         }
     });
-}
-
-function getMaxPage(valuesPerPage, values){
-    return Math.floor(values  / valuesPerPage);
 }
