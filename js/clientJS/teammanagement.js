@@ -342,6 +342,7 @@ function updateTeam(){
             loadTeams();
             displaySuccess("Updated team!");
             $("#teamEdit").hide();
+            buildTeamTable()
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.log("Error updating team:", errorThrown);
@@ -367,6 +368,7 @@ function updateTeamType(){
             loadTeamTypes();
             displaySuccess("Updated team type!");
             $("#teamTypeEdit").hide();
+            buildTeamTypeTable()
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.log("Error updating team type:", errorThrown);
