@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Register</title>
+
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/components/button.css">
+    <link rel="stylesheet" href="/css/registration/register.css">
+
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+</head>
+<body>
+
+<div id="nav-placeholder"></div>
+
+<h1 class="big-title">Register</h1>
+
+<img class="teamImg" id="teamImg" src="/res/teams/register.png">
+
+<form>
+    <div style="margin-bottom: 5vh">
+        <label for="registrationCode" class="label-login">Registration Code *</label>
+        <input type="text" id="registrationCode" name="registrationCode" required class="input-login"/>
+    </div>
+    <div class="form-row">
+        <div>
+            <label for="username" class="label-login">Username *</label>
+            <input type="text" id="username" name="username" required class="input-login"/>
+        </div>
+        <div>
+            <label for="email" class="label-login">E-Mail *</label>
+            <input type="email" id="email" name="email" required class="input-login"/>
+        </div>
+    </div>
+    <div class="form-row">
+        <div>
+            <label for="password" class="label-login">Password *</label>
+            <input type="password" id="password" name="password" required class="input-login"/>
+        </div>
+        <div>
+            <label for="password2" class="label-login">Confirm Password *</label>
+            <input type="password" id="password2" name="password2" required class="input-login"/>
+        </div>
+    </div>
+    <div class="button-container">
+        <button class="default login button" id="back">Back</button>
+        <input type="submit" value="Register ➔" class="default login button"/>
+    </div>
+</form>
+
+<div class="registercode-text">If you don't have a valid registration code please contact Staff</div>
+
+<script>
+    $(document).ready(function () {
+        $("#nav-placeholder").load("html/nav.html");
+    });
+</script>
+</body>
+</html>

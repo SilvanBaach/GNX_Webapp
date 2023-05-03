@@ -11,7 +11,7 @@
 <div id="nav-placeholder"></div>
 
 <h1 class="big-title">Login</h1>
-<img class="teamImg" id="teamImg">
+<img class="teamImg" id="teamImg" alt="Image from the Team" src="">
 <div>
     <% if (messages.error) { %>
         <p class="err-msg"><%= messages.error %></p>
@@ -27,6 +27,11 @@
         <button type="submit" class="default login">Login ➔</button>
     </div>
 </form>
+
+<div class="pwreset-container">
+    <div class="pwreset-text">Forgot the password?</div>
+    <a href="/resetPassword" class="pwreset-text">Reset here!</a>
+</div>
 
 
 <script>
