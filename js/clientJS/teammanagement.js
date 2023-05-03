@@ -125,6 +125,12 @@ async function buildTeamTable() {
     await loadTeams()
     teamPager.numItems(dataAccessors.teamData.length)
 
+    //Correct currentPage if page is empty.
+    if(teamPager.currentPage() > teamPager.numPages()){
+        teamPager.currentPage(teamPager.numPages())
+    }
+
+
     const tableBody = $("#teamData");
     tableBody.empty();
 
@@ -163,6 +169,11 @@ async function buildTeamTable() {
 async function buildTeamTypeTable() {
     await loadTeamTypes();
     teamTypePager.numItems(dataAccessors.teamTypeData.length)
+
+    //Correct currentPage if page is empty.
+    if(teamTypePager.currentPage() > teamTypePager.numPages()){
+        teamTypePager.currentPage(teamTypePager.numPages())
+    }
 
     const tableBody = $("#teamTypeData");
     tableBody.empty();
@@ -375,4 +386,8 @@ function updateTeamType(){
             displayError("Error updating Team type! Try reloading the page.")
         }
     });
+}
+
+function getMaxPage(valuesPerPage, values){
+    return Math.floor(values  / valuesPerPage);
 }
