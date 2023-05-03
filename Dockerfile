@@ -16,8 +16,8 @@ COPY . .
 # Expose the port the app runs on
 EXPOSE 3000
 
-# Start the application
-CMD [ "node", "start.js" ]
-
 # Set the timezone
 ENV TZ="Europe/Zurich"
+
+# Start the application
+CMD [ "node", "start.js" ]
