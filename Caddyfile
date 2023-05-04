@@ -1,0 +1,3 @@
+webapp.teamgenetix.ch {
+        reverse_proxy /* http://gnxcontainer:3000
+}
