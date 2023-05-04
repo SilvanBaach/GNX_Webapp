@@ -1,4 +1,7 @@
 <script src="/js/clientJS/teammanagement.js"></script>
+<script src="/js/library/anyPaginator.js"></script>
+<link href="/css/library/anyPaginator.css" rel="stylesheet"/>
+
 
 <div class="text">Team Management</div>
 
@@ -22,6 +25,9 @@
             <tbody>
             </tbody>
         </table>
+        <table id="teamData" class="styled-table"></table>
+        <div id="teamPager"></div>
+
     </div>
 
     <!-- TEAM EDIT -->
@@ -73,6 +79,8 @@
             <tbody>
             </tbody>
         </table>
+        <table id="teamTypeData" class="styled-table"></table>
+        <div id="teamTypePager"></div>
     </div>
 
     <!-- TEAM TYPE EDIT -->
@@ -106,18 +114,17 @@
 <script>
     $(document).ready(function () {
         //Load the data
-        loadTeamTypes();
+        setup()
 
         $("#delTeam").click(function (e) {
             deleteTeam(e, $("#teamId").val());
         });
-
         $("#updateTeam").click(function () {
             updateTeam();
         });
-
         $("#updateTeamType").click(function () {
             updateTeamType();
         });
     });
+
 </script>

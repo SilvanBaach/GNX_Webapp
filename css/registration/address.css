@@ -1,0 +1,16 @@
+.button-container{
+    display: flex;
+    flex-direction: row;
+    width: 300px;
+    column-gap: 30px;
+    margin: 5vh auto auto;
+}
+
+.address-img{
+    display: block;
+    margin: auto auto 5vh;
+}
+
+.button{
+    width: 150px;
+}

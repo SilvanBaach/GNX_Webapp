@@ -43,11 +43,41 @@ router.post('/updatePassword', function (req, res) {
 });
 
 /**
+ * POST route for resetting the password of a user using a token as verification
+ */
+router.post('/updatePassword/:token',  async function (req, res) {
+    const token = req.params.token;
+    const password = req.body.password;
+
+    const user = await getUserByToken(token);
+    if (user) {
+        updateUserPassword(password, user.id).then(() => {
+            const formData = {
+                resetpasswordtoken: '',
+                resetpasswordexpires: 0
+            }
+
+            //Delete the tokens
+            updateUser(formData, user.id).then(() => {
+                res.status(200).send();
+            }).catch(() => {
+                res.status(500).send({message: "There was an error updating the password! Please try again later."});
+            });
+        }).catch(() => {
+            res.status(500).send({message: "There was an error updating the password! Please try again later."});
+        });
+    }else{
+        res.status(500).send({message: "Invalid Token!"});
+    }
+});
+
+/**
  * POST route for updating the information of a user
  */
 router.post('/updateUser', function (req, res) {
     const userId = req.user.id;
     const formData = req.body;
+    console.log(formData);
 
     updateUser(formData, userId).then(() => {
         res.status(200).send({message: "Information updated successfully"});
@@ -90,13 +120,12 @@ router.post('/deleteUser/:username', function (req, res) {
  * @returns {Promise<*>}
  */
 async function updateUser(formData, userId) {
-    const fields = ['fullName', 'email', 'phone', 'username', 'street', 'city', 'zip', 'steam', 'origin', 'riotgames', 'battlenet'];
+    const fields = ['fullName', 'email', 'phone', 'username', 'street', 'city', 'zip', 'steam', 'origin', 'riotgames', 'battlenet','resetpasswordtoken','resetpasswordexpires'];
     const updates = [];
-    const password = formData.password;
     delete formData.password;
 
     fields.forEach(field => {
-        if (formData[field]) {
+        if (field in formData) {
             updates.push(`${field} = $${updates.length + 1}`);
         }
     });
@@ -105,7 +134,8 @@ async function updateUser(formData, userId) {
         const query = `UPDATE account
                        SET ${updates.join(', ')}
                        WHERE id = $${updates.length + 1}`;
-        const values = Object.values(formData).filter(val => val);
+        const values = Object.values(formData).filter(val => val !== undefined && val !== null);
+
         pool.query(query, [...values, parseInt(userId)], (err, result) => {
             if (err) {
                 console.log(err);
@@ -144,6 +174,7 @@ function updateUserPicture(base64, userId) {
 async function updateUserPassword(password, userId) {
     const hash = await bcrypt.hashSync(password, 10);
 
+
     return new Promise((resolve, reject) => {
         pool.query('UPDATE account SET password = $1 WHERE id = $2', [hash, parseInt(userId)], (err) => {
             if (err) {
@@ -164,6 +195,40 @@ function getUsersFromTeam(teamId){
     return  pool.query(`SELECT username, team.id FROM account LEFT JOIN teammembership AS tm ON tm.account_fk = account.id LEFT JOIN team ON team.id = tm.team_fk WHERE team.id = $1`,[teamId]);
 }
 
+/**
+ * Gets a user by his token and checks if the token is still valid
+ * @param token the token of the user
+ * @returns {Promise<*>} Promise that resolves to the user
+ */
+async function getUserByToken(token) {
+    const query = util.promisify(pool.query).bind(pool);
+    const result = await query('SELECT * FROM account WHERE resetpasswordtoken = $1', [token]);
+
+    if (result.rows.length > 0) {
+        const user = result.rows[0];
+        const currentTime = Math.floor(Date.now() / 1000);
+
+        if (user.resetpasswordexpires >= currentTime) {
+            return user;
+        }
+    }
+}
+
+/**
+ * Gets a user by his email
+ * @param email the email of the user
+ * @returns {*} Promise that resolves to the user
+ */
+async function getUserByEmail(email) {
+    const query = util.promisify(pool.query).bind(pool);
+    return query('SELECT * FROM account WHERE email = $1', [email]);
+}
+
+module.exports = {
+    router,
+    getUserByToken,
+    getUserByEmail
+};
 async function getUsers(){
     //Get the Teamtype ID
     const query = util.promisify(pool.query).bind(pool);

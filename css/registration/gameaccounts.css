@@ -1,0 +1,28 @@
+.text {
+    font-weight: 400;
+    margin-bottom: 7vh;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: row;
+    column-gap: 30px;
+    justify-content: center;
+}
+
+.center-img {
+    display: block;
+    margin: auto;
+}
+
+.button-container{
+    display: flex;
+    flex-direction: row;
+    width: 330px;
+    column-gap: 30px;
+    margin: 5vh auto auto;
+}
+
+.button{
+    width: 150px;
+}

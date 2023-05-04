@@ -1,10 +1,67 @@
-let teamData;
-let teamTypeData;
+dataAccessors = {
+    team: [],
+    teamType: [],
+    get teamData(){
+        return this.team
+    },
 
-function popupSetup() {
+    get teamTypeData(){
+        return this.teamType
+    },
+
+    set teamData(data){
+        this.team = data
+    },
+    set teamTypeData(data){
+        this.teamType = data
+    }
+}
+
+let teamPager;
+let teamTypePager;
+
+/**
+ * This method sets up the pagination for the team table and teamType table
+ */
+function setupPagination() {
+    teamPager = $("#teamPager").anyPaginator({
+        itemsPerPage: 5,
+        mode: 1,
+        hideGoto: true,
+        prevText: "&lsaquo; Previous",
+        nextText: "Next &rsaquo;",
+        hideIfOne: false,
+        onClick: buildTeamTable,
+    });
+
+    teamPager.numItems(dataAccessors.teamData.length)
+    buildTeamTable()
+
+    teamTypePager = $("#teamTypePager").anyPaginator({
+        itemsPerPage: 5,
+        mode: 1,
+        hideGoto: true,
+        prevText: "&lsaquo; Previous",
+        nextText: "Next &rsaquo;",
+        hideIfOne: false,
+        onClick: buildTeamTypeTable,
+    });
+
+    teamTypePager.numItems(dataAccessors.teamTypeData.length)
+    buildTeamTypeTable()
+}
+
+/**
+ * This method sets up the whole teammanagement page by creating the popups and loading the teams and teamtypes.
+ * It also initializes the buttons.
+ */
+async function setup() {
     //Create Popups for Team / Type Creation
     const popupTeam = new Popup("popup-containerTeam");
     const popupTeamType = new Popup("popup-containerTeamType");
+
+    await loadTeams();
+    await loadTeamTypes();
 
     popupTeam.displayInputPopupCustom("/res/others/plus.png", "Create Team", "Create", "btnCreateTeam",
         `<label for="TeamName" class="input-label">Name</label>` +
@@ -39,16 +96,20 @@ function popupSetup() {
     $("#btnCreateTeamType").click(function (e) {
         createTeamType(e, popupTeamType);
     });
+
+    setupPagination();
 }
 
+/**
+ * This method loads the Teams into the data accessor
+ */
 async function loadTeams() {
     await $.ajax({
         url: "/team/getteams",
         type: "GET",
         cache: false,
         success: function (data) {
-            teamData = data;
-            buildTeamTable();
+            dataAccessors.teamData = data;
         },
         error: function (data) {
             console.log(data);
@@ -56,16 +117,16 @@ async function loadTeams() {
     });
 }
 
+/**
+ * This method loads the TeamTypes into the data accessor
+ */
 async function loadTeamTypes() {
     await $.ajax({
         url: "/teamtype/getteamtypes",
         type: "GET",
         cache: false,
         success: function (data) {
-            teamTypeData = data;
-            buildTeamTypeTable();
-            loadTeams();
-            popupSetup();
+            dataAccessors.teamTypeData = data;
         },
         error: function (data) {
             console.log(data);
@@ -73,14 +134,33 @@ async function loadTeamTypes() {
     });
 }
 
-function buildTeamTable() {
-    const tableBody = $("#team-table tbody");
+/**
+ * This method builds the TeamTypeTable
+ */
+async function buildTeamTable() {
+    await loadTeams()
+    teamPager.numItems(dataAccessors.teamData.length)
+
+    //Correct currentPage if page is empty.
+    if(teamPager.currentPage() > teamPager.numPages()){
+        teamPager.currentPage(teamPager.numPages())
+    }
+
+
+    const tableBody = $("#teamData");
     tableBody.empty();
 
-    teamData.forEach(function (team) {
+    let start = (teamPager.currentPage() - 1) * teamPager.options.itemsPerPage;
+    let stop = start + teamPager.options.itemsPerPage - 1;
+
+
+    for (let i = start; i <= stop; i++) {
+        team = dataAccessors.teamData[i];
+        if (!team) break;
+
         const tr = $("<tr></tr>");
         const tdInternalName = $("<td></td>").text(team.displayname);
-        const tdType = $("<td></td>").text(teamTypeData.find((teamtype) => teamtype.id === team.teamtype_fk).displayname);
+        const tdType = $("<td></td>").text(dataAccessors.teamTypeData.find((teamtype) => teamtype.id === team.teamtype_fk).displayname);
         const tdWeight = $("<td></td>").text(team.weight);
 
         const tdButton = $("<td></td>");
@@ -99,14 +179,31 @@ function buildTeamTable() {
 
         tr.append(tdInternalName).append(tdType).append(tdWeight).append(tdButton);
         tableBody.append(tr);
-    });
+    }
 }
 
-function buildTeamTypeTable() {
-    const tableBody = $("#teamtype-table tbody");
+/**
+ * This method builds the TeamTypeTable
+ */
+async function buildTeamTypeTable() {
+    await loadTeamTypes();
+    teamTypePager.numItems(dataAccessors.teamTypeData.length)
+
+    //Correct currentPage if page is empty.
+    if(teamTypePager.currentPage() > teamTypePager.numPages()){
+        teamTypePager.currentPage(teamTypePager.numPages())
+    }
+
+    const tableBody = $("#teamTypeData");
     tableBody.empty();
 
-    teamTypeData.forEach(function (teamType) {
+    let start = (teamTypePager.currentPage() - 1) * teamTypePager.options.itemsPerPage + 1;
+    let stop = start + teamTypePager.options.itemsPerPage - 1;
+
+    for (let i = start; i <= stop; i++) {
+        teamType = dataAccessors.teamTypeData[i];
+        if (!teamType) break;
+
         const tr = $("<tr></tr>");
         const tdInternalName = $("<td></td>").text(teamType.name);
         const tdDisplayName = $("<td></td>").text(teamType.displayname);
@@ -127,9 +224,11 @@ function buildTeamTypeTable() {
 
         tr.append(tdInternalName).append(tdDisplayName).append(tdButton);
         tableBody.append(tr);
-    });
+    }
 }
-
+/**
+ * Creates a new Team
+ */
 async function createTeam(e, popupTeam) {
     const teamName = $("#teamName").val();
     const teamType = $("#teamType").val();
@@ -145,9 +244,9 @@ async function createTeam(e, popupTeam) {
                 teamWeight: teamWeight
             },
             success: function () {
-                loadTeams();
                 displaySuccess("Inserted new team!");
                 popupTeam.close(e);
+                buildTeamTable()
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log("Error inserting team:", errorThrown);
@@ -158,7 +257,9 @@ async function createTeam(e, popupTeam) {
         displayError("Please fill in all fields!")
     }
 }
-
+/**
+ * Creates a new TeamType
+ */
 function createTeamType(e, popupTeamType) {
     const internalName = $("#teamTypeName").val();
     const displayName = $("#teamTypeDisplayName").val();
@@ -172,9 +273,9 @@ function createTeamType(e, popupTeamType) {
                 displayName: displayName
             },
             success: function () {
-                loadTeamTypes();
                 displaySuccess("Inserted new team type!");
                 popupTeamType.close(e);
+                buildTeamTypeTable()
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log("Error inserting team type:", errorThrown);
@@ -185,9 +286,11 @@ function createTeamType(e, popupTeamType) {
         displayError("Please fill in all fields!")
     }
 }
-
+/**
+ * Edits the data of a Team
+ */
 function editTeamType(name) {
-    const teamType = teamTypeData.find((teamType) => teamType.name === name);
+    const teamType = dataAccessors.teamTypeData.find((teamType) => teamType.name === name);
     if (teamType) {
         // Show the edit box
         $("#teamTypeEdit").show();
@@ -198,10 +301,12 @@ function editTeamType(name) {
         $("#teamTypeId").val(teamType.id);
     }
 }
-
+/**
+ * Edits the data of a Team
+ */
 function editTeam(name) {
-    const team = teamData.find((team) => team.displayname === name);
-    const teamTypeId = teamTypeData.find((teamtype) => teamtype.id === team.teamtype_fk).id
+    const team = dataAccessors.teamData.find((team) => team.displayname === name);
+    const teamTypeId = dataAccessors.teamTypeData.find((teamtype) => teamtype.id === team.teamtype_fk).id
     if (team) {
         // Show the edit box
         $("#teamEdit").show();
@@ -220,12 +325,14 @@ function editTeam(name) {
 
 function getTeamTypeOptions() {
     let options = "";
-    teamTypeData.forEach(function (teamType) {
+    dataAccessors.teamTypeData.forEach(function (teamType) {
         options += `<option value="${teamType.id}">${teamType.displayname}</option>`;
     });
     return options;
 }
-
+/**
+ * Deletes a Team
+ */
 function deleteTeam(e, id) {
     const popup = new Popup("popup-containerTeamDel");
     popup.displayYesNoPopup("/res/others/alert.png", "Warning", "Are you sure you want to delete this team?", "Yes", "No", "btnTeamDelYes", "btnTeamDelNo");
@@ -239,10 +346,10 @@ function deleteTeam(e, id) {
                 id: id
             },
             success: function () {
-                loadTeams();
                 displaySuccess("Deleted team!");
                 popup.close(e);
                 $("#teamEdit").hide();
+                buildTeamTable()
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log("Error deleting team:", errorThrown);
@@ -255,7 +362,9 @@ function deleteTeam(e, id) {
         popup.close(e);
     });
 }
-
+/**
+ * Updates the data of a Team
+ */
 function updateTeam(){
     const id = $("#teamId").val();
     const teamName = $("#name").val();
@@ -275,6 +384,7 @@ function updateTeam(){
             loadTeams();
             displaySuccess("Updated team!");
             $("#teamEdit").hide();
+            buildTeamTable()
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.log("Error updating team:", errorThrown);
@@ -283,6 +393,9 @@ function updateTeam(){
     });
 }
 
+/**
+ * Updates the data of a TeamType
+ */
 function updateTeamType(){
     const id = $("#teamTypeId").val();
     const internalName = $("#internalName").val();
@@ -300,6 +413,7 @@ function updateTeamType(){
             loadTeamTypes();
             displaySuccess("Updated team type!");
             $("#teamTypeEdit").hide();
+            buildTeamTypeTable()
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.log("Error updating team type:", errorThrown);

@@ -110,3 +110,8 @@ p{
     padding-left: 10px;
     padding-right: 10px;
 }
+
+.success-img{
+    display: block;
+    margin: auto auto 5vh;
+}

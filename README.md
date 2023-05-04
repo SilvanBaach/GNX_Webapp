@@ -126,7 +126,7 @@ It should be possible to configure from how many participants the training will 
 
 # Documentation 📚
 
-You can find the documentation for the project in the [Wiki](https://linktodocumentation)
+You can find the documentation for the project in the [Wiki](https://genzhaw.github.io/GNX_Webapp/)
 
 ## Techstack and Tools 🧰
 
@@ -192,7 +192,7 @@ As for the naming of the feature branches, we use the following convention:
 
 # Commit Messages 📝
 
-The following section is optional, but highly recommended. It is a good practice to write a commit message in the
+The following section is a must. It is a good practice to write a commit message in the
 following format:
 
 ```
@@ -203,7 +203,7 @@ Example:
 feat(Save Button): Implemented save button [MF-1]
 ```
 
-The following types can be used:
+The following types should be used:
 
 * ci: Changes to our CI configuration files and scripts
 * docs: Documentation only changes

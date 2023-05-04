@@ -7,10 +7,12 @@ const flash = require('express-flash');
 const loginRouter = require('./routes/loginRouter.js');
 const dashboardRouter = require('./routes/dashboardRouter.js');
 const presenceRouter = require('./routes/presenceRouter.js');
-const userRouter = require('./routes/userRouter.js');
 const teamRouter = require('./routes/teamRouter.js');
 const teamTypeRouter = require('./routes/teamTypeRouter.js');
 const registrationCodeRouter = require('./routes/registrationCodeRouter.js');
+const {router: userRouter} = require('./routes/userRouter.js');
+const registerRouter = require('./routes/registerRouter.js');
+const resetPasswordRouter = require('./routes/resetPasswordRouter.js');
 
 /**
  * MIDDLEWARE
@@ -43,6 +45,8 @@ app.use('/user', userRouter);
 app.use('/team', teamRouter);
 app.use('/teamtype', teamTypeRouter);
 app.use('/registrationcode', registrationCodeRouter);
+app.use('/register', registerRouter);
+app.use('/resetPassword', resetPasswordRouter);
 
 /**
  * MAIN ROUTES
@@ -54,7 +58,6 @@ app.get('/', checkAuthenticated,(req, res) => {
 app.get('/register', (req, res) => {
     res.render('register');
 });
-
 
 /**
  * Checks if the user is authenticated
