@@ -91,12 +91,15 @@ jobs:
           script: |
             mkdir -p /opt/caddy/data
             mkdir -p /opt/caddy/config
+            mkdir -p /opt/caddy/logs
             chgrp genetix /opt/caddy/
             chgrp genetix /opt/caddy/data
             chgrp genetix /opt/caddy/config
+            chgrp genetix /opt/caddy/logs
             chmod 774 /opt/caddy/
             chmod 774 /opt/caddy/data
             chmod 774 /opt/caddy/config
+            chmod 774 /opt/caddy/logs
 
       - name: Copy caddy config file to Ubuntu server
         uses: appleboy/scp-action@master
@@ -137,7 +140,7 @@ jobs:
             echo "LISTEN_ADDRESS=0.0.0.0" >> /home/genetix/.env
             echo "PORT=3000" >> /home/genetix/.env
             docker run -d --name gnxcontainer --network reverse-proxy-network -v "/home/genetix/.env:/usr/src/app/.env" jsonderulo/genetix:latest
-            docker run -d --name caddy -p 80:80 -p 443:443 --network reverse-proxy-network -v /opt/caddy/data:/data -v /opt/caddy/config:/config -v /opt/caddy/Caddyfile:/etc/caddy/Caddyfile caddy:2.4.5
+            docker run -d --name caddy -p 80:80 -p 443:443 --network reverse-proxy-network -v /opt/caddy/data:/data -v /opt/caddy/config:/config -v /opt/caddy/Caddyfile:/etc/caddy/Caddyfile -v /opt/caddy/logs/:/var/log/ caddy:2.4.5
       
       
       
