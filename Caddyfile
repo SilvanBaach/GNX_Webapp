@@ -1,3 +1,7 @@
 webapp.teamgenetix.ch {
         reverse_proxy /* http://gnxcontainer:3000
+        log {
+                output file /var/log/caddy/access.log
+                format single_field common_log
+        }
 }
