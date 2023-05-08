@@ -1,4 +1,7 @@
 <script src="/js/clientJS/usermanagement.js"></script>
+<script src="/js/library/anyPaginator.js"></script>
+<link href="/css/library/anyPaginator.css" rel="stylesheet"/>
+
 <div class="text">User Management</div>
 <div class="content">
     <!-- USERS LIST -->
@@ -17,15 +20,8 @@
             <tbody>
             </tbody>
         </table>
-        <div class="pagination" id="pagination_user">
-            <button class="default navigation-btn">
-                <i class="ri-arrow-left-s-line ri-2x"></i>Previous
-            </button>
-            <span class="page-number-text">1 / 1</span>
-            <button class="default navigation-btn">
-                Next<i class="ri-arrow-right-s-line ri-2x"></i>
-            </button>
-        </div>
+        <table id="userData" class="styled-table"></table>
+        <div id="userPager"></div>
     </div>
 
     <!-- USER EDIT -->
@@ -125,46 +121,6 @@
 
 <script>
     $(document).ready(function () {
-        const popup = new Popup("popup-container");
-        const dropdownPromise = fetchTeamTypes();
-        dropdownPromise.then(dropdownOptions => {
-            popup.displayDropdownPopup("/res/others/plus.png", "Create new Registration Code", "Create", "create", "teamDropdown", dropdownOptions);
-
-            loadRegistrationCodeTable();
-
-            $("#newRegistrationCode").click(function (e) {
-                popup.open(e);
-            });
-
-            $("#delUser").click(function (e) {
-                deleteUser(e);
-            });
-
-            $("#updateUser").click(function (e) {
-                updateUser();
-            });
-
-            $("#create").click(function () {
-                const dropdownVal = $("#teamDropdown").val()
-
-                //Create new Registration Code
-                $.ajax({
-                    url: '/registrationcode/generateNewRegistrationCode/' + dropdownVal,
-                    type: 'POST',
-                    success: function (data) {
-                        console.log("Registration code created")
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        console.log("Error creating registration code:", errorThrown);
-                    }
-                });
-                popup.close();
-
-                //Reload page
-                loadRegistrationCodeTable();
-            });
-        });
-
-        loadUserTable();
+        setupUserManagement()
     });
 </script>

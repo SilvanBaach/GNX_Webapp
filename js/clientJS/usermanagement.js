@@ -1,3 +1,80 @@
+dataAccessors = {
+    user: [],
+    get userData(){
+        return this.user
+    },
+
+    set userData(data){
+        this.user = data
+    },
+}
+
+let userPager;
+
+async function setupUserManagement() {
+    const popup = new Popup("popup-container");
+    const dropdownPromise = fetchTeamTypes();
+    await loadUserTable()
+
+    dropdownPromise.then(dropdownOptions => {
+        popup.displayDropdownPopup("/res/others/plus.png", "Create new Registration Code", "Create", "create", "teamDropdown", dropdownOptions);
+
+        loadRegistrationCodeTable();
+
+        $("#newRegistrationCode").click(function (e) {
+            popup.open(e);
+        });
+
+        $("#delUser").click(function (e) {
+            deleteUser(e);
+        });
+
+        $("#updateUser").click(function (e) {
+            updateUser();
+        });
+
+        $("#create").click(function () {
+            const dropdownVal = $("#teamDropdown").val()
+
+            //Create new Registration Code
+            $.ajax({
+                url: '/registrationcode/generateNewRegistrationCode/' + dropdownVal,
+                type: 'POST',
+                success: function (data) {
+                    console.log("Registration code created")
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log("Error creating registration code:", errorThrown);
+                }
+            });
+            popup.close();
+
+            //Reload page
+            loadRegistrationCodeTable();
+        });
+    });
+
+    setupPagination()
+}
+
+/**
+ * This method sets up the pagination for the team table and teamType table
+ */
+function setupPagination() {
+    userPager = $("#userPager").anyPaginator({
+        itemsPerPage: 5,
+        mode: 1,
+        hideGoto: true,
+        prevText: "&lsaquo; Previous",
+        nextText: "Next &rsaquo;",
+        hideIfOne: false,
+        onClick: buildUserTable(),
+    });
+
+    userPager.numItems(dataAccessors.userData.length)
+    buildUserTable()
+}
+
 async function loadRegistrationCodeTable(){
     await $.ajax({
         url: "/registrationcode/getregistrationcodes",
@@ -102,7 +179,7 @@ async function updateRegisterCode(code, valid){
     await loadRegistrationCodeTable();
 }
 
-let userData;
+
 async function loadUserTable() {
     await $.ajax({
         url: "/user/getusers",
@@ -110,21 +187,34 @@ async function loadUserTable() {
         cache: false,
         dataType: "json",
         success: function (data) {
-            userData = data;
+            dataAccessors.userData = data;
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.log("Error fetching registration codes:", errorThrown);
         }
     })
-
-    buildUserTable();
 }
 
-function buildUserTable(){
-    const tableBody = $("#user-table tbody");
+async function buildUserTable() {
+    await loadUserTable()
+
+    const tableBody = $("#userData");
     tableBody.empty();
 
-    userData.forEach(function(account) {
+    userPager.numItems(dataAccessors.userData.length)
+
+    //Correct currentPage if page is empty.
+    if(userPager.currentPage() > userPager.numPages()){
+        userPager.currentPage(userPager.numPages())
+    }
+    let start = (userPager.currentPage() - 1) * userPager.options.itemsPerPage;
+    let stop = start + userPager.options.itemsPerPage - 1;
+
+
+    for (let i = start; i <= stop; i++) {
+        account = dataAccessors.userData[i];
+        if (!account) break;
+
         const tr = $("<tr></tr>");
         const tdUsername = $("<td></td>").text(account.username);
         const tdTeam = $("<td></td>").text(account.team_displayname);
@@ -147,7 +237,7 @@ function buildUserTable(){
         const button = $("<button></button>").addClass("default purple table-btn");
         const icon = $("<i></i>").addClass("ri-file-edit-line").addClass("ri-2x");
 
-        button.on("click", function() {
+        button.on("click", function () {
             const row = $(this).closest("tr");
             const username = row.find("td:first").text(); // Get the username from the first column
             editUser(username);
@@ -158,11 +248,11 @@ function buildUserTable(){
 
         tr.append(tdUsername).append(tdTeam).append(tdFullname).append(tdPicture).append(tdButton);
         tableBody.append(tr);
-    });
+    }
 }
 
 function editUser(username) {
-    const user = userData.find((user) => user.username === username);
+    const user = dataAccessors.userData.find((user) => user.username === username);
     if (user) {
         // Show the edit box
         $(".edit-box").show();
@@ -178,6 +268,7 @@ function editUser(username) {
         $("#password").val("");
         $("#userid").val(user.id);
     }
+
 }
 
 function deleteUser(e){
@@ -197,8 +288,8 @@ function deleteUser(e){
             type: "POST",
             success: function (data) {
                 $(".edit-box").hide();
-                loadUserTable();
                 displaySuccess("User deleted successfully!")
+                buildUserTable()
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log("Error deleting user:", errorThrown);
@@ -206,6 +297,7 @@ function deleteUser(e){
             }
         });
     });
+    buildUserTable()
 }
 
 function updateUser(){
@@ -226,8 +318,8 @@ function updateUser(){
         contentType: "application/json",
         success: function (data) {
             $(".edit-box").hide();
-            loadUserTable();
             displaySuccess("User updated successfully!")
+            buildUserTable()
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.log("Error updating user:", errorThrown);

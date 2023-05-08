@@ -4,8 +4,8 @@
 const express = require('express');
 const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
-const bcrypt = require("bcrypt");
 const util = require("util");
+const bcrypt = require("bcrypt");
 
 /**
  * POST route for updating the profile picture of a user
@@ -74,10 +74,11 @@ router.post('/updatePassword/:token',  async function (req, res) {
 /**
  * POST route for updating the information of a user
  */
-router.post('/updateUser', function (req, res) {
-    const userId = req.user.id;
+router.post('/updateUser/:id', function (req, res) {
+    const userId = req.params.id;
+    console.log(userId)
     const formData = req.body;
-    console.log(formData);
+    console.log(formData)
 
     updateUser(formData, userId).then(() => {
         res.status(200).send({message: "Information updated successfully"});
@@ -224,11 +225,6 @@ async function getUserByEmail(email) {
     return query('SELECT * FROM account WHERE email = $1', [email]);
 }
 
-module.exports = {
-    router,
-    getUserByToken,
-    getUserByEmail
-};
 async function getUsers(){
     //Get the Teamtype ID
     const query = util.promisify(pool.query).bind(pool);
@@ -264,4 +260,8 @@ function deleteUser(username){
                  WHERE username = $1`, [username]);
 }
 
-module.exports = router;
+module.exports = {
+    router,
+    getUserByToken,
+    getUserByEmail
+};
