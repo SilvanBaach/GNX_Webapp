@@ -50,10 +50,17 @@
     background-color: red;
 }
 
-.status-indicator{
+.status-indicator-registration{
     width: 25px;
     height: 25px;
     border-radius: 50%;
+}
+
+.status-indicator-user{
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    margin-top: 25px
 }
 
 th i{

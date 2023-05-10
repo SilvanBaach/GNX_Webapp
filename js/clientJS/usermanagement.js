@@ -93,7 +93,7 @@ async function loadRegistrationCodeTable(){
                 const tdTeam = $("<td></td>").text(registrationCode.teamname);
                 const tdValid = $("<td></td>");
 
-                const statusIndicator = $("<div></div>").addClass("status-indicator");
+                const statusIndicator = $("<div></div>").addClass("status-indicator-registration");
                 if (registrationCode.valid) {
                     statusIndicator.addClass("status-green");
                 } else {
@@ -217,7 +217,7 @@ async function buildUserTable() {
 
         const tr = $("<tr></tr>");
         const tdUsername = $("<td></td>").text(account.username);
-        const tdTeam = $("<td></td>").text(account.team_displayname);
+        const tdTeam = $("<td></td>").text("TBD");
         const tdFullname = $("<td></td>").text(account.fullname);
 
         // Create an img element with the picture URL and onerror event handler
@@ -243,10 +243,24 @@ async function buildUserTable() {
             editUser(username);
         });
 
+        // Create a td element with a button and icon for the blocked user
+        const statusIndicator = $("<div></div>").addClass("status-indicator-user");
+        if (!account.blocked) {
+            statusIndicator.addClass("status-green");
+        } else {
+            statusIndicator.addClass("status-red");
+        }
+
+        statusIndicator.on("click", function () {
+            //TODO Block oder unblock user with popup
+
+        });
+
+
         button.append(icon);
         tdButton.append(button);
 
-        tr.append(tdUsername).append(tdTeam).append(tdFullname).append(tdPicture).append(tdButton);
+        tr.append(tdUsername).append(tdTeam).append(tdFullname).append(tdPicture).append(statusIndicator).append(tdButton);
         tableBody.append(tr);
     }
 }
