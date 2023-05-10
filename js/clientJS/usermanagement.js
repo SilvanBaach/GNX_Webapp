@@ -68,7 +68,7 @@ function setupPagination() {
         prevText: "&lsaquo; Previous",
         nextText: "Next &rsaquo;",
         hideIfOne: false,
-        onClick: buildUserTable(),
+        onClick: buildUserTable,
     });
 
     userPager.numItems(dataAccessors.userData.length)

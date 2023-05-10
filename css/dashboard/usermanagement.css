@@ -16,6 +16,23 @@
     width: calc(100% - 78px - 50vw - 18px);
     display: none;
 }
+.pagination{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    column-gap: 10px;
+    margin-top: 20px;
+}
+
+.page-number-text{
+    font-weight: 700;
+}
+
+.navigation-btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .home-section{
     width: calc(100% - 78px);
