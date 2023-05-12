@@ -408,11 +408,12 @@ function buildNextTrainingTable(teamId){
     });
 }
 
+
 module.exports = {
     formatDate,
     getMondayOfWeek,
-    editDay,
-    getUsers,
-    saveDay,
-    buildNextTrainingTable
+    getXDayOfWeek,
+    getDateFromDay,
+    getDataFromDay,
+    getSundayOfCurrentWeek
 };
