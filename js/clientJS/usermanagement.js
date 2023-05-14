@@ -11,6 +11,8 @@ dataAccessors = {
 
 let userPager;
 
+
+
 async function setupUserManagement() {
     const popup = new Popup("popup-container");
     const dropdownPromise = fetchTeamTypes();
@@ -31,6 +33,10 @@ async function setupUserManagement() {
 
         $("#updateUser").click(function (e) {
             updateUser();
+        });
+
+        $("#blockUser").click(function (e) {
+            blockUser(e);
         });
 
         $("#create").click(function () {
@@ -245,17 +251,12 @@ async function buildUserTable() {
 
         // Create a td element with a button and icon for the blocked user
         const statusIndicator = $("<div></div>").addClass("status-indicator-user");
+        console.log(account.username + "  " + account.blocked)
         if (!account.blocked) {
             statusIndicator.addClass("status-green");
         } else {
             statusIndicator.addClass("status-red");
         }
-
-        statusIndicator.on("click", function () {
-            //TODO Block oder unblock user with popup
-
-        });
-
 
         button.append(icon);
         tdButton.append(button);
@@ -281,10 +282,26 @@ function editUser(username) {
         $("#zip").val(user.zip === "-" ? "" : user.zip);
         $("#password").val("");
         $("#userid").val(user.id);
+
     }
 
 }
+function blockUser(e) {
+    const popup = new Popup("popup-containerYesNoBlockUser");
+    popup.displayYesNoPopup("/res/others/question_blue.png","Warning","Are you sure you want to block this user?", "Yes", "No", "blockUserYes","blockUserNo");
+    popup.open(e);
 
+    $("#blockUserNo").click(function (e) {
+        popup.close(e);
+    });
+
+    $("#blockUserYes").click(function (e) {
+        popup.close(e);
+        const user = dataAccessors.userData.find((user) => user.username === $("#username").val());
+        user.blocked = true;
+        updateUser()
+    });
+}
 function deleteUser(e){
     const popup = new Popup("popup-containerYesNoDelUser");
     popup.displayYesNoPopup("/res/others/question_blue.png","Warning","Are you sure you want to delete this user?", "Yes", "No", "delUserYes","delUserNo");
@@ -311,7 +328,6 @@ function deleteUser(e){
             }
         });
     });
-    buildUserTable()
 }
 
 function updateUser(){

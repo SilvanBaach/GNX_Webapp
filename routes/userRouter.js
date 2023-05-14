@@ -76,9 +76,7 @@ router.post('/updatePassword/:token',  async function (req, res) {
  */
 router.post('/updateUser/:id', function (req, res) {
     const userId = req.params.id;
-    console.log(userId)
     const formData = req.body;
-    console.log(formData)
 
     updateUser(formData, userId).then(() => {
         res.status(200).send({message: "Information updated successfully"});
@@ -114,6 +112,7 @@ router.post('/deleteUser/:username', function (req, res) {
     });
 });
 
+
 /** Updates the information of a user in the database
  * This method is generic and can be used to update any field of the user
  * @param formData the data of the user
@@ -121,7 +120,7 @@ router.post('/deleteUser/:username', function (req, res) {
  * @returns {Promise<*>}
  */
 async function updateUser(formData, userId) {
-    const fields = ['fullName', 'email', 'phone', 'username', 'street', 'city', 'zip', 'steam', 'origin', 'riotgames', 'battlenet','resetpasswordtoken','resetpasswordexpires'];
+    const fields = ['fullName', 'email', 'phone', 'username', 'street', 'city', 'zip', 'steam', 'origin', 'riotgames', 'battlenet','resetpasswordtoken','resetpasswordexpires', 'blocked'];
     const updates = [];
     delete formData.password;
 
@@ -130,6 +129,8 @@ async function updateUser(formData, userId) {
             updates.push(`${field} = $${updates.length + 1}`);
         }
     });
+
+    console.log(updates)
 
     if (updates.length) {
         const query = `UPDATE account
