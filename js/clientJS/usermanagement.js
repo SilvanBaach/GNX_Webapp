@@ -99,6 +99,14 @@ async function loadRegistrationCodeTable(){
                 const tdTeam = $("<td></td>").text(registrationCode.teamname);
                 const tdValid = $("<td></td>");
 
+                const statusIndicator = $("<div></div>").addClass("status-indicator-registration");
+                if (registrationCode.valid) {
+                    statusIndicator.addClass("status-green");
+                } else {
+                    statusIndicator.addClass("status-red");
+                }
+                tdValid.append(statusIndicator)
+
                 const tdButton = $("<td></td>");
                 const button = $("<button></button>");
                 if (registrationCode.valid) {
@@ -310,7 +318,7 @@ function blockUser(e) {
         })
     }
 }
-function deleteUser(e){
+async function deleteUser(e){
     const popup = new Popup("popup-containerYesNoDelUser");
     popup.displayYesNoPopup("/res/others/question_blue.png","Warning","Are you sure you want to delete this user?", "Yes", "No", "delUserYes","delUserNo");
     popup.open(e);
@@ -319,16 +327,15 @@ function deleteUser(e){
         popup.close(e);
     });
 
-    $("#delUserYes").click(function (e) {
+    $("#delUserYes").click(async function (e) {
         popup.close(e);
         const username = $("#username").val();
-        $.ajax({
+        await $.ajax({
             url: "/user/deleteUser/" + username,
             type: "POST",
             success: function (data) {
                 $(".edit-box").hide();
                 displaySuccess("User deleted successfully!")
-                buildUserTable()
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log("Error deleting user:", errorThrown);
@@ -336,6 +343,7 @@ function deleteUser(e){
             }
         });
     });
+    buildUserTable()
 }
 
 async function updateUser() {
