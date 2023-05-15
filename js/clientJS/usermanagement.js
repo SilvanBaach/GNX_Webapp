@@ -12,7 +12,10 @@ dataAccessors = {
 let userPager;
 
 
-
+/**
+ * This method sets up the whole user management page by creating the popups and loading the users and the registration
+ * It also initializes the buttons.
+ */
 async function setupUserManagement() {
     const popup = new Popup("popup-container");
     const dropdownPromise = fetchTeamTypes();
@@ -64,7 +67,7 @@ async function setupUserManagement() {
 }
 
 /**
- * This method sets up the pagination for the team table and teamType table
+ * This method sets up the pagination for user table
  */
 function setupPagination() {
     userPager = $("#userPager").anyPaginator({
@@ -81,6 +84,9 @@ function setupPagination() {
     buildUserTable()
 }
 
+/**
+ * This method builds the registration-code table
+ */
 async function loadRegistrationCodeTable(){
     await $.ajax({
         url: "/registrationcode/getregistrationcodes",
@@ -139,6 +145,9 @@ async function loadRegistrationCodeTable(){
     });
 }
 
+/**
+ * This method fetches the team types
+ */
 async function fetchTeamTypes() {
     const dropdownOptions = [];
     try {
@@ -152,6 +161,7 @@ async function fetchTeamTypes() {
         return dropdownOptions;
     }
 }
+
 
 function regCodeButtonAction(code, valid, event) {
     //Display a popup to confirm the action
@@ -170,6 +180,9 @@ function regCodeButtonAction(code, valid, event) {
     });
 }
 
+/**
+ * This method updates the registration code in the database
+ */
 async function updateRegisterCode(code, valid){
     await $.ajax({
         url: "/registrationcode/updateRegistrationCode/" + code + "/" + valid,
@@ -185,7 +198,9 @@ async function updateRegisterCode(code, valid){
     await loadRegistrationCodeTable();
 }
 
-
+/**
+ * This method loads the users into the data accessor
+ */
 async function loadUserTable() {
     await $.ajax({
         url: "/user/getusers",
@@ -201,6 +216,9 @@ async function loadUserTable() {
     })
 }
 
+/**
+ * This method builds the user table
+ */
 async function buildUserTable() {
     await loadUserTable()
 
@@ -265,9 +283,18 @@ async function buildUserTable() {
     }
 }
 
+/**
+ * This method builds the edit user table
+ */
 function editUser(username) {
     const user = dataAccessors.userData.find((user) => user.username === username);
     if (user) {
+        if(user.blocked){
+            $("#blockUser").text("Unblock User");
+        }
+        else{
+            $("#blockUser").text("Block User");
+        }
         // Show the edit box
         $(".edit-box").show();
 
@@ -281,10 +308,13 @@ function editUser(username) {
         $("#zip").val(user.zip === "-" ? "" : user.zip);
         $("#password").val("");
         $("#userid").val(user.id);
-
     }
 
 }
+
+/**
+ * This method blocks or unblocks a user
+ */
 function blockUser(e) {
     let user = dataAccessors.userData.find((user) => user.username === $("#username").val());
     if(user.blocked){
@@ -318,6 +348,10 @@ function blockUser(e) {
         })
     }
 }
+
+/**
+ * This method deletes a user from the database
+ */
 async function deleteUser(e){
     const popup = new Popup("popup-containerYesNoDelUser");
     popup.displayYesNoPopup("/res/others/question_blue.png","Warning","Are you sure you want to delete this user?", "Yes", "No", "delUserYes","delUserNo");
@@ -346,6 +380,9 @@ async function deleteUser(e){
     buildUserTable()
 }
 
+/**
+ * This method updates the user data in the database
+ */
 async function updateUser() {
     const form = document.getElementById('form');
     const formData = new FormData(form);
