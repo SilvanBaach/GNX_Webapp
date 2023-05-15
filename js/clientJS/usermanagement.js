@@ -99,14 +99,6 @@ async function loadRegistrationCodeTable(){
                 const tdTeam = $("<td></td>").text(registrationCode.teamname);
                 const tdValid = $("<td></td>");
 
-                const statusIndicator = $("<div></div>").addClass("status-indicator-registration");
-                if (registrationCode.valid) {
-                    statusIndicator.addClass("status-green");
-                } else {
-                    statusIndicator.addClass("status-red");
-                }
-                tdValid.append(statusIndicator)
-
                 const tdButton = $("<td></td>");
                 const button = $("<button></button>");
                 if (registrationCode.valid) {
@@ -251,7 +243,6 @@ async function buildUserTable() {
 
         // Create a td element with a button and icon for the blocked user
         const statusIndicator = $("<div></div>").addClass("status-indicator-user");
-        console.log(account.username + "  " + account.blocked)
         if (!account.blocked) {
             statusIndicator.addClass("status-green");
         } else {
@@ -287,20 +278,37 @@ function editUser(username) {
 
 }
 function blockUser(e) {
-    const popup = new Popup("popup-containerYesNoBlockUser");
-    popup.displayYesNoPopup("/res/others/question_blue.png","Warning","Are you sure you want to block this user?", "Yes", "No", "blockUserYes","blockUserNo");
-    popup.open(e);
+    let user = dataAccessors.userData.find((user) => user.username === $("#username").val());
+    if(user.blocked){
+        const popup = new Popup("popup-containerYesNoUnBlockUser");
+        popup.displayYesNoPopup("/res/others/question_blue.png","Warning","Are you sure you want to unblock this user?", "Yes", "No", "unblockUserYes","unblockUserNo");
+        popup.open(e);
 
-    $("#blockUserNo").click(function (e) {
-        popup.close(e);
-    });
+        $("#unblockUserNo").click(function (e) {
+            popup.close(e);
+        });
 
-    $("#blockUserYes").click(function (e) {
-        popup.close(e);
-        const user = dataAccessors.userData.find((user) => user.username === $("#username").val());
-        user.blocked = true;
-        updateUser()
-    });
+        $("#unblockUserYes").click(function (e) {
+            popup.close(e);
+            user.blocked = false;
+            updateUser()
+        });
+    }
+    else{
+        const popup = new Popup("popup-containerYesNoBlockUser");
+        popup.displayYesNoPopup("/res/others/question_blue.png","Warning","Are you sure you want to block this user?", "Yes", "No", "blockUserYes","blockUserNo");
+        popup.open(e);
+
+        $("#blockUserNo").click(function (e) {
+            popup.close(e);
+        });
+
+        $("#blockUserYes").click(function (e) {
+            popup.close(e);
+            user.blocked = true;
+            updateUser()
+        })
+    }
 }
 function deleteUser(e){
     const popup = new Popup("popup-containerYesNoDelUser");
@@ -330,18 +338,20 @@ function deleteUser(e){
     });
 }
 
-function updateUser(){
+async function updateUser() {
     const form = document.getElementById('form');
     const formData = new FormData(form);
     const data = {};
-
     for (const [key, value] of formData.entries()) {
-        if(value) {
+        if (value) {
             data[key] = value;
         }
     }
+    const user = dataAccessors.userData.find((user) => user.username === $("#username").val());
+    data["blocked"] = user.blocked;
 
-    $.ajax({
+
+    await $.ajax({
         url: "/user/updateUser/" + $("#userid").val(),
         type: "POST",
         data: JSON.stringify(data),
@@ -349,11 +359,11 @@ function updateUser(){
         success: function (data) {
             $(".edit-box").hide();
             displaySuccess("User updated successfully!")
-            buildUserTable()
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.log("Error updating user:", errorThrown);
             displayError("Error updating user! Try reloading the page.")
         }
     });
+    buildUserTable()
 }

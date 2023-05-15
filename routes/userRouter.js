@@ -130,7 +130,6 @@ async function updateUser(formData, userId) {
         }
     });
 
-    console.log(updates)
 
     if (updates.length) {
         const query = `UPDATE account
