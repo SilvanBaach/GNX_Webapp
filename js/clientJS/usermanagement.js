@@ -393,7 +393,7 @@ async function updateUser() {
         }
     }
     const user = dataAccessors.userData.find((user) => user.username === $("#username").val());
-    data["blocked"] = user.blocked;
+    data["blocked"] = user?.blocked
 
 
     await $.ajax({
