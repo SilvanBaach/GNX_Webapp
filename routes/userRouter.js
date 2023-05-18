@@ -4,8 +4,8 @@
 const express = require('express');
 const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
-const bcrypt = require("bcrypt");
 const util = require("util");
+const bcrypt = require("bcrypt");
 
 /**
  * POST route for updating the profile picture of a user
@@ -74,10 +74,9 @@ router.post('/updatePassword/:token',  async function (req, res) {
 /**
  * POST route for updating the information of a user
  */
-router.post('/updateUser', function (req, res) {
-    const userId = req.user.id;
+router.post('/updateUser/:id', function (req, res) {
+    const userId = req.params.id;
     const formData = req.body;
-    console.log(formData);
 
     updateUser(formData, userId).then(() => {
         res.status(200).send({message: "Information updated successfully"});
@@ -99,6 +98,21 @@ router.get('/getUserList/:teamId', function (req, res) {
     });
 });
 
+router.get('/getusers', async (req, res) => {
+    const users = await getUsers();
+    res.send(users);
+});
+
+router.post('/deleteUser/:username', function (req, res) {
+    const username = req.params.username;
+    deleteUser(username).then(() => {
+        res.status(200).send({message: "User deleted successfully"});
+    }).catch(() => {
+        res.status(500).send({message: "There was an error deleting the user! Please try again later."});
+    });
+});
+
+
 /** Updates the information of a user in the database
  * This method is generic and can be used to update any field of the user
  * @param formData the data of the user
@@ -106,7 +120,7 @@ router.get('/getUserList/:teamId', function (req, res) {
  * @returns {Promise<*>}
  */
 async function updateUser(formData, userId) {
-    const fields = ['fullName', 'email', 'phone', 'username', 'street', 'city', 'zip', 'steam', 'origin', 'riotgames', 'battlenet','resetpasswordtoken','resetpasswordexpires'];
+    const fields = ['fullName', 'email', 'phone', 'username', 'street', 'city', 'zip', 'steam', 'origin', 'riotgames', 'battlenet','resetpasswordtoken','resetpasswordexpires', 'blocked'];
     const updates = [];
     delete formData.password;
 
@@ -115,6 +129,7 @@ async function updateUser(formData, userId) {
             updates.push(`${field} = $${updates.length + 1}`);
         }
     });
+
 
     if (updates.length) {
         const query = `UPDATE account
@@ -208,6 +223,41 @@ async function getUserByToken(token) {
 async function getUserByEmail(email) {
     const query = util.promisify(pool.query).bind(pool);
     return query('SELECT * FROM account WHERE email = $1', [email]);
+}
+
+async function getUsers(){
+    //Get the Teamtype ID
+    const query = util.promisify(pool.query).bind(pool);
+    const results = await query(`SELECT DISTINCT account.*, team.displayname AS team_display, team.teamtype_fk AS team_teamtype_fk, team.weight AS team_weight
+                                 FROM account
+                                          LEFT JOIN teammembership AS tm ON tm.account_fk = account.id
+                                          LEFT JOIN team ON team.id = (
+                                     SELECT t2.id
+                                     FROM teammembership
+                                              LEFT JOIN team AS t2 ON t2.id = team_fk
+                                     WHERE account_fk = account.id
+                                     ORDER BY weight DESC
+                                     LIMIT 1
+                                 ) ORDER BY account.username, account.id`);
+
+    return results.rows.map(row => replaceNullWithHyphen(row));
+}
+
+function replaceNullWithHyphen(obj) {
+    for (const [key, value] of Object.entries(obj)) {
+        if (value === null) {
+            obj[key] = '-';
+        } else if (typeof value === 'object') {
+            replaceNullWithHyphen(value);
+        }
+    }
+    return obj;
+}
+
+function deleteUser(username){
+    return pool.query(`DELETE
+                 FROM account
+                 WHERE username = $1`, [username]);
 }
 
 module.exports = {

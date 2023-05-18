@@ -33,6 +33,14 @@ router.get('/calendar', function (req, res) {
 });
 
 /**
+ * GET user-management page
+ */
+router.get('/usermanagement', function (req, res) {
+    res.render('dashboard/usermanagement.ejs', {user: req.user});
+});
+
+
+/**
  * GET team-management page
  */
 router.get('/teammanagement', function (req, res) {
