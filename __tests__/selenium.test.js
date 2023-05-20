@@ -4,7 +4,7 @@ const app = require('../server');
 const port = process.env.PORT || 3000;
 const address = process.env.ADDRESS || '0.0.0.0'; // Add this line
 
-describe('Example Selenium Test', () => {
+describe('Selenium GUI Test', () => {
   let driver;
   let server;
 
@@ -20,7 +20,7 @@ describe('Example Selenium Test', () => {
     await server.close();
   });
 
-  test('Test Connection', async () => {
+  test('Test Server Connection', async () => {
     await driver.get('http://0.0.0.0:3000');
     //const searchBox = await driver.findElement(By.name('q'));
     //await searchBox.sendKeys('OpenAI', Key.RETURN);
@@ -28,4 +28,5 @@ describe('Example Selenium Test', () => {
     const title = await driver.getTitle();
     expect(title).toContain('GNX Webapp');
   });
+
 });
