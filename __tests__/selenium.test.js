@@ -6,10 +6,10 @@ const address = process.env.ADDRESS || '0.0.0.0'; // Add this line
 
 describe('Example Selenium Test', () => {
   let driver;
+  let server;
 
   beforeAll(async () => {
-    // Start the server
-    app.listen(port, address, (err) => {
+    server = app.listen(port, address, (err) => {
       console.log(`Genetix Webapp listening at http://${address}:${port}`);
     });
     driver = await new Builder().forBrowser('chrome').build();
@@ -17,14 +17,7 @@ describe('Example Selenium Test', () => {
 
   afterAll(async () => {
     await driver.quit();
-    // Close the server after all tests are done
-    app.close((err) => {
-      if (err) {
-        console.error('Error closing server:', err);
-      } else {
-        console.log('Server closed successfully');
-      }
-    });
+    await server.close();
   });
 
   test('Test Connection', async () => {
