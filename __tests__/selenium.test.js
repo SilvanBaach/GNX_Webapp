@@ -22,11 +22,19 @@ describe('Selenium GUI Test', () => {
 
   test('Test Server Connection', async () => {
     await driver.get('http://0.0.0.0:3000');
-    //const searchBox = await driver.findElement(By.name('q'));
-    //await searchBox.sendKeys('OpenAI', Key.RETURN);
+
     await driver.wait(until.titleContains('GNX Webapp'), 5000);
     const title = await driver.getTitle();
     expect(title).toContain('GNX Webapp');
+
+    // get the <a> element with class register-text. There's also a div with the same class
+    const registerLink = await driver.findElement(By.css('a.register-text'));
+    // click on the register link
+    await registerLink.click();
+    // test that the title says "Register"
+    await driver.wait(until.titleContains('Register'), 5000);
+    const registerTitle = await driver.getTitle();
+    expect(registerTitle).toContain('Register');
   });
 
 });
