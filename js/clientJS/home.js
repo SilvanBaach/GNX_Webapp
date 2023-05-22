@@ -1,4 +1,4 @@
-function buildNextTrainingTable1(teamId){
+function getNextTrainings(teamId){
     const url = "/presence/nextTrainings/" + teamId;
     $.ajax({
         url: url,
@@ -6,6 +6,7 @@ function buildNextTrainingTable1(teamId){
         success: function (data) {
             const tableBody = $("#training-column");
             tableBody.empty();
+
 
             data.forEach(function(training) {
                 const tr = $("<tr></tr>");
