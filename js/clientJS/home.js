@@ -4,7 +4,7 @@ function getNextTrainings(teamId){
         url: url,
         type: "GET",
         success: function (data) {
-            const tableBody = $("#training-column");
+            const tableBody = $("#training-column tbody");
             tableBody.empty();
 
 
