@@ -18,12 +18,12 @@ describe('Selenium GUI Test', () => {
     options.addArguments('--no-sandbox');
     options.addArguments('--disable-dev-shm-usage');
     driver = await new Builder().forBrowser('chrome').setChromeOptions(options).build();
-  });
+  }, 60000);
 
   afterAll(async () => {
     await driver.quit();
     await server.close();
-  });
+  }, 60000);
 
   test('Test Server Connection', async () => {
     await driver.get('http://0.0.0.0:3000');
