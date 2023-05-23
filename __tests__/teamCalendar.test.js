@@ -32,7 +32,7 @@ describe('Calendar Functions', () => {
       const date = '2023-05-12';
       const username = 'UserA';
       const teamData = [
-        {date: 1683842400, username: 'UserA', state: 0, from: '09:00', until: '12:00'}
+        {date: 1683849600, username: 'UserA', state: 0, from: '09:00', until: '12:00'}
       ];
       const expectedHTML =
           '<i class="ri-check-fill icon icon-green"></i>' +
@@ -46,7 +46,7 @@ describe('Calendar Functions', () => {
       const date = '2023-05-12';
       const username = 'UserA';
       const teamData = [
-        {date: 1683842400, username: 'UserA', state: 1}
+        {date: 1683849600, username: 'UserA', state: 1}
       ];
       const expectedHTML =
           '<i class="ri-check-fill icon icon-green"></i>' +
@@ -60,7 +60,7 @@ describe('Calendar Functions', () => {
       const date = '2023-05-12';
       const username = 'UserA';
       const teamData = [
-        {date: 1683842400, username: 'UserA', state: 2}
+        {date: 1683849600, username: 'UserA', state: 2}
       ];
       const expectedHTML =
           '<i class="ri-close-line icon icon-red"></i>' +
@@ -74,7 +74,7 @@ describe('Calendar Functions', () => {
       const date = '2023-05-12';
       const username = 'UserA';
       const teamData = [
-        {date: 1683842400, username: 'UserA', state: 3, comment: 'Working remotely'}
+        {date: 1683849600, username: 'UserA', state: 3, comment: 'Working remotely'}
       ];
       const expectedHTML =
           '<i class="ri-question-mark icon icon-orange"></i>' +
@@ -88,7 +88,7 @@ describe('Calendar Functions', () => {
       const date = '2023-05-12';
       const username = 'UserA';
       const teamData = [
-        {date: 1683842400, username: 'UserA', state: 3}
+        {date: 1683849600, username: 'UserA', state: 3}
       ];
       const expectedHTML =
           '<i class="ri-question-mark icon icon-orange"></i>' +
