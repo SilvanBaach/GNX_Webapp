@@ -216,14 +216,14 @@ function newFolderPopupSetup(){
  */
 function uploadFiles(formData){
     $.ajax({
-        url: "/fileshare/uploadFiles",
+        url: "/fileshare/uploadFiles/" + subDir,
         type: "POST",
         data:  formData,
         contentType: false,
         cache: false,
         processData:false,
         success: function(data) {
-            if (data === 'success') {
+            if (data.status === 'success') {
                 removeFileShareContent();
                 getFileListFromServer();
             } else {

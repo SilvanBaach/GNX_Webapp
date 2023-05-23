@@ -14,7 +14,7 @@ const rootDir = path.resolve(path.dirname(__dirname));
  */
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        let filePath = req.params.filePath;
+        let filePath = req.params.subDir;
         filePath = filePath.replaceAll("$SLASH$", "/");
         cb(null, rootDir + fileshareRoot + '/' + filePath)
     },
@@ -74,7 +74,7 @@ router.post('/uploadFiles/:subDir', upload.array('file', 10), (req, res, next) =
         error.httpStatusCode = 400
         return next(error)
     }
-    res.status(200).send({message: "Files uploaded successfully"});
+    res.status(200).send({message: "Files uploaded successfully", status: "success"});
 });
 
 module.exports = router;
