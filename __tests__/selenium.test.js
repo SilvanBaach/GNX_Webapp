@@ -1,4 +1,5 @@
 const {Builder, By, Key, until} = require('selenium-webdriver');
+const chrome = require('selenium-webdriver/chrome');
 const app = require('../server');
 
 const port = process.env.PORT || 3000;
@@ -12,7 +13,11 @@ describe('Selenium GUI Test', () => {
     server = app.listen(port, address, (err) => {
       console.log(`Genetix Webapp listening at http://${address}:${port}`);
     });
-    driver = await new Builder().forBrowser('chrome').build();
+    const options = new chrome.Options();
+    options.addArguments('--headless');
+    options.addArguments('--no-sandbox');
+    options.addArguments('--disable-dev-shm-usage');
+    driver = await new Builder().forBrowser('chrome').setChromeOptions(options).build();
   });
 
   afterAll(async () => {
