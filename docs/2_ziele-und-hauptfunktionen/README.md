@@ -4,51 +4,48 @@ Im Folgenden werden die Hauptanwendungsfälle aus Sicht der Administration darge
 
 ## Registrierungscodes verwalten
 
-Es muss möglich sein, neue Codes zu erstellen, abgelaufene Codes zu reaktivieren und gültige Codes zu deaktivieren. Beim Erstellen eines neuen Codes soll zudem ausgewählt werden können, welche Rolle dem neuen Benutzer zugeordnet wird bei der Registrierung. Mithilfe dieses generierten Codes kann sich ein weiteres Mitglied innerhalb der nächsten 24h in der Webapp registrieren.
+Es soll möglich sein, neue Registrierungscodes zu erstellen, abgelaufene Codes zu reaktivieren und gültige Codes zu deaktivieren. Beim Erstellen eines neuen Codes sollte auch ausgewählt werden können, welche Rolle dem neuen Benutzer nach der Registrierung zugewiesen wird. Mithilfe dieses generierten Codes kann sich ein neuer Benutzer innerhalb der nächsten 24 Stunden in der Webapp registrieren.
 
-## User Verwaltung
+## Benutzerverwaltung
 
-Es muss möglich sein alle Benutzerdaten zu editieren sowie das Passwort zurückzusetzen. Ebenfalls sollen User gesperrt und wieder entsperrt werden können. Die Benutzer sollen in eine Tablaren Ansicht dargestellt werden.
+Es soll möglich sein, alle Benutzerdaten zu bearbeiten, das Passwort zurückzusetzen und Benutzer zu sperren sowie zu entsperren. Die Benutzer sollten in einer tabellarischen Ansicht dargestellt werden.
 
-## Team Verwaltung
+## Teamverwaltung
 
-Es soll möglich sein, neue Teams anzulegen und wieder zu löschen, sowie bestehende Teams zu editieren. Ein Team muss mindestens einen einmaligen Namen haben sowie einem Team Typen zugeordnet werden.
+Es soll möglich sein, neue Teams anzulegen und bestehende Teams zu bearbeiten oder zu löschen. Ein Team sollte mindestens einen einmaligen Namen haben und einem Team-Typ zugeordnet werden können.
 
-## Team Typen Verwaltung
+## Team-Typenverwaltung
 
-Es soll möglich sein neue Team Typen zu erstellen und bestehende zu editieren. Löschen soll im Webapp selbst aber nicht möglich sein.
+Es soll möglich sein, neue Team-Typen zu erstellen und bestehende zu bearbeiten. Das Löschen von Teamtypen sollte jedoch nicht in der Webapp selbst möglich sein.
 
 # Mitglieder
 
-Im Folgenden werden die Hauptanwendungsfälle aus Sicht der Mitglieder dargelegt:
+Im Folgenden werden die Hauptanwendungsfälle aus Sicht der Mitglieder aufgeführt:
 
 ## Berechtigungen
 
-Jedes Mitglied kann in beliebig vielen Teams angehören. Die Teamtypen diese Teams wiederum, definieren welche Berechtigungen der einzelne Benutzer besitzt, sprich welche Seiten für ihn erreichbar sind und welche nicht.
+Jedes Mitglied kann beliebig vielen Teams angehören. Die Team-Typen, denen diese Teams zugeordnet sind, definieren die Berechtigungen des einzelnen Benutzers. Die Berechtigungen definieren welche Seiten zugänglich sind.
 
 ## Registrierung
 
-Die Registrierung eines neuen Benutzerkontos muss bei einem «Staff» Mitglied beantragt werden.
+Ein neues Benutzerkonto muss zuerst von einem Benutzer erstellt werden, welcher Administrationsrechte besitzt. Anschliessend kann der neue Benutzer sich zum ersten Mal Registrieren.
 
-Bei einer neuen Registrierung sollen verschiedene Daten vom Mitglied eingegeben werden können. Unter anderem Wohnort, Name, Alter. Die Registrierung soll nur möglich sein mithilfe eines einmaligen Registrierungscodes, welcher 24 h lang gültig ist.
+Bei der Registrierung sollten verschiedene Daten vom Benutzer eingegeben werden können, einschliesslich Wohnort, Name und Alter. Die Registrierung sollte nur mithilfe eines einmaligen Registrierungscodes möglich sein, der 24 Stunden lang gültig ist.
 
-## Login
+## Anmeldung
 
-Jedes Vereinsmitglied soll sich über eine Login-Seite anmelden können. Das Mitglied soll sein Passwort maximal 5-mal falsch eingeben können, bevor der Benutzer gesperrt ist. Zudem soll es die Möglichkeit geben das Passwort via hinterlegte E-Mail-Adresse zurückzusetzen.
+Jedes Vereinsmitglied sollte sich über eine Anmeldeseite anmelden können. Das Mitglied sollte sein Passwort im Maximum 5-mal falsch eingeben können, bevor der Benutzer gesperrt wird. Es sollte auch die Möglichkeit geben, das Passwort über die hinterlegte E-Mail-Adresse zurückzusetzen.
 
 ## Dashboard
 
-Das Dashboard stellt die Startseite für jedes Vereinsmitglied dar. Hier sollen aktuelle Informationen, links zu Social-Media-Kanälen sowie die nächsten anstehenden Termine oder Events aufgezeigt werden.
+Das Dashboard sollte die Startseite für jedes Vereinsmitglied sein. Hier sollten aktuelle Informationen, Links zu Social-Media-Kanälen sowie die nächsten anstehenden Termine oder Events angezeigt werden.
 
-## Calendar
+## Kalender
 
-Das Ziel des Kalenders ist es, dass Teams Intern Trainingstermine finden können. Es soll möglich sein Zeitbereiche, Abwesenheit, Unklar oder Offen für jeden Tag zu konfigurieren. Zudem soll die Eingabe nicht auf die nächste Woche beschränkt sein, sondern beliebig in die Zukunft.
-
-In einer Tabelle soll ebenfalls basierend auf dem eingegebenen Kalenderdaten eine Auflistung der nächsten anstehenden Trainings generiert werden. Dabei soll konfigurierbar sein ab wie vielen Teilnehmern das Training stattfindet.
-
+Das Ziel des Kalenders ist es, dass Teams interne Trainingstermine finden können. Es sollte möglich sein, Zeitbereiche, Abwesenheiten, Unklarheiten oder Verfügbarkeiten für jeden Tag zu konfigurieren. Es sollte auch möglich sein, Termine beliebig weit in die Zukunft einzugeben. Eine Tabelle sollte auch auf der Grundlage der eingegebenen Kalenderdaten eine Liste der nächsten anstehenden Trainings generieren können. Dabei sollte die Konfiguration möglich sein, ab wie vielen Teilnehmern das Training stattfindet.
 ## Settings
 
-Die Settings Seite soll der Verwaltung des eigenen Benutzers dienen. Folgende Features soll diese Seite beinhalten:
+Die Einstellungs-Seite soll der Verwaltung des eigenen Benutzers dienen. Folgende Features soll diese Seite beinhalten:
 
 * Hochladen eines Profilbildes
 * Ändern der Accountdaten
@@ -56,16 +53,34 @@ Die Settings Seite soll der Verwaltung des eigenen Benutzers dienen. Folgende Fe
 * Löschen des Benutzers
 * Eingabe von Personenbezogenen Informationen
 
-## Drawboard
+## Zeichnungsfläche
 
-Das Drawboard ermöglicht es im Browser Team Taktikten zu besprechen. Es soll möglich sein, eigene Bilder hochzuladen, welche dann beschrieben werden können. Abspeichern, laden sowie herunterladen von Zeichnungen soll ebenfalls möglich sein.
+Die Zeichnungsfläche ermöglicht es im Browser Team Taktiken zu besprechen. Es soll möglich sein, eigene Bilder hochzuladen, welche dann beschrieben werden können. Abspeichern, laden sowie herunterladen von Zeichnungen soll ebenfalls möglich sein.
 
-## Fileshare
+## Datenablage
 
-Auf dem Fileshare soll man Dokumente herunterladen bzw. hochladen können. Das Hochladen soll jedoch in einer ersten Version den Administratoren vorbehalten sein. Somit dient er Fileshare am Anfangt erst mal als Downloadportal für Vereinsressourcen.
+Auf der Datenablage soll man Dokumente herunterladen bzw. hochladen können. Das Hochladen soll jedoch in einer ersten Version den Administratoren vorbehalten sein. Somit dient sie anfangs als Downloadportal für Vereinsressourcen.
+
+# Weitere Anforderungen
+
+Da diese Webapplikation möglichst modular aufgebaut werden soll, dient sie als Plattform für viele weitere Projekte oder Feature-Erweiterungen.
+
+Im Folgenden werden einige bereits angedachte Erweiterungen erläutert:
+
+## Statistik Seiten
+
+Es sollen für verschiedene Teams Statistikseiten erstellt werden. Dabei sollen die Informationen des jeweiligen Spiels via API in die Web-App geladen werden, wo diese dann veranschaulicht werden. Die Game-Accounts sollen beim Benutzer verlinkt werden.
+
+## Onlineshop
+
+Es soll einen Onlineshop geben, in welchem Mitglieder und gegebenenfalls auch Gäste einzelne gebrandete Fan-Artikel kaufen können. In einer ersten Phase sollen die Zahlungen sowie die Bestellungen beim Lieferanten manuell von der Vereinsadministration getätigt werden. Falls gewünscht könnten diese Teile in der Zukunft automatisiert werden.
+
+## Fileshare – Version 2.0
+
+Der Fileshare soll um ein vollumfängliches Berechtigungssystem erweitert werden. Damit können einzelne Mitglieder Daten hochladen und via Link freigeben. Ebenfalls sollen die einzelnen Teams einen privaten Ordner erhalten, worin sie Dateien teilen können.
 
 
-\
+
 \
 \
 \
