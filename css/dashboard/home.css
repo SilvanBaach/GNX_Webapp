@@ -1,4 +1,19 @@
-/*Just a test*/
-h1 {
-    color: rebeccapurple;
+.container {
+    display: flex;
+    justify-content: center;
+    margin: 0 2%;
+}
+
+.embedded-website {
+    width: 95%;
+    height: 900px;
+}
+
+.embedded-twitter {
+    width: 30%;
+}
+
+.training-column {
+    width: 20%;
+    margin-left: 2%;
 }
