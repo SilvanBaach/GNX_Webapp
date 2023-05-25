@@ -407,13 +407,3 @@ function buildNextTrainingTable(teamId){
         }
     });
 }
-
-
-module.exports = {
-    formatDate,
-    getMondayOfWeek,
-    getXDayOfWeek,
-    getDateFromDay,
-    getDataFromDay,
-    getSundayOfCurrentWeek
-};
