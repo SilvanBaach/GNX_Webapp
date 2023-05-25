@@ -38,9 +38,9 @@ jobs:
           npm ci 
 
       # test the apps
-      #- name: build
-      #  run: |
-      #    npx jest
+      - name: build
+        run: |
+          npx jest
 
   push_to_Docker_Hub:
     # The type of runner that the job will run on
