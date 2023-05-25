@@ -277,7 +277,7 @@ function getDataFromDay(date, username, teamData){
     const dateOrg = new Date(date);
     const epoch = Math.floor(new Date(dateOrg.getFullYear(), dateOrg.getMonth(), dateOrg.getDate()).getTime() / 1000);
 
-    const data = teamData.find(record => record.date === epoch && record.username === username);
+    const data = teamData.find(record => record.date == epoch && record.username == username);
     let newHTML;
     if(data){
         switch (data.state) {
