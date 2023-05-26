@@ -268,7 +268,7 @@ async function buildUserTable() {
         });
 
         // Create a td element with a button and icon for the blocked user
-        const statusIndicator = $("<div></div>").addClass("status-indicator-user");
+        const statusIndicator = $("<td><div></div></td>").addClass("status-indicator-user");
         if (!account.blocked) {
             statusIndicator.addClass("status-green");
         } else {
