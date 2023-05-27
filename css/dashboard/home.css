@@ -1,19 +1,28 @@
+.shadow-box{
+    margin-left: 18px;
+    width: 90vw;
+    height: 800px;
+}
 .container {
     display: flex;
     justify-content: center;
     margin: 0 2%;
 }
+.container div{
+    /* Additional styles for visualization */
+    padding: 10px;
+}
 
 .embedded-website {
-    width: 95%;
-    height: 900px;
+    width: 100%;
+    height:700px;
+    flex:1;
 }
-
-.embedded-twitter {
-    width: 30%;
+.twitter-timeline{
+    width: 400px;
+    height: 700px;
+    flex:0.5;
 }
-
 .training-column {
-    width: 20%;
-    margin-left: 2%;
+    flex: 0.5; /* Adjust the value to control the size of the last element */
 }
