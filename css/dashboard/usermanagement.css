@@ -56,11 +56,11 @@
     border-radius: 50%;
 }
 
-.status-indicator-user{
+.styled-table td div {
     width: 25px;
     height: 25px;
     border-radius: 50%;
-    margin-top: 25px
+    margin: auto;
 }
 
 th i{
