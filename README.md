@@ -118,9 +118,10 @@ It should be possible to configure from how many participants the training will 
 
 ## Screenshots 📸
 
-| Page                                                                   | Description |
-|:-----------------------------------------------------------------------|:------------|
-| ![image](https://place-hold.it/250x100/gray/black&text=tbd) <br/> Home | TBD         |
+| Page                                                                    | Description                                                                         |
+|:------------------------------------------------------------------------|:------------------------------------------------------------------------------------|
+| ![image](res/Screenshots/Landing_Page.png) <br/> Landing Page           | The Landing Page is the first Page that the user sees, once he opens the website    |
+| ![image](res/Screenshots/Login_Page.png) <br/> Login Page               | The Login Page is where the user can log in with his credentials                    |
 
 <br >
 
