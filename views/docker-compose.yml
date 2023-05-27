@@ -1,0 +1,30 @@
+---
+version: '3.8'
+services:
+  gnxcontainer:
+    container_name: gnxcontainer
+    image: jsonderulo/genetix:latest
+    networks:
+      - reverse-proxy-network
+    volumes:
+      - /home/genetix/.env:/usr/src/app/.env
+
+  caddy:
+    container_name: caddy
+    image: caddy:2.4.5
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - reverse-proxy-network
+    volumes:
+      - /home/genetix/docker/caddy/data:/data
+      - /home/genetix/docker/caddy/config:/config
+      - /home/genetix/docker/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - /home/genetix/docker/caddy/logs/:/var/log/
+
+networks:
+  reverse-proxy-network:
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
