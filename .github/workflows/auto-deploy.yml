@@ -78,7 +78,7 @@ jobs:
         with:
           image: ${{ secrets.DOCKERHUB_USERNAME }}/genetix:latest
           run: |
-            echo "runing the docker image"
+            echo "running the docker image"
             echo "Testing the nodejs  app endpoints"
             echo ${{ steps.docker_build.outputs.digest }}
 
@@ -140,7 +140,7 @@ jobs:
             echo "FILESHARE_ROOT_DIR=/filestorage" >> /home/genetix/.env
             echo "LISTEN_ADDRESS=0.0.0.0" >> /home/genetix/.env
             echo "PORT=3000" >> /home/genetix/.env
-            docker compose up -d
+            docker compose -f /home/genetix/docker/docker-compose.yml up -d
 
       
       
