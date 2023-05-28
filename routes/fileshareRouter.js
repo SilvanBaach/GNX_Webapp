@@ -22,7 +22,30 @@ const storage = multer.diskStorage({
         cb(null, file.originalname)
     }
 })
-const upload = multer({storage: storage})
+
+const fileFilter = async (req, file, cb) => {
+    try {
+        const filePath = req.params.subDir.replaceAll("$SLASH$", "/");
+        const fileInfo = await fileshare.returnFileList(filePath);
+        const existingFiles = fileInfo.map(file => file.name);
+        const fileName = file.originalname;
+
+        if (existingFiles.includes(fileName)) {
+            // File already exists
+            const error = new Error('At least one file already exists!');
+            error.statusCode = 500;
+            cb(error, false);
+        } else {
+            // File doesn't exist, allow upload
+            cb(null, true);
+        }
+    } catch (error) {
+        // Error checking file existence
+        cb(error, false);
+    }
+};
+
+const upload = multer({storage: storage, fileFilter: fileFilter})
 
 /**
  * GET all files from a directory
@@ -75,6 +98,20 @@ router.post('/uploadFiles/:subDir', upload.array('file', 10), (req, res, next) =
         return next(error)
     }
     res.status(200).send({message: "Files uploaded successfully", status: "success"});
+});
+
+/**
+ * POST route for uploading files
+ */
+router.post('/renameFile', (req, res, next) => {
+    const filepath = req.body.filePath;
+    const newFileName = req.body.newFileName;
+
+    fileshare.renameFile(filepath, newFileName).then((result) => {
+        res.status(200).send({message: 'File renamed successfully!', status: "success"});
+    }).catch((err) => {
+        res.status(500).send(err);
+    });
 });
 
 module.exports = router;

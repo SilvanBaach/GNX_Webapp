@@ -142,4 +142,62 @@ async function deleteFileOrFolder(subPath){
     });
 };
 
-module.exports = {returnFileList, deleteFileOrFolder, createFolder};
+/**
+ * Renames a file.
+ * @param {string} filePath - The current file path.
+ * @param {string} newName - The new file name.
+ * @returns {Promise<string>} - A promise that resolves to a success message.
+ */
+function renameFile(filePath, newName) {
+    const fullFilePath = path.join(rootDir, fileshareRoot, filePath.replaceAll('$SLASH$', '/'));
+    let isFolder = false;
+
+    fs.stat(fullFilePath, (err, stats) => {
+        if (stats.isDirectory()) {
+            isFolder = true;
+        }
+    });
+
+    if(!isFolder) {
+        return new Promise((resolve, reject) => {
+            const fileExtension = path.extname(fullFilePath);
+            const newFilePath = path.join(path.dirname(fullFilePath), newName);
+
+            if (!path.extname(newFilePath) && fileExtension) {
+                // Append the previous file extension to the new file name
+                const newFileNameWithExtension = `${newFilePath}${fileExtension}`;
+                fs.rename(fullFilePath, newFileNameWithExtension, (err) => {
+                    if (err) {
+                        console.error(err);
+                        reject(err);
+                    } else {
+                        resolve(`File renamed successfully to: ${newFileNameWithExtension}`);
+                    }
+                });
+            } else {
+                fs.rename(fullFilePath, newFilePath, (err) => {
+                    if (err) {
+                        console.error(err);
+                        reject(err);
+                    } else {
+                        resolve(`File renamed successfully to: ${newFilePath}`);
+                    }
+                });
+            }
+        });
+    } else {
+        //Rename the folder
+        return new Promise((resolve, reject) => {
+            fs.rename(fullFilePath, path.join(path.dirname(fullFilePath), newName), (err) => {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                } else {
+                    resolve(`Folder renamed successfully to: ${path.join(path.dirname(fullFilePath), newName)}`);
+                }
+            });
+        });
+    }
+}
+
+module.exports = {returnFileList, deleteFileOrFolder, createFolder, renameFile};

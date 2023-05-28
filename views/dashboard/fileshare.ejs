@@ -24,12 +24,14 @@
 <div class="fileshare-container" id="fileshare-container"></div>
 <div class="popup-container" id="popup-container-new-folder"></div>
 <div class="popup-container popup-container-delete" id="popup-container-delete"></div>
+<div class="popup-container popup-container-delete" id="popup-container-rename"></div>
 
 <script>
     $(document).ready(function () {
         //Popup setup
         const delPopup = deletePopupSetup();
         const newFolderPopup = newFolderPopupSetup();
+        const renamePopup = renamePopupSetup();
 
         //Basic loading of fileshare when site is loaded
         removeFileShareContent();
@@ -52,6 +54,13 @@
         $(document).off('click', '#delete-file').on('click', '#delete-file', function (e) {
             setDelPath($(this).data('path'));
             delPopup.open(e);
+        });
+
+        //Rename File
+        $(document).off('click', '#rename-file').on('click', '#rename-file', function (e) {
+            setDelPath($(this).data('path'));
+            $('#newFileName').val('');
+            renamePopup.open(e);
         });
 
         //create new folder

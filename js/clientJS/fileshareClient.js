@@ -7,9 +7,6 @@ let toDelPath = '';
 function removeFileShareContent(){
     //Removes all the file elements from the fileshare-container
     $("#fileshare-container").empty();
-
-    //Resets the upload action to the root
-    //$("#upload-form").attr("action", "/upload/" + subDir); //TODO
 }
 
 /**
@@ -33,6 +30,7 @@ function getFileListFromServer(){
         type: 'GET',
         success: function(data) {
             const files = data;
+            removeFileShareContent();
             $.each(files, function (index, file) {
                 appendFileLayout(file)
             });
@@ -45,7 +43,6 @@ function getFileListFromServer(){
 
 /**
  * This method generates a File icon and appends it to the fileshare-container
- * TODO refactor further
  * @param file The file object from which all the data is extracted
  */
 function appendFileLayout(file) {
@@ -84,9 +81,11 @@ function appendFileLayout(file) {
     if (file.type === 'directory'){
         fileLink.attr('id', 'directory-link');
         removeLink.attr('data-path', `${subDir}$SLASH$${file.name}`);
+        rename.attr('data-path', `${subDir}$SLASH$${file.name}`);
     }else {
         fileLink.attr('href', `/download/${subDir}$SLASH$${file.name}`);
         removeLink.attr('data-path', `${subDir}$SLASH$${file.name}`);
+        rename.attr('data-path', `${subDir}$SLASH$${file.name}`);
     }
 
     fileLink.append(fileNameElement);
@@ -226,6 +225,51 @@ function uploadFiles(formData){
             if (data.status === 'success') {
                 removeFileShareContent();
                 getFileListFromServer();
+            } else {
+                displayError(data);
+            }
+        },
+        error: function() {
+            displayError('Something went wrong! Maybe the file already exists on the server?');
+        }
+    });
+}
+
+/**
+ * This function sets up the "rename" popup
+ * @returns {Popup}
+ */
+function renamePopupSetup(){
+    const newRenamePopup = new Popup('popup-container-rename');
+    newRenamePopup.displayInputPopup("/res/others/question_black.png","Rename File","Rename","renameFile","newFileName");
+
+    $("#renameFile").click(function(){
+        const newName = $("#newFileName").val();
+        renameFile(toDelPath, newName);
+        newRenamePopup.close();
+    });
+
+    return newRenamePopup;
+}
+
+/**
+ * Renames a file
+ * @param filePath The path of the file to be renamed
+ * @param newName The new name of the file
+ */
+function renameFile(filePath, newName){
+    $.ajax({
+        url: "/fileshare/renameFile",
+        type: "POST",
+        data:  JSON.stringify({filePath: filePath, newFileName: newName}),
+        contentType: "application/json",
+        cache: false,
+        processData:false,
+        success: function(data) {
+            if (data.status === 'success') {
+                removeFileShareContent();
+                getFileListFromServer();
+                displaySuccess(data.message);
             } else {
                 displayError(data);
             }
