@@ -407,3 +407,14 @@ function buildNextTrainingTable(teamId){
         }
     });
 }
+
+if (process.env.NODE_ENV.toUpperCase() === 'TEST') {
+    module.exports = {
+        formatDate,
+        getMondayOfWeek,
+        getXDayOfWeek,
+        getDateFromDay,
+        getDataFromDay,
+        getSundayOfCurrentWeek
+    };
+}
