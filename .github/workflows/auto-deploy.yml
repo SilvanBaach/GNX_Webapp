@@ -126,6 +126,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_PRIV_KEY }}
           script: |
+            docker pull jsonderulo/genetix:latest
             echo "DB_USER=${{ secrets.DB_USER }}" > /home/genetix/.env
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> /home/genetix/.env
             echo "DB_HOST=192.168.0.245" >> /home/genetix/.env
