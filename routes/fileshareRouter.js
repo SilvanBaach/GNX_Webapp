@@ -114,4 +114,20 @@ router.post('/renameFile', (req, res, next) => {
     });
 });
 
+/**
+ * GET route for downloading files
+ */
+router.get('/download/:fileName', (req, res) => {
+    let fileName = req.params.fileName;
+    fileName = fileName.replaceAll("$SLASH$", "/");
+    const filePath = path.join(rootDir + fileshareRoot + '/' + fileName);
+
+    res.download(filePath, (err) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send({error: 'An error occurred while downloading the file'});
+        }
+    });
+});
+
 module.exports = router;

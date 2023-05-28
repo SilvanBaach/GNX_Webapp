@@ -83,7 +83,7 @@ function appendFileLayout(file) {
         removeLink.attr('data-path', `${subDir}$SLASH$${file.name}`);
         rename.attr('data-path', `${subDir}$SLASH$${file.name}`);
     }else {
-        fileLink.attr('href', `/download/${subDir}$SLASH$${file.name}`);
+        fileLink.attr('href', `/fileshare/download/${subDir}$SLASH$${file.name}`);
         removeLink.attr('data-path', `${subDir}$SLASH$${file.name}`);
         rename.attr('data-path', `${subDir}$SLASH$${file.name}`);
     }
