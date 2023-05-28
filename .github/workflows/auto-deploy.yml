@@ -108,9 +108,9 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_PRIV_KEY }}
           script: |
-            mkdir -p /home/genetix/docker/gnxcontainer/filestorage
-            chgrp genetix /home/genetix/docker/gnxcontainer/filestorage
-            chmod 774 /home/genetix/docker/gnxcontainer/filestorage
+            mkdir -p /home/genetix/docker/gnxcontainer/filestorage/root
+            chgrp genetix /home/genetix/docker/gnxcontainer/filestorage/root
+            chmod 774 /home/genetix/docker/gnxcontainer/filestorage/root
 
       - name: Copy caddy config file to Ubuntu server
         uses: appleboy/scp-action@master
