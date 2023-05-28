@@ -126,6 +126,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_PRIV_KEY }}
           script: |
+            docker pull jsonderulo/genetix:latest
             echo "DB_USER=${{ secrets.DB_USER }}" > /home/genetix/.env
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> /home/genetix/.env
             echo "DB_HOST=192.168.0.245" >> /home/genetix/.env
@@ -140,7 +141,7 @@ jobs:
             echo "FILESHARE_ROOT_DIR=/filestorage" >> /home/genetix/.env
             echo "LISTEN_ADDRESS=0.0.0.0" >> /home/genetix/.env
             echo "PORT=3000" >> /home/genetix/.env
-            docker compose up -d 
+            docker compose -f /home/genetix/docker/docker-compose.yml up -d
       
       
       
