@@ -12,6 +12,7 @@ const rootDir = path.resolve(path.dirname(path.dirname(__dirname)));
 function returnFileList(subPath) {
     return new Promise((resolve, reject) => {
         const filePath = rootDir + fileshareRoot + '/' + subPath;
+        console.log(filePath);
 
         //Read all Files from the given directory
         fs.readdir(filePath, (err, files) => {
