@@ -1,12 +1,12 @@
-
 const request = require('supertest');
 
-const { formatDate,
-    getMondayOfWeek,
-    getDataFromDay,
-    getSundayOfCurrentWeek,
-    getDateFromDay,
-    getXDayOfWeek,
+const {
+  formatDate,
+  getMondayOfWeek,
+  getDataFromDay,
+  getSundayOfCurrentWeek,
+  getDateFromDay,
+  getXDayOfWeek,
 } = require('../js/clientJS/teamCalendar.js');
 
 

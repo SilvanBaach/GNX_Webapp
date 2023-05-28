@@ -101,6 +101,17 @@ jobs:
             chmod 774 /home/genetix/docker/caddy/config
             chmod 774 /home/genetix/docker/caddy/logs
 
+      - name: Create filestorage dir
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_PRIV_KEY }}
+          script: |
+            mkdir -p /home/genetix/docker/gnxcontainer/filestorage/root
+            chgrp genetix /home/genetix/docker/gnxcontainer/filestorage/root
+            chmod 774 /home/genetix/docker/gnxcontainer/filestorage/root
+
       - name: Copy caddy config file to Ubuntu server
         uses: appleboy/scp-action@master
         with:
@@ -141,7 +152,7 @@ jobs:
             echo "FILESHARE_ROOT_DIR=/filestorage" >> /home/genetix/.env
             echo "LISTEN_ADDRESS=0.0.0.0" >> /home/genetix/.env
             echo "PORT=3000" >> /home/genetix/.env
-            docker compose up -d 
+            docker compose -f /home/genetix/docker/docker-compose.yml up -d
       
       
       
