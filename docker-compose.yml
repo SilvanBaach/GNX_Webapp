@@ -8,6 +8,7 @@ services:
       - reverse-proxy-network
     volumes:
       - /home/genetix/.env:/usr/src/app/.env
+      - /home/genetix/docker/gnxcontainer/filestorage:/usr/src/app/filestorage
 
   caddy:
     container_name: caddy
