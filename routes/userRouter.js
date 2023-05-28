@@ -4,8 +4,8 @@
 const express = require('express');
 const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
-const util = require("util");
 const bcrypt = require("bcrypt");
+const util = require("util");
 
 /**
  * POST route for updating the profile picture of a user
@@ -122,14 +122,14 @@ router.post('/deleteUser/:username', function (req, res) {
 async function updateUser(formData, userId) {
     const fields = ['fullName', 'email', 'phone', 'username', 'street', 'city', 'zip', 'steam', 'origin', 'riotgames', 'battlenet','resetpasswordtoken','resetpasswordexpires', 'blocked'];
     const updates = [];
+    const password = formData.password;
     delete formData.password;
 
     fields.forEach(field => {
-        if (field in formData) {
+        if (formData[field]) {
             updates.push(`${field} = $${updates.length + 1}`);
         }
     });
-
 
     if (updates.length) {
         const query = `UPDATE account
@@ -174,7 +174,6 @@ function updateUserPicture(base64, userId) {
  */
 async function updateUserPassword(password, userId) {
     const hash = await bcrypt.hashSync(password, 10);
-
 
     return new Promise((resolve, reject) => {
         pool.query('UPDATE account SET password = $1 WHERE id = $2', [hash, parseInt(userId)], (err) => {

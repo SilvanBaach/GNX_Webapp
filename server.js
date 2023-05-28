@@ -13,6 +13,7 @@ const registrationCodeRouter = require('./routes/registrationCodeRouter.js');
 const {router: userRouter} = require('./routes/userRouter.js');
 const registerRouter = require('./routes/registerRouter.js');
 const resetPasswordRouter = require('./routes/resetPasswordRouter.js');
+const fileshareRouter = require('./routes/fileshareRouter.js');
 
 /**
  * MIDDLEWARE
@@ -47,6 +48,7 @@ app.use('/teamtype', teamTypeRouter);
 app.use('/registrationcode', registrationCodeRouter);
 app.use('/register', registerRouter);
 app.use('/resetPassword', resetPasswordRouter);
+app.use('/fileshare', fileshareRouter);
 
 /**
  * MAIN ROUTES
@@ -58,6 +60,7 @@ app.get('/', checkAuthenticated,(req, res) => {
 app.get('/register', (req, res) => {
     res.render('register');
 });
+
 
 /**
  * Checks if the user is authenticated
