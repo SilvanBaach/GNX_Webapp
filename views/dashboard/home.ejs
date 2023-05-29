@@ -9,32 +9,36 @@
 </head>
 <body>
 <div class="text">Welcome <%= user.username%></div>
-
-<div class="container">
-    <div class="embedded-website">
-        <h2>News from Team Genetix</h2>
-        <iframe src="https://teamgenetix.ch/newsroom" class="embedded-website"></iframe>
-    </div>
-    <div class="embedded-twitter">
-        <h2>Tweets from Team Genetix</h2>
-        <a class="twitter-timeline" data-width="400" data-height="900" href="https://twitter.com/GenetixTeam">Tweets from Team Genetix</a>
-    </div>
-    <div class="training-column">
-        <h2>Upcoming Trainings</h2>
-        <table id="training-column" class="styled-table">
-            <thead>
-            <tr>
-                <th>Date</th>
-                <th>From</th>
-                <th>Until</th>
-                <th>Type</th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+<div class="content">
+    <div class="shadow-box">
+        <div class="container">
+            <div class="embedded-website">
+                <h2>Website Feed</h2>
+                <iframe src="https://teamgenetix.ch/newsroom" class="embedded-website"></iframe>
+            </div>
+            <div class="embedded-twitter">
+                <h2>Twitter Feed</h2>
+                <a class="twitter-timeline"  data-height="700" href="https://twitter.com/GenetixTeam">Tweets from Team Genetix</a>
+            </div>
+            <div class="training-column">
+                <h2>Upcoming Trainings</h2>
+                <table id="training-column" class="styled-table">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>From</th>
+                        <th>Until</th>
+                        <th>Type</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
+
 </body>
 </html>
 

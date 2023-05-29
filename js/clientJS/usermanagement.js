@@ -267,6 +267,7 @@ async function buildUserTable() {
             editUser(username);
         });
 
+        const statusIndicatorTd = $("<td></td>");
         // Create a td element with a button and icon for the blocked user
         const statusIndicator = $("<div></div>").addClass("status-indicator-user");
         if (!account.blocked) {
@@ -274,11 +275,11 @@ async function buildUserTable() {
         } else {
             statusIndicator.addClass("status-red");
         }
-
+        statusIndicatorTd.append(statusIndicator);
         button.append(icon);
         tdButton.append(button);
 
-        tr.append(tdUsername).append(tdTeam).append(tdFullname).append(tdPicture).append(statusIndicator).append(tdButton);
+        tr.append(tdUsername).append(tdTeam).append(tdFullname).append(tdPicture).append(statusIndicatorTd).append(tdButton);
         tableBody.append(tr);
     }
 }
