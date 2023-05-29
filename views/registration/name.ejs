@@ -13,11 +13,12 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
 
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="js/clientJS/imgUploadToDB.js"></script>
 </head>
 <body>
 <div id="nav-placeholder"></div>
 
-<h1 class="big-title title">Hi, INSERT NAME</h1>
+<h1 class="big-title title">Hi, <%= userdata.username %></h1>
 
 <p class="small-white-text text">You are just a few steps away from completing your profile registration!</p>
 
@@ -29,7 +30,7 @@
 </button>
 
 <p class="small-white-text">Please enter your full name</p>
-<form>
+<form action="/user/updateUser/<%= userdata.id %>" method="POST" id="the-form">
     <div class="form-row">
         <div>
             <label for="firstname" class="label-login">First Name *</label>
@@ -47,6 +48,28 @@
     // LOAD NAVIGATION BAR
     $(document).ready(function () {
         $("#nav-placeholder").load("/html/nav.html");
+    });
+
+    // HANDLE PROFILE PICTURE UPLOAD
+    const input = document.getElementById("fileInput");
+    input.addEventListener("change", async (e) => {
+        const userData = {
+            id: '<%= userdata.id %>',
+            registerCode: '<%= userdata.registrationCode %>'
+        };
+        const userId = userData.id;
+        await updateProfilePicture(e, userId);
+
+        // Display the chosen image in the img tag
+        const file = e.target.files[0];
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            const img = document.getElementById("profilePicture");
+            img.src = event.target.result;
+        };
+
+        reader.readAsDataURL(file);
     });
 </script>
 </body>

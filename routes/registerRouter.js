@@ -3,6 +3,8 @@
  */
 const express = require('express');
 const router = express.Router();
+const registrationLogic = require('../js/serverJS/registrationLogic.js');
+let userdataStorage = {};
 
 /**
  * GET register page
@@ -22,14 +24,14 @@ router.get('/name', (req, res) => {
  * GET address page
  */
 router.get('/address', (req, res) => {
-    res.render('registration/address.ejs')
+    res.render('registration/address.ejs', {userdata: userdataStorage})
 });
 
 /**
  * GET game accounts page
  */
-router.get('/gameAccounts', (req, res) => {
-    res.render('registration/gameAccounts.ejs')
+router.get('/gameaccounts', (req, res) => {
+    res.render('registration/gameAccounts.ejs', {userdata: userdataStorage})
 });
 
 /**
@@ -39,16 +41,20 @@ router.get('/success', (req, res) => {
     res.render('registration/success.ejs')
 });
 
+/**
+ * POST register page
+ */
 router.post('/', async (req, res) => {
     let {username, password, password2, email, registrationCode} = req.body;
-    let errors = await checkUserRegistration(registrationCode, username, email, password, password2)
+    let errors = await registrationLogic.checkUserRegistration(registrationCode, username, email, password, password2)
 
     if (errors.length > 0) {
         res.render("registration/register.ejs", {errors, username, password, password2, email, registrationCode});
     } else {
-        let userdata = await registerUser(registrationCode, username, email, password);
+        let userdata = await registrationLogic.registerUser(registrationCode, username, email, password);
         userdata.registrationCode = registrationCode;
         userdataStorage = userdata;
+        console.log("Registered user: " + userdata.id);
         res.render('registration/name.ejs', {userdata: userdata});
     }
 });
