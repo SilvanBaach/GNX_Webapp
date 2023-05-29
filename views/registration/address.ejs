@@ -20,7 +20,7 @@
 
 <img class="address-img" src="/res/teams/address.png"/>
 
-<form>
+<form action="/user/updateUser/<%= userdata.id %>" method="POST">
     <div class="form-row">
         <div>
             <label for="street" class="label-login">Street</label>
@@ -31,12 +31,12 @@
             <input type="text" id="city" name="city" class="input-login"/>
         </div>
         <div>
-            <label for="zip" class="label-login">ZIP Code</label>
-            <input type="number" id="zip" name="zip" class="input-login"/>
+            <label for="zipR" class="label-login">ZIP Code</label>
+            <input type="number" id="zip" name="zipR" class="input-login"/>
         </div>
     </div>
     <div class="button-container">
-        <button class="default login button" id="skip">Skip ➔</button>
+        <button type="button" class="default login button" id="skip">Skip ➔</button>
         <input type="submit" class="default login button" value="Next ➔"/>
     </div>
 </form>
@@ -45,6 +45,11 @@
     // LOAD NAVIGATION BAR
     $(document).ready(function () {
         $("#nav-placeholder").load("/html/nav.html");
+
+        // AJAX REQUEST FOR SKIPPING
+        $("#skip").click(function () {
+            window.location.href = "/register/gameaccounts";
+        });
     });
 </script>
 </body>

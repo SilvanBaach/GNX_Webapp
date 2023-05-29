@@ -15,11 +15,11 @@ router.post('/updatePicture/:id',  function (req, res) {
     const userId = req.params.id;
     const base64 = req.body;
 
-    if (req.user.id !== parseInt(userId)) {
+    /*if (req.user.id !== parseInt(userId)) {
         console.log("User tried to update the profile picture of another user!")
         res.status(500).send("There was an error updating the profile picture! Please try again later.");
         return;
-    }
+    }*/
 
     updateUserPicture(base64, userId).then(() => {
         res.status(200).send({picture: base64, message: "Profile Picture updated successfully"});
@@ -77,9 +77,37 @@ router.post('/updatePassword/:token',  async function (req, res) {
 router.post('/updateUser/:id', function (req, res) {
     const userId = req.params.id;
     const formData = req.body;
+    let register = 0;
+
+    if (formData.firstname) {
+        formData.fullName = formData.firstname + " " + formData.lastname;
+        register = 1;
+
+        delete formData.firstname;
+        delete formData.lastname;
+    }
+
+    if (formData.zipR){
+        formData.zip = formData.zipR;
+        delete formData.zipR;
+        register = 2;
+    }
+
+    if (formData.steam||formData.origin||formData.riotgames||formData.battlenet) {
+        register = 3;
+    }
 
     updateUser(formData, userId).then(() => {
-        res.status(200).send({message: "Information updated successfully"});
+        if (register === 1) {
+            res.redirect('/register/address')
+        }else if (register === 2){
+            res.redirect('/register/gameaccounts')
+        }else if (register === 3){
+            res.redirect('/register/success')
+        }
+        else {
+            res.status(200).send({message: "Information updated successfully"});
+        }
     }).catch(() => {
         res.status(500).send({message: "There was an error updating the information! Please try again later."});
     });
