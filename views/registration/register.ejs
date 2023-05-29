@@ -21,7 +21,14 @@
 
 <img class="teamImg" id="teamImg" src="/res/teams/register.png">
 
-<form>
+<div>
+    <% if (typeof errors != 'undefined') { %> <% errors.forEach(error => { %>
+        <p class="err-msg"><%= error.message %></p>
+    <% }) %>
+    <% } %>
+</div>
+
+<form action="/register" method="POST">
     <div style="margin-bottom: 5vh">
         <label for="registrationCode" class="label-login">Registration Code *</label>
         <input type="text" id="registrationCode" name="registrationCode" required class="input-login"/>
@@ -57,6 +64,10 @@
 <script>
     $(document).ready(function () {
         $("#nav-placeholder").load("html/nav.html");
+
+        $("#back").click(function () {
+            window.location.href = "/";
+        });
     });
 </script>
 </body>

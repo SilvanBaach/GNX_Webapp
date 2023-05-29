@@ -33,6 +33,13 @@ router.get('/calendar', function (req, res) {
 });
 
 /**
+ * GET dashboard page
+ */
+router.get('/fileshare', function (req, res) {
+    res.render('dashboard/fileshare.ejs', {user: req.user});
+});
+
+/**
  * GET user-management page
  */
 router.get('/usermanagement', function (req, res) {
