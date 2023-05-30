@@ -408,7 +408,7 @@ function buildNextTrainingTable(teamId){
     });
 }
 
-if (process.env.NODE_ENV === 'jest') {
+if (process.env.NODE_ENV.trim() === 'jest') {
     module.exports = {
         formatDate,
         getMondayOfWeek,
