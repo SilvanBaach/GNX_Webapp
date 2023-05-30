@@ -3,24 +3,33 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Welcome Page</title>
+    <title>Dashboard</title>
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     <link rel="stylesheet" href="/css/dashboard/home.css">
 </head>
 <body>
-<div class="text">Welcome <%= user.username%></div>
 <div class="content">
-    <div class="shadow-box">
-        <div class="container">
-            <div class="embedded-website">
-                <h2>Website Feed</h2>
+    <div class="header">
+        <div>
+            <p class="welcome">Welcome <%= user.username %> to</p>
+        </div>
+        <div>
+            <img src="/res/logo/logo_webheader_blue.jpg" alt="logo" class="logo">
+        </div>
+    </div>
+
+    <div class="shadowbox-container">
+        <div class="shadowbox-container-left">
+            <div class="shadow-box shadow-box-left" id="twt-shadowbox">
+                <a id="twitter-timeline" class="twitter-timeline" data-height="600px"
+                   href="https://twitter.com/GenetixTeam"></a>
+            </div>
+        </div>
+        <div class="shadowbox-container-right">
+            <div class="shadow-box shadow-box-right" style="height: 380px">
                 <iframe src="https://teamgenetix.ch/newsroom" class="embedded-website"></iframe>
             </div>
-            <div class="embedded-twitter">
-                <h2>Twitter Feed</h2>
-                <a class="twitter-timeline"  data-height="700" href="https://twitter.com/GenetixTeam">Tweets from Team Genetix</a>
-            </div>
-            <div class="training-column">
+            <div class="shadow-box shadow-box-right" style="margin-top: 20px; height: 250px">
                 <h2>Upcoming Trainings</h2>
                 <table id="training-column" class="styled-table">
                     <thead>
@@ -43,5 +52,8 @@
 </html>
 
 <script>
-getNextTrainings('<%= user.team.id %>')
+    $(document).ready(function() {
+        getNextTrainings('<%= user.team.id %>');
+    });
+
 </script>
