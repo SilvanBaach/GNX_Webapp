@@ -1,5 +1,5 @@
 <script src="/js/clientJS/imgUploadToDB.js"></script>
-<script src="/js/clientJS/passwordChecker.js"></script>
+<script src="/js/clientJS/passwordChecker.js" type="module"></script>
 
 <div class="text">Settings</div>
 <div class="content">
@@ -142,7 +142,7 @@
             }
 
             $.ajax({
-                url: '/user/updateUser',
+                url: '/user/updateUser/' + '<%= user.id %>',
                 method: 'POST',
                 data: formData,
                 success: function(response) {
