@@ -408,13 +408,15 @@ function buildNextTrainingTable(teamId){
     });
 }
 
-if (process.env.NODE_ENV.trim() === 'jest') {
-    module.exports = {
-        formatDate,
-        getMondayOfWeek,
-        getXDayOfWeek,
-        getDateFromDay,
-        getDataFromDay,
-        getSundayOfCurrentWeek
-    };
+if (typeof process !== "undefined") {
+    if (process.env.NODE_ENV.trim() === 'jest'){
+        module.exports = {
+            formatDate,
+            getMondayOfWeek,
+            getXDayOfWeek,
+            getDateFromDay,
+            getDataFromDay,
+            getSundayOfCurrentWeek
+        };
+    }
 }
