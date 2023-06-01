@@ -41,6 +41,7 @@
 The aim of this project is to write a web application for Team Genetix.\
 This should facilitate the internal communication and coordination of the individual teams, as well as make the work processes of the staff members smoother.\
 The portal should also be a foundation for further ideas and projects in the future.
+Here you can reach the [Webapp](https://webapp.teamgenetix.ch/).
 
 ## Details 🔍
 
@@ -118,16 +119,21 @@ It should be possible to configure from how many participants the training will 
 
 ## Screenshots 📸
 
-| Page                                                                    | Description                                                                         |
-|:------------------------------------------------------------------------|:------------------------------------------------------------------------------------|
-| ![image](res/Screenshots/Landing_Page.png) <br/> Landing Page           | The Landing Page is the first Page that the user sees, once he opens the website    |
-| ![image](res/Screenshots/Login_Page.png) <br/> Login Page               | The Login Page is where the user can log in with his credentials                    |
+| Page                                                                          | Description                                                                           |
+|:------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------|
+| ![image](res/Screenshots/Landing_Page.png) <br/> Landing Page                 | The Landing Page is the first Page that the user sees, once he opens the website.     |
+| ![image](res/Screenshots/Login_Page.png) <br/> Login Page                     | The Login Page is where the user can log in with his credentials.                     |
+| ![image](res/Screenshots/Home_Page.jpg) <br/> Home Page                       | The Home Page is the first Page after the log in.                                     |
+| ![image](res/Screenshots/Calendar_Page.jpg) <br/> Calendar Page               | The Calendar Page is the Page where the user can see and edit his training sessions.  |
+| ![image](res/Screenshots/User_Management_Page.jpg) <br/> User-Management Page | The User Management Page is only for admins to invite and manage existing users.      |
+| ![image](res/Screenshots/Team_Management_Page.jpg) <br/> Team-Management Page | The Team Management Page is to create new teams.                                      |
+| ![image](res/Screenshots/Settings_Page.jpg) <br/> Settings Page               | The Settings Page is where the user can modify his data's.                            |
 
 <br >
 
 # Documentation 📚
 
-You can find the documentation for the project in the [Wiki](https://genzhaw.github.io/GNX_Webapp/)
+You can find the documentation for the project in the [Software-Guidebook](https://genzhaw.github.io/GNX_Webapp/).
 
 ## Techstack and Tools 🧰
 
