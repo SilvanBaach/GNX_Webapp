@@ -248,12 +248,12 @@ async function buildUserTable() {
 
         const tr = $("<tr></tr>");
         const tdUsername = $("<td></td>").text(account.username);
-        const tdTeam = $("<td></td>").text("TBD");
+        const tdTeam = $("<td></td>").text(account.team_display);
         const tdFullname = $("<td></td>").text(account.fullname);
 
         // Create an img element with the picture URL and onerror event handler
         if (account.picture === '-') {
-            account.picture = "/res/others/blank-profile-picture.png";
+            account.picture = "/res/others/blank_profile_picture.png";
         }
 
         const img = $("<img>").attr("src", account.picture);
