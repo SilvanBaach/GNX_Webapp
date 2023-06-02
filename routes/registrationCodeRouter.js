@@ -6,10 +6,11 @@ const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 const util = require("util");
 
-router.post('/generateNewRegistrationCode/:teamtype', function (req, res) {
-    const teamtype = req.params.teamtype;
-    generateNewRegistrationCode(teamtype);
-    res.status(200).send("New Registration Code generated successfully");
+router.post('/generateNewRegistrationCode/:teamId', function (req, res) {
+    const teamId = req.params.teamId;
+    generateNewRegistrationCode(teamId).then(()=>{
+        res.status(200).send("New Registration Code generated successfully");
+    });
 });
 
 router.get('/getregistrationcodes', async (req, res) => {
@@ -24,7 +25,7 @@ router.post('/updateRegistrationCode/:code/:used', function (req, res) {
     res.status(200).send("Registration Code updated successfully");
 });
 
-async function generateNewRegistrationCode(teamtype) {
+function generateNewRegistrationCode(teamId) {
     //Generate Random Number as Code
     const min = 1000000;
     const max = 100000000;
@@ -34,16 +35,13 @@ async function generateNewRegistrationCode(teamtype) {
     const now = new Date();
     const epochTomorrow = Math.floor(now.getTime() / 1000) + 24 * 60 * 60;
 
-    //Get the Teamtype ID
-    const query = util.promisify(pool.query).bind(pool);
-    const results = await query(`SELECT id
-                                 FROM teamtype
-                                 WHERE name = $1`, [teamtype]);
 
-    pool.query('INSERT INTO registrationcode (code, used, validuntil, teamtype_fk) VALUES ($1, $2, $3, $4)', [randomNum, 0, epochTomorrow, results.rows[0].id], (err, result) => {
-        if (err) {
-            console.log(err);
-        }
+    return new Promise((resolve, reject) => {
+        pool.query('INSERT INTO registrationcode (code, used, validuntil, team_fk) VALUES ($1, $2, $3, $4)', [randomNum, 0, epochTomorrow, teamId], (err, result) => {
+            if (err) {
+                console.log(err);
+            }
+        });
     });
 }
 
@@ -53,7 +51,7 @@ async function getRegistrationCodes() {
     const epochLastWeek = Math.floor(now.getTime() / 1000) - 7 * 24 * 60 * 60;
 
     const query = util.promisify(pool.query).bind(pool);
-    const results = await query(`SELECT *, teamtype.displayname FROM registrationcode LEFT JOIN teamtype ON registrationcode.teamtype_fk = teamtype.id WHERE validuntil>$1 ORDER BY used, validuntil DESC`,[epochLastWeek]);
+    const results = await query(`SELECT *, team.displayname FROM registrationcode LEFT JOIN team ON registrationcode.team_fk = team.id WHERE validuntil>$1 ORDER BY used, validuntil DESC`,[epochLastWeek]);
 
     return results.rows.map(result => {
         const {code, validuntil, used, displayname} = result;

@@ -43,23 +43,34 @@ async function setupUserManagement() {
         });
 
         $("#create").click(function () {
-            const dropdownVal = $("#teamDropdown").val()
+            const dropdownVal = $("#teamDropdown").val();
 
-            //Create new Registration Code
-            $.ajax({
-                url: '/registrationcode/generateNewRegistrationCode/' + dropdownVal,
-                type: 'POST',
-                success: function (data) {
-                    console.log("Registration code created")
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.log("Error creating registration code:", errorThrown);
-                }
+            // Wrap the AJAX call in a promise
+            const generateRegistrationCode = new Promise((resolve, reject) => {
+                $.ajax({
+                    url: '/registrationcode/generateNewRegistrationCode/' + dropdownVal,
+                    type: 'POST',
+                    success: function (data) {
+                        console.log("Registration code created");
+                        resolve(); // Resolve the promise when the registration code is generated successfully
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log("Error creating registration code:", errorThrown);
+                        reject(); // Reject the promise if there is an error generating the registration code
+                    }
+                });
             });
+
             popup.close();
 
-            //Reload page
-            loadRegistrationCodeTable();
+            // Use the promise to ensure the code is loaded after the registration code is generated and the popup is closed
+            generateRegistrationCode
+                .then(() => {
+                    loadRegistrationCodeTable();
+                })
+                .catch(() => {
+                    // Handle the error if needed
+                });
         });
     });
 
@@ -149,16 +160,25 @@ async function loadRegistrationCodeTable(){
  * This method fetches the team types
  */
 async function fetchTeamTypes() {
-    const dropdownOptions = [];
     try {
-        return await $.ajax({
-            url: '/teamtype/getteamtypeOptions',
+        const teams = await $.ajax({
+            url: '/team/getteams',
             type: 'GET',
             dataType: 'json'
         });
+
+        // Create a list of objects with value and label properties
+        const teamList = teams.map(team => {
+            return {
+                value: team.id,
+                label: team.displayname
+            };
+        });
+
+        return teamList;
     } catch (error) {
-        console.error("ups");
-        return dropdownOptions;
+        console.error("Error occurred while fetching team types:", error);
+        return [];
     }
 }
 
