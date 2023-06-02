@@ -1,5 +1,4 @@
 <script src="/js/clientJS/imgUploadToDB.js"></script>
-<script src="/js/clientJS/passwordChecker.js" type="module"></script>
 
 <div class="text">Settings</div>
 <div class="content">
@@ -99,6 +98,11 @@
 </div>
 
 <script>
+    function isPasswordSecure(password) {
+        const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+        return passwordRegex.test(password);
+    }
+
     const input = document.getElementById("fileInput");
 
     $(document).ready(function () {

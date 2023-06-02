@@ -201,7 +201,7 @@ function editDay(username, date, e){
             //Add comment field
             $("#sub-data-container").empty().html('' +
                 '<label for="comment" class="input-label">Comment</label>' +
-                '<input type="text" id="comment" class="input-field"/>');
+                '<input type="text" id="comment" class="input-field" maxlength="10"/>');
         }else{
             $("#sub-data-container").empty();
         }

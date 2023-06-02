@@ -153,6 +153,9 @@ async function updateUser(formData, userId) {
     const password = formData.password;
     delete formData.password;
 
+    console.log(formData);
+    console.log(userId);
+
     fields.forEach(field => {
         if (formData[field]) {
             updates.push(`${field} = $${updates.length + 1}`);
@@ -164,7 +167,8 @@ async function updateUser(formData, userId) {
                        SET ${updates.join(', ')}
                        WHERE id = $${updates.length + 1}`;
         const values = Object.values(formData).filter(val => val !== undefined && val !== null);
-
+        console.log(query);
+        console.log(values);
         pool.query(query, [...values, parseInt(userId)], (err, result) => {
             if (err) {
                 console.log(err);

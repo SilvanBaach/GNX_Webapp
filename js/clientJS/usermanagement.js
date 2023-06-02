@@ -71,7 +71,7 @@ async function setupUserManagement() {
  */
 function setupPagination() {
     userPager = $("#userPager").anyPaginator({
-        itemsPerPage: 5,
+        itemsPerPage: 6,
         mode: 1,
         hideGoto: true,
         prevText: "&lsaquo; Previous",

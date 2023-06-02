@@ -1,4 +1,4 @@
-function getNextTrainings(teamId){
+function getNextTrainings(teamId) {
     const url = "/presence/nextTrainings/" + teamId;
     $.ajax({
         url: url,
@@ -7,8 +7,9 @@ function getNextTrainings(teamId){
             const tableBody = $("#training-column tbody");
             tableBody.empty();
 
+            const firstTwoTrainings = data.slice(0, 2); // Extract first two elements from the data array
 
-            data.forEach(function(training) {
+            firstTwoTrainings.forEach(function(training) {
                 const tr = $("<tr></tr>");
                 const tdDate = $("<td></td>").text(training.readable_date);
                 const tdFrom = $("<td></td>").text(training.starttime);
