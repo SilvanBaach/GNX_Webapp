@@ -150,14 +150,10 @@ router.post('/deleteUser/:username', function (req, res) {
 async function updateUser(formData, userId) {
     const fields = ['fullName', 'email', 'phone', 'username', 'street', 'city', 'zip', 'steam', 'origin', 'riotgames', 'battlenet','resetpasswordtoken','resetpasswordexpires', 'blocked'];
     const updates = [];
-    const password = formData.password;
     delete formData.password;
 
-    console.log(formData);
-    console.log(userId);
-
     fields.forEach(field => {
-        if (formData[field]) {
+        if (formData[field] !== undefined) {
             updates.push(`${field} = $${updates.length + 1}`);
         }
     });
@@ -167,8 +163,6 @@ async function updateUser(formData, userId) {
                        SET ${updates.join(', ')}
                        WHERE id = $${updates.length + 1}`;
         const values = Object.values(formData).filter(val => val !== undefined && val !== null);
-        console.log(query);
-        console.log(values);
         pool.query(query, [...values, parseInt(userId)], (err, result) => {
             if (err) {
                 console.log(err);
