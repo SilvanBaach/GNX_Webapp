@@ -6,6 +6,7 @@ services:
     image: jsonderulo/genetix:latest
     networks:
       - reverse-proxy-network
+    restart: unless-stopped
     volumes:
       - /home/genetix/.env:/usr/src/app/.env
       - /home/genetix/docker/gnxcontainer/filestorage:/usr/src/app/filestorage
@@ -18,6 +19,7 @@ services:
       - 443:443
     networks:
       - reverse-proxy-network
+    restart: unless-stopped
     volumes:
       - /home/genetix/docker/caddy/data:/data
       - /home/genetix/docker/caddy/config:/config
