@@ -4,7 +4,6 @@
 const express = require('express');
 const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
-const util = require("util");
 
 /**
  * GET route for getting all teams
