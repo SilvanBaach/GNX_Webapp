@@ -48,6 +48,6 @@ Die Infrastrukturarchitektur der Genetix-Webapp ist so konzipiert, dass sie die 
 * Protokollierung: Anwendungs- und Serverprotokolle werden mit einem Tool wie Amazon CloudWatch Logs oder Google Cloud Logging gesammelt und gespeichert, was die Fehlersuche und -behebung bei Problemen ermöglicht.
 
 ## Netzwerkplan
-![Component](picture/Netzwerkplan.png)
+![Component](../../res/docs/Netzwerkplan.png)
 
 
