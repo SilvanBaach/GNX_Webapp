@@ -34,7 +34,11 @@ function displayError(message)
         },
     }).showToast();
 }
-
+/**
+ * Displays a success toast notification with the specified message.
+ * @param {string} message - The message to be displayed in the success notification.
+ * @param {number} [duration=3000] - The duration (in milliseconds) for which the success notification should be displayed. Default is 3000ms (3 seconds).
+ */
 function displaySuccess(message, duration)
 {
     duration = duration || 3000;

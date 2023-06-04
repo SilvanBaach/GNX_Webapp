@@ -52,8 +52,8 @@ async function registerUser(registrationCode, username, email, password) {
     const result = await query(`INSERT INTO account (username, password, email) VALUES ($1, $2, $3) RETURNING id, password, email, username`, [username, hashedPassword, email]);
 
     //Make a teamlink for the user
-    const teamId = await query(`SELECT teamtype_fk FROM registrationcode WHERE code = $1`, [registrationCode]);
-    await query(`INSERT INTO teammembership (id, account_fk, team_fk) VALUES (DEFAULT, $1, $2)`, [result.rows[0].id, teamId.rows[0].teamtype_fk]);
+    const teamId = await query(`SELECT team_fk FROM registrationcode WHERE code = $1`, [registrationCode]);
+    await query(`INSERT INTO teammembership (id, account_fk, team_fk) VALUES (DEFAULT, $1, $2)`, [result.rows[0].id, teamId.rows[0].team_fk]);
 
     //Make Registration Code invalid
     await query(`UPDATE registrationcode SET used = $1 WHERE code = $2`, [1, registrationCode]);

@@ -1,5 +1,4 @@
 <script src="/js/clientJS/imgUploadToDB.js"></script>
-<script src="/js/clientJS/passwordChecker.js"></script>
 
 <div class="text">Settings</div>
 <div class="content">
@@ -94,11 +93,16 @@
         </form>
     </div>
     <div class="shadow-box whatever-shadow-box">
-        <h1 style="font-family: Orbitron, sans-serif;text-align: center">Placeholder</h1>
+        <img src="/res/teams/<%= user.teamtype.name %>.png" alt="teamicon" class="team-image" id="team-image">
     </div>
 </div>
 
 <script>
+    function isPasswordSecure(password) {
+        const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+        return passwordRegex.test(password);
+    }
+
     const input = document.getElementById("fileInput");
 
     $(document).ready(function () {
@@ -142,7 +146,7 @@
             }
 
             $.ajax({
-                url: '/user/updateUser',
+                url: '/user/updateUser/' + '<%= user.id %>',
                 method: 'POST',
                 data: formData,
                 success: function(response) {

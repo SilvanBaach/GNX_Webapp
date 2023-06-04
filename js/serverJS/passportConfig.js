@@ -88,13 +88,20 @@ function initialize(passport) {
                 return done(err);
             }
             let user = results.rows[0];
-            pool.query('SELECT team.id, team.displayname, team.weight FROM team LEFT JOIN teammembership ON teammembership.team_fk = team.id WHERE teammembership.account_fk = $1 ORDER BY team.weight DESC LIMIT 1', [user.id], function (err, result) {
+            pool.query('SELECT team.id, team.displayname, team.weight, team.teamtype_fk FROM team LEFT JOIN teammembership ON teammembership.team_fk = team.id WHERE teammembership.account_fk = $1 ORDER BY team.weight DESC LIMIT 1', [user.id], function (err, result) {
                 if (err) {
                     return done(err);
                 }
                 user.team = result.rows[0];
 
-                return done(null, results.rows[0]);
+                pool.query('SELECT * FROM teamtype WHERE id=$1', [user.team.teamtype_fk], function (err, result) {
+                    if (err) {
+                        return done(err);
+                    }
+                    user.teamtype = result.rows[0];
+
+                    return done(null, results.rows[0]);
+                });
             });
         });
     });

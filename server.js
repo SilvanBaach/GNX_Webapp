@@ -14,6 +14,7 @@ const {router: userRouter} = require('./routes/userRouter.js');
 const registerRouter = require('./routes/registerRouter.js');
 const resetPasswordRouter = require('./routes/resetPasswordRouter.js');
 const fileshareRouter = require('./routes/fileshareRouter.js');
+const {checkAuthenticated} = require('./js/serverJS/sessionChecker.js');
 
 /**
  * MIDDLEWARE
@@ -60,36 +61,5 @@ app.get('/', checkAuthenticated,(req, res) => {
 app.get('/register', (req, res) => {
     res.render('register');
 });
-
-
-/**
- * Checks if the user is authenticated
- * If yes, redirects to the dashboard
- * @param req
- * @param res
- * @param next
- * @returns {*}
- */
-function checkAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return res.redirect("/dashboard");
-    }
-    next();
-}
-
-/**
- * Checks if the user is not authenticated
- * If he has no session, redirects to the index page
- * @param req
- * @param res
- * @param next
- * @returns {*}
- */
-function checkNotAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect("/");
-}
 
 module.exports = app;

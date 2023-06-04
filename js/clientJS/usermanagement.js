@@ -43,23 +43,34 @@ async function setupUserManagement() {
         });
 
         $("#create").click(function () {
-            const dropdownVal = $("#teamDropdown").val()
+            const dropdownVal = $("#teamDropdown").val();
 
-            //Create new Registration Code
-            $.ajax({
-                url: '/registrationcode/generateNewRegistrationCode/' + dropdownVal,
-                type: 'POST',
-                success: function (data) {
-                    console.log("Registration code created")
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.log("Error creating registration code:", errorThrown);
-                }
+            // Wrap the AJAX call in a promise
+            const generateRegistrationCode = new Promise((resolve, reject) => {
+                $.ajax({
+                    url: '/registrationcode/generateNewRegistrationCode/' + dropdownVal,
+                    type: 'POST',
+                    success: function (data) {
+                        console.log("Registration code created");
+                        resolve(); // Resolve the promise when the registration code is generated successfully
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log("Error creating registration code:", errorThrown);
+                        reject(); // Reject the promise if there is an error generating the registration code
+                    }
+                });
             });
+
             popup.close();
 
-            //Reload page
-            loadRegistrationCodeTable();
+            // Use the promise to ensure the code is loaded after the registration code is generated and the popup is closed
+            generateRegistrationCode
+                .then(() => {
+                    loadRegistrationCodeTable();
+                })
+                .catch(() => {
+                    // Handle the error if needed
+                });
         });
     });
 
@@ -71,7 +82,7 @@ async function setupUserManagement() {
  */
 function setupPagination() {
     userPager = $("#userPager").anyPaginator({
-        itemsPerPage: 5,
+        itemsPerPage: 6,
         mode: 1,
         hideGoto: true,
         prevText: "&lsaquo; Previous",
@@ -149,20 +160,36 @@ async function loadRegistrationCodeTable(){
  * This method fetches the team types
  */
 async function fetchTeamTypes() {
-    const dropdownOptions = [];
     try {
-        return await $.ajax({
-            url: '/teamtype/getteamtypeOptions',
+        const teams = await $.ajax({
+            url: '/team/getteams',
             type: 'GET',
             dataType: 'json'
         });
+
+        // Create a list of objects with value and label properties
+        const teamList = teams.map(team => {
+            return {
+                value: team.id,
+                label: team.displayname
+            };
+        });
+
+        return teamList;
     } catch (error) {
-        console.error("ups");
-        return dropdownOptions;
+        console.error("Error occurred while fetching team types:", error);
+        return [];
     }
 }
 
 
+/**
+ * This method handles the action performed when the registration code button is clicked.
+ * It displays a confirmation popup to confirm the action and triggers the appropriate code update operation.
+ * @param {string} code - The registration code to be updated.
+ * @param {boolean} valid - Indicates whether the registration code is currently valid or not.
+ * @param {Event} event - The event object, typically triggered by a user action.
+ */
 function regCodeButtonAction(code, valid, event) {
     //Display a popup to confirm the action
     const question = valid ? "Do you really want to deactivate this registration code?" : "Do you really want to reactivate this registration code?";
@@ -241,12 +268,12 @@ async function buildUserTable() {
 
         const tr = $("<tr></tr>");
         const tdUsername = $("<td></td>").text(account.username);
-        const tdTeam = $("<td></td>").text("TBD");
+        const tdTeam = $("<td></td>").text(account.team_display);
         const tdFullname = $("<td></td>").text(account.fullname);
 
         // Create an img element with the picture URL and onerror event handler
-        if (account.picture === '-') {
-            account.picture = "/res/others/blank-profile-picture.png";
+        if (account.picture.length < 10) {
+            account.picture = "/res/others/blank_profile_picture.png";
         }
 
         const img = $("<img>").attr("src", account.picture);
@@ -382,34 +409,52 @@ async function deleteUser(e){
 }
 
 /**
- * This method updates the user data in the database
+ * This method updates a user's information.
+ * It collects the form data, sends an AJAX request to the server to update the user, and refreshes the user table.
  */
 async function updateUser() {
+    // Get the form and its data
     const form = document.getElementById('form');
     const formData = new FormData(form);
+
+    // Create an empty object to store the user data
     const data = {};
+
+    // Iterate over each key-value pair in the form data
     for (const [key, value] of formData.entries()) {
+        // Check if the value is not empty
         if (value) {
+            // Add the key-value pair to the data object
             data[key] = value;
         }
     }
+
+    // Find the user object to be updated from the userData array
     const user = dataAccessors.userData.find((user) => user.username === $("#username").val());
-    data["blocked"] = user?.blocked
 
+    // Set the "blocked" property of the data object to the current user's blocked status
+    data["blocked"] = user?.blocked;
 
+    // Send an AJAX request to update the user on the server
     await $.ajax({
         url: "/user/updateUser/" + $("#userid").val(),
         type: "POST",
         data: JSON.stringify(data),
         contentType: "application/json",
         success: function (data) {
+            // Hide the edit box
             $(".edit-box").hide();
-            displaySuccess("User updated successfully!")
+
+            // Display a success message
+            displaySuccess("User updated successfully!");
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.log("Error updating user:", errorThrown);
-            displayError("Error updating user! Try reloading the page.")
+            // Display an error message
+            displayError("Error updating user! Try reloading the page.");
         }
     });
-    buildUserTable()
+
+    // Refresh the user table
+    buildUserTable();
 }
