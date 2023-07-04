@@ -101,7 +101,7 @@ function getNextTrainings(teamId) {
     //Generate epoch and readable date for the next 14 days
     return pool.query(`WITH times AS (SELECT CAST(EXTRACT(epoch FROM day AT TIME ZONE 'CEST') AS INTEGER) AS time_series,
                         to_char(to_timestamp(EXTRACT(epoch FROM day AT TIME ZONE 'CEST')), 'DD.MM.YYYY') AS readable_date 
-                        FROM generate_series(current_date, current_date + interval '14 days', '1 day') AS day),
+                        FROM generate_series(current_date, current_date + interval '40 days', '1 day') AS day),
                         
                         --Get the presence data of the team
                         --Remove all rows where the state is 2 (absent) and date < today
