@@ -5,20 +5,21 @@ const express = require('express');
 const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 const util = require("util");
+const {checkAuthenticated} = require("../js/serverJS/sessionChecker");
 
-router.post('/generateNewRegistrationCode/:teamId', function (req, res) {
+router.post('/generateNewRegistrationCode/:teamId', checkAuthenticated, function (req, res) {
     const teamId = req.params.teamId;
     generateNewRegistrationCode(teamId).then(()=>{
         res.status(200).send("New Registration Code generated successfully");
     });
 });
 
-router.get('/getregistrationcodes', async (req, res) => {
+router.get('/getregistrationcodes', checkAuthenticated, async (req, res) => {
     const registrationCodes = await getRegistrationCodes();
     res.send(registrationCodes);
 });
 
-router.post('/updateRegistrationCode/:code/:used', function (req, res) {
+router.post('/updateRegistrationCode/:code/:used', checkAuthenticated, function (req, res) {
     const regCode = req.params.code;
     const used = req.params.used;
     updateRegistrationCode(regCode, used);

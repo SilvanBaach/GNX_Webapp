@@ -5,11 +5,12 @@ const express = require('express');
 const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 const util = require("util");
+const {checkAuthenticated} = require("../js/serverJS/sessionChecker");
 
 /**
  * GET route for getting all team types
  */
-router.get('/getteamtypes', function (req, res) {
+router.get('/getteamtypes', checkAuthenticated, function (req, res) {
     getTeamTypes().then((result) => {
         res.status(200).send(result.rows);
     }).catch(() => {
@@ -20,7 +21,7 @@ router.get('/getteamtypes', function (req, res) {
 /**
  * POST route for inserting a new team type
  */
-router.post('/insertteamtype', function (req, res) {
+router.post('/insertteamtype', checkAuthenticated, function (req, res) {
     const formData = req.body;
 
     insertTeamType(formData).then((result) => {
@@ -37,7 +38,7 @@ router.post('/insertteamtype', function (req, res) {
 /**
  * POST route for updating a team type
  */
-router.post('/updateteamtype', function (req, res) {
+router.post('/updateteamtype', checkAuthenticated, function (req, res) {
     const formData = req.body;
 
     updateTeamType(formData).then((result) => {
@@ -51,7 +52,7 @@ router.post('/updateteamtype', function (req, res) {
     });
 });
 
-router.get('/getteamtypeOptions', async (req, res) => {
+router.get('/getteamtypeOptions', checkAuthenticated, async (req, res) => {
     const teamtypeOptions = await getTeamTypeOptions();
     res.send(teamtypeOptions);
 });

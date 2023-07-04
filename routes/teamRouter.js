@@ -4,11 +4,12 @@
 const express = require('express');
 const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
+const {checkAuthenticated} = require("../js/serverJS/sessionChecker");
 
 /**
  * GET route for getting all teams
  */
-router.get('/getteams', function (req, res) {
+router.get('/getteams',  checkAuthenticated, function (req, res) {
     getTeams().then((result) => {
         res.status(200).send(result.rows);
     }).catch(() => {
@@ -19,7 +20,7 @@ router.get('/getteams', function (req, res) {
 /**
  * POST route for inserting a new team
  */
-router.post('/insertteam', function (req, res) {
+router.post('/insertteam', checkAuthenticated, function (req, res) {
     const formData = req.body;
 
     insertTeam(formData).then((result) => {
@@ -36,7 +37,7 @@ router.post('/insertteam', function (req, res) {
 /**
  * POST route for deleting a team
  */
-router.post('/deleteteam', function (req, res) {
+router.post('/deleteteam', checkAuthenticated, function (req, res) {
     const formData = req.body.id;
 
     deleteTeam(formData).then((result) => {
@@ -53,7 +54,7 @@ router.post('/deleteteam', function (req, res) {
 /**
  * POST route for updating a team
  */
-router.post('/updateteam', function (req, res) {
+router.post('/updateteam', checkAuthenticated, function (req, res) {
     const formData = req.body;
 
     updateTeam(formData).then((result) => {
