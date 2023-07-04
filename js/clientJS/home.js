@@ -7,7 +7,7 @@ function getNextTrainings(teamId) {
             const tableBody = $("#training-column tbody");
             tableBody.empty();
 
-            const firstTwoTrainings = data.slice(0, 2); // Extract first two elements from the data array
+            const firstTwoTrainings = data.slice(0, 4); // Extract first two elements from the data array
 
             firstTwoTrainings.forEach(function(training) {
                 const tr = $("<tr></tr>");
@@ -32,4 +32,25 @@ function getNextTrainings(teamId) {
             console.log(data);
         }
     });
+}
+
+function setupSwiper() {
+    const swiper = new Swiper('.swiper', {
+        // Optional parameters
+        direction: 'horizontal',
+        loop: true,
+
+        // Navigation arrows
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+
+        autoplay: {
+            delay: 3500, // time delay between slides change
+            disableOnInteraction: false, // continue autoplay after user interactions
+        }
+    });
+
+    return swiper;
 }

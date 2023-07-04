@@ -12,19 +12,19 @@
 
 .styled-table thead th {
     font-size: 1.2rem;
-    text-align: center;
+    text-align: left;
 }
 .styled-table thead tr {
     background-color: var(--sea-blue);
     color: #ffffff;
-    text-align: center;
+    text-align: left;
 
 }
 
 .styled-table th,
 .styled-table td {
     padding: 12px 15px;
-    text-align: center;
+    text-align: left;
 }
 
 .styled-table tbody tr {
