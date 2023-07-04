@@ -5,13 +5,12 @@ const express = require('express');
 const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 const util = require("util");
-const { checkAuthenticated } = require('../js/serverJS/sessionChecker.js'); //If logged in to Dashboard
 const { checkNotAuthenticated } = require('../js/serverJS/sessionChecker.js'); //If not logged in to Index
 
 /**
  * GET route for getting the presence data of a team
  */
-router.get('/getPresenceListFromTeam/:teamId/:epochFrom/:epochUntil', checkAuthenticated, function (req, res) {
+router.get('/getPresenceListFromTeam/:teamId/:epochFrom/:epochUntil', checkNotAuthenticated, function (req, res) {
     const teamId = req.params.teamId;
     const from = req.params.epochFrom;
     const until = req.params.epochUntil;
@@ -26,7 +25,7 @@ router.get('/getPresenceListFromTeam/:teamId/:epochFrom/:epochUntil', checkAuthe
 /**
  * POST route for saving the presence data of a user
  */
-router.post('/save', checkAuthenticated, function (req, res) {
+router.post('/save', checkNotAuthenticated, function (req, res) {
     const data = req.body;
     savePresence(data).then(() => {
         res.status(200).send('Presence data saved successfully!');
@@ -38,7 +37,7 @@ router.post('/save', checkAuthenticated, function (req, res) {
 /**
  * GET route for getting the next trainings of a team
  */
-router.get('/nextTrainings/:teamId', checkAuthenticated, function (req, res) {
+router.get('/nextTrainings/:teamId', checkNotAuthenticated, function (req, res) {
     const teamId = req.params.teamId;
 
     getNextTrainings(teamId).then((result) => {

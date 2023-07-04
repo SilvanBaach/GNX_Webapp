@@ -5,12 +5,12 @@ const express = require('express');
 const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 const util = require("util");
-const {checkAuthenticated} = require("../js/serverJS/sessionChecker");
+const {checkNotAuthenticated} = require("../js/serverJS/sessionChecker");
 
 /**
  * GET route for getting all team types
  */
-router.get('/getteamtypes', checkAuthenticated, function (req, res) {
+router.get('/getteamtypes', checkNotAuthenticated, function (req, res) {
     getTeamTypes().then((result) => {
         res.status(200).send(result.rows);
     }).catch(() => {
@@ -21,7 +21,7 @@ router.get('/getteamtypes', checkAuthenticated, function (req, res) {
 /**
  * POST route for inserting a new team type
  */
-router.post('/insertteamtype', checkAuthenticated, function (req, res) {
+router.post('/insertteamtype', checkNotAuthenticated, function (req, res) {
     const formData = req.body;
 
     insertTeamType(formData).then((result) => {
@@ -38,7 +38,7 @@ router.post('/insertteamtype', checkAuthenticated, function (req, res) {
 /**
  * POST route for updating a team type
  */
-router.post('/updateteamtype', checkAuthenticated, function (req, res) {
+router.post('/updateteamtype', checkNotAuthenticated, function (req, res) {
     const formData = req.body;
 
     updateTeamType(formData).then((result) => {
@@ -52,7 +52,7 @@ router.post('/updateteamtype', checkAuthenticated, function (req, res) {
     });
 });
 
-router.get('/getteamtypeOptions', checkAuthenticated, async (req, res) => {
+router.get('/getteamtypeOptions', checkNotAuthenticated, async (req, res) => {
     const teamtypeOptions = await getTeamTypeOptions();
     res.send(teamtypeOptions);
 });

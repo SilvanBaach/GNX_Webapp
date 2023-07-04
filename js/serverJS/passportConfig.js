@@ -100,7 +100,14 @@ function initialize(passport) {
                     }
                     user.teamtype = result.rows[0];
 
-                    return done(null, results.rows[0]);
+                    pool.query('SELECT * FROM teammembership WHERE account_fk=$1 AND team_fk=6', [user.id], function (err, result) {
+                        if (err) {
+                            return done(err);
+                        }
+                        user.isStaff = result.rows.length > 0;
+
+                        return done(null, results.rows[0]);
+                    });
                 });
             });
         });

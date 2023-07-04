@@ -12,7 +12,7 @@ const {checkAuthenticated} = require("../js/serverJS/sessionChecker");
  * POST route for updating the profile picture of a user
  * Only the currently logged-in user can update his picture
  */
-router.post('/updatePicture/:id', checkAuthenticated, function (req, res) {
+router.post('/updatePicture/:id', function (req, res) {
     const userId = req.params.id;
     const base64 = req.body;
 
@@ -32,7 +32,7 @@ router.post('/updatePicture/:id', checkAuthenticated, function (req, res) {
 /**
  * POST route for updating the password of a user
  */
-router.post('/updatePassword', checkAuthenticated, function (req, res) {
+router.post('/updatePassword', function (req, res) {
     const userId = req.user.id;
     const password = req.body.password1;
 
@@ -46,7 +46,7 @@ router.post('/updatePassword', checkAuthenticated, function (req, res) {
 /**
  * POST route for resetting the password of a user using a token as verification
  */
-router.post('/updatePassword/:token', checkAuthenticated,  async function (req, res) {
+router.post('/updatePassword/:token',  async function (req, res) {
     const token = req.params.token;
     const password = req.body.password;
 
@@ -75,7 +75,7 @@ router.post('/updatePassword/:token', checkAuthenticated,  async function (req, 
 /**
  * POST route for updating the information of a user
  */
-router.post('/updateUser/:id', checkAuthenticated, function (req, res) {
+router.post('/updateUser/:id', function (req, res) {
     const userId = req.params.id;
     const formData = req.body;
     let register = 0;
@@ -117,7 +117,7 @@ router.post('/updateUser/:id', checkAuthenticated, function (req, res) {
 /**
  * GET route for getting the user list of a team
  */
-router.get('/getUserList/:teamId', checkAuthenticated, function (req, res) {
+router.get('/getUserList/:teamId', function (req, res) {
     const teamId = req.params.teamId;
 
     getUsersFromTeam(teamId).then((result) => {
@@ -132,7 +132,7 @@ router.get('/getusers', async (req, res) => {
     res.send(users);
 });
 
-router.post('/deleteUser/:username', checkAuthenticated, function (req, res) {
+router.post('/deleteUser/:username', function (req, res) {
     const username = req.params.username;
     deleteUser(username).then(() => {
         res.status(200).send({message: "User deleted successfully"});

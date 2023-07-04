@@ -51,6 +51,7 @@
                 <span class="links_name">File Share</span>
             </a>
         </li>-->
+        <% if (user.isStaff) { %>
         <li>
             <a href="#" id="usermanagement">
                 <i class="ri-user-settings-line"></i>
@@ -63,6 +64,7 @@
                 <span class="links_name">Team Management</span>
             </a>
         </li>
+        <% } %>
         <li>
             <a href="#" id="settings">
                 <i class='bx bx-cog'></i>

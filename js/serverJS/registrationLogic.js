@@ -10,7 +10,7 @@ const {isPasswordSecure} = require('../../js/clientJS/passwordChecker.js');
  */
 async function isRegisterCodeValid(code) {
     const now = new Date();
-    const epochNow = Math.floor(now.getTime() / 1000) + 24 * 60 * 60;
+    const epochNow = Math.floor(now.getTime() / 1000);
 
     const query = util.promisify(pool.query).bind(pool);
     const results = await query(`SELECT *
