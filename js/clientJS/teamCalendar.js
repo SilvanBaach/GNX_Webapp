@@ -2,6 +2,7 @@
  * @fileoverview This file contains the javascript code for the team calendar page
  */
 const daysOfWeek = ["","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+let clipboard = null;
 
 /**
  * Format a date object into a string with the format dd.mm.yyyy
@@ -104,6 +105,7 @@ async function generateCalendar(users, currentDate, sessionUser, teamId) {
 
 
     const numRows = users.length;
+    console.log(numRows);
     const numCols = 8;
 
     // Create grid layout with 8 columns and for each user a row
@@ -130,10 +132,18 @@ async function generateCalendar(users, currentDate, sessionUser, teamId) {
                 if(users[i].username === sessionUser) {
                     if (jDayObj.getTime() >= today.getTime()) {
                         innerHTML +=
-                            '<a class="edit">' +
+                            '<a class="edit tooltip"><span class="tooltiptext">Edit</span>' +
                             '<i class="ri-edit-fill"></i>' +
+                            '</a>' +
+                            '<a class="paste tooltip"><span class="tooltiptext">Paste</span>' +
+                            '<i class="ri-clipboard-line"></i>' +
                             '</a>';
                     }
+
+                    innerHTML +=
+                        '<a class="copy tooltip"><span class="tooltiptext">Copy</span>' +
+                        '<i class="ri-file-copy-2-line"></i>' +
+                        '</a>';
                 }
                 innerHTML +=
                     '</div>' +
@@ -144,15 +154,29 @@ async function generateCalendar(users, currentDate, sessionUser, teamId) {
 
                 gridItem.innerHTML = innerHTML;
                 // Add click event handler to edit link
-                if(users[i].username === sessionUser && jDayObj.getTime() >= today.getTime()) {
+                if(users[i].username === sessionUser) {
                     if (jDayObj.getTime() >= today.getTime()) {
                         const editLink = gridItem.querySelector('.edit');
                         editLink.addEventListener('click', function (e) {
                             const username = this.closest('.edit-content-row').querySelector("#inputUsername").value;
                             const date = this.closest('.edit-content-row').querySelector("#inputDate").value;
-                            editDay(username, date, e);
+                            editDay(username, date, e, teamId);
+                        });
+
+                        const pasteLink = gridItem.querySelector('.paste');
+                        pasteLink.addEventListener('click', function (e) {
+                            const username = this.closest('.edit-content-row').querySelector("#inputUsername").value;
+                            const date = this.closest('.edit-content-row').querySelector("#inputDate").value;
+                            pasteDay(username, date);
                         });
                     }
+
+                    const copyLink = gridItem.querySelector('.copy');
+                    copyLink.addEventListener('click', function (e) {
+                        const username = this.closest('.edit-content-row').querySelector("#inputUsername").value;
+                        const date = this.closest('.edit-content-row').querySelector("#inputDate").value;
+                        copyDay(username, date, teamId);
+                    });
                 }
             }
 
@@ -165,57 +189,107 @@ async function generateCalendar(users, currentDate, sessionUser, teamId) {
 }
 
 /**
+ * This method copies a presence of a specific day
+ * @param username the username of the user
+ * @param date the date that should be copied
+ * @param teamId the ID of the team
+ * @returns {Promise<void>}
+ */
+async function copyDay(username, date, teamId) {
+    clipboard = await getPresenceFromDateAndUsername(date, username, teamId);
+    if (clipboard){
+        displaySuccess("Presence copied to clipboard");
+    }else{
+        displayError("No existing data found");
+    }
+}
+
+/**
+ * This method pastes the presence of a specific day
+ * @param username the username of the user
+ * @param date the date that should be pasted
+ * @returns {Promise<void>}
+ */
+async function pasteDay(username, date) {
+    if (clipboard) {
+        saveDay(username, date, clipboard.state, clipboard.from, clipboard.to, clipboard.comment);
+    } else {
+        displayError("No data in clipboard");
+    }
+}
+
+/**
+ * This method returns the presence of a specific day and user
+ * @param date the date
+ * @param username the username
+ * @param teamId the ID of the team
+ * @returns {Promise<*>}
+ */
+async function getPresenceFromDateAndUsername(date, username, teamId) {
+    const parts = date.split('.');
+    const day = parseInt(parts[0], 10);
+    const monthIndex = parseInt(parts[1], 10) - 1;
+    const year = parseInt(parts[2], 10);
+    const dateDat = new Date(year, monthIndex, day);
+    const teamData = await getDataFromTeam(dateDat, dateDat, teamId)
+    return teamData.find((element) => element.username === username);
+}
+
+/**
  * This method edits a presence of a specific day
  * @param username the username of the user
  * @param date the date that should be edited
  * @param e the event that triggered the edit
+ * @param teamId the ID of the team
  */
-function editDay(username, date, e){
+async function editDay(username, date, e, teamId) {
+
+    const elementWithUsername = await getPresenceFromDateAndUsername(date, username, teamId);
 
     //Configure Popup to edit day
     const popup = new Popup("popup-container-edit");
     popup.displayInputPopupCustom("/res/others/edit.png", "Edit Day", "Save", "btnSave", '' +
         '<label for="presenceType" class="input-label">Presence Type</label>' +
         '<select id="presenceType" class="input-field">' +
-            '<option value="" disabled selected>Select Presence Type</option>' +
-            '<option value="0">Present</option>' +
-            '<option value="1">Open</option>' +
-            '<option value="2">Absent</option>' +
-            '<option value="3">Unsure</option>' +
+        '<option value="" disabled selected>Select Presence Type</option>' +
+        '<option value="0">Present</option>' +
+        '<option value="1">Open</option>' +
+        '<option value="2">Absent</option>' +
+        '<option value="3">Unsure</option>' +
         '</select>' +
         '<div class="sub-data-container" id="sub-data-container">' +
         '</div>'
     );
 
     //Add event listener to select box
-    $("#presenceType").change(function(){
+    $("#presenceType").change(function () {
         const presenceType = $(this).val();
-        if(presenceType === "0"){
+        if (presenceType === "0") {
             //Add from until fields
             $("#sub-data-container").empty().html('' +
                 '<label for="from" class="input-label">From</label>' +
                 '<input type="time" id="from" class="input-field"/>' +
                 '<label for="until" class="input-label">Until</label>' +
-                '<input type="time" id="until" class="input-field"/>');
-        }else if(presenceType === "3"){
+                '<input type="time" id="until" class="input-field" value="23:59"/>');
+        } else if (presenceType === "3") {
             //Add comment field
             $("#sub-data-container").empty().html('' +
                 '<label for="comment" class="input-label">Comment</label>' +
-                '<input type="text" id="comment" class="input-field" maxlength="10"/>');
-        }else{
+                '<input type="text" id="comment" class="input-field" maxlength="20"/>');
+        } else {
             $("#sub-data-container").empty();
         }
     });
 
     //Add event listener to save button
-    $("#btnSave").click(function(e){
+    $("#btnSave").click(function (e) {
         //check if all fields are filled
         const presenceType = $("#presenceType").val();
         let from;
         let until;
         const comment = $("#comment").val();
 
-        if(presenceType){
+        if (presenceType) {
             if (presenceType === "0") {
                 from = $("#from").val();
                 until = $("#until").val();
@@ -224,7 +298,7 @@ function editDay(username, date, e){
                     return;
                 }
             }
-        }else{
+        } else {
             displayError("Please fill out all fields!");
             return;
         }
@@ -234,6 +308,16 @@ function editDay(username, date, e){
 
         popup.close(e);
     });
+
+    if(elementWithUsername) {
+        $('#presenceType').val(elementWithUsername.state).trigger('change');
+        if(elementWithUsername.state === 0) {
+            $("#from").val(elementWithUsername.from);
+            $("#until").val(elementWithUsername.until);
+        }else if(elementWithUsername.state === 3) {
+            $("#comment").val(elementWithUsername.comment);
+        }
+    }
 
     popup.open(e);
 }
@@ -300,7 +384,7 @@ function getDataFromDay(date, username, teamData){
                 newHTML =
                     '<i class="ri-question-mark icon icon-orange"></i>';
                 if(data.comment){
-                    newHTML += `<p class="info-text">Comment: ${data.comment}</p>`;
+                    newHTML += `<p class="info-text">${data.comment}</p>`;
                 }else{
                     newHTML += `<p class="info-text">Unsure</p>`;
                 }

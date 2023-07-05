@@ -2,7 +2,8 @@
     margin-left: 18px;
     width: calc(100% - 36px);
     min-width: 1200px;
-    height: 560px;
+    height: auto;
+    margin-bottom: 18px;
 }
 
 .nav-btn-container{
@@ -15,6 +16,7 @@
     display: grid;
     grid-template-rows: auto repeat(4, 1fr);
     grid-template-columns: repeat(8, 1fr);
+    height: auto;
 }
 
 .grid-item {
@@ -74,13 +76,13 @@
     background-color: rgba(136, 136, 136, 0.17);
 }
 
-.edit {
+.edit, .copy, .paste {
     color: #575756;
     font-size: 0.85rem;
     float: left;
 }
 
-.edit:hover {
+.edit:hover, .copy:hover, .paste:hover {
     color: red;
     text-decoration: none;
     cursor: pointer;
@@ -94,10 +96,6 @@
     display: flex;
     justify-content: right;
     width: 100%;
-}
-
-.edit{
-    font-size: 1rem;
 }
 
 .icon{
@@ -153,3 +151,43 @@
     height: auto;
     margin-bottom: 18px;
 }
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 70px;
+    background-color: #121212;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    top: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    transform: rotate(180deg);
+    border-color: transparent transparent #121212 transparent;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+

@@ -101,7 +101,6 @@
                 <a class="link" href="https://www.twitch.tv/teamgenetix_ch" target="_blank">
                     <div class="glass-btn amber-btn">
                         <img src="/res/socialmedia/twitch.png" alt="Twitch" class="glow-icon">
-                        <!--191,55,52-->
                     </div>
                 </a>
             </div>
@@ -114,7 +113,7 @@
 
 <script>
     $(document).ready(function () {
-        const swiper = setupSwiper();
+        setupSwiper();
         getNextTrainings('<%= user.team.id %>');
     });
 

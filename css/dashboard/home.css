@@ -83,13 +83,6 @@
     justify-content: center;
 }
 
-html,
-body {
-    background-color: #f2f7fd;
-    transition: all 0.3s;
-    height: 100%;
-}
-
 .button-container {
     display: flex;
     flex-direction: column;
@@ -109,74 +102,36 @@ body {
     border-radius: 7px;
     cursor: pointer;
     transition: all 0.3s;
+    height: 100%;
 }
 
 .link{
     width: 70%;
-    height: 100px;
+    height: calc(25% - 18px);
 }
 
 .glass-btn.blue-btn {
-    -webkit-box-shadow: 0px 20px 20px -170px rgba(0, 111, 255, 0.66);
-    -moz-box-shadow: 0px 20px 20px -10px rgba(0, 111, 255, 0.66);
-    box-shadow: 0px 30px 30px -10px rgba(0, 111, 255, 0.66);
+    box-shadow: 0 30px 30px -10px rgba(0, 111, 255, 0.66);
 }
 
 .glass-btn.blue-btn:hover {
-    -webkit-box-shadow: 0px 20px 35px -16px rgba(0, 111, 255, 0.65);
-    -moz-box-shadow: 0px 20px 35px -16px rgba(0, 111, 255, 0.65);
-    box-shadow: 0px 20px 35px -16px rgba(0, 111, 255, 0.65);
-}
-
-.glass-btn.blue-btn .content {
-    font-size: 4em;
-    font-family: "Roboto", sans-serif;
-    background: linear-gradient(to right, #006fff, #00acff 70%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0px 10px 37px rgba(0, 111, 255, 0.8);
+    box-shadow: 0 20px 35px -16px rgba(0, 111, 255, 0.65);
 }
 
 .glass-btn.red-btn {
-    -webkit-box-shadow: 0px 20px 20px -10px rgba(255, 16, 39, 0.5);
-    -moz-box-shadow: 0px 20px 20px -10px rgba(255, 16, 39, 0.5);
-    box-shadow: 0px 20px 20px -10px rgba(255, 16, 39, 0.5);
+    box-shadow: 0 20px 20px -10px rgba(255, 16, 39, 0.5);
 }
 
 .glass-btn.red-btn:hover {
-    -webkit-box-shadow: 0px 20px 35px -16px rgba(255, 16, 39, 0.57);
-    -moz-box-shadow: 0px 20px 35px -16px rgba(255, 16, 39, 0.57);
-    box-shadow: 0px 20px 35px -16px rgba(255, 16, 39, 0.57);
-}
-
-.glass-btn.red-btn .content {
-    font-size: 4em;
-    font-family: "Roboto", sans-serif;
-    background: linear-gradient(to right, #ff1027, #ff4f06 70%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0px 10px 37px rgba(255, 16, 39, 0.6);
+    box-shadow: 0 20px 35px -16px rgba(255, 16, 39, 0.57);
 }
 
 .glass-btn.amber-btn {
-    -webkit-box-shadow: 0px 20px 20px -10px rgba(255, 159, 16, 0.53);
-    -moz-box-shadow: 0px 20px 20px -10px rgba(255, 159, 16, 0.53);
-    box-shadow: 0px 20px 20px -10px rgba(255, 159, 16, 0.53);
+    box-shadow: 0 20px 20px -10px rgba(191, 55, 250, 0.8);
 }
 
 .glass-btn.amber-btn:hover {
-    -webkit-box-shadow: 0px 20px 35px -16px rgba(255, 159, 16, 0.6);
-    -moz-box-shadow: 0px 20px 35px -16px rgba(255, 159, 16, 0.6);
-    box-shadow: 0px 20px 35px -16px rgba(255, 159, 16, 0.6);
-}
-
-.glass-btn.amber-btn .content {
-    font-size: 4em;
-    font-family: "Roboto", sans-serif;
-    background: linear-gradient(to right, #ff8d00, #f7ad07 70%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0px 10px 37px rgba(255, 94, 16, 0.7);
+    box-shadow: 0 20px 35px -16px rgba(191, 55, 250, 0.8);
 }
 
 .glass-btn:hover {

@@ -108,6 +108,8 @@ async function loadRegistrationCodeTable(){
             const tableBody = $("#registration-codes-table tbody");
             tableBody.empty();
 
+            data = data.slice(0,10);
+
             data.forEach(function(registrationCode) {
                 const tr = $("<tr></tr>");
                 const tdCode = $("<td></td>").text(registrationCode.code);
