@@ -39,7 +39,8 @@
     "pg": "^8.10.0",
     "request": "^2.88.2",
     "swiper": "^10.0.3",
-    "twit": "^2.2.11"
+    "twit": "^2.2.11",
+    "typescript": "^5.1.6"
   },
   "devDependencies": {
     "chromedriver": "^113.0.0",
