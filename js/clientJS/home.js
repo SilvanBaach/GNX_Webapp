@@ -34,6 +34,10 @@ function getNextTrainings(teamId) {
     });
 }
 
+/**
+ * Setup of the Swiper picture gallery
+ * @returns {Swiper}
+ */
 function setupSwiper() {
     const swiper = new Swiper('.swiper', {
         // Optional parameters
@@ -52,4 +56,20 @@ function setupSwiper() {
     });
 
     return swiper;
+}
+
+function loadDiscordMembers(){
+    /*$.ajax({
+        url: '/discordbot/discord-members',
+        type: "GET",
+        success: function (data) {
+            const discordMemberDiv = $("#discord-members");
+            discordMemberDiv.empty();
+            console.log(data.onlineMembers)
+            discordMemberDiv.innerText = data.onlineMembers;
+        },
+        error: function (data) {
+            console.log(data);
+        }
+    });*/
 }

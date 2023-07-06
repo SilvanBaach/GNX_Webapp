@@ -134,6 +134,10 @@
     box-shadow: 0 20px 35px -16px rgba(191, 55, 250, 0.8);
 }
 
+.glass-btn.yellow-btn {
+    box-shadow: 0 20px 20px -10px rgba(255, 159, 16, 0.53);
+}
+
 .glass-btn:hover {
     background-color: rgba(18, 18, 18, 0.22);
     transform: translateY(-5px);

@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const passport = require('passport');
 const passportConfig = require('./js/serverJS/passportConfig.js');
+const DiscordBot = require('discord.js');
 const session = require('express-session');
 const flash = require('express-flash');
 const loginRouter = require('./routes/loginRouter.js');
@@ -15,6 +16,7 @@ const registerRouter = require('./routes/registerRouter.js');
 const resetPasswordRouter = require('./routes/resetPasswordRouter.js');
 const fileshareRouter = require('./routes/fileshareRouter.js');
 const teammembershipRouter = require('./routes/teammembershipRouter.js');
+const discordBotRouter = require('./routes/discordBotRouter.js');
 const {checkAuthenticated} = require('./js/serverJS/sessionChecker.js');
 
 /**
@@ -24,6 +26,13 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/'));
 app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit: '50mb', extended: true}));
+
+/**
+ * DISCORD BOT
+ */
+const guildId = "951559378354450483";
+const client = new DiscordBot.Client({intents: 3276799});
+client.login('MTA3NzUxODA1MzMyNTE1MjMzNw.G35rP0.IdSczTLz6Tiy6VDoeR-K-fJE5RV22DwZhG_woI');
 
 /**
  * PASSPORT SETUP / SESSION HANDLING
@@ -52,6 +61,7 @@ app.use('/register', registerRouter);
 app.use('/resetPassword', resetPasswordRouter);
 app.use('/fileshare', fileshareRouter);
 app.use('/teammembership', teammembershipRouter);
+app.use('/discordbot', discordBotRouter(client, guildId));
 
 /**
  * MAIN ROUTES
