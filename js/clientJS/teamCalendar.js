@@ -563,6 +563,7 @@ function buildNextTrainingTable(teamId) {
                 const tdDate = $("<td></td>").text(training.readable_date);
                 const tdFrom = $("<td></td>").text(training.starttime);
                 const tdUntil = $("<td></td>").text(training.endtime);
+                const tdDuration = $("<td></td>").text(training.duration);
                 const tdType = $("<td></td>");
 
                 const statusIndicator = $("<div></div>").addClass("status-indicator");
@@ -573,7 +574,7 @@ function buildNextTrainingTable(teamId) {
                 }
                 tdType.append(statusIndicator)
 
-                tr.append(tdDate).append(tdFrom).append(tdUntil).append(tdType);
+                tr.append(tdDate).append(tdFrom).append(tdUntil).append(tdDuration).append(tdType);
                 tableBody.append(tr);
             });
         },

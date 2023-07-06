@@ -143,6 +143,8 @@
     margin-top: 18px;
     height: auto;
     margin-bottom: 18px;
+    min-width: 550px;
+    width: 40%;
 }
 
 .tooltip {
