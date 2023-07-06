@@ -219,7 +219,11 @@ async function updateUserPassword(password, userId) {
  * @returns {Promise<*>} a Promise that resolves to an array of users
  */
 function getUsersFromTeam(teamId){
-    return  pool.query(`SELECT username, team.id FROM account LEFT JOIN teammembership AS tm ON tm.account_fk = account.id LEFT JOIN team ON team.id = tm.team_fk WHERE team.id = $1`,[teamId]);
+    return  pool.query(`SELECT username, account.id AS userid, team.id, picture, tm.calendarorder FROM account 
+                            LEFT JOIN teammembership AS tm ON tm.account_fk = account.id 
+                            LEFT JOIN team ON team.id = tm.team_fk 
+                            WHERE team.id = $1
+                            ORDER BY tm.calendarorder DESC, username ASC`,[teamId]);
 }
 
 /**

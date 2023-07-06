@@ -14,6 +14,7 @@ const {router: userRouter} = require('./routes/userRouter.js');
 const registerRouter = require('./routes/registerRouter.js');
 const resetPasswordRouter = require('./routes/resetPasswordRouter.js');
 const fileshareRouter = require('./routes/fileshareRouter.js');
+const teammembershipRouter = require('./routes/teammembershipRouter.js');
 const {checkAuthenticated} = require('./js/serverJS/sessionChecker.js');
 
 /**
@@ -50,6 +51,7 @@ app.use('/registrationcode', registrationCodeRouter);
 app.use('/register', registerRouter);
 app.use('/resetPassword', resetPasswordRouter);
 app.use('/fileshare', fileshareRouter);
+app.use('/teammembership', teammembershipRouter);
 
 /**
  * MAIN ROUTES
