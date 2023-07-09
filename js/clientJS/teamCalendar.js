@@ -105,7 +105,7 @@ async function generateCalendar(users, currentDate, sessionUser, teamId) {
     }).join(""));
 
     //Give correct calendarorder
-    for(let x = 0; x < users.length; x ++){
+    for (let x = 0; x < users.length; x++) {
         users[x].calendarorder = users.length - x
     }
 
@@ -145,7 +145,7 @@ async function generateCalendar(users, currentDate, sessionUser, teamId) {
                 const userImage = document.createElement('img')
                 if (users[i].picture) {
                     userImage.src = users[i].picture
-                }else{
+                } else {
                     userImage.src = "/res/others/blank_profile_picture.png"
                 }
                 userImage.classList.add('user-profile-img')
@@ -558,25 +558,31 @@ function buildNextTrainingTable(teamId) {
             const tableBody = $("#team-table tbody");
             tableBody.empty();
 
-            data.forEach(function (training) {
-                const tr = $("<tr></tr>");
-                const tdDate = $("<td></td>").text(training.readable_date);
-                const tdFrom = $("<td></td>").text(training.starttime);
-                const tdUntil = $("<td></td>").text(training.endtime);
-                const tdDuration = $("<td></td>").text(training.duration);
-                const tdType = $("<td></td>");
-
-                const statusIndicator = $("<div></div>").addClass("status-indicator");
-                if (training.trainingtype === "sure") {
-                    statusIndicator.addClass("status-green");
-                } else {
-                    statusIndicator.addClass("status-orange");
-                }
-                tdType.append(statusIndicator)
-
-                tr.append(tdDate).append(tdFrom).append(tdUntil).append(tdDuration).append(tdType);
+            if (data.length === 0) {
+                const noDataText = $("<td></td>").attr('colspan', 5).addClass('no-data-found').text('NO DATA FOUND');
+                const tr = $("<tr></tr>").append(noDataText);
                 tableBody.append(tr);
-            });
+            } else {
+                data.forEach(function (training) {
+                    const tr = $("<tr></tr>");
+                    const tdDate = $("<td></td>").text(training.readable_date);
+                    const tdFrom = $("<td></td>").text(training.starttime);
+                    const tdUntil = $("<td></td>").text(training.endtime);
+                    const tdDuration = $("<td></td>").text(training.duration);
+                    const tdType = $("<td></td>");
+
+                    const statusIndicator = $("<div></div>").addClass("status-indicator");
+                    if (training.trainingtype === "sure") {
+                        statusIndicator.addClass("status-green");
+                    } else {
+                        statusIndicator.addClass("status-orange");
+                    }
+                    tdType.append(statusIndicator)
+
+                    tr.append(tdDate).append(tdFrom).append(tdUntil).append(tdDuration).append(tdType);
+                    tableBody.append(tr);
+                });
+            }
         },
         error: function (data) {
             console.log(data);

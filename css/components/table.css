@@ -84,3 +84,12 @@
     height: 25px;
     border-radius: 50%;
 }
+
+.styled-table .no-data-found{
+    text-align: center;
+}
+
+.no-data-found {
+    text-align: center;
+    color: rgba(114, 118, 125, 0.49);
+}
