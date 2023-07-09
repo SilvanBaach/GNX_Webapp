@@ -147,7 +147,7 @@ router.post('/deleteUser/:username',checkNotAuthenticated, function (req, res) {
 router.get('/getWebappMemberCount', async (req, res) => {
     const query = util.promisify(pool.query).bind(pool);
     const registeredUsers = await query('SELECT COUNT(*) FROM account');
-    const onlineUsers = await  query('WITH tmpdata AS (SELECT (sess->\'passport\'->>\'user\')::integer as user_id FROM "session") SELECT COUNT(*) FROM tmpdata WHERE user_id > 0')
+    const onlineUsers = await  query('WITH tmpdata AS (SELECT (sess->\'passport\'->>\'user\')::integer as user_id FROM "session") SELECT COUNT(DISTINCT user_id) FROM tmpdata WHERE user_id > 0')
 
     res.send({onlineMembers: onlineUsers.rows[0].count, totalMembers: registeredUsers.rows[0].count})
 });
