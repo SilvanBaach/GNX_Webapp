@@ -50,6 +50,7 @@
 .stats{
     width: 25%;
     min-width: 340px;
+    max-width: 400px;
 }
 
 .throwback{

@@ -6,21 +6,15 @@ const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 const bcrypt = require("bcrypt");
 const util = require("util");
-const {checkAuthenticated} = require("../js/serverJS/sessionChecker");
+const {checkNotAuthenticated} = require("../js/serverJS/sessionChecker");
 
 /**
  * POST route for updating the profile picture of a user
  * Only the currently logged-in user can update his picture
  */
-router.post('/updatePicture/:id', function (req, res) {
+router.post('/updatePicture/:id', checkNotAuthenticated, function (req, res) {
     const userId = req.params.id;
     const base64 = req.body;
-
-    /*if (req.user.id !== parseInt(userId)) {
-        console.log("User tried to update the profile picture of another user!")
-        res.status(500).send("There was an error updating the profile picture! Please try again later.");
-        return;
-    }*/
 
     updateUserPicture(base64, userId).then(() => {
         res.status(200).send({picture: base64, message: "Profile Picture updated successfully"});
@@ -32,7 +26,7 @@ router.post('/updatePicture/:id', function (req, res) {
 /**
  * POST route for updating the password of a user
  */
-router.post('/updatePassword', function (req, res) {
+router.post('/updatePassword', checkNotAuthenticated, function (req, res) {
     const userId = req.user.id;
     const password = req.body.password1;
 
@@ -75,7 +69,7 @@ router.post('/updatePassword/:token',  async function (req, res) {
 /**
  * POST route for updating the information of a user
  */
-router.post('/updateUser/:id', function (req, res) {
+router.post('/updateUser/:id',checkNotAuthenticated, function (req, res) {
     const userId = req.params.id;
     const formData = req.body;
     let register = 0;
@@ -117,7 +111,7 @@ router.post('/updateUser/:id', function (req, res) {
 /**
  * GET route for getting the user list of a team
  */
-router.get('/getUserList/:teamId', function (req, res) {
+router.get('/getUserList/:teamId',checkNotAuthenticated, function (req, res) {
     const teamId = req.params.teamId;
 
     getUsersFromTeam(teamId).then((result) => {
@@ -127,12 +121,18 @@ router.get('/getUserList/:teamId', function (req, res) {
     });
 });
 
+/**
+ * GET route for getting all users
+ */
 router.get('/getusers', async (req, res) => {
     const users = await getUsers();
     res.send(users);
 });
 
-router.post('/deleteUser/:username', function (req, res) {
+/**
+ * POST route for deleting a user
+ */
+router.post('/deleteUser/:username',checkNotAuthenticated, function (req, res) {
     const username = req.params.username;
     deleteUser(username).then(() => {
         res.status(200).send({message: "User deleted successfully"});
@@ -141,6 +141,16 @@ router.post('/deleteUser/:username', function (req, res) {
     });
 });
 
+/**
+ * GET route for Webapp member count
+ */
+router.get('/getWebappMemberCount', async (req, res) => {
+    const query = util.promisify(pool.query).bind(pool);
+    const registeredUsers = await query('SELECT COUNT(*) FROM account');
+    const onlineUsers = await  query('WITH tmpdata AS (SELECT (sess->\'passport\'->>\'user\')::integer as user_id FROM "session") SELECT COUNT(*) FROM tmpdata WHERE user_id > 0')
+
+    res.send({onlineMembers: onlineUsers.rows[0].count, totalMembers: registeredUsers.rows[0].count})
+});
 
 /** Updates the information of a user in the database
  * This method is generic and can be used to update any field of the user

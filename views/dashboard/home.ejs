@@ -78,14 +78,27 @@
             <h2>Live Stats</h2>
             <div class="live-stat-container">
                 <div class="discord-data">
-                    <img src="/res/logo/logo_new_small.png"  class="server-img"/> <!-- TODO: Get Icon from Discord and Data -->
+                    <img src="/res/logo/logo_new_small.png"  class="server-img"/>
                     <div class="main-data">
-                        <p class="server-name-box">Team Genetix</p>
+                        <p class="server-name-box">Team Genetix Discord</p>
                         <div class="online-container">
                             <i class="online-indicator"></i>
-                            <p class="member-text" id="onlineMembers">XX</p>
+                            <p class="member-text" id="onlineMembers">...</p>
                             <i class="offline-indicator" style="margin-left: 10px"></i>
-                            <p class="member-text" id="totalMembers">XX</p>
+                            <p class="member-text" id="totalMembers">...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="discord-data">
+                    <img src="/res/logo/logo_new_small.png"  class="server-img"/>
+                    <div class="main-data">
+                        <p class="server-name-box">Webapplication</p>
+                        <div class="online-container">
+                            <i class="online-indicator"></i>
+                            <p class="member-text" id="onlineMembersW">...</p>
+                            <i class="offline-indicator" style="margin-left: 10px"></i>
+                            <p class="member-text" id="totalMembersW">...</p>
                         </div>
                     </div>
                 </div>
@@ -131,6 +144,7 @@
         setupSwiper();
         getNextTrainings('<%= user.team.id %>');
         loadDiscordMembers();
+        loadWebappMembers();
     });
 
 </script>

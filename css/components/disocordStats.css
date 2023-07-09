@@ -1,40 +1,30 @@
 .discord-data{
     display:flex;
     height:auto;
-    justify-content: center;
     background-color:#37393e;
     border-radius: 7px;
     padding: 12px;
     margin-top: 27px;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 .server-img{
-    background-position:50% 50%;
-    bottom:0;
-    cursor:pointer;
     height:50px;
-    left:0;
-    position:relative;
-    right:0;
-    top:0;
     width:50px;
+    left: 10px;
     border-radius:15px;
-    flex:0 0 auto;
-    margin:0 10px 0 0
+    align-self: flex-start;
 }
 
 .server-name-box{
     color:#f6f6f7;
-    cursor:pointer;
     height:20px;
     font-family: Whitney, serif;
     font-size: 17px;
     font-weight: 600;
     letter-spacing: 1px;
-    margin: 4px 0;
-}
-.server-name-box:hover{
-    text-decoration:underline;
+    margin: 4px 0 4px 18px;
 }
 
 .offline-indicator,.online-indicator{
@@ -65,10 +55,13 @@
 .main-data{
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
 }
 
 .online-container {
     display: flex;
     flex-direction: row;
     align-items: center;
+    margin-left: 18px;
 }

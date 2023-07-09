@@ -58,6 +58,9 @@ function setupSwiper() {
     return swiper;
 }
 
+/**
+ * Loads the Discord Member Count
+ */
 function loadDiscordMembers(){
     $.ajax({
         url: '/discordbot/discord-members',
@@ -68,6 +71,28 @@ function loadDiscordMembers(){
 
             online.text(data.members.onlineMembers + " online")
             totalMembers.text(data.members.totalMembers + " members");
+        },
+        error: function (data) {
+            console.log(data);
+        }
+    });
+}
+
+/**
+ * Loads the Webapp Member Count
+ */
+function loadWebappMembers(){
+    $.ajax({
+        url: '/user/getWebappMemberCount',
+        type: "GET",
+        success: function (data) {
+            const online  = $("#onlineMembersW");
+            const totalMembers = $("#totalMembersW")
+
+            console.log(data)
+
+            online.text(data.onlineMembers + " online")
+            totalMembers.text(data.totalMembers + " members");
         },
         error: function (data) {
             console.log(data);
