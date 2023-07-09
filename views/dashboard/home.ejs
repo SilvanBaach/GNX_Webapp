@@ -83,9 +83,9 @@
                         <p class="server-name-box">Team Genetix</p>
                         <div class="online-container">
                             <i class="online-indicator"></i>
-                            <p class="member-text">57 members</p>
+                            <p class="member-text" id="onlineMembers">XX</p>
                             <i class="offline-indicator" style="margin-left: 10px"></i>
-                            <p class="member-text">223 members</p>
+                            <p class="member-text" id="totalMembers">XX</p>
                         </div>
                     </div>
                 </div>
@@ -130,7 +130,7 @@
     $(document).ready(function () {
         setupSwiper();
         getNextTrainings('<%= user.team.id %>');
-        //loadDiscordMembers();
+        loadDiscordMembers();
     });
 
 </script>

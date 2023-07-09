@@ -59,17 +59,18 @@ function setupSwiper() {
 }
 
 function loadDiscordMembers(){
-    /*$.ajax({
+    $.ajax({
         url: '/discordbot/discord-members',
         type: "GET",
         success: function (data) {
-            const discordMemberDiv = $("#discord-members");
-            discordMemberDiv.empty();
-            console.log(data.onlineMembers)
-            discordMemberDiv.innerText = data.onlineMembers;
+            const online  = $("#onlineMembers");
+            const totalMembers = $("#totalMembers")
+
+            online.text(data.members.onlineMembers + " online")
+            totalMembers.text(data.members.totalMembers + " members");
         },
         error: function (data) {
             console.log(data);
         }
-    });*/
+    });
 }
