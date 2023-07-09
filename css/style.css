@@ -7,6 +7,11 @@
     src: url(../fonts/Orbitron-VariableFont_wght.ttf);
 }
 
+@font-face {
+    font-family: Whitney;
+    src: url(../fonts/whitneymedium.otf);
+}
+
 .big-title {
     color: white;
     font-family: Orbitron, serif;

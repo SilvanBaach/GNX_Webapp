@@ -32,7 +32,7 @@ app.use(express.urlencoded({limit: '50mb', extended: true}));
  */
 const guildId = "951559378354450483";
 const client = new DiscordBot.Client({intents: 3276799});
-client.login('MTA3NzUxODA1MzMyNTE1MjMzNw.G35rP0.IdSczTLz6Tiy6VDoeR-K-fJE5RV22DwZhG_woI');
+client.login(process.env.DISCORD_TOKEN);
 
 /**
  * PASSPORT SETUP / SESSION HANDLING
