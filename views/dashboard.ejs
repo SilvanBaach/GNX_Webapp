@@ -48,6 +48,14 @@
                 <span class="links_name">Calendar</span>
             </a>
         </li>
+        <% if (user.team) { %>
+        <li>
+            <a href="#" id="championpool">
+                <i class='bx bx-trophy'></i>
+                <span class="links_name">Calendar</span>
+            </a>
+        </li>
+        <% } %>
         <!--<li>
             <a href="#" id="fileshare">
                 <i class='bx bxs-file-image'></i>
@@ -100,7 +108,8 @@
         {id: "calendar", url: "/dashboard/calendar", css: "/css/dashboard/calendar.css"},
         {id: "fileshare", url: "/dashboard/fileshare", css: "/css/dashboard/fileshare.css"},
         {id: "usermanagement", url: "/dashboard/usermanagement", css: "/css/dashboard/usermanagement.css"},
-        {id: "teammanagement", url: "dashboard/teammanagement", css: "/css/dashboard/teammanagement.css"}
+        {id: "teammanagement", url: "dashboard/teammanagement", css: "/css/dashboard/teammanagement.css"},
+        {id: "championpool", url: "dashboard/championpool", css: "/css/dashboard/championpool.css"}
     ];
 
     $(document).ready(function () {

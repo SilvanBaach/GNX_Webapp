@@ -1,0 +1,33 @@
+<script src="/js/clientJS/championpool.js"></script>
+
+<div class="text"><%= user.team.displayname%> Team Calendar</div>
+<div id="content">
+    <div class="shadow-box">
+        <p class="purple-title">Main Champions</p>
+        <div class="main-chp-container">
+
+        </div>
+    </div>
+
+    <div class="shadow-box">
+        <p class="purple-title">In Practice</p>
+        <div class="practice-chp-container">
+
+        </div>
+    </div>
+
+    <div class="shadow-box">
+        <p class="purple-title">Suggestions</p>
+        <div class="suggestions-chp-container">
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        buildMainChampionpoolTable();
+        console.log("Hello 2")
+    });
+</script>
