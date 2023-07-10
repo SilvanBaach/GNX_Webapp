@@ -133,9 +133,16 @@ function getNextTrainings(teamId) {
                             THEN 'unsure' ELSE 'sure'  END AS trainingtype FROM tmpData3 WHERE starttime < endtime)
                         
                         --Group the data by readable_date, starttime, endtime and trainingtype
-                        SELECT readable_date, starttime, endtime, trainingtype FROM tmpData4
-                        GROUP BY readable_date, starttime, endtime, trainingtype
-                        ORDER BY readable_date`, [teamId]);
+                       SELECT
+                           CASE
+                               WHEN TO_DATE(readable_date, 'dd.mm.yyyy') = CURRENT_DATE THEN 'Today'
+                               WHEN TO_DATE(readable_date, 'dd.mm.yyyy') = CURRENT_DATE + INTERVAL '1 day' THEN 'Tomorrow'
+                               ELSE readable_date
+                               END AS readable_date,
+                           starttime, endtime, trainingtype,
+                           CONCAT(EXTRACT(HOUR FROM (endtime::TIME - starttime::TIME)), ':', LPAD(EXTRACT(MINUTE FROM (endtime::TIME - starttime::TIME))::TEXT, 2, '0'),' h') AS duration FROM tmpData4
+                       GROUP BY readable_date,  starttime, endtime, trainingtype
+                       ORDER BY  TO_DATE(readable_date, 'dd.mm.yyyy');`, [teamId]);
 }
 
 module.exports = router;

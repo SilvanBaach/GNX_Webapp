@@ -1,6 +1,6 @@
 .shadow-box{
     margin-left: 18px;
-    width: calc(100% - 36px);
+    width: calc(100% - 54px);
     min-width: 1200px;
     height: auto;
     margin-bottom: 18px;
@@ -10,13 +10,6 @@
     display:flex;
     justify-content: space-between;
     margin-bottom: 18px;
-}
-
-.cal-container {
-    display: grid;
-    grid-template-rows: auto repeat(4, 1fr);
-    grid-template-columns: repeat(8, 1fr);
-    height: auto;
 }
 
 .grid-item {
@@ -150,6 +143,8 @@
     margin-top: 18px;
     height: auto;
     margin-bottom: 18px;
+    min-width: 550px;
+    width: 40%;
 }
 
 .tooltip {
@@ -190,4 +185,53 @@
     visibility: visible;
     opacity: 1;
 }
+
+.cal-container {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+}
+
+.row-container {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+}
+
+.cal-header {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+}
+
+.grid-item-username {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.user-profile-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.username-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.username-span {
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    max-width: 90%;
+}
+
 

@@ -1,11 +1,13 @@
-<script src="/js/clientJS/home.js"></script>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+    <script src="/js/clientJS/home.js"></script>
+
     <link rel="stylesheet" href="/css/dashboard/home.css">
+    <link rel="stylesheet" href="/css/components/disocordStats.css"/>
 </head>
 <body>
 <div class="content">
@@ -74,7 +76,33 @@
         </div>
         <div class="shadow-box stats">
             <h2>Live Stats</h2>
-            <p>Coming soon...</p>
+            <div class="live-stat-container">
+                <div class="discord-data">
+                    <img src="/res/logo/logo_new_small.png"  class="server-img"/>
+                    <div class="main-data">
+                        <p class="server-name-box">Team Genetix Discord</p>
+                        <div class="online-container">
+                            <i class="online-indicator"></i>
+                            <p class="member-text" id="onlineMembers">...</p>
+                            <i class="offline-indicator" style="margin-left: 10px"></i>
+                            <p class="member-text" id="totalMembers">...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="discord-data">
+                    <img src="/res/logo/webapp_logo.png"  class="server-img"/>
+                    <div class="main-data">
+                        <p class="server-name-box">Webapplication</p>
+                        <div class="online-container">
+                            <i class="online-indicator"></i>
+                            <p class="member-text" id="onlineMembersW">...</p>
+                            <i class="offline-indicator" style="margin-left: 10px"></i>
+                            <p class="member-text" id="totalMembersW">...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="shadow-box social-media">
             <h2>Social Media</h2>
@@ -94,7 +122,7 @@
 
                 <a class="link" href="https://discord.gg/zTgtTMdS" target="_blank">
                     <div class="glass-btn blue-btn">
-                        <img src="/res/socialmedia/discord.png" alt="Discord" class="glow-icon">
+                        <img src="/res/socialmedia/discord.png" alt="DiscordBot" class="glow-icon">
                     </div>
                 </a>
 
@@ -115,6 +143,8 @@
     $(document).ready(function () {
         setupSwiper();
         getNextTrainings('<%= user.team.id %>');
+        loadDiscordMembers();
+        loadWebappMembers();
     });
 
 </script>

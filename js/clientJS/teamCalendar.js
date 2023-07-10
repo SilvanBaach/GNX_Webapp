@@ -1,7 +1,7 @@
 /**
  * @fileoverview This file contains the javascript code for the team calendar page
  */
-const daysOfWeek = ["","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const daysOfWeek = ["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 let clipboard = null;
 
 /**
@@ -70,7 +70,7 @@ function getXDayOfWeek(dateString, offset) {
  */
 function getDateFromDay(date, dayOfWeek) {
     if (dayOfWeek === "") return "";
-    return formatDate(getXDayOfWeek(date, daysOfWeek.indexOf(dayOfWeek)-1));
+    return formatDate(getXDayOfWeek(date, daysOfWeek.indexOf(dayOfWeek) - 1));
 }
 
 /**
@@ -83,13 +83,14 @@ function getDateFromDay(date, dayOfWeek) {
  */
 async function generateCalendar(users, currentDate, sessionUser, teamId) {
     const calContainer = document.querySelector('.cal-container');
+    $('.cal-container').empty();
     const today = new Date();
 
     //Load data from monday to sunday
     const teamData = await getDataFromTeam(getMondayOfWeek(currentDate), getSundayOfCurrentWeek(currentDate), teamId)
 
     // Create the header of the calendar
-    $(".cal-container").html(daysOfWeek.map(day => {
+    $(".cal-header").html(daysOfWeek.map(day => {
         const dateStr = getDateFromDay(currentDate, day);
         const isToday = dateStr === formatDate(new Date());
         const headerClass = isToday ? "grid-header-today" : "grid-header";
@@ -103,13 +104,26 @@ async function generateCalendar(users, currentDate, sessionUser, teamId) {
         );
     }).join(""));
 
+    //Give correct calendarorder
+    for (let x = 0; x < users.length; x++) {
+        users[x].calendarorder = users.length - x
+    }
 
     const numRows = users.length;
-    console.log(numRows);
     const numCols = 8;
 
     // Create grid layout with 8 columns and for each user a row
     for (let i = 0; i < numRows; i++) {
+
+        const rowContainer = document.createElement('div');
+        rowContainer.classList.add('row-container');
+        rowContainer.setAttribute('draggable', 'true');
+        rowContainer.setAttribute('id', 'user-' + users[i].userid);
+        rowContainer.setAttribute('teamid', teamId);
+        rowContainer.addEventListener('dragstart', dragStart);
+        rowContainer.addEventListener('dragover', dragOver);
+        rowContainer.addEventListener('drop', drop);
+
         for (let j = 0; j < numCols; j++) {
             const gridItem = document.createElement('div');
             const dateStr = getDateFromDay(currentDate, daysOfWeek[j]);
@@ -121,7 +135,25 @@ async function generateCalendar(users, currentDate, sessionUser, teamId) {
 
             // Add username to first column
             if (j === 0) {
-                gridItem.innerText = users[i].username;
+                const userNameDiv = document.createElement('div');
+                userNameDiv.classList.add('username-container')
+
+                const userNameSpan = document.createElement('span');
+                userNameSpan.innerText = users[i].username;
+                userNameSpan.classList.add('username-span')
+
+                const userImage = document.createElement('img')
+                if (users[i].picture) {
+                    userImage.src = users[i].picture
+                } else {
+                    userImage.src = "/res/others/blank_profile_picture.png"
+                }
+                userImage.classList.add('user-profile-img')
+
+                userNameDiv.appendChild(userNameSpan);
+                userNameDiv.appendChild(userImage);
+
+                gridItem.appendChild(userNameDiv);
                 gridItem.classList.add('grid-item-username');
             } else {
                 let innerHTML =
@@ -129,7 +161,7 @@ async function generateCalendar(users, currentDate, sessionUser, teamId) {
                     '<div class="edit-content-row">' +
                     `<input type="text" value="${users[i].username}" style="display: none" id="inputUsername"/>` +
                     `<input type="text" value="${formatDate(getXDayOfWeek(currentDate, j - 1))}" style="display: none" id="inputDate"/>`;
-                if(users[i].username === sessionUser) {
+                if (users[i].username === sessionUser) {
                     if (jDayObj.getTime() >= today.getTime()) {
                         innerHTML +=
                             '<a class="edit tooltip"><span class="tooltiptext">Edit</span>' +
@@ -154,7 +186,7 @@ async function generateCalendar(users, currentDate, sessionUser, teamId) {
 
                 gridItem.innerHTML = innerHTML;
                 // Add click event handler to edit link
-                if(users[i].username === sessionUser) {
+                if (users[i].username === sessionUser) {
                     if (jDayObj.getTime() >= today.getTime()) {
                         const editLink = gridItem.querySelector('.edit');
                         editLink.addEventListener('click', function (e) {
@@ -180,13 +212,72 @@ async function generateCalendar(users, currentDate, sessionUser, teamId) {
                 }
             }
 
-            calContainer.appendChild(gridItem);
+            rowContainer.appendChild(gridItem);
         }
-    }
 
+        calContainer.appendChild(rowContainer);
+    }
 
     $("#currentWeekText").text("Week " + formatDate(getMondayOfWeek(currentDate)) + " - " + formatDate(getSundayOfCurrentWeek(currentDate)));
 }
+
+let draggedRow = null;
+
+function dragStart(event) {
+    draggedRow = this;
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/html', this.outerHTML);
+}
+
+
+function dragOver(event) {
+    event.preventDefault();
+    this.classList.add('drag-over');
+}
+
+async function drop(event) {
+    event.preventDefault();
+    if (this.classList.contains('row-container')) {
+        $('.drag-over').removeClass('drag-over');
+
+        if (draggedRow) {
+            this.parentNode.insertBefore(draggedRow, this);
+
+            // After updating DOM, calculate new order and save it
+            const rows = Array.from(document.querySelectorAll('.row-container'));
+            const newOrder = rows.map((row, index) => {
+                // get the user id from the row id (remove 'user-' prefix)
+                const userId = row.getAttribute('id').replace('user-', '');
+                return {
+                    userId: parseInt(userId),
+                    order: rows.length - index,
+                    teamId: parseInt(row.getAttribute('teamid'))
+                };
+            });
+
+            await saveNewOrder(newOrder)
+        }
+    }
+}
+
+/**
+ * This method updates the calendar order of a whole team
+ * @param newOrder
+ * @returns {Promise<void>}
+ */
+async function saveNewOrder(newOrder) {
+    $.ajax({
+        url: "/teammembership/updateCalendarOrder",
+        type: "POST",
+        data: {newOrder},
+        success: function () {
+            displaySuccess("Order saved successfully!")
+        }, error: function () {
+            displayError("Error saving Order! Please try again later.")
+        }
+    });
+}
+
 
 /**
  * This method copies a presence of a specific day
@@ -197,9 +288,9 @@ async function generateCalendar(users, currentDate, sessionUser, teamId) {
  */
 async function copyDay(username, date, teamId) {
     clipboard = await getPresenceFromDateAndUsername(date, username, teamId);
-    if (clipboard){
+    if (clipboard) {
         displaySuccess("Presence copied to clipboard");
-    }else{
+    } else {
         displayError("No existing data found");
     }
 }
@@ -212,7 +303,7 @@ async function copyDay(username, date, teamId) {
  */
 async function pasteDay(username, date) {
     if (clipboard) {
-        saveDay(username, date, clipboard.state, clipboard.from, clipboard.to, clipboard.comment);
+        saveDay(username, date, clipboard.state, clipboard.from, clipboard.until, clipboard.comment);
     } else {
         displayError("No data in clipboard");
     }
@@ -309,12 +400,12 @@ async function editDay(username, date, e, teamId) {
         popup.close(e);
     });
 
-    if(elementWithUsername) {
+    if (elementWithUsername) {
         $('#presenceType').val(elementWithUsername.state).trigger('change');
-        if(elementWithUsername.state === 0) {
+        if (elementWithUsername.state === 0) {
             $("#from").val(elementWithUsername.from);
             $("#until").val(elementWithUsername.until);
-        }else if(elementWithUsername.state === 3) {
+        } else if (elementWithUsername.state === 3) {
             $("#comment").val(elementWithUsername.comment);
         }
     }
@@ -357,13 +448,13 @@ async function getDataFromTeam(from, until, teamId) {
  * @param teamData data of the team
  * @returns {string} innerHTML
  */
-function getDataFromDay(date, username, teamData){
+function getDataFromDay(date, username, teamData) {
     const dateOrg = new Date(date);
     const epoch = Math.floor(new Date(dateOrg.getFullYear(), dateOrg.getMonth(), dateOrg.getDate()).getTime() / 1000);
 
     const data = teamData.find(record => record.date == epoch && record.username == username);
     let newHTML;
-    if(data){
+    if (data) {
         switch (data.state) {
             case 0:
                 newHTML =
@@ -383,14 +474,14 @@ function getDataFromDay(date, username, teamData){
             case 3:
                 newHTML =
                     '<i class="ri-question-mark icon icon-orange"></i>';
-                if(data.comment){
+                if (data.comment) {
                     newHTML += `<p class="info-text">${data.comment}</p>`;
-                }else{
+                } else {
                     newHTML += `<p class="info-text">Unsure</p>`;
                 }
                 break;
         }
-    }else {
+    } else {
         newHTML =
             '<i class="ri-subtract-line icon icon-grey"></i>' +
             '<p class="info-text">No data found</p>';
@@ -407,7 +498,7 @@ function getDataFromDay(date, username, teamData){
  * @param until end time of the presence
  * @param comment comment for the presence
  */
-function saveDay(username, date, presenceType, from, until, comment){
+function saveDay(username, date, presenceType, from, until, comment) {
     //ajax call to save data
     $.ajax({
         url: "/presence/save",
@@ -428,7 +519,7 @@ function saveDay(username, date, presenceType, from, until, comment){
             const year = parseInt(parts[2], 10);
             const dateDat = new Date(year, monthIndex, day);
             buildCalendar(dateDat);
-        },error: function () {
+        }, error: function () {
             displayError("Error saving data! Please try again later.")
         }
     });
@@ -458,7 +549,7 @@ async function getUsers(teamId) {
  * Builds the next training table for a team
  * @param teamId id of the team
  */
-function buildNextTrainingTable(teamId){
+function buildNextTrainingTable(teamId) {
     const url = "/presence/nextTrainings/" + teamId;
     $.ajax({
         url: url,
@@ -467,11 +558,17 @@ function buildNextTrainingTable(teamId){
             const tableBody = $("#team-table tbody");
             tableBody.empty();
 
-            data.forEach(function(training) {
+            if (data.length === 0) {
+                const noDataText = $("<td></td>").attr('colspan', 5).addClass('no-data-found').text('NO DATA FOUND');
+                const tr = $("<tr></tr>").append(noDataText);
+                tableBody.append(tr);
+            } else {
+                data.forEach(function (training) {
                     const tr = $("<tr></tr>");
                     const tdDate = $("<td></td>").text(training.readable_date);
                     const tdFrom = $("<td></td>").text(training.starttime);
                     const tdUntil = $("<td></td>").text(training.endtime);
+                    const tdDuration = $("<td></td>").text(training.duration);
                     const tdType = $("<td></td>");
 
                     const statusIndicator = $("<div></div>").addClass("status-indicator");
@@ -482,9 +579,10 @@ function buildNextTrainingTable(teamId){
                     }
                     tdType.append(statusIndicator)
 
-                    tr.append(tdDate).append(tdFrom).append(tdUntil).append(tdType);
+                    tr.append(tdDate).append(tdFrom).append(tdUntil).append(tdDuration).append(tdType);
                     tableBody.append(tr);
                 });
+            }
         },
         error: function (data) {
             console.log(data);
@@ -493,7 +591,7 @@ function buildNextTrainingTable(teamId){
 }
 
 if (typeof process !== "undefined") {
-    if (process.env.NODE_ENV.trim() === 'jest'){
+    if (process.env.NODE_ENV.trim() === 'jest') {
         module.exports = {
             formatDate,
             getMondayOfWeek,
