@@ -4,30 +4,33 @@
 <div id="content">
     <div class="shadow-box">
         <p class="purple-title">Main Champions</p>
-        <div class="main-chp-container">
-
-        </div>
+        <div class="main-chp-header"></div>
+        <div class="main-chp-container"></div>
     </div>
 
     <div class="shadow-box">
         <p class="purple-title">In Practice</p>
-        <div class="practice-chp-container">
-
-        </div>
+        <div class="practice-chp-header"></div>
+        <div class="practice-chp-container"></div>
     </div>
 
     <div class="shadow-box">
         <p class="purple-title">Suggestions</p>
-        <div class="suggestions-chp-container">
-
-        </div>
+        <div class="suggestions-chp-header"></div>
+        <div class="suggestions-chp-container"></div>
     </div>
 </div>
 
 
 <script>
     $(document).ready(function () {
-        buildMainChampionpoolTable();
-        console.log("Hello 2")
+        //buildMainChampionpoolTable();
+        // Example usage
+        const headerElement = ".main-chp-header";
+        const playerArray = ['Player 1', 'Player 2', 'Player 3', 'Player 4', 'Player 5'];
+
+        buildChampionpoolHeader(headerElement, playerArray);
+        buildChampionpoolContainer(headerElement, playerArray);
+
     });
 </script>

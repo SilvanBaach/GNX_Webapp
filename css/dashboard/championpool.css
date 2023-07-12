@@ -1,0 +1,237 @@
+.shadow-box{
+    margin-left: 18px;
+    width: calc(100% - 54px);
+    min-width: 1200px;
+    height: auto;
+    margin-bottom: 18px;
+}
+
+.nav-btn-container{
+    display:flex;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.grid-item {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    height: 125px;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.grid-header {
+    height: 75px;
+    background-color: #31B7BC;
+    color: #fff;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.current-week{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.current-date-text{
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.footer{
+    margin-top: 20px;
+}
+
+.date{
+    margin-top: 5px;
+    font-size: 0.9rem;
+}
+
+.grid-header-today{
+    height: 75px;
+    background-color: #381A53;
+    color: #fff;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.grid-item-today{
+    background-color: rgba(136, 136, 136, 0.17);
+}
+
+.edit, .copy, .paste {
+    color: #575756;
+    font-size: 0.85rem;
+    float: left;
+}
+
+.edit:hover, .copy:hover, .paste:hover {
+    color: red;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.cell-content-container{
+    width: 100%;
+}
+
+.edit-content-row{
+    display: flex;
+    justify-content: right;
+    width: 100%;
+}
+
+.icon{
+    font-size: 2.5rem;
+    font-weight: 500;
+    border-radius: 50%;
+}
+
+.icon-grey{
+    border: 3px solid #575756;
+    background-color: #b4b3b3;
+}
+
+.icon-green{
+    border: 3px solid green;
+    background-color: #01bd01;
+}
+
+.icon-red{
+    border: 3px solid darkred;
+    background-color: red;
+}
+
+.icon-orange{
+    border: 3px solid darkorange;
+    background-color: orange;
+}
+
+.info-text{
+    font-size: 0.8rem;
+    font-weight: 400;
+    margin-top: 10px;
+}
+
+.sub-data-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+.btn-container{
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    column-gap: 15px;
+}
+
+.potential-container{
+    margin-top: 18px;
+    height: auto;
+    margin-bottom: 18px;
+    min-width: 550px;
+    width: 40%;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 70px;
+    background-color: #121212;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    top: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    transform: rotate(180deg);
+    border-color: transparent transparent #121212 transparent;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+.cal-container {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+}
+
+.row-container {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+}
+
+.main-chp-header {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+}
+
+.grid-item-username {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.user-profile-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.username-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.username-span {
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    max-width: 90%;
+}
+
+
