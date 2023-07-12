@@ -51,4 +51,11 @@ router.get('/teammanagement', checkNotAuthenticated, (req, res) => {
     res.render('dashboard/teammanagement.ejs', { user: req.user });
 });
 
+/**
+ * GET role-management page
+ */
+router.get('/rolemanagement', checkNotAuthenticated, (req, res) => {
+    res.render('dashboard/rolemanagement.ejs', { user: req.user });
+});
+
 module.exports = router;

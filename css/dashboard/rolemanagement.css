@@ -1,0 +1,40 @@
+.shadow-box{
+    box-sizing: border-box;
+    margin-left: 18px;
+    margin-right: 18px;
+    width: calc(50% - 36px);
+}
+
+.content{
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 18px;
+}
+
+.btn-container{
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.add-btn-container{
+    display: flex;
+    justify-content: left;
+    column-gap: 18px;
+    width: 50%;
+}
+
+.remove-btn-container{
+    display: flex;
+    justify-content: right;
+    column-gap: 18px;
+    width: 50%;
+}
+
+button{
+    width: 175px;
+}
+
+.edit-box{
+    display: none;
+}

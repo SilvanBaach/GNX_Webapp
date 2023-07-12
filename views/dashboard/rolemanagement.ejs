@@ -1,0 +1,79 @@
+<script src="/js/clientJS/rolemanagement.js"></script>
+
+<div class="text">Role Management</div>
+<div class="content">
+    <!-- Role Management -->
+    <div class="shadow-box">
+        <p class="purple-title">Roles</p>
+        <button class="default green new-code" id="newRole">
+            <i class="ri-add-circle-line ri-lg"></i>
+            Create new
+        </button>
+        <table id="roleTable" class="styled-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Permissions</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="roleData" class="styled-table">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="shadow-box edit-box" id="roleEdit">
+        <p class="purple-title">Edit Role</p>
+        <form id="form" class="form">
+            <input type="number" value="" style="display: none" id="roleId"/>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="label-form" for="name">Name</label>
+                    <input class="input-form" type="text" id="name" name="name" value="" required>
+                </div>
+                <div class="form-group">
+                    <label class="label-form" for="description">Description</label>
+                    <textarea class="input-form" id="description" rows="4"></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="shadow-box">
+        <p class="purple-title">Manage Role assignment</p>
+        <div class="btn-container">
+            <div class="add-btn-container">
+                <button class="default green">
+                    <i class="ri-add-circle-line ri-lg"></i>
+                    to Team
+                </button>
+                <button class="default green">
+                    <i class="ri-add-circle-line ri-lg"></i>
+                    to User
+                </button>
+            </div>
+            <div class="remove-btn-container">
+                <button class="default red">
+                    <i class="ri-indeterminate-circle-line ri-lg"></i>
+                    from Team
+                </button>
+                <button class="default red">
+                    <i class="ri-indeterminate-circle-line ri-lg"></i>
+                    from User
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="popup-containerCreateRole" class="popup-container"></div>
+
+<script>
+    $(document).ready(function () {
+        setupCreateRolePopup();
+
+        loadData();
+    });
+</script>
