@@ -1,4 +1,5 @@
 const express = require('express');
+const fs = require('fs');
 const app = express();
 const passport = require('passport');
 const passportConfig = require('./js/serverJS/passportConfig.js');
@@ -21,6 +22,8 @@ const fileshareRouter = require('./routes/fileshareRouter.js');
 const teammembershipRouter = require('./routes/teammembershipRouter.js');
 const discordBotRouter = require('./routes/discordBotRouter.js');
 const {checkAuthenticated} = require('./js/serverJS/sessionChecker.js');
+const riotRouter = require('./routes/riotRouter.js');
+const riot = require('./js/serverJS/riot.js');
 
 /**
  * MIDDLEWARE
@@ -70,6 +73,39 @@ cron.schedule('* * 0 * * *', function() {
 });
 
 /**
+ * Get the newest DDragonData from the Riot API every morning at 3:00 AM
+ */
+cron.schedule('0 3 * * *', async function() {
+    // Create the file path by combining the folder path and file name
+    const filePath = "./res/riot/dragonData.json";
+    let jsonData;
+
+    try {
+        // Get the JSON data asynchronously and wait until it is ready
+        jsonData = await riot.getDDragonData();
+    } catch (err) {
+        console.error(`Error getting DDragon data: ${err}`);
+        return; // Exit the function if an error occurs
+    }
+
+    try {
+        // Check if the file exists
+        if (fs.existsSync(filePath)) {
+            // Delete the existing file
+            fs.unlinkSync(filePath);
+            console.log(`Deleted file: ${filePath}`);
+        }
+
+        // Create a new file with the JSON data
+        fs.writeFileSync(filePath, JSON.stringify(jsonData));
+        console.log(`Created file: ${filePath}`);
+    } catch (err) {
+        console.error(`Error replacing JSON file: ${err}`);
+    }
+});
+
+
+/**
  * ROUTERS
  */
 app.use('/login', loginRouter(passport));
@@ -84,6 +120,7 @@ app.use('/resetPassword', resetPasswordRouter);
 app.use('/fileshare', fileshareRouter);
 app.use('/teammembership', teammembershipRouter);
 app.use('/discordbot', discordBotRouter(client, guildId));
+app.use('/riot', riotRouter);
 
 /**
  * MAIN ROUTES

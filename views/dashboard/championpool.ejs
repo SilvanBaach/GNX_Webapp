@@ -1,5 +1,6 @@
 <script src="/js/clientJS/championpool.js"></script>
 
+
 <div class="text"><%= user.team.displayname%> Team Calendar</div>
 <div id="content">
     <div class="shadow-box">
@@ -21,16 +22,11 @@
     </div>
 </div>
 
+<div id="popup-containerChampions" class="popup-container"></div>
+
 
 <script>
     $(document).ready(function () {
-        //buildMainChampionpoolTable();
-        // Example usage
-        const headerElement = ".main-chp-header";
-        const playerArray = ['Player 1', 'Player 2', 'Player 3', 'Player 4', 'Player 5'];
-
-        buildChampionpoolHeader(headerElement, playerArray);
-        buildChampionpoolContainer(headerElement, playerArray);
-
+        setupChampionpool();
     });
 </script>
