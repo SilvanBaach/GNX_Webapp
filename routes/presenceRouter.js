@@ -106,8 +106,8 @@ function getNextTrainings(teamId) {
                         --Get the presence data of the team
                         --Remove all rows where the state is 2 (absent) and date < today
                         tmpData AS (
-                            SELECT times.time_series, readable_date, account.username, presence.state, CASE WHEN presence.from IS NULL THEN '00:00' ELSE presence.from END AS from, 
-                            CASE WHEN presence.until IS NULL THEN '23:59' ELSE presence.until END AS until FROM account 
+                            SELECT times.time_series, readable_date, account.username, presence.state, CASE WHEN presence.from IS NULL OR presence.from = '' THEN '00:00' ELSE presence.from END AS from, 
+                            CASE WHEN presence.until IS NULL OR presence.until = '' THEN '23:59' ELSE presence.until END AS until FROM account 
                             LEFT JOIN teammembership ON teammembership.account_fk = account.id CROSS JOIN times 
                             LEFT JOIN presence ON presence.account_fk = account.id AND presence.date = times.time_series AND presence.state <> 2 
                             WHERE teammembership.team_fk = $1 AND presence.date > EXTRACT(epoch FROM (CURRENT_DATE - INTERVAL '1 day' + INTERVAL '23 hours 59 minutes')::timestamp AT TIME ZONE 'CEST') ORDER BY time_series),
