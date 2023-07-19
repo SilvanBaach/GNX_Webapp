@@ -162,20 +162,20 @@ async function generateCalendar(users, currentDate, sessionUser, teamId) {
                     `<input type="text" value="${users[i].username}" style="display: none" id="inputUsername"/>` +
                     `<input type="text" value="${formatDate(getXDayOfWeek(currentDate, j - 1))}" style="display: none" id="inputDate"/>`;
                 if (users[i].username === sessionUser) {
-                    if (jDayObj.getTime() >= today.getTime()) {
-                        innerHTML +=
-                            '<a class="edit tooltip"><span class="tooltiptext">Edit</span>' +
-                            '<i class="ri-edit-fill"></i>' +
-                            '</a>' +
-                            '<a class="paste tooltip"><span class="tooltiptext">Paste</span>' +
-                            '<i class="ri-clipboard-line"></i>' +
-                            '</a>';
-                    }
-
                     innerHTML +=
                         '<a class="copy tooltip"><span class="tooltiptext">Copy</span>' +
                         '<i class="ri-file-copy-2-line"></i>' +
                         '</a>';
+
+                    if (jDayObj.getTime() >= today.getTime()) {
+                        innerHTML +=
+                            '<a class="paste tooltip"><span class="tooltiptext">Paste</span>' +
+                            '<i class="ri-clipboard-line"></i>' +
+                            '</a>' +
+                            '<a class="edit tooltip"><span class="tooltiptext">Edit</span>' +
+                            '<i class="ri-edit-fill"></i>' +
+                            '</a>';
+                    }
                 }
                 innerHTML +=
                     '</div>' +
