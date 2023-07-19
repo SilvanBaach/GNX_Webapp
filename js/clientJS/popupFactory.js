@@ -107,17 +107,25 @@ class Popup {
         this.popupContainer.append(newHTML);
     }
 
-    displayPopupWithTable(dataArray) {
+    /**
+     * Setups a simple popup with a table for the championpool page only
+     * @param championNameAndPicture
+     */
+    displayPopupWithTable(championNameAndPicture) {
         this.popupContainer.empty();
 
         var headerClass = "row-container-popup";
         var newHTML = '';
 
-        for (var i = 0; i < dataArray.length; i++) {
-            var itemHTML = '<div class="champion-container-popup">' +
-                '<span class="championname-span">Aatroxe</span>' +
-                '<img class="champion-img" src="https://ddragon.leagueoflegends.com/cdn/11.16.1/img/champion/Aatrox.png" alt="Champion Image">' +
-                '</div>';
+
+        for (var i = 0; i < championNameAndPicture.length; i++) {
+            let championName = championNameAndPicture[i][0];
+            let pictureUrl = championNameAndPicture[i][1];
+            var itemHTML = `<div class="champion-container-popup">
+                  <span class="championname-span-popup">${championName}</span>
+                  <img class="champion-img-popup" src="${pictureUrl}" alt="Champion Image">
+                </div>`;
+
 
             if (i % 8 === 0) {
                 newHTML += '<div class="grid-item-popup ' + headerClass + '">' + itemHTML;
@@ -125,7 +133,7 @@ class Popup {
                 newHTML += itemHTML;
             }
 
-            if ((i + 1) % 8 === 0 || i === dataArray.length - 1) {
+            if ((i + 1) % 8 === 0 || i === championNameAndPicture.length - 1) {
                 newHTML += '</div>';
             }
         }

@@ -1,3 +1,4 @@
+let currentTarget = null;
 function buildChampionpoolHeader(headerElement, playerArray) {
     var header = document.querySelector(headerElement);
     var playerNames = ['', 'Top', 'Jungle', 'Mid', 'ADC', 'Support'];
@@ -52,12 +53,54 @@ async function setupChampionpool() {
     const playerArray = ['Player 1', 'Player 2', 'Player 3', 'Player 4', 'Player 5'];
 
     const popupChampions = new Popup("popup-containerChampions");
-    popupChampions.displayPopupWithTable([["1"], ["2"], ["3"], ["4"], ["5"], ["6"], ["7"], ["8"], ["2"], ["3"], ["4"], ["5"], ["6"], ["7"], ["8"], ["2"], ["3"], ["4"], ["5"], ["6"], ["7"], ["8"]]
+    popupChampions.displayPopupWithTable(getChampionNameAndPictureFromDDragon(await getDDragonData())
     )
 
     buildChampionpoolHeader(headerElement, playerArray);
     buildChampionpoolContainer(headerElement, playerArray);
-    $(".champion-img").click(function (e) {
+    $(".champion-container").click(function (e) {
         popupChampions.open(e);
+        currentTarget = e.currentTarget
     });
+
+    $(".champion-container-popup").click(function (e) {
+        const $target = $(e.currentTarget);
+        const $span = $target.find('span').clone();
+        const $img = $target.find('img').clone();
+
+        $(currentTarget).html($span).append($img);
+    });
+
+}
+
+/**
+ * Gets all users from the database from one team
+ * @returns {Promise<void>}
+ */
+async function getDDragonData() {
+    let dDragonData = null;
+    await $.ajax({
+        url: "/riot/getDDragonData/",
+        type: "GET",
+        success: function (data) {
+            dDragonData = data;
+        },
+        error: function (data) {
+            console.log(data);
+        }
+    });
+
+    return dDragonData;
+}
+
+function getChampionNameAndPictureFromDDragon(dDragon){
+    let championNameAndPicture = [];
+    for (let champion in dDragon.data) {
+        let championName = dDragon.data[champion].name;
+        let championPicture = dDragon.data[champion].image.full;
+        let version = dDragon.version;
+        let pictureUrl = "https://ddragon.leagueoflegends.com/cdn/"+version+"/img/champion/"+championPicture;
+        championNameAndPicture.push([championName, pictureUrl])
+    }
+    return championNameAndPicture;
 }

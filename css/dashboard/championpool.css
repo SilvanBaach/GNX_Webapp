@@ -237,6 +237,14 @@
     margin-top: 10px;
 }
 
+.champion-img-popup {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
 .champion-container{
     display: flex;
     flex-direction: column;
@@ -252,6 +260,15 @@
 
 
 .championname-span {
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    max-width: 90%;
+}
+
+.championname-span-popup {
     vertical-align: middle;
     white-space: nowrap;
     overflow: hidden;

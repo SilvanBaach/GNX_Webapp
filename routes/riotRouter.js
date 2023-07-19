@@ -4,10 +4,11 @@ const riot = require('../js/serverJS/riot.js')
 
 
 /**
- * GET Summoner by name
+ * GET DDragon Data from project
  */
-router.get('/getChampionData', async (req, res) => {
-
+router.get('/getDDragonData', async (req, res) => {
+    const championData = await riot.getDDragonDataFromProject();
+    res.send(championData);
 });
 
 module.exports = router;

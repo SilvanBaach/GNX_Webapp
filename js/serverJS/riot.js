@@ -3,7 +3,7 @@ const axios = require('axios');
  * Get the data from the dDragon API
  * @returns {Promise<*>}
  */
-const getDDragonData = async () =>
+const getDDragonDataFromRiot = async () =>
 {
     let dDragonData;
     await axios.get('http://ddragon.leagueoflegends.com/cdn/12.6.1/data/en_US/champion.json')
@@ -17,10 +17,12 @@ const getDDragonData = async () =>
     return dDragonData;
 }
 
-function getChampionData(championName, dDragonData)
-{
-    let championData = dDragonData.data[championName];
-    return championData;
+/**
+ * Get the dDragon data from the project
+ * @returns {Promise<*>}
+ */
+async function getDDragonDataFromProject(){
+    return require('../../res/riot/dragonData.json');
 }
 
-module.exports = {getDDragonData}
+module.exports = {getDDragonData: getDDragonDataFromRiot, getDDragonDataFromProject}
