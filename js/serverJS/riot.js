@@ -5,8 +5,9 @@ const axios = require('axios');
  */
 const getDDragonDataFromRiot = async () =>
 {
+
     let dDragonData;
-    await axios.get('http://ddragon.leagueoflegends.com/cdn/12.6.1/data/en_US/champion.json')
+    await axios.get('http://ddragon.leagueoflegends.com/cdn/13.14.1/data/en_US/champion.json')
         .then(response => {
             dDragonData = response.data;
         })

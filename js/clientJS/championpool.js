@@ -1,6 +1,7 @@
 const rowCount = 6;
 const columnCount = 7;
 let currentTarget = null;
+let championNameAndPictureUrl;
 
 /**
  * Build the header for each championpool table
@@ -28,12 +29,12 @@ function buildChampionpoolHeader(headerElement) {
 /**
  * Build the container for each championpool table
  * @param containerElement The element where the header should be placed inside
- * @param tableData The tableData should be a array which includes the position of and the text for each cell
+ * @param tableData The tableData should be an array which includes the position of and the text for each cell
  */
-function buildChampionpoolContainer(containerElement, tableData) {
-    const tableType = containerElement.split("-")[0].replace(".", "");
+function buildChampionpoolContainer(containerElement) {
+    const tableType = convertTableTypeToInt(containerElement.split("-")[0].replace(".", ""));
     var container = document.querySelector(containerElement);
-    fillArrayWithNull(tableData);
+    var tableData = fillArrayWithNull([])
     for (var i = 0; i < columnCount; i++) {
         let counter = 0;
         var headerClass = "row-container";
@@ -41,47 +42,25 @@ function buildChampionpoolContainer(containerElement, tableData) {
             .map(function (dataArray) {
                 counter++; // Increment the counter with each iteration of the map function
                 if (counter % columnCount === 1) {
-                    if (dataArray === null) {
-                        return '' +
-                            '<div class="grid-item ' + headerClass + ' grid-item-main" ' +
-                            addAttributesToElements(tableType, i, counter-1, "Main " + i, 0) +
-                            '>' +
-                            '<div class="champion-container">' +
-                            '<p class="champion-main">' + "Main" + " " + i + '</p>' +
-                            '</div></div>';
-                    } else {
-                        return '' +
-                            '<div class="grid-item ' + headerClass + ' grid-item-main" ' +
-                            addAttributesToElements(tableType, i, counter-1, dataArray.championName, 0) +
-                            '>' +
-                            '<div class="champion-container">' +
-                            '<p class="champion-main">' + dataArray.championName + '</p>' +
-                            '</div></div>';
-                    }
+                    return '' +
+                        '<div class="grid-item ' + headerClass + ' grid-item-main" ' +
+                        addAttributesToElements(tableType, i, counter-1, "Main " + i, 0) +
+                        '>' +
+                        '<div class="champion-container">' +
+                        '<p class="champion-main">' + "Main" + " " + (i+1) + '</p>' +
+                        '</div></div>';
                 } else {
-                    if (dataArray === null) {
-                        return '' +
-                            '<div class="grid-item ' + headerClass + '" ' +
-                            addAttributesToElements(tableType, i, counter-1, "PlaceHolder", counter-1) +
-                            '>' +
-                            '<div class="champion-container">' +
-                            '<span class="championname-span">PlaceHolder</span>' +
-                            '<img class="champion-img" src="../../res/others/blank_profile_picture.png" alt="Champion Image">' +
-                            '</div></div>';
-                    } else {
-                        return '' +
-                            '<div class="grid-item ' + headerClass + '" ' +
-                            addAttributesToElements(tableType, i, counter-1, dataArray.championName, counter-1) +
-                            '>' +
-                            '<div class="champion-container">' +
-                            '<span class="championname-span">' + dataArray.championName + '</span>' +
-                            '<img class="champion-img" src="https://ddragon.leagueoflegends.com/cdn/11.16.1/img/champion/' + dataArray.championName + '.png" alt="Champion Image">' +
-                            '</div></div>';
-                    }
+                    return '' +
+                        '<div class="grid-item ' + headerClass + '" ' +
+                        addAttributesToElements(tableType, i, counter-1, "PlaceHolder", counter-1) +
+                        '>' +
+                        '<div class="champion-container">' +
+                        '<span class="championname-span">PlaceHolder</span>' +
+                        '<img class="champion-img" src="../../res/others/blank_profile_picture.png" alt="Champion Image">' +
+                        '</div></div>';
                 }
             })
             .join("");
-
         container.innerHTML += htmlContent;
     }
 }
@@ -95,14 +74,18 @@ function buildChampionpoolContainer(containerElement, tableData) {
  */
 async function setupChampionpool() {
     const headerElement = [".main-chp-header", ".practice-chp-header", ".suggestions-chp-header"];
-    const playerArray = ['Player 1', 'Player 2', 'Player 3', 'Player 4', 'Player 5'];
 
     const popupChampions = new Popup("popup-containerChampions");
-    popupChampions.displayPopupWithTable(getChampionNameAndPictureFromDDragon(await getDDragonData())
-    )
+
+    championNameAndPictureUrl = getChampionNameAndPictureFromDDragon(await getDDragonData());
+    popupChampions.displayPopupWithTable(championNameAndPictureUrl);
 
     headerElement.forEach(buildChampionpoolHeader);
-    buildChampionpoolContainer(headerElement[0], await getChampionpoolData());
+
+    buildChampionpoolContainer(headerElement[0]);
+
+    fillAllTablesWithData(await getChampionpoolData())
+
     $(".champion-container").click(function (e) {
         const $target = $(e.currentTarget);
         const $gridItem = $target.closest(".grid-item"); // Find the closest ancestor with class 'grid-item'
@@ -121,7 +104,8 @@ async function setupChampionpool() {
         $(currentTarget).find('span').text(championName); // Replace the inner text of currentTarget with championName
         $(currentTarget).find('img').attr("src", championSrc); // Replace the src attribute of the image in currentTarget with championSrc
 
-        updateChampionpoolData();
+
+        updateChampionpoolData(currentTarget, championName);
     });
 
 }
@@ -142,7 +126,6 @@ async function getDDragonData() {
             console.log(data);
         }
     });
-
     return dDragonData;
 }
 
@@ -181,21 +164,16 @@ async function getChampionpoolData() {
 /**
  * Updates the data of a Team
  */
-function updateChampionpoolData() {
-    const championpoolData = [];
-
-    $(".row-container").each(function(){
-    const $rowContainer = $(this);
-        const playerOfChampion = $rowContainer.data("playerofchampion")
-        //const editorOfChampion = null
-        const championpoolTableType = convertTableTypeToInt($rowContainer.data("tabletype"))
-        const lane= $rowContainer.data("lane")
-        const row = $rowContainer.data("row")
-        const championName = $rowContainer.data("championname")
-        //TODO: If there are more than 1 team check of teamNames
-        const team = 0;
-        championpoolData.push([playerOfChampion, championpoolTableType, lane, row, championName, team]);
-    });
+function updateChampionpoolData(element, newChampionName) {
+    const $container = $(element);
+    const playerOfChampion = $container.data("playerofchampion")
+    //const editorOfChampion = null
+    const championpoolTableType = $container.data("tabletype")
+    const lane= $container.data("lane")
+    const row = $container.data("row")
+    //TODO: If there are more than 1 team check of teamNames
+    const team = 0;
+    const championpoolData = [playerOfChampion, championpoolTableType, lane, row, newChampionName, team]
 
     $.ajax({
         url: "/riot/updateChampionpool",
@@ -226,18 +204,32 @@ function fillArrayWithNull(array) {
             array.push(null);
         }
     }
-
     return array;
 }
+
+/**
+ * This method adds attributes to the elements of a grid-item
+ * @param tableType The tableType of the grid-item
+ * @param row The row of the grid-item
+ * @param lane The lane of the grid-item
+ * @param championName The championName of the grid-item
+ * @param playerOfChampion The playerOfChampion of the grid-item
+ * @returns {string} The custom attributes as a string
+ */
 function addAttributesToElements(tableType, row, lane, championName, playerOfChampion) {
-    let customAttributes = 'data-tableType="' + tableType + '" ' +
+    return 'data-tableType="' + tableType + '" ' +
         'data-row="' + row + '" ' +
         'data-lane="' + lane + '" ' +
         'data-championName="' + championName + '" ' +
         'data-playerOfChampion="' + playerOfChampion + '"';
-    return customAttributes;
 }
 
+/**
+ * This method converts the tableType to the corresponding int value
+ * main = 0, Practice = 1, Suggestions = 2
+ * @param tableType The tableType which should be converted
+ * @returns {number} The int value of the tableType
+ */
 function convertTableTypeToInt(tableType){
     if(tableType === "main"){
         return 0;
@@ -247,4 +239,41 @@ function convertTableTypeToInt(tableType){
         return 2;
     }
 }
+
+/**
+ * This method loops trough each table in the database and fills the values into the corresponding row-container
+ * @param data The championpool data
+ */
+function fillAllTablesWithData(data) {
+    data.forEach((dataElement) => {
+        const tableType = dataElement.type;
+        const row = dataElement.row;
+        const lane = dataElement.lane;
+
+        const tableElement = $(`.row-container[data-lane=${lane}][data-row=${row}][data-tabletype=${tableType}]`);
+
+        if (tableElement.length === 0) {
+            //TODO Delete value from DB
+            // No elements were found
+            console.log("No elements found that meet the criteria.");
+        } else {
+            // Fill the elements with the data
+            const championName = dataElement.champion
+            $(tableElement[0]).data("championname", championName);
+            $(tableElement[0]).find('.championname-span').text(championName);
+            $(tableElement[0]).find('.champion-img').attr("src", getPictureUrlFromChampionName(championName));
+        }
+    });
+}
+
+function getPictureUrlFromChampionName(championName) {
+    const championEntry = championNameAndPictureUrl.find(champion => champion[0] === championName);
+    if (championEntry) {
+        return championEntry[1];
+    } else {
+        return null; // Or you can return a default image URL if the champion is not found.
+    }
+}
+
+
 
