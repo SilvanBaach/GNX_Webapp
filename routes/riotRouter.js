@@ -47,19 +47,31 @@ function getChampionpool() {
 
 function updateOrInsertChampionpool(data) {
     let promises = [];
-    //Checke ob ein Eintrag existiert mit folgender Bedinung (Gibt bereits type, lane, subtype)
-    for(let i = 0; i < data.length; i++){
-        if(checkIfChampionpoolEntryExists(data).rows[0] == false){
-            pool.query(`INSERT INTO championpool (type, lane, subtype, champion) VALUES ($1, $2, $3, $4)`, [data[i].type, data[i].lane, data[i].subtype, data[i].champion]);
-        }
-        else{
-            pool.query(`UPDATE championpool SET champion = $1 WHERE id = $2`,[arrayOfTextAndID[0], arrayOfTextAndID[1]]);
-        }
+    const array = data.championpoolData;
+    for (let i = 0; i < array.length; i++) {
+        const existsPromise = checkIfChampionpoolEntryExists(array[i]);
+        existsPromise.then((exists) => {
+            if (exists) {
+                // UPDATE existing entry                                                                         // playerOfChampion,  championpoolTableType, lane, row, championName, team
+                promises.push(pool.query(`UPDATE championpool SET champion = $1 WHERE lane = $2 AND row = $3`, [array[i][4], array[i][2], array[i][3]]));
+            } else {
+                // INSERT new entry
+                console.log(array[i])
+                promises.push(pool.query(`INSERT INTO championpool (type, lane, row, champion) VALUES ($1, $2, $3, $4)`, [array[i][1], array[i][2], array[i][3], array[i][4]]));
+            }
+        }).catch((error) => {
+            // Handle any errors from the checkIfChampionpoolEntryExists function or pool.query
+            console.error("Error occurred:", error);
+        });
     }
     return Promise.all(promises);
 }
 
-function checkIfChampionpoolEntryExists(data) {
-    return pool.query(`SELECT * FROM championpool WHERE type = $1 AND lane = $2 AND subtype = $3`, [data.type, data.lane, data.subtype]);
+
+async function checkIfChampionpoolEntryExists(data) {
+    const result = await pool.query(`SELECT * FROM championpool WHERE type = $1 AND lane = $2 AND row = $3`, [data[1], data[2], data[3]]);
+    return result.rows.length > 0; // Return true if the query result has any rows, indicating an entry exists.
+    retur
 }
+
 module.exports = router;

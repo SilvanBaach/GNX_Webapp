@@ -44,7 +44,7 @@ function buildChampionpoolContainer(containerElement, tableData) {
                     if (dataArray === null) {
                         return '' +
                             '<div class="grid-item ' + headerClass + ' grid-item-main" ' +
-                            addAttributesToElements(tableType, i, counter-1, "Main " + i, null) +
+                            addAttributesToElements(tableType, i, counter-1, "Main " + i, 0) +
                             '>' +
                             '<div class="champion-container">' +
                             '<p class="champion-main">' + "Main" + " " + i + '</p>' +
@@ -52,7 +52,7 @@ function buildChampionpoolContainer(containerElement, tableData) {
                     } else {
                         return '' +
                             '<div class="grid-item ' + headerClass + ' grid-item-main" ' +
-                            addAttributesToElements(tableType, i, counter-1, dataArray.championName, null) +
+                            addAttributesToElements(tableType, i, counter-1, dataArray.championName, 0) +
                             '>' +
                             '<div class="champion-container">' +
                             '<p class="champion-main">' + dataArray.championName + '</p>' +
@@ -184,16 +184,17 @@ async function getChampionpoolData() {
 function updateChampionpoolData() {
     const championpoolData = [];
 
-    $(".row-container").each(function() {
-        const playerOfChampion = null;
-        const editorOfChampion = null
-        const championpoolTableType = null
-        const lane= $(this).id % columnCount;
-        const row = Math.floor($(this).id / columnCount)
-        const championName = $(this).innerText;
+    $(".row-container").each(function(){
+    const $rowContainer = $(this);
+        const playerOfChampion = $rowContainer.data("playerofchampion")
+        //const editorOfChampion = null
+        const championpoolTableType = convertTableTypeToInt($rowContainer.data("tabletype"))
+        const lane= $rowContainer.data("lane")
+        const row = $rowContainer.data("row")
+        const championName = $rowContainer.data("championname")
         //TODO: If there are more than 1 team check of teamNames
         const team = 0;
-        championpoolData.push([playerOfChampion, editorOfChampion, championpoolTableType, lane, row, championName, team]);
+        championpoolData.push([playerOfChampion, championpoolTableType, lane, row, championName, team]);
     });
 
     $.ajax({
@@ -228,11 +229,22 @@ function fillArrayWithNull(array) {
 
     return array;
 }
-function addAttributesToElements(tableType, column, row, championName, playerOfChampion) {
+function addAttributesToElements(tableType, row, lane, championName, playerOfChampion) {
     let customAttributes = 'data-tableType="' + tableType + '" ' +
-        'data-column="' + column + '" ' +
         'data-row="' + row + '" ' +
+        'data-lane="' + lane + '" ' +
         'data-championName="' + championName + '" ' +
         'data-playerOfChampion="' + playerOfChampion + '"';
     return customAttributes;
 }
+
+function convertTableTypeToInt(tableType){
+    if(tableType === "main"){
+        return 0;
+    }else if(tableType === "practice"){
+        return 1;
+    }else if(tableType === "suggestions"){
+        return 2;
+    }
+}
+
