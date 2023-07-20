@@ -1,5 +1,4 @@
 const rowCount = 6;
-const columnCount = 7;
 let currentTarget = null;
 let championNameAndPictureUrl;
 
@@ -31,8 +30,10 @@ function buildChampionpoolHeader(headerElement) {
  * @param containerElement The element where the header should be placed inside
  * @param tableData The tableData should be an array which includes the position of and the text for each cell
  */
-function buildChampionpoolContainer(containerElement) {
-    const tableType = convertTableTypeToInt(containerElement.split("-")[0].replace(".", ""));
+function buildChampionpoolContainer(containerElement, columnCount) {
+    rowString = containerElement.split("-")[0].replace(".", "")
+    const tableType = convertTableTypeToInt(rowString);
+    rowString = rowString.charAt(0).toUpperCase() + rowString.slice(1)
     var container = document.querySelector(containerElement);
     var tableData = fillArrayWithNull([])
     for (var i = 0; i < columnCount; i++) {
@@ -41,13 +42,13 @@ function buildChampionpoolContainer(containerElement) {
         var htmlContent = tableData
             .map(function (dataArray) {
                 counter++; // Increment the counter with each iteration of the map function
-                if (counter % columnCount === 1) {
+                if (counter % rowCount === 1) {
                     return '' +
                         '<div class="grid-item ' + headerClass + ' grid-item-main" ' +
-                        addAttributesToElements(tableType, i, counter-1, "Main " + i, 0) +
+                        addAttributesToElements(tableType, i, counter-1, rowString +" " + (i+1), 0) +
                         '>' +
                         '<div class="champion-container">' +
-                        '<p class="champion-main">' + "Main" + " " + (i+1) + '</p>' +
+                        '<p class="champion-main">' + rowString + " " + (i+1) + '</p>' +
                         '</div></div>';
                 } else {
                     return '' +
@@ -73,7 +74,7 @@ function buildChampionpoolContainer(containerElement) {
  * @returns {Promise<void>}
  */
 async function setupChampionpool() {
-    const headerElement = [".main-chp-header", ".practice-chp-header", ".suggestions-chp-header"];
+    const headerElement = [".main-chp-header", ".practice-chp-header", ".suggestion-chp-header"];
 
     const popupChampions = new Popup("popup-containerChampions");
 
@@ -82,7 +83,9 @@ async function setupChampionpool() {
 
     headerElement.forEach(buildChampionpoolHeader);
 
-    buildChampionpoolContainer(headerElement[0]);
+    buildChampionpoolContainer(headerElement[0], 7);
+    buildChampionpoolContainer(headerElement[1], 3);
+    buildChampionpoolContainer(headerElement[2], 3);
 
     fillAllTablesWithData(await getChampionpoolData())
 
@@ -226,7 +229,7 @@ function addAttributesToElements(tableType, row, lane, championName, playerOfCha
 
 /**
  * This method converts the tableType to the corresponding int value
- * main = 0, Practice = 1, Suggestions = 2
+ * main = 0, Practice = 1, Suggestion = 2
  * @param tableType The tableType which should be converted
  * @returns {number} The int value of the tableType
  */
@@ -235,7 +238,7 @@ function convertTableTypeToInt(tableType){
         return 0;
     }else if(tableType === "practice"){
         return 1;
-    }else if(tableType === "suggestions"){
+    }else if(tableType === "suggestion"){
         return 2;
     }
 }

@@ -214,6 +214,18 @@
     grid-template-columns: repeat(6, 1fr);
 }
 
+.practice-chp-header {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+}
+
+.suggestion-chp-header {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+}
+
+
+
 .row-container {
     display: flex;
     align-items: center;
