@@ -7,7 +7,7 @@ webapp.teamgenetix.ch {
 }
 
 store.teamgenetix.ch {
-        reverse_proxy /* http://wpdocker_wordpress_1:81
+        reverse_proxy /* http://docker_wordpress_1:81
         log {
                 output file /var/log/caddy/access.log
                 format single_field common_log
