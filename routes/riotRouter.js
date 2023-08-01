@@ -41,6 +41,23 @@ router.post('/updateChampionpool', checkNotAuthenticated, function (req, res) {
     });
 });
 
+/**
+ * POST route for deleting a championpool entry
+ */
+router.post('/updateChampionpool', checkNotAuthenticated, function (req, res) {
+    const formData = req.body;
+
+    updateOrInsertChampionpool(formData).then((result) => {
+        if (result.rowCount === 0) {
+            res.status(500).send({message: "There was an error updating the championpool! Please try again later."});
+        }else {
+            res.status(200).send({message: "Championpool updated successfully"});
+        }
+    }).catch(() => {
+        res.status(500).send({message: "There was an error updating the championpool! Please try again later."});
+    });
+});
+
 function getChampionpool() {
     return pool.query(`SELECT * FROM championpool ORDER BY id`);
 }

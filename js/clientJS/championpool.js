@@ -56,9 +56,17 @@ function buildChampionpoolContainer(containerElement, columnCount) {
                         addAttributesToElements(tableType, i, counter-1, "PlaceHolder", counter-1) +
                         '>' +
                         '<div class="champion-container">' +
-                        '<span class="championname-span">PlaceHolder</span>' +
+                        '<a class="edit edit2">' +
+                        '<i class="ri-edit-fill"></i>' +
+                        '</a>' +
+                        '<a class="remove edit">' +
+                        '<i class="ri-close-fill" style="font-size: 1.2rem"></i>' +
+                        '</a>' +
+                        '<div class="champion-container-row">' +
+                        '<span class="championname-span">?</span>' +
+                        '</div>' +
                         '<img class="champion-img" src="../../res/others/blank_profile_picture.png" alt="Champion Image">' +
-                        '</div></div>';
+                    '</div></div>';
                 }
             })
             .join("");
@@ -89,12 +97,13 @@ async function setupChampionpool() {
 
     fillAllTablesWithData(await getChampionpoolData())
 
-    $(".champion-container").click(function (e) {
+    $(".edit2").click(function (e) {
         const $target = $(e.currentTarget);
         const $gridItem = $target.closest(".grid-item"); // Find the closest ancestor with class 'grid-item'
 
         popupChampions.open(e);
         currentTarget = $gridItem; // Set currentTarget to the .grid-item element
+        console.log(currentTarget);
     });
 
 
@@ -111,6 +120,32 @@ async function setupChampionpool() {
         updateChampionpoolData(currentTarget, championName);
     });
 
+    setupDeletePopup();
+}
+
+/**
+ * Defines the popup for deleting a champion
+ */
+function setupDeletePopup() {
+    const delPopup = new Popup('popup-containerDelete')
+    delPopup.displayYesNoPopup('/res/others/alert.png','Delete Champion','Are you sure you want to delete this champion?','Yes','No','yesDel','noDel');
+
+    $("#noDel").click(function(){
+        delPopup.close();
+    });
+
+    $("#yesDel").click(function(e){
+        const $target = $(e.currentTarget);
+        const championName = $target.find('span').text(); // Get the inner text of the .champion-container-popup
+        deleteChampion(championName);
+        delPopup.close();
+    });
+
+    $(".remove").click(function (e) {
+       delPopup.open(e);
+    });
+
+    return delPopup;
 }
 
 /**

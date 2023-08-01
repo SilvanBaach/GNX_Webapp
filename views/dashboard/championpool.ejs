@@ -1,7 +1,7 @@
 <script src="/js/clientJS/championpool.js"></script>
 
 
-<div class="text"><%= user.team.displayname%> Team Calendar</div>
+<div class="text"><%= user.team.displayname%> Champion Pool</div>
 <div id="content">
     <div class="shadow-box">
         <p class="purple-title">Main Champions</p>
@@ -16,14 +16,14 @@
     </div>
 
     <div class="shadow-box">
-        <p class="purple-title">Suggestion</p>
+        <p class="purple-title">Suggestions</p>
         <div class="suggestion-chp-header"></div>
         <div class="suggestion-chp-container"></div>
     </div>
 </div>
 
 <div id="popup-containerChampions" class="popup-container"></div>
-
+<div id="popup-containerDelete" class="popup-container"></div>
 
 <script>
     $(document).ready(function () {
