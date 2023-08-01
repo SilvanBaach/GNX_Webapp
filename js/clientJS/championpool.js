@@ -74,8 +74,6 @@ function buildChampionpoolContainer(containerElement, columnCount) {
     }
 }
 
-
-
 /**
  * This method setups the championpool Page
  * This includes the header, the container and the popup
@@ -103,7 +101,6 @@ async function setupChampionpool() {
 
         popupChampions.open(e);
         currentTarget = $gridItem; // Set currentTarget to the .grid-item element
-        console.log(currentTarget);
     });
 
 
@@ -135,13 +132,13 @@ function setupDeletePopup() {
     });
 
     $("#yesDel").click(function(e){
-        const $target = $(e.currentTarget);
-        const championName = $target.find('span').text(); // Get the inner text of the .champion-container-popup
-        deleteChampion(championName);
+        updateChampionpoolData(currentTarget, 'delete', true);
         delPopup.close();
     });
 
     $(".remove").click(function (e) {
+        const $target = $(e.currentTarget);
+        currentTarget = $target.closest(".grid-item");
        delPopup.open(e);
     });
 
@@ -202,16 +199,19 @@ async function getChampionpoolData() {
 /**
  * Updates the data of a Team
  */
-function updateChampionpoolData(element, newChampionName) {
+function updateChampionpoolData(element, newChampionName, bDelete) {
+    if (!bDelete) {
+        bDelete = false;
+    }
+
     const $container = $(element);
     const playerOfChampion = $container.data("playerofchampion")
-    //const editorOfChampion = null
     const championpoolTableType = $container.data("tabletype")
     const lane= $container.data("lane")
     const row = $container.data("row")
     //TODO: If there are more than 1 team check of teamNames
     const team = 0;
-    const championpoolData = [playerOfChampion, championpoolTableType, lane, row, newChampionName, team]
+    const championpoolData = [playerOfChampion, championpoolTableType, lane, row, newChampionName, team, bDelete]
 
     $.ajax({
         url: "/riot/updateChampionpool",

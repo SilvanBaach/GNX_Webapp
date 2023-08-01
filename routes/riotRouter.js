@@ -41,23 +41,6 @@ router.post('/updateChampionpool', checkNotAuthenticated, function (req, res) {
     });
 });
 
-/**
- * POST route for deleting a championpool entry
- */
-router.post('/updateChampionpool', checkNotAuthenticated, function (req, res) {
-    const formData = req.body;
-
-    updateOrInsertChampionpool(formData).then((result) => {
-        if (result.rowCount === 0) {
-            res.status(500).send({message: "There was an error updating the championpool! Please try again later."});
-        }else {
-            res.status(200).send({message: "Championpool updated successfully"});
-        }
-    }).catch(() => {
-        res.status(500).send({message: "There was an error updating the championpool! Please try again later."});
-    });
-});
-
 function getChampionpool() {
     return pool.query(`SELECT * FROM championpool ORDER BY id`);
 }
@@ -69,8 +52,12 @@ function updateOrInsertChampionpool(data) {
 
     existsPromise.then((exists) => {
         if (exists) {
-            // UPDATE existing entry                                                                         // playerOfChampion, championpoolTableType, lane, row, championName, team
-            promises.push(pool.query(`UPDATE championpool SET champion = $1 WHERE lane = $2 AND row = $3 AND type = $4`, [array[4], array[2], array[3], array[1]]));
+            // UPDATE or DELETE existing entry                                                                         // playerOfChampion, championpoolTableType, lane, row, championName, team
+            if (array[6]){
+                promises.push(pool.query(`DELETE FROM championpool WHERE lane = $1 AND row = $2 AND type = $3`, [array[2], array[3], array[1]]));
+            }else{
+                promises.push(pool.query(`UPDATE championpool SET champion = $1 WHERE lane = $2 AND row = $3 AND type = $4`, [array[4], array[2], array[3], array[1]]));
+            }
         } else {
             // INSERT new entry
             promises.push(pool.query(`INSERT INTO championpool (type, lane, row, champion) VALUES ($1, $2, $3, $4)`, [array[1], array[2], array[3], array[4]]));
