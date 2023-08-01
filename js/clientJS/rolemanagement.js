@@ -102,10 +102,10 @@ function loadData(){
  * @param id the id of the role
  */
 function editRole(id){
-    const localRoleData = roleData.filter(role => role.id === id);
+    const localRoleData = roleData.filter(role => parseInt(role.id) === parseInt(id));
 
-    $("#roleEdit").show();
+    $("#roleEdit").removeClass('edit-box');
 
-    $("#name").val(localRoleData.displayname);
-    $("#description").val(localRoleData.description === "-" ? "" : localRoleData.description);
+    $("#name").val(localRoleData[0].displayname);
+    $("#description").val(localRoleData[0].description === "-" ? "" : localRoleData[0].description);
 }

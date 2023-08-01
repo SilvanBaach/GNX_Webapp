@@ -36,5 +36,29 @@ button{
 }
 
 .edit-box{
-    display: none;
+    visibility: hidden;
+}
+
+.scrollable-list {
+    height: 200px;
+    width: 100%;
+    border: 1px solid black;
+    overflow-y: scroll;
+    margin-bottom: 18px;
+}
+
+.scrollable-list p:nth-child(odd) {
+    background-color: #f2f2f2;
+}
+
+.scrollable-list p:nth-child(even) {
+    background-color: #ffffff;
+}
+
+.scrollable-list p {
+    padding: 5px 10px;
+}
+
+.scrollable-list p.clicked {
+    background-color: rgba(0, 0, 255, 0.75);
 }
