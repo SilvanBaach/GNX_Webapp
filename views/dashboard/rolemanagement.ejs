@@ -26,8 +26,8 @@
 
     <div class="shadow-box edit-box" id="roleEdit">
         <p class="purple-title">Edit Role</p>
-        <form id="form" class="form">
-            <input type="number" value="" style="display: none" id="roleId"/>
+        <form id="form" class="form" action="/roletype/update" method="POST">
+            <input type="number" value="" style="display: none" id="roleTypeId" name="roleTypeId"/>
             <div class="form-row">
                 <div class="form-group">
                     <label class="label-form" for="name">Name</label>
@@ -41,13 +41,26 @@
             <div class="form-row">
                 <div class="form-group">
                     <label class="label-form" for="unassigned-permissions">Unassigned Permissions</label>
-                    <div id="scrollableList" class="scrollable-list"></div>
-                    <button class="default">Assign -></button>
+                    <div id="scrollableListUnassigned" class="scrollable-list"></div>
+                    <button id="assign" class="default green" style="float: right">
+                        assign
+                        <i class="ri-arrow-right-line ri-lg"></i>
+                    </button>
                 </div>
                 <div class="form-group">
-                    <label class="label-form" for="assigend-permissions">Assigned Permissions</label>
-                    <div id="scrollableList2" class="scrollable-list"></div>
-                    <button class="default"><- de-assign</button>
+                    <label class="label-form" for="assigned-permissions">Assigned Permissions</label>
+                    <div id="scrollableListAssigned" class="scrollable-list"></div>
+                    <button id="deAssign" class="default red">
+                        <i class="ri-arrow-left-line ri-lg"></i>
+                        de-assign
+                    </button>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="default" style="float: right; margin-top: 18px">Update</button>
                 </div>
             </div>
         </form>
@@ -57,21 +70,21 @@
         <p class="purple-title">Manage Role assignment</p>
         <div class="btn-container">
             <div class="add-btn-container">
-                <button class="default green">
+                <button class="default green" id="assignToTeam">
                     <i class="ri-add-circle-line ri-lg"></i>
                     to Team
                 </button>
-                <button class="default green">
+                <button class="default green" id="assignToUser">
                     <i class="ri-add-circle-line ri-lg"></i>
                     to User
                 </button>
             </div>
             <div class="remove-btn-container">
-                <button class="default red">
+                <button class="default red" id="unassignFromTeam">
                     <i class="ri-indeterminate-circle-line ri-lg"></i>
                     from Team
                 </button>
-                <button class="default red">
+                <button class="default red" id="unassignFromUser">
                     <i class="ri-indeterminate-circle-line ri-lg"></i>
                     from User
                 </button>
@@ -82,50 +95,41 @@
 
 <div id="popup-containerCreateRole" class="popup-container"></div>
 
+<div id="popup-containerAssignToTeam" class="popup-container"></div>
+<div id="popup-containerAssignToUser" class="popup-container"></div>
+<div id="popup-containerUnAssignFromTeam" class="popup-container"></div>
+<div id="popup-containerUnAssignFromUser" class="popup-container"></div>
+
 <script>
     $(document).ready(function () {
-        setupCreateRolePopup();
-
         loadData();
 
-        var listContainer1 = document.getElementById('scrollableList');
-        var listContainer2 = document.getElementById('scrollableList2');
+        $('#assign').click(function (e) {
+            e.preventDefault();
+            assignPermission();
+        });
 
-        // Keep track of the last clicked list item
-        var lastClickedItem = null;
+        $('#deAssign').click(function (e) {
+            e.preventDefault();
+            deAssignPermission();
+        });
 
-        for(var i = 1; i <= 100; i++) {
-            var listItem1 = document.createElement('p');
-            listItem1.textContent = i;
-            listItem1.addEventListener('click', function() {
-                // If another item was previously clicked, remove the 'clicked' class from it
-                if(lastClickedItem) {
-                    lastClickedItem.classList.remove('clicked');
+        $("#form").on('submit', function (event) {
+            event.preventDefault();
+
+            let data = $(this).serialize();
+            $.ajax({
+                url: $(this).attr('action'),
+                method: $(this).attr('method'),
+                data: data,
+                success: function (response) {
+                    loadData();
+                    displaySuccess(response.message);
+                },
+                error: function (error) {
+                    displayError(error.message);
                 }
-
-                // Add the 'clicked' class to the currently clicked item
-                this.classList.add('clicked');
-
-                // Update the last clicked item
-                lastClickedItem = this;
             });
-            listContainer1.appendChild(listItem1);
-
-            var listItem2 = document.createElement('p');
-            listItem2.textContent = i + 100;  // Just to differentiate the two lists
-            listItem2.addEventListener('click', function() {
-                // If another item was previously clicked, remove the 'clicked' class from it
-                if(lastClickedItem) {
-                    lastClickedItem.classList.remove('clicked');
-                }
-
-                // Add the 'clicked' class to the currently clicked item
-                this.classList.add('clicked');
-
-                // Update the last clicked item
-                lastClickedItem = this;
-            });
-            listContainer2.appendChild(listItem2);
-        }
+        });
     });
 </script>
