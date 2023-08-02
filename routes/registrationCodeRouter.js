@@ -5,21 +5,21 @@ const express = require('express');
 const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 const util = require("util");
-const {checkNotAuthenticated} = require("../js/serverJS/sessionChecker");
+const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
 
-router.post('/generateNewRegistrationCode/:teamId', checkNotAuthenticated, function (req, res) {
+router.post('/generateNewRegistrationCode/:teamId', checkNotAuthenticated, permissionCheck('usermanagement', 'canOpen'), function (req, res) {
     const teamId = req.params.teamId;
     generateNewRegistrationCode(teamId).then(()=>{
         res.status(200).send("New Registration Code generated successfully");
     });
 });
 
-router.get('/getregistrationcodes', checkNotAuthenticated, async (req, res) => {
+router.get('/getregistrationcodes', checkNotAuthenticated, permissionCheck('usermanagement', 'canOpen'), async (req, res) => {
     const registrationCodes = await getRegistrationCodes();
     res.send(registrationCodes);
 });
 
-router.post('/updateRegistrationCode/:code/:used', checkNotAuthenticated, function (req, res) {
+router.post('/updateRegistrationCode/:code/:used', checkNotAuthenticated, permissionCheck('usermanagement', 'canOpen'), function (req, res) {
     const regCode = req.params.code;
     const used = req.params.used;
     updateRegistrationCode(regCode, used);

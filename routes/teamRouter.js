@@ -4,12 +4,12 @@
 const express = require('express');
 const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
-const {checkNotAuthenticated} = require("../js/serverJS/sessionChecker");
+const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
 
 /**
  * GET route for getting all teams
  */
-router.get('/getteams',  checkNotAuthenticated, function (req, res) {
+router.get('/getteams',  checkNotAuthenticated, permissionCheck('teammanagement', 'canOpen'), function (req, res) {
     getTeams().then((result) => {
         res.status(200).send(result.rows);
     }).catch(() => {
@@ -20,7 +20,7 @@ router.get('/getteams',  checkNotAuthenticated, function (req, res) {
 /**
  * GET route for getting all teams that can be assigned to a specific role
  */
-router.get('/getteamstoassignrole',  checkNotAuthenticated, function (req, res) {
+router.get('/getteamstoassignrole', permissionCheck('rolemanagement', 'canOpen'), checkNotAuthenticated, function (req, res) {
     getTeamsToAssignRoleTo(req.query.roleId).then((result) => {
         res.status(200).send(result.rows);
     }).catch(() => {
@@ -31,7 +31,7 @@ router.get('/getteamstoassignrole',  checkNotAuthenticated, function (req, res) 
 /**
  * POST route for inserting a new team
  */
-router.post('/insertteam', checkNotAuthenticated, function (req, res) {
+router.post('/insertteam', checkNotAuthenticated, permissionCheck('teammanagement', 'canOpen'), function (req, res) {
     const formData = req.body;
 
     insertTeam(formData).then((result) => {
@@ -48,7 +48,7 @@ router.post('/insertteam', checkNotAuthenticated, function (req, res) {
 /**
  * POST route for deleting a team
  */
-router.post('/deleteteam', checkNotAuthenticated, function (req, res) {
+router.post('/deleteteam', checkNotAuthenticated, permissionCheck('teammanagement', 'canOpen'), function (req, res) {
     const formData = req.body.id;
 
     deleteTeam(formData).then((result) => {
@@ -65,7 +65,7 @@ router.post('/deleteteam', checkNotAuthenticated, function (req, res) {
 /**
  * POST route for updating a team
  */
-router.post('/updateteam', checkNotAuthenticated, function (req, res) {
+router.post('/updateteam', checkNotAuthenticated, permissionCheck('teammanagement', 'canOpen'), function (req, res) {
     const formData = req.body;
 
     updateTeam(formData).then((result) => {

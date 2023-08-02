@@ -43,6 +43,7 @@ async function updateProfilePicture(event, userId) {
         $.ajax({
             type: "POST",
             url: url,
+            dataType: "json",
             data: {data: base64},
             success: function (result) {
                 resolve({picture: result.picture.data, message: result.message});

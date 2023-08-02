@@ -4,13 +4,13 @@
 const express = require('express');
 const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
-const {checkNotAuthenticated} = require("../js/serverJS/sessionChecker");
+const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
 const util = require("util");
 
 /**
  * POST route for updating the calendar order
  */
-router.post('/updateCalendarOrder', checkNotAuthenticated, async function (req, res) {
+router.post('/updateCalendarOrder', checkNotAuthenticated, permissionCheck('calendar', 'canOpen'), async function (req, res) {
     const data = req.body;
     const newOrder = data.newOrder;
 

@@ -4,24 +4,28 @@
 const express = require('express');
 const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
-const util = require("util");
-const { checkNotAuthenticated } = require('../js/serverJS/sessionChecker.js'); //If not logged in to Index
+const { checkNotAuthenticated } = require('../js/serverJS/sessionChecker.js');
+const {permissionCheck} = require("../js/serverJS/sessionChecker");
+
+/**
+ * Middleware for checking user permissions
+ */
 
 /**
  * GET route for getting the unassigned permissions of a role
  */
-router.get('/getunassignedpermissions', checkNotAuthenticated, function (req, res) {
-    getUnAssignedPermissions(req.query.roleId).then((result) => {
-        res.status(200).send(result.rows);
-    }).catch(() => {
-        res.status(500).send("There was an error getting the unassigned permissions! Please try again later.");
-    });
+router.get('/getunassignedpermissions', checkNotAuthenticated, permissionCheck('rolemanagement', 'canOpen'), function (req, res) {
+            getUnAssignedPermissions(req.query.roleId).then((result) => {
+                res.status(200).send(result.rows);
+            }).catch(() => {
+                res.status(500).send("There was an error getting the unassigned permissions! Please try again later.");
+            });
 });
 
 /**
  * GET route for getting the assigned permissions of a role
  */
-router.get('/getassignedpermissions', checkNotAuthenticated, function (req, res) {
+router.get('/getassignedpermissions', checkNotAuthenticated, permissionCheck('rolemanagement', 'canOpen'), function (req, res) {
     getAssignedPermissions(req.query.roleId).then((result) => {
         res.status(200).send(result.rows);
     }).catch(() => {
@@ -32,7 +36,7 @@ router.get('/getassignedpermissions', checkNotAuthenticated, function (req, res)
 /**
  * POST route for assigning a permission to a role
  */
-router.post('/assignpermission', checkNotAuthenticated, function (req, res) {
+router.post('/assignpermission', checkNotAuthenticated, permissionCheck('rolemanagement', 'canOpen'), function (req, res) {
     assignPermission(req.body.roleId, req.body.permissionTypeId).then((result) => {
         res.status(200).send(result.rows);
     }).catch(() => {
@@ -43,7 +47,7 @@ router.post('/assignpermission', checkNotAuthenticated, function (req, res) {
 /**
  * POST route for deassign a permission from a role
  */
-router.post('/deassignpermission', checkNotAuthenticated, function (req, res) {
+router.post('/deassignpermission', checkNotAuthenticated, permissionCheck('rolemanagement', 'canOpen'), function (req, res) {
     unassignPermission(req.body.roleId, req.body.permissionTypeId).then((result) => {
         res.status(200).send(result.rows);
     }).catch(() => {

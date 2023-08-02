@@ -6,12 +6,12 @@ const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 const bcrypt = require("bcrypt");
 const util = require("util");
-const {checkNotAuthenticated} = require("../js/serverJS/sessionChecker");
+const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
 
 /**
  * POST route for updating the profile picture of a user
- * Only the currently logged-in user can update his picture
  */
+//TODO only allow users to update their own profile picture
 router.post('/updatePicture/:id', checkNotAuthenticated, function (req, res) {
     const userId = req.params.id;
     const base64 = req.body;
@@ -26,6 +26,7 @@ router.post('/updatePicture/:id', checkNotAuthenticated, function (req, res) {
 /**
  * POST route for updating the password of a user
  */
+//TODO only allow users to update their own password
 router.post('/updatePassword', checkNotAuthenticated, function (req, res) {
     const userId = req.user.id;
     const password = req.body.password1;
@@ -69,6 +70,7 @@ router.post('/updatePassword/:token',  async function (req, res) {
 /**
  * POST route for updating the information of a user
  */
+//TODO only allow users to update their own information
 router.post('/updateUser/:id',checkNotAuthenticated, function (req, res) {
     const userId = req.params.id;
     const formData = req.body;
@@ -111,7 +113,7 @@ router.post('/updateUser/:id',checkNotAuthenticated, function (req, res) {
 /**
  * GET route for getting the user list of a team
  */
-router.get('/getUserList/:teamId',checkNotAuthenticated, function (req, res) {
+router.get('/getUserList/:teamId',checkNotAuthenticated, permissionCheck('calendar', 'canOpen'), function (req, res) {
     const teamId = req.params.teamId;
 
     getUsersFromTeam(teamId).then((result) => {
@@ -124,7 +126,7 @@ router.get('/getUserList/:teamId',checkNotAuthenticated, function (req, res) {
 /**
  * GET route for getting all users
  */
-router.get('/getusers', async (req, res) => {
+router.get('/getusers',checkNotAuthenticated, permissionCheck([{location: 'rolemanagement', permission: 'canOpen'},{location: 'usermanagement', permission: 'canOpen'}]) , async (req, res) => {
     const users = await getUsers();
     res.send(users);
 });
@@ -132,7 +134,7 @@ router.get('/getusers', async (req, res) => {
 /**
  * POST route for deleting a user
  */
-router.post('/deleteUser/:username',checkNotAuthenticated, function (req, res) {
+router.post('/deleteUser/:username',checkNotAuthenticated, permissionCheck('usermanagement', 'canOpen'), function (req, res) {
     const username = req.params.username;
     deleteUser(username).then(() => {
         res.status(200).send({message: "User deleted successfully"});
@@ -144,7 +146,7 @@ router.post('/deleteUser/:username',checkNotAuthenticated, function (req, res) {
 /**
  * GET route for getting the users which can be assigned to a role
  */
-router.get('/getuserstoassignrole', async (req, res) => {
+router.get('/getuserstoassignrole', checkNotAuthenticated, permissionCheck('rolemanagement', 'canOpen'), async (req, res) => {
     getUsersToAssignRoleTo(req.query.roleId).then((result) => {
         res.status(200).send(result.rows);
     }).catch(() => {
@@ -155,10 +157,10 @@ router.get('/getuserstoassignrole', async (req, res) => {
 /**
  * GET route for Webapp member count
  */
-router.get('/getWebappMemberCount', async (req, res) => {
+router.get('/getWebappMemberCount', checkNotAuthenticated, permissionCheck('home', 'canOpen'), async (req, res) => {
     const query = util.promisify(pool.query).bind(pool);
     const registeredUsers = await query('SELECT COUNT(*) FROM account');
-    const onlineUsers = await  query('WITH tmpdata AS (SELECT (sess->\'passport\'->>\'user\')::integer as user_id FROM "session") SELECT COUNT(DISTINCT user_id) FROM tmpdata WHERE user_id > 0')
+    const onlineUsers = await query('WITH tmpdata AS (SELECT (sess->\'passport\'->>\'user\')::integer as user_id FROM "session") SELECT COUNT(DISTINCT user_id) FROM tmpdata WHERE user_id > 0')
 
     res.send({onlineMembers: onlineUsers.rows[0].count, totalMembers: registeredUsers.rows[0].count})
 });

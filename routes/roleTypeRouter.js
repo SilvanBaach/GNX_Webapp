@@ -4,12 +4,12 @@
 const express = require('express');
 const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
-const {checkNotAuthenticated} = require("../js/serverJS/sessionChecker");
+const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
 
 /**
  * GET route for getting all role types
  */
-router.get('/getRoleTypes',  checkNotAuthenticated, function (req, res) {
+router.get('/getRoleTypes',  checkNotAuthenticated, permissionCheck('rolemanagement', 'canOpen'), function (req, res) {
     getRoleTypes().then((result) => {
         res.status(200).send(result.rows);
     }).catch(() => {
@@ -20,7 +20,7 @@ router.get('/getRoleTypes',  checkNotAuthenticated, function (req, res) {
 /**
  * GET route for getting all role types by team
  */
-router.get('/getRoleTypesByTeam',  checkNotAuthenticated, function (req, res) {
+router.get('/getRoleTypesByTeam',  checkNotAuthenticated, permissionCheck('rolemanagement', 'canOpen'), function (req, res) {
     getRoleTypesByTeam(req.query.teamId).then((result) => {
         res.status(200).send(result.rows);
     }).catch(() => {
@@ -31,7 +31,7 @@ router.get('/getRoleTypesByTeam',  checkNotAuthenticated, function (req, res) {
 /**
  * GET route for getting all role types by user
  */
-router.get('/getRoleTypesByUser',  checkNotAuthenticated, function (req, res) {
+router.get('/getRoleTypesByUser',  checkNotAuthenticated, permissionCheck('rolemanagement', 'canOpen'), function (req, res) {
     getRoleTypesByUser(req.query.userId).then((result) => {
         res.status(200).send(result.rows);
     }).catch(() => {
@@ -42,7 +42,7 @@ router.get('/getRoleTypesByUser',  checkNotAuthenticated, function (req, res) {
 /**
  * POST route for creating a new role type
  */
-router.post('/createRoleType', checkNotAuthenticated, function (req, res) {
+router.post('/createRoleType', checkNotAuthenticated, permissionCheck('rolemanagement', 'canOpen'), function (req, res) {
     insertNewRoleType(req.body.name, req.body.description).then(() => {
         res.status(200).send({message: "Role type created successfully!"});
     }).catch(() => {
@@ -53,7 +53,7 @@ router.post('/createRoleType', checkNotAuthenticated, function (req, res) {
 /**
  * POST route for assigning a role type to a team
  */
-router.post('/assignrole', checkNotAuthenticated, function (req, res) {
+router.post('/assignrole', checkNotAuthenticated, permissionCheck('rolemanagement', 'canOpen'), function (req, res) {
     assignRole(req.body.roleId, req.body.teamId, req.body.userId).then(() => {
         res.status(200).send("Role assigned successfully!");
     }).catch(() => {
@@ -64,7 +64,7 @@ router.post('/assignrole', checkNotAuthenticated, function (req, res) {
 /**
  * POST route for removing a role type to a team
  */
-router.post('/unassignrole', checkNotAuthenticated, function (req, res) {
+router.post('/unassignrole', checkNotAuthenticated, permissionCheck('rolemanagement', 'canOpen'), function (req, res) {
     unassignRole(req.body.roleId, req.body.teamId, req.body.userId).then(() => {
         res.status(200).send("Role removed successfully!");
     }).catch(() => {
@@ -75,7 +75,7 @@ router.post('/unassignrole', checkNotAuthenticated, function (req, res) {
 /**
  * POST route for updating a role type
  */
-router.post('/update', checkNotAuthenticated, function (req, res) {
+router.post('/update', checkNotAuthenticated, permissionCheck('rolemanagement', 'canOpen'), function (req, res) {
     updateRoleType(req.body.roleTypeId, req.body.name, req.body.description).then(() => {
         res.status(200).send({message: "Role type updated successfully!"});
     }).catch(() => {
@@ -86,7 +86,7 @@ router.post('/update', checkNotAuthenticated, function (req, res) {
 /**
  * POST route for deleting a role type
  */
-router.post('/delete', checkNotAuthenticated, function (req, res) {
+router.post('/delete', checkNotAuthenticated, permissionCheck('rolemanagement', 'canOpen'), function (req, res) {
     deleteRoleType(req.body.roleTypeId, req.body.name, req.body.description).then(() => {
         res.status(200).send({message: "Role type deleted successfully!"});
     }).catch(() => {

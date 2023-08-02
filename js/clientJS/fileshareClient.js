@@ -28,6 +28,7 @@ function getFileListFromServer(){
     $.ajax({
         url: url,
         type: 'GET',
+        dataType: "json",
         success: function(data) {
             const files = data;
             removeFileShareContent();
@@ -140,6 +141,7 @@ function deleteFileOrFolder(filePath) {
         type: "POST",
         url: "/fileshare/deleteFile/" + filePath,
         data: '',
+        dataType: "json",
         success: function () {
             loadFolder(subDir);
             displaySuccess('File or Folder deleted successfully!')
@@ -194,6 +196,7 @@ function newFolderPopupSetup(){
             type: "POST",
             url: "/fileshare/createFolder/" + folderPath,
             data: '',
+            dataType: "json",
             success: function() {
                 loadFolder(subDir);
                 displaySuccess('Folder created successfully!')
@@ -217,6 +220,7 @@ function uploadFiles(formData){
     $.ajax({
         url: "/fileshare/uploadFiles/" + subDir,
         type: "POST",
+        dataType: "json",
         data:  formData,
         contentType: false,
         cache: false,
@@ -261,6 +265,7 @@ function renameFile(filePath, newName){
     $.ajax({
         url: "/fileshare/renameFile",
         type: "POST",
+        dataType: "json",
         data:  JSON.stringify({filePath: filePath, newFileName: newName}),
         contentType: "application/json",
         cache: false,

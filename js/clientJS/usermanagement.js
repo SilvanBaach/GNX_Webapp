@@ -50,6 +50,7 @@ async function setupUserManagement() {
                 $.ajax({
                     url: '/registrationcode/generateNewRegistrationCode/' + dropdownVal,
                     type: 'POST',
+                    dataType: "json",
                     success: function (data) {
                         console.log("Registration code created");
                         resolve(); // Resolve the promise when the registration code is generated successfully
@@ -102,6 +103,7 @@ async function loadRegistrationCodeTable(){
     await $.ajax({
         url: "/registrationcode/getregistrationcodes",
         type: "GET",
+        dataType: "json",
         cache: false,
         dataType: "json",
         success: function(data) {
@@ -216,6 +218,7 @@ async function updateRegisterCode(code, valid){
     await $.ajax({
         url: "/registrationcode/updateRegistrationCode/" + code + "/" + valid,
         type: "POST",
+        dataType: "json",
         success: function (data) {
 
         },
@@ -397,6 +400,7 @@ async function deleteUser(e){
         await $.ajax({
             url: "/user/deleteUser/" + username,
             type: "POST",
+            dataType: "json",
             success: function (data) {
                 $(".edit-box").hide();
                 displaySuccess("User deleted successfully!")
@@ -441,6 +445,7 @@ async function updateUser() {
     await $.ajax({
         url: "/user/updateUser/" + $("#userid").val(),
         type: "POST",
+        dataType: "json",
         data: JSON.stringify(data),
         contentType: "application/json",
         success: function (data) {

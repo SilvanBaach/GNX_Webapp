@@ -8,15 +8,19 @@
     <div class="header-container">
         <div class="path-text-container" id="path-text-container"></div>
         <div class="button-container">
-            <form action="" method="post" enctype="multipart/form-data" id="upload-form">
-                <label class="default" for="file">Upload
-                    <i class="ri-upload-2-fill upload-icon"></i>
-                    <input type="file" name="file" id="file" multiple="multiple">
-                </label>
-            </form>
-            <button class="default green new-folder" id="new-folder" type="button">New Folder
-                <i class="ri-folder-add-fill upload-icon"></i>
-            </button>
+            <% if (user.fileshare && user.fileshare.canModify) { %>
+                <form action="" method="post" enctype="multipart/form-data" id="upload-form">
+
+                    <label class="default" for="file">Upload
+                        <i class="ri-upload-2-fill upload-icon"></i>
+                        <input type="file" name="file" id="file" multiple="multiple">
+                    </label>
+
+                </form>
+                <button class="default green new-folder" id="new-folder" type="button">New Folder
+                    <i class="ri-folder-add-fill upload-icon"></i>
+                </button>
+            <% } %>
         </div>
     </div>
 </div>
@@ -64,16 +68,16 @@
         });
 
         //create new folder
-        $("#new-folder").click(function(e){
+        $("#new-folder").click(function (e) {
             newFolderPopup.open(e);
         });
 
         //Upload file
-        $("#file").on("change", function() {
+        $("#file").on("change", function () {
             if ($("#file")[0].files.length > 10) {
                 displayError('You can only upload 10 files at a time!');
             } else {
-                $("#upload-form").on('submit',(function(e) {
+                $("#upload-form").on('submit', (function (e) {
                     e.preventDefault();
                     uploadFiles(new FormData(this))
                 })).submit();

@@ -36,6 +36,7 @@ function createNewRole(name, desc) {
     $.ajax({
         url: "/roletype/createRoleType",
         type: "POST",
+        dataType: "json",
         data: {
             name: name,
             description: desc
@@ -46,7 +47,7 @@ function createNewRole(name, desc) {
             loadData();
         },
         error: function (data) {
-            displayError(data.message);
+            displayError(data.error);
             console.log(data);
         }
     });
@@ -59,6 +60,7 @@ function loadData() {
     $.ajax({
         url: "/roletype/getRoleTypes",
         type: "GET",
+        dataType: "json",
         cache: false,
         success: function (data) {
             roleData = data;
@@ -125,13 +127,14 @@ function editRole(id) {
             roleId: id
         },
         type: "GET",
+        dataType: "json",
         cache: false,
         success: function (data) {
             //Build the list
             buildPermissionList(data, "scrollableListUnassigned");
         },
         error: function (data) {
-            displayError(data.responseText)
+            displayError(data.error)
         }
     });
 
@@ -142,6 +145,7 @@ function editRole(id) {
             roleId: id
         },
         type: "GET",
+        dataType: "json",
         cache: false,
         success: function (data) {
             //Build the list
@@ -188,6 +192,7 @@ function assignPermission() {
     $.ajax({
         url: "/permission/assignpermission",
         type: "POST",
+        dataType: "json",
         data: {
             roleId: editRoleId,
             permissionTypeId: permissiontypeId
@@ -214,6 +219,7 @@ function deAssignPermission() {
     $.ajax({
         url: "/permission/deassignpermission",
         type: "POST",
+        dataType: "json",
         data: {
             roleId: editRoleId,
             permissionTypeId: permissiontypeId
@@ -268,6 +274,7 @@ function setupAssignToTeamPopup() {
             $.ajax({
                 url: "/team/getteamstoassignrole",
                 type: "GET",
+                dataType: "json",
                 data: {
                     roleId: $(this).val()
                 },
@@ -293,7 +300,7 @@ function setupAssignToTeamPopup() {
                     });
                 },
                 error: function (error) {
-                    displayError(error.responseText)
+                    displayError(error.error)
                 }
             });
 
@@ -414,6 +421,7 @@ function setupAssignToUserPopup() {
             $.ajax({
                 url: "/user/getuserstoassignrole",
                 type: "GET",
+                dataType: "json",
                 data: {
                     roleId: $(this).val()
                 },
@@ -439,7 +447,7 @@ function setupAssignToUserPopup() {
                     });
                 },
                 error: function (error) {
-                    displayError(error)
+                    displayError(error.error)
                 }
             });
 
@@ -492,6 +500,7 @@ function setupUnAssignFromTeamPopup() {
                 $.ajax({
                     url: "/roletype/getRoleTypesByTeam",
                     type: "GET",
+                    dataType: "json",
                     data: {
                         teamId: $(this).val()
                     },
@@ -517,7 +526,7 @@ function setupUnAssignFromTeamPopup() {
                         });
                     },
                     error: function (error) {
-                        displayError(error)
+                        displayError(error.error)
                     }
                 });
             } else {
@@ -567,6 +576,7 @@ function setupUnAssignFromUserPopup() {
                 $.ajax({
                     url: "/roletype/getRoleTypesByUser",
                     type: "GET",
+                    dataType: "json",
                     data: {
                         userId: $(this).val()
                     },
@@ -592,7 +602,7 @@ function setupUnAssignFromUserPopup() {
                         });
                     },
                     error: function (error) {
-                        displayError(error)
+                        displayError(error.error)
                     }
                 });
             } else {
@@ -619,6 +629,7 @@ function unAssignRole() {
     $.ajax({
         url: "/roleType/unassignrole",
         type: "POST",
+        dataType: "json",
         data: {
             roleId: roleId,
             teamId: teamId,
@@ -648,6 +659,7 @@ function assignRole() {
     $.ajax({
         url: "/roleType/assignrole",
         type: "POST",
+        dataType: "json",
         data: {
             roleId: roleId,
             teamId: teamId,
@@ -670,6 +682,7 @@ function deleteRole(){
     $.ajax({
         url: "/roletype/delete",
         type: "POST",
+        dataType: "json",
         data: {
             roleTypeId: editRoleId
         },

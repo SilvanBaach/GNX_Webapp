@@ -124,6 +124,7 @@
                 url: $(this).attr('action'),
                 method: $(this).attr('method'),
                 data: data,
+                dataType: "json",
                 success: function (response) {
                     loadData();
                     displaySuccess(response.message);

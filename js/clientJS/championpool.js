@@ -188,6 +188,7 @@ async function getDDragonData() {
     await $.ajax({
         url: "/riot/getDDragonData/",
         type: "GET",
+        dataType: "json",
         success: function (data) {
             dDragonData = data;
         },
@@ -219,6 +220,7 @@ async function getChampionpoolData() {
     await $.ajax({
         url: "/riot/getChampionpool/",
         type: "GET",
+        dataType: "json",
         success: function (data) {
             championpoolData = data;
         },
@@ -250,6 +252,7 @@ function updateChampionpoolData(element, newChampionName, bDelete) {
     $.ajax({
         url: "/riot/updateChampionpool",
         type: "POST",
+        dataType: "json",
         data: {
             championpoolData: championpoolData
         },

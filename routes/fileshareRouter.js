@@ -9,6 +9,8 @@ const path = require("path");
 const fileshareRoot = process.env.FILESHARE_ROOT_DIR;
 const rootDir = path.resolve(path.dirname(__dirname));
 
+//TODO: Add permission checking to all routes
+
 /**
  * Multer configuration
  */

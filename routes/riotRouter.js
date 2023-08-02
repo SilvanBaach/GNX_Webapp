@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const riot = require('../js/serverJS/riot.js')
-const {checkNotAuthenticated} = require("../js/serverJS/sessionChecker");
+const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
 const {pool} = require("../js/serverJS/database/dbConfig");
 
 
 /**
  * GET DDragon Data from project
  */
-router.get('/getDDragonData', async (req, res) => {
+router.get('/getDDragonData', permissionCheck('championpool', 'canOpen'), async (req, res) => {
     const championData = await riot.getDDragonDataFromProject();
     res.send(championData);
 });
@@ -16,7 +16,7 @@ router.get('/getDDragonData', async (req, res) => {
 /**
  * GET route for getting the championpool data
  */
-router.get('/getChampionpool',  checkNotAuthenticated, function (req, res) {
+router.get('/getChampionpool',  checkNotAuthenticated, permissionCheck('championpool', 'canOpen'), function (req, res) {
     getChampionpool().then((result) => {
         res.status(200).send(result.rows);
     }).catch(() => {
@@ -27,7 +27,7 @@ router.get('/getChampionpool',  checkNotAuthenticated, function (req, res) {
 /**
  * POST route for updating a team
  */
-router.post('/updateChampionpool', checkNotAuthenticated, function (req, res) {
+router.post('/updateChampionpool', checkNotAuthenticated, permissionCheck('championpool', 'canOpen'), function (req, res) {
     const formData = req.body;
 
     updateOrInsertChampionpool(formData).then((result) => {

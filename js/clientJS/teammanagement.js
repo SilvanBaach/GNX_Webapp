@@ -107,6 +107,7 @@ async function loadTeams() {
     await $.ajax({
         url: "/team/getteams",
         type: "GET",
+        dataType: "json",
         cache: false,
         success: function (data) {
             dataAccessors.teamData = data;
@@ -124,6 +125,7 @@ async function loadTeamTypes() {
     await $.ajax({
         url: "/teamtype/getteamtypes",
         type: "GET",
+        dataType: "json",
         cache: false,
         success: function (data) {
             dataAccessors.teamTypeData = data;
@@ -238,6 +240,7 @@ async function createTeam(e, popupTeam) {
         $.ajax({
             url: "/team/insertteam",
             type: "POST",
+            dataType: "json",
             data: {
                 teamName: teamName,
                 teamType: teamType,
@@ -268,6 +271,7 @@ function createTeamType(e, popupTeamType) {
         $.ajax({
             url: "/teamtype/insertteamtype",
             type: "POST",
+            dataType: "json",
             data: {
                 internalName: internalName,
                 displayName: displayName
@@ -342,6 +346,7 @@ function deleteTeam(e, id) {
         $.ajax({
             url: "/team/deleteteam",
             type: "POST",
+            dataType: "json",
             data: {
                 id: id
             },
@@ -374,6 +379,7 @@ function updateTeam(){
     $.ajax({
         url: "/team/updateteam",
         type: "POST",
+        dataType: "json",
         data: {
             id: id,
             teamName: teamName,
@@ -404,6 +410,7 @@ function updateTeamType(){
     $.ajax({
         url: "/teamtype/updateteamtype",
         type: "POST",
+        dataType: "json",
         data: {
             id: id,
             internalName: internalName,

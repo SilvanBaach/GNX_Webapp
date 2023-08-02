@@ -3,6 +3,7 @@ function getNextTrainings(teamId) {
     $.ajax({
         url: url,
         type: "GET",
+        dataType: "json",
         success: function (data) {
             const tableBody = $("#training-column tbody");
             tableBody.empty();
@@ -71,6 +72,7 @@ function loadDiscordMembers() {
     $.ajax({
         url: '/discordbot/discord-members',
         type: "GET",
+        dataType: "json",
         success: function (data) {
             const online = $("#onlineMembers");
             const totalMembers = $("#totalMembers")
@@ -91,6 +93,7 @@ function loadWebappMembers() {
     $.ajax({
         url: '/user/getWebappMemberCount',
         type: "GET",
+        dataType: "json",
         success: function (data) {
             const online = $("#onlineMembersW");
             const totalMembers = $("#totalMembersW")

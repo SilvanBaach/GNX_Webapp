@@ -269,6 +269,7 @@ async function saveNewOrder(newOrder) {
     $.ajax({
         url: "/teammembership/updateCalendarOrder",
         type: "POST",
+        dataType: "json",
         data: {newOrder},
         success: function () {
             displaySuccess("Order saved successfully!")
@@ -432,6 +433,7 @@ async function getDataFromTeam(from, until, teamId) {
     return await $.ajax({
         url: "/presence/getPresenceListFromTeam/" + teamId + "/" + epochFrom + "/" + epochUntil,
         type: "GET",
+        dataType: "json",
         success: function (data) {
             return data;
         },
@@ -503,6 +505,7 @@ function saveDay(username, date, presenceType, from, until, comment) {
     $.ajax({
         url: "/presence/save",
         type: "POST",
+        dataType: "json",
         data: {
             username: username,
             date: date,
@@ -534,6 +537,7 @@ async function getUsers(teamId) {
     await $.ajax({
         url: "/user/getUserList/" + teamId,
         type: "GET",
+        dataType: "json",
         success: function (data) {
             users = data;
         },
@@ -554,6 +558,7 @@ function buildNextTrainingTable(teamId) {
     $.ajax({
         url: url,
         type: "GET",
+        dataType: "json",
         success: function (data) {
             const tableBody = $("#team-table tbody");
             tableBody.empty();
