@@ -18,7 +18,7 @@ const LogLevel = {
 function logMessage(message, level, userId) {
     const hostname = os.hostname();
 
-    if (hostname.includes('da')) {
+    if (process.env.LISTEN_ADDRESS === '0.0.0.0') {
         if (!userId) {
             userId = -1; //Stands for "system log"
         }
