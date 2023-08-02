@@ -108,43 +108,6 @@ class Popup {
     }
 
     /**
-     * Setups a simple popup with a table for the championpool page only
-     * @param championNameAndPicture
-     */
-    displayPopupWithTable(championNameAndPicture) {
-        this.popupContainer.empty();
-
-        var headerClass = "row-container-popup";
-        var newHTML = '';
-
-
-        for (var i = 0; i < championNameAndPicture.length; i++) {
-            let championName = championNameAndPicture[i][0];
-            let pictureUrl = championNameAndPicture[i][1];
-            var itemHTML = `<div class="champion-container-popup">
-                  <span class="championname-span-popup">${championName}</span>
-                  <img class="champion-img-popup" src="${pictureUrl}" alt="Champion Image">
-                </div>`;
-
-
-            if (i % 8 === 0) {
-                newHTML += '<div class="grid-item-popup ' + headerClass + '">' + itemHTML;
-            } else {
-                newHTML += itemHTML;
-            }
-
-            if ((i + 1) % 8 === 0 || i === championNameAndPicture.length - 1) {
-                newHTML += '</div>';
-            }
-        }
-
-        this.popupContainer.append(newHTML);
-    }
-
-
-
-
-    /**
      * Closes the popup
      */
     close() {

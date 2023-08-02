@@ -80,13 +80,10 @@ function buildChampionpoolContainer(containerElement, columnCount) {
  * @returns {Promise<void>}
  */
 async function setupChampionpool() {
-    const headerElement = [".main-chp-header", ".practice-chp-header", ".suggestion-chp-header"];
-
-    const popupChampions = new Popup("popup-containerChampions");
 
     championNameAndPictureUrl = getChampionNameAndPictureFromDDragon(await getDDragonData());
-    popupChampions.displayPopupWithTable(championNameAndPictureUrl);
 
+    const headerElement = [".main-chp-header", ".practice-chp-header", ".suggestion-chp-header"];
     headerElement.forEach(buildChampionpoolHeader);
 
     buildChampionpoolContainer(headerElement[0], 7);
@@ -94,6 +91,10 @@ async function setupChampionpool() {
     buildChampionpoolContainer(headerElement[2], 3);
 
     fillAllTablesWithData(await getChampionpoolData())
+
+    const popupChampions = new Popup("popup-containerChampions");
+
+    popupChampions.d
 
     $(".edit2").click(function (e) {
         const $target = $(e.currentTarget);
@@ -103,7 +104,6 @@ async function setupChampionpool() {
         currentTarget = $gridItem; // Set currentTarget to the .grid-item element
     });
 
-
     $(".champion-container-popup").click(function (e) {
         const $target = $(e.currentTarget);
         const championName = $target.find('span').text(); // Get the inner text of the .champion-container-popup
@@ -112,7 +112,6 @@ async function setupChampionpool() {
         $(currentTarget).attr("data-championname", championName); // Set the data-championname attribute of currentTarget with championName
         $(currentTarget).find('span').text(championName); // Replace the inner text of currentTarget with championName
         $(currentTarget).find('img').attr("src", championSrc); // Replace the src attribute of the image in currentTarget with championSrc
-
 
         updateChampionpoolData(currentTarget, championName);
     });
@@ -133,6 +132,11 @@ function setupDeletePopup() {
 
     $("#yesDel").click(function(e){
         updateChampionpoolData(currentTarget, 'delete', true);
+
+        $(currentTarget).attr("data-championname", 'deleted'); // Set the data-championname attribute of currentTarget with championName
+        $(currentTarget).find('span').text('?'); // Replace the inner text of currentTarget with championName
+        $(currentTarget).find('img').attr("src", '/res/others/blank_profile_picture.png');
+
         delPopup.close();
     });
 
@@ -220,7 +224,7 @@ function updateChampionpoolData(element, newChampionName, bDelete) {
             championpoolData: championpoolData
         },
         success: function() {
-            console.log("Successfully updated championpool data!");
+            //console.log("Successfully updated championpool data!");
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.log("Error updating Championpool", errorThrown);
