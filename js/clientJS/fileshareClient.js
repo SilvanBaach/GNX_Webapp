@@ -1,5 +1,25 @@
 let subDir = '';
 let toDelPath = '';
+let canDownload = false;
+let canModify = false;
+
+/**
+ * This function is called when the document is ready
+ * It checks the permissions of the user
+ */
+function checkPermissions() {
+    return new Promise((resolve, reject) => {
+        hasPermission('fileshare', 'canDownload')
+            .then(canDownload => {
+                hasPermission('fileshare', 'canModify')
+                    .then(canModify => {
+                        resolve({canDownload, canModify});
+                    })
+                    .catch(error => reject(error));
+            })
+            .catch(error => reject(error));
+    });
+}
 
 /**
  * This function removes all the content from the file share
@@ -32,8 +52,12 @@ function getFileListFromServer(){
         success: function(data) {
             const files = data;
             removeFileShareContent();
-            $.each(files, function (index, file) {
-                appendFileLayout(file)
+            checkPermissions().then((permissions) => {
+                canDownload = permissions.canDownload;
+                canModify = permissions.canModify;
+                $.each(files, function (index, file) {
+                    appendFileLayout(file);
+                });
             });
         },
         error: function(xhr, status, error) {
@@ -46,7 +70,7 @@ function getFileListFromServer(){
  * This method generates a File icon and appends it to the fileshare-container
  * @param file The file object from which all the data is extracted
  */
-function appendFileLayout(file) {
+async function appendFileLayout(file) {
     //Defining new DOM Objects
     const fileshareContainer = $('#fileshare-container');
     const fileContainer = $('<div>').addClass('file');
@@ -67,9 +91,14 @@ function appendFileLayout(file) {
     fileContainer.append(deleteContainer);
     fileshareContainer.append(fileContainer);
 
-    if (file.type === 'directory'){
+    if (!canModify) {
+        removeLink.css('visibility', 'hidden');
+        rename.css('visibility', 'hidden');
+    }
+
+    if (file.type === 'directory') {
         fileImage.attr('src', '/res/fileIcons/folder.png');
-    }else {
+    } else {
         fileImage.attr('src', file.iconPath);
     }
 
@@ -79,12 +108,17 @@ function appendFileLayout(file) {
 
     const fileLink = $('<a>');
 
-    if (file.type === 'directory'){
+    if (file.type === 'directory') {
         fileLink.attr('id', 'directory-link');
         removeLink.attr('data-path', `${subDir}$SLASH$${file.name}`);
         rename.attr('data-path', `${subDir}$SLASH$${file.name}`);
-    }else {
-        fileLink.attr('href', `/fileshare/download/${subDir}$SLASH$${file.name}`);
+    } else {
+        if (canDownload) {
+            fileLink.attr('href', `/fileshare/download/${subDir}$SLASH$${file.name}`);
+        } else {
+            fileLink.css('pointer-events', 'none');
+            fileLink.css('color', 'grey');
+        }
         removeLink.attr('data-path', `${subDir}$SLASH$${file.name}`);
         rename.attr('data-path', `${subDir}$SLASH$${file.name}`);
     }

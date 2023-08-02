@@ -165,6 +165,17 @@ router.get('/getWebappMemberCount', checkNotAuthenticated, permissionCheck('home
     res.send({onlineMembers: onlineUsers.rows[0].count, totalMembers: registeredUsers.rows[0].count})
 });
 
+/**
+ * GET route for user permissions
+ */
+router.get('/getUserPermissions', checkNotAuthenticated, async (req, res) => {
+    getUserPermissions(req.user.id, req.user.team.id).then((result) => {
+        res.status(200).send(result.rows);
+    }).catch(() => {
+        res.status(500).send({message: "There was an error getting the permission List! Please try again later."});
+    });
+});
+
 /** Updates the information of a user in the database
  * This method is generic and can be used to update any field of the user
  * @param formData the data of the user
@@ -320,6 +331,19 @@ function deleteUser(username){
  */
 function getUsersToAssignRoleTo(roleId){
     return pool.query("SELECT id, username FROM account WHERE id NOT IN (SELECT COALESCE(account_fk,0) FROM role WHERE roletype_fk=$1)", [roleId]);
+}
+
+/**
+ * Returns the permissions of a user
+ * @param userId
+ */
+function getUserPermissions(userId, teamId){
+    return pool.query(`SELECT permissiontype.location, permissiontype.permission FROM role
+                                            LEFT JOIN roletype ON roletype.id = role.roletype_fk
+                                            LEFT JOIN permission ON "permission".roletype_fk = roletype.id
+                                            LEFT JOIN permissiontype ON permissiontype.id = "permission".permissiontype_fk
+                                            WHERE roletype.id IS NOT NULL AND (role.team_fk = $2 OR role.account_fk = $1)
+                                            GROUP BY permissiontype.location, permissiontype.permission`, [userId, teamId]);
 }
 
 module.exports = {
