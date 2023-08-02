@@ -5,6 +5,7 @@ const express = require('express');
 const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
+const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 
 /**
  * GET route for getting all role types
@@ -44,6 +45,7 @@ router.get('/getRoleTypesByUser',  checkNotAuthenticated, permissionCheck('rolem
  */
 router.post('/createRoleType', checkNotAuthenticated, permissionCheck('rolemanagement', 'canOpen'), function (req, res) {
     insertNewRoleType(req.body.name, req.body.description).then(() => {
+        logMessage(`User ${req.user.username} created the role type ${req.body.name}`,LogLevel.INFO,req.user.id)
         res.status(200).send({message: "Role type created successfully!"});
     }).catch(() => {
         res.status(500).send({message: "There was an error creating the role type! Please try again later."});
@@ -55,6 +57,7 @@ router.post('/createRoleType', checkNotAuthenticated, permissionCheck('rolemanag
  */
 router.post('/assignrole', checkNotAuthenticated, permissionCheck('rolemanagement', 'canOpen'), function (req, res) {
     assignRole(req.body.roleId, req.body.teamId, req.body.userId).then(() => {
+        logMessage(`User ${req.user.username} assigned the role type ${req.body.roleId} to the team ${req.body.teamId} or the user ${req.body.userId}`,LogLevel.INFO,req.user.id)
         res.status(200).send("Role assigned successfully!");
     }).catch(() => {
         res.status(500).send("There was an error assigning the role! Please try again later.");
@@ -66,6 +69,7 @@ router.post('/assignrole', checkNotAuthenticated, permissionCheck('rolemanagemen
  */
 router.post('/unassignrole', checkNotAuthenticated, permissionCheck('rolemanagement', 'canOpen'), function (req, res) {
     unassignRole(req.body.roleId, req.body.teamId, req.body.userId).then(() => {
+        logMessage(`User ${req.user.username} unassigned the role type ${req.body.roleId} to the team ${req.body.teamId} or the user ${req.body.userId}`,LogLevel.INFO,req.user.id)
         res.status(200).send("Role removed successfully!");
     }).catch(() => {
         res.status(500).send("There was an error removing the role! Please try again later.");
@@ -77,6 +81,7 @@ router.post('/unassignrole', checkNotAuthenticated, permissionCheck('rolemanagem
  */
 router.post('/update', checkNotAuthenticated, permissionCheck('rolemanagement', 'canOpen'), function (req, res) {
     updateRoleType(req.body.roleTypeId, req.body.name, req.body.description).then(() => {
+        logMessage(`User ${req.user.username} updated the role type ${req.body.name}`,LogLevel.INFO,req.user.id)
         res.status(200).send({message: "Role type updated successfully!"});
     }).catch(() => {
         res.status(500).send({message: "There was an error updating the role type! Please try again later."});
@@ -88,6 +93,7 @@ router.post('/update', checkNotAuthenticated, permissionCheck('rolemanagement', 
  */
 router.post('/delete', checkNotAuthenticated, permissionCheck('rolemanagement', 'canOpen'), function (req, res) {
     deleteRoleType(req.body.roleTypeId, req.body.name, req.body.description).then(() => {
+        logMessage(`User ${req.user.username} deleted the role type ${req.body.name}`,LogLevel.INFO,req.user.id)
         res.status(200).send({message: "Role type deleted successfully!"});
     }).catch(() => {
         res.status(500).send({message: "There was an error deleting the role type! Please try again later."});

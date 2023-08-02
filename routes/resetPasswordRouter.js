@@ -8,6 +8,7 @@ const EmailSender = require('../js/serverJS/email/emailSender.js');
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 const util = require("util");
 const {getUserByToken, getUserByEmail} = require('../routes/userRouter.js');
+const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 
 const passwordTokenDuration = process.env.RESET_PASSWORD_TOKEN_EXPIRATION_TIME;
 
@@ -23,6 +24,7 @@ router.get('/', (req, res) => {
  */
 router.post('/sendResetEmail', async (req, res) => {
     const email = req.body.email;
+    logMessage(`User ${email} requested a password reset`, LogLevel.INFO, null)
 
     const user = await getUserByEmail(email);
     if (user.rows.length > 0) {

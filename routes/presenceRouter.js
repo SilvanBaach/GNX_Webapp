@@ -6,6 +6,7 @@ const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 const util = require("util");
 const { checkNotAuthenticated, permissionCheck } = require('../js/serverJS/sessionChecker.js'); //If not logged in to Index
+const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 
 /**
  * GET route for getting the presence data of a team
@@ -29,6 +30,7 @@ router.get('/getPresenceListFromTeam/:teamId/:epochFrom/:epochUntil', checkNotAu
 router.post('/save', checkNotAuthenticated, function (req, res) {
     const data = req.body;
     savePresence(data).then(() => {
+        logMessage(`User ${req.user.username} saved a presence`,LogLevel.INFO,req.user.id);
         res.status(200).send('Presence data saved successfully!');
     }).catch(() => {
         res.status(500).send("There was an error saving the presence data! Please try again later.");

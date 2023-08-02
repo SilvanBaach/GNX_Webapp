@@ -6,6 +6,7 @@ const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
 const util = require("util");
+const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 
 /**
  * POST route for updating the calendar order
@@ -21,6 +22,7 @@ router.post('/updateCalendarOrder', checkNotAuthenticated, permissionCheck('cale
         }
     }
 
+    logMessage(`User ${req.user.username} updated the calendar order for team ${req.user.team.displayname}`, LogLevel.INFO, req.user.id)
     res.status(200).send({ message: "Order updated successfully" });
 });
 

@@ -1,4 +1,5 @@
 const {pool} = require("./database/dbConfig");
+const { logMessage, LogLevel } = require("./logger.js");
 
 /**
  * Checks if the user is authenticated
@@ -49,11 +50,11 @@ function permissionCheck(location, permission) {
             } else {
                 if (req.headers.accept.includes('application/json')) {
                     // For API requests, send a 403 status code with a JSON response
-                    console.log("Forbidden");
+                    logMessage(`User ${req.user.username} tried to access ${location} but has no permission`, LogLevel.WARNING, req.user.id)
                     res.status(403).send({ error: 'Forbidden' });
                 } else {
                     // For non-API requests, redirect to the /error page
-                    console.log("Forbidden: Redirecting to /error");
+                    logMessage(`User ${req.user.username} tried to access ${location} but has no permission`, LogLevel.WARNING, req.user.id)
                     res.redirect('/error');
                 }
             }

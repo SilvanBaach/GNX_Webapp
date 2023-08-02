@@ -5,6 +5,7 @@ const express = require('express');
 const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
+const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 
 /**
  * GET route for getting all teams
@@ -38,6 +39,7 @@ router.post('/insertteam', checkNotAuthenticated, permissionCheck('teammanagemen
         if (result.rowCount === 0) {
             res.status(500).send({message: "There was an error inserting the team! Please try again later."});
         }else {
+            logMessage(`User ${req.user.username} inserted the team ${formData.name}`,LogLevel.INFO,req.user.id)
             res.status(200).send({message: "Team inserted successfully"});
         }
     }).catch(() => {
@@ -55,6 +57,7 @@ router.post('/deleteteam', checkNotAuthenticated, permissionCheck('teammanagemen
         if (result.rowCount === 0) {
             res.status(500).send({message: "There was an error deleting the team! Please try again later."});
         }else {
+            logMessage(`User ${req.user.username} deleted the team ${formData.name}`,LogLevel.INFO,req.user.id)
             res.status(200).send({message: "Team deleted successfully"});
         }
     }).catch(() => {
@@ -72,6 +75,7 @@ router.post('/updateteam', checkNotAuthenticated, permissionCheck('teammanagemen
         if (result.rowCount === 0) {
             res.status(500).send({message: "There was an error updating the team! Please try again later."});
         }else {
+            logMessage(`User ${req.user.username} updated the team ${formData.name}`,LogLevel.INFO,req.user.id)
             res.status(200).send({message: "Team updated successfully"});
         }
     }).catch(() => {

@@ -505,7 +505,6 @@ function saveDay(username, date, presenceType, from, until, comment) {
     $.ajax({
         url: "/presence/save",
         type: "POST",
-        dataType: "json",
         data: {
             username: username,
             date: date,

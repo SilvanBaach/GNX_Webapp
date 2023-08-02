@@ -8,6 +8,7 @@ const multer = require('multer');
 const path = require("path");
 const fileshareRoot = process.env.FILESHARE_ROOT_DIR;
 const rootDir = path.resolve(path.dirname(__dirname));
+const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 
 //TODO: Add permission checking to all routes
 
@@ -68,6 +69,7 @@ router.post('/deleteFile/:subPath', (req, res) => {
     subPath = subPath.replaceAll("$SLASH$", "/");
 
     fileshare.deleteFileOrFolder(subPath).then((result) => {
+        logMessage(`User ${req.user.username} deleted file ${subPath}`, LogLevel.INFO, req.user.id)
         res.status(200).send({message: result});
     }).catch((err) => {
         res.status(500).send(err);
@@ -82,6 +84,7 @@ router.post('/createFolder/:subPath',  (req, res) => {
     subPath = subPath.replaceAll("$SLASH$", "/");
 
     fileshare.createFolder(subPath).then((result) => {
+        logMessage(`User ${req.user.username} created folder ${subPath}`, LogLevel.INFO, req.user.id)
         res.status(200).send({message: result});
     }).catch((err) => {
         res.status(500).send(err);
@@ -99,17 +102,20 @@ router.post('/uploadFiles/:subDir', upload.array('file', 10), (req, res, next) =
         error.httpStatusCode = 400
         return next(error)
     }
+
+    logMessage(`User ${req.user.username} uploaded ${files.length} files to ${req.params.subDir}`, LogLevel.INFO, req.user.id)
     res.status(200).send({message: "Files uploaded successfully", status: "success"});
 });
 
 /**
- * POST route for uploading files
+ * POST route for renaming files
  */
 router.post('/renameFile', (req, res, next) => {
     const filepath = req.body.filePath;
     const newFileName = req.body.newFileName;
 
     fileshare.renameFile(filepath, newFileName).then((result) => {
+        logMessage(`User ${req.user.username} renamed file ${filepath} to ${newFileName}`, LogLevel.INFO, req.user.id)
         res.status(200).send({message: 'File renamed successfully!', status: "success"});
     }).catch((err) => {
         res.status(500).send(err);
@@ -129,6 +135,7 @@ router.get('/download/:fileName', (req, res) => {
             console.log(err);
             res.status(500).send({error: 'An error occurred while downloading the file'});
         }
+        logMessage(`User ${req.user.username} downloaded file ${fileName}`, LogLevel.INFO, req.user.id)
     });
 });
 

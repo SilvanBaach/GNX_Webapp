@@ -6,10 +6,12 @@ const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 const util = require("util");
 const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
+const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 
 router.post('/generateNewRegistrationCode/:teamId', checkNotAuthenticated, permissionCheck('usermanagement', 'canOpen'), function (req, res) {
     const teamId = req.params.teamId;
     generateNewRegistrationCode(teamId).then(()=>{
+        logMessage(`New Registration Code generated for Team ${teamId}`, LogLevel.INFO, req.user.id)
         res.status(200).send("New Registration Code generated successfully");
     });
 });
@@ -23,6 +25,7 @@ router.post('/updateRegistrationCode/:code/:used', checkNotAuthenticated, permis
     const regCode = req.params.code;
     const used = req.params.used;
     updateRegistrationCode(regCode, used);
+    logMessage(`Registration Code ${regCode} updated`, LogLevel.INFO, req.user.id)
     res.status(200).send("Registration Code updated successfully");
 });
 

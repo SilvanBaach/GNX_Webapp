@@ -26,6 +26,7 @@ const discordBotRouter = require('./routes/discordBotRouter.js');
 const {checkAuthenticated} = require('./js/serverJS/sessionChecker.js');
 const riotRouter = require('./routes/riotRouter.js');
 const riot = require('./js/serverJS/riot.js');
+const {logMessage, LogLevel} = require('./js/serverJS/logger.js');
 
 /**
  * MIDDLEWARE
@@ -69,6 +70,7 @@ cron.schedule('* * 0 * * *', function() {
         if (err) {
             console.log(err);
         } else {
+            logMessage('Expired sessions cleaned up', LogLevel.INFO, null)
             console.log('Expired sessions cleaned up');
         }
     });
@@ -100,6 +102,7 @@ cron.schedule('0 3 * * *', async function() {
 
         // Create a new file with the JSON data
         fs.writeFileSync(filePath, JSON.stringify(jsonData));
+        logMessage(`Updated League of Legends Champion data`, LogLevel.INFO, null)
         console.log(`Created file: ${filePath}`);
     } catch (err) {
         console.error(`Error replacing JSON file: ${err}`);

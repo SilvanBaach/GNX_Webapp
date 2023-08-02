@@ -6,6 +6,7 @@ const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 const { checkNotAuthenticated } = require('../js/serverJS/sessionChecker.js');
 const {permissionCheck} = require("../js/serverJS/sessionChecker");
+const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 
 /**
  * Middleware for checking user permissions
@@ -38,6 +39,7 @@ router.get('/getassignedpermissions', checkNotAuthenticated, permissionCheck('ro
  */
 router.post('/assignpermission', checkNotAuthenticated, permissionCheck('rolemanagement', 'canOpen'), function (req, res) {
     assignPermission(req.body.roleId, req.body.permissionTypeId).then((result) => {
+        logMessage(`User ${req.user.username} assigned the permission ${req.body.permissionTypeId} to the role ${req.body.roleId}`,LogLevel.INFO,req.user.id);
         res.status(200).send(result.rows);
     }).catch(() => {
         res.status(500).send("There was an error assigning the permission! Please try again later.");
@@ -49,6 +51,7 @@ router.post('/assignpermission', checkNotAuthenticated, permissionCheck('roleman
  */
 router.post('/deassignpermission', checkNotAuthenticated, permissionCheck('rolemanagement', 'canOpen'), function (req, res) {
     unassignPermission(req.body.roleId, req.body.permissionTypeId).then((result) => {
+        logMessage(`User ${req.user.username} deassigned the permission ${req.body.permissionTypeId} from the role ${req.body.roleId}`,LogLevel.INFO,req.user.id);
         res.status(200).send(result.rows);
     }).catch(() => {
         res.status(500).send("There was an error dessigning the permission! Please try again later.");

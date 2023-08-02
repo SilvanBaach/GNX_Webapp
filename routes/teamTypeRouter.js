@@ -6,6 +6,7 @@ const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 const util = require("util");
 const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
+const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 
 /**
  * GET route for getting all team types
@@ -28,6 +29,7 @@ router.post('/insertteamtype', checkNotAuthenticated, permissionCheck('teammanag
         if (result.rowCount === 0) {
             res.status(500).send({message: "There was an error inserting the team type! Please try again later."});
         }else {
+            logMessage(`User ${req.user.username} inserted the team type ${formData.name}`,LogLevel.INFO,req.user.id)
             res.status(200).send({message: "Team type inserted successfully"});
         }
     }).catch(() => {
@@ -45,6 +47,7 @@ router.post('/updateteamtype', checkNotAuthenticated, permissionCheck('teammanag
         if (result.rowCount === 0) {
             res.status(500).send({message: "There was an error updating the team type! Please try again later."});
         }else {
+            logMessage(`User ${req.user.username} updated the team type ${formData.name}`,LogLevel.INFO,req.user.id)
             res.status(200).send({message: "Team type updated successfully"});
         }
     }).catch(() => {

@@ -1,6 +1,7 @@
 const LocalStrategy = require("passport-local").Strategy;
 const { pool } = require("./database/dbConfig.js");
 const bcrypt = require("bcrypt");
+const { logMessage, LogLevel } = require("./logger.js");
 
 const MAX_LOGIN_ATTEMPTS = 5;
 
@@ -32,6 +33,7 @@ function initialize(passport) {
 
                     //Is the User Blocked?
                     if (user.blocked) {
+                        logMessage(`User ${username} tried to login but is blocked!`, LogLevel.WARNING, user.id)
                         return done(null, false, { message: "This User is blocked! Please contact staff." });
                     }
 
@@ -43,16 +45,19 @@ function initialize(passport) {
                             //All credentials are correct
                             //Reset bad login attempts
                             resetBadLoginAttempts(user.id)
+                            logMessage(`User ${username} logged in!`, LogLevel.INFO, user.id)
                             return done(null, user);
                         } else {
                             //password is incorrect
                             //Add a bad login attempt to the database
                             addBadLoginAttempt(user.id, user.loginattempts)
+                            logMessage(`User ${username} tried to login but password is incorrect!`, LogLevel.WARNING, user.id)
                             return done(null, false, { message: "Password is incorrect" });
                         }
                     });
                 } else {
                     // No user
+                    logMessage(`User ${username} tried to login but no user with that username exists!`, LogLevel.WARNING)
                     return done(null, false, {
                         message: "No user registered with that username"
                     });

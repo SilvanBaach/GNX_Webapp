@@ -3,6 +3,7 @@ const router = express.Router();
 const riot = require('../js/serverJS/riot.js')
 const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
 const {pool} = require("../js/serverJS/database/dbConfig");
+const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 
 
 /**
@@ -34,6 +35,7 @@ router.post('/updateChampionpool', checkNotAuthenticated, permissionCheck('champ
         if (result.rowCount === 0) {
             res.status(500).send({message: "There was an error updating the championpool! Please try again later."});
         }else {
+            logMessage(`User ${req.user.username} updated the championpool`,LogLevel.INFO,req.user.id);
             res.status(200).send({message: "Championpool updated successfully"});
         }
     }).catch(() => {

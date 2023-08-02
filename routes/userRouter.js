@@ -7,6 +7,7 @@ const {pool} = require('../js/serverJS/database/dbConfig.js');
 const bcrypt = require("bcrypt");
 const util = require("util");
 const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
+const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 
 /**
  * POST route for updating the profile picture of a user
@@ -17,6 +18,7 @@ router.post('/updatePicture/:id', checkNotAuthenticated, function (req, res) {
     const base64 = req.body;
 
     updateUserPicture(base64, userId).then(() => {
+        logMessage(`User ${req.user.username} updated the profile picture of user ${userId}`,LogLevel.INFO,req.user.id)
         res.status(200).send({picture: base64, message: "Profile Picture updated successfully"});
     }).catch(() => {
         res.status(500).send("There was an error updating the profile picture! Please try again later.");
@@ -32,6 +34,7 @@ router.post('/updatePassword', checkNotAuthenticated, function (req, res) {
     const password = req.body.password1;
 
     updateUserPassword(password, userId).then(() => {
+        logMessage(`User ${req.user.username} updated their password`,LogLevel.INFO,req.user.id)
         res.status(200).send({message: "Password updated successfully"});
     }).catch(() => {
         res.status(500).send({message: "There was an error updating the password! Please try again later."});
@@ -55,6 +58,7 @@ router.post('/updatePassword/:token',  async function (req, res) {
 
             //Delete the tokens
             updateUser(formData, user.id).then(() => {
+                logMessage(`User ${user.username} reset their password`,LogLevel.INFO,user.id)
                 res.status(200).send();
             }).catch(() => {
                 res.status(500).send({message: "There was an error updating the password! Please try again later."});
@@ -103,6 +107,7 @@ router.post('/updateUser/:id',checkNotAuthenticated, function (req, res) {
             res.redirect('/register/success')
         }
         else {
+            logMessage(`User ${req.user.username} updated their information`,LogLevel.INFO,req.user.id)
             res.status(200).send({message: "Information updated successfully"});
         }
     }).catch(() => {
@@ -137,6 +142,7 @@ router.get('/getusers',checkNotAuthenticated, permissionCheck([{location: 'rolem
 router.post('/deleteUser/:username',checkNotAuthenticated, permissionCheck('usermanagement', 'canOpen'), function (req, res) {
     const username = req.params.username;
     deleteUser(username).then(() => {
+        logMessage(`User ${req.user.username} deleted the user ${username}`,LogLevel.INFO,req.user.id)
         res.status(200).send({message: "User deleted successfully"});
     }).catch(() => {
         res.status(500).send({message: "There was an error deleting the user! Please try again later."});

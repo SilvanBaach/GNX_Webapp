@@ -5,6 +5,7 @@
  */
 const { checkAuthenticated } = require('../js/serverJS/sessionChecker.js'); //If logged in to Dashboard
 const { checkNotAuthenticated } = require('../js/serverJS/sessionChecker.js'); //If not logged in to Index
+const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 
 module.exports = (passport) => {
     const express = require('express');
@@ -15,6 +16,7 @@ module.exports = (passport) => {
      * Redirects to the index page and displays a toast message on the client side
      */
     router.get('/logout', checkNotAuthenticated, (req, res) => {
+        logMessage(`User ${req.user.username} logged out`, LogLevel.INFO, req.user.id)
         req.session.destroy(function (err) {
             res.redirect('/?message=You have been successfully logged out!');
         });
