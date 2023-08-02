@@ -94,7 +94,28 @@ async function setupChampionpool() {
 
     const popupChampions = new Popup("popup-containerChampions");
 
-    popupChampions.d
+    popupChampions.displayInputPopupCustom('/res/others/question_blue.png', 'Champions', 'Select', 'btnSelectChampion',
+        '<select id="champions" class="select2-component"><option value="" disabled selected>Select a Champion</option></select>');
+
+    let data = championNameAndPictureUrl.map(function(item) {
+        return {
+            id: item[0],
+            text: item[0],
+            imageUrl: item[1]
+        };
+    });
+
+    $("#champions").select2({
+        data: data,
+        templateResult: function(item) {
+            if (!item.id) {
+                return item.text;
+            }
+
+            let img = $(`<img class="img-circle" src="${item.imageUrl}" alt="${item.text}" width="50" />`);
+            return $(`<div class="dropdown-container"></div>`).append(img, item.text);
+        }
+    });
 
     $(".edit2").click(function (e) {
         const $target = $(e.currentTarget);
@@ -104,16 +125,25 @@ async function setupChampionpool() {
         currentTarget = $gridItem; // Set currentTarget to the .grid-item element
     });
 
-    $(".champion-container-popup").click(function (e) {
-        const $target = $(e.currentTarget);
-        const championName = $target.find('span').text(); // Get the inner text of the .champion-container-popup
-        const championSrc = $target.find('img').attr("src"); // Get the src attribute of the image in .champion-container-popup
+    $("#btnSelectChampion").click(function (e) {
+        const championId = $('#champions').val(); // Get the selected champion ID
+
+        // Find the corresponding object in data array
+        const selectedChampion = data.find(function(item) {
+            return item.id === championId;
+        });
+
+        // Get the properties from the selected object
+        const championName = selectedChampion.text;
+        const championSrc = selectedChampion.imageUrl;
 
         $(currentTarget).attr("data-championname", championName); // Set the data-championname attribute of currentTarget with championName
         $(currentTarget).find('span').text(championName); // Replace the inner text of currentTarget with championName
         $(currentTarget).find('img').attr("src", championSrc); // Replace the src attribute of the image in currentTarget with championSrc
 
         updateChampionpoolData(currentTarget, championName);
+
+        popupChampions.close();
     });
 
     setupDeletePopup();

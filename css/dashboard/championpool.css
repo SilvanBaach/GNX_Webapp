@@ -103,3 +103,23 @@
     cursor: pointer;
 }
 
+.select2-container{
+    margin-top: 18px;
+}
+
+.select2-dropdown {
+    margin-top: -18px;
+}
+
+.img-circle{
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    overflow: hidden;
+    margin-right: 18px;
+}
+
+.dropdown-container{
+    display: flex;
+    align-items: center;
+}
