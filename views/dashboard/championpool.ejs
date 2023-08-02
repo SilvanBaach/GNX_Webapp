@@ -1,0 +1,32 @@
+<script src="/js/clientJS/championpool.js"></script>
+
+
+<div class="text"><%= user.team.displayname%> Champion Pool</div>
+<div id="content">
+    <div class="shadow-box">
+        <p class="purple-title">Main Champions</p>
+        <div class="main-chp-header"></div>
+        <div class="main-chp-container"></div>
+    </div>
+
+    <div class="shadow-box">
+        <p class="purple-title">In Practice</p>
+        <div class="practice-chp-header"></div>
+        <div class="practice-chp-container"></div>
+    </div>
+
+    <div class="shadow-box">
+        <p class="purple-title">Suggestions</p>
+        <div class="suggestion-chp-header"></div>
+        <div class="suggestion-chp-container"></div>
+    </div>
+</div>
+
+<div id="popup-containerChampions" class="popup-container"></div>
+<div id="popup-containerDelete" class="popup-container"></div>
+
+<script>
+    $(document).ready(function () {
+        setupChampionpool();
+    });
+</script>

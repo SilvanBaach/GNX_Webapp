@@ -52,6 +52,14 @@ router.get('/teammanagement', checkNotAuthenticated, (req, res) => {
 });
 
 /**
+ * GET championpool page
+ */
+router.get('/championpool', checkNotAuthenticated, (req, res) => {
+    res.render('dashboard/championpool.ejs', { user: req.user });
+});
+
+
+/**
  * GET role-management page
  */
 router.get('/rolemanagement', checkNotAuthenticated, (req, res) => {
