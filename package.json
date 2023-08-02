@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/GenZHAW/GNX_Webapp#readme",
   "dependencies": {
+    "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.2",
     "bootstrap": "^5.2.3",
@@ -34,17 +35,20 @@
     "express-session": "^1.17.3",
     "multer": "^1.4.5-lts.1",
     "node-cron": "^3.0.2",
+    "node-fetch": "^3.3.1",
     "nodemailer": "^6.9.1",
     "nodemon": "^2.0.21",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "pg": "^8.11.1",
     "request": "^2.88.2",
+    "riot-games-api-nodejs": "^1.0.7",
     "swiper": "^10.0.3",
     "twit": "^2.2.11",
     "typescript": "^5.1.6"
   },
   "devDependencies": {
+    "@types/jquery": "^3.5.16",
     "chromedriver": "^113.0.0",
     "jest": "^29.5.0",
     "selenium-webdriver": "^4.9.2",
