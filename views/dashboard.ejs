@@ -18,7 +18,7 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
     <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet"/>
 
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
@@ -39,58 +39,71 @@
         <i class='bx bx-menu' id="btn"></i>
     </div>
     <ul class="nav-list">
-        <li>
-            <a href="#" id="home">
-                <i class='bx bx-grid-alt'></i>
-                <span class="links_name">Dashboard</span>
-            </a>
-        </li>
-        <li>
-            <a href="#" id="calendar">
-                <i class='bx bxs-calendar'></i>
-                <span class="links_name">Calendar</span>
-            </a>
-        </li>
-        <% if (user.team) { %>
-        <li>
-            <a href="#" id="championpool">
-                <i class='bx bx-trophy'></i>
-                <span class="links_name">Championpool</span>
-            </a>
-        </li>
+        <% if (user.home && user.home.canOpen) { %>
+            <li>
+                <a href="#" id="home">
+                    <i class='bx bx-grid-alt'></i>
+                    <span class="links_name">Dashboard</span>
+                </a>
+            </li>
         <% } %>
-        <!--<li>
-            <a href="#" id="fileshare">
-                <i class='bx bxs-file-image'></i>
-                <span class="links_name">File Share</span>
-            </a>
-        </li>-->
-        <% if (user.isStaff) { %>
-        <li>
-            <a href="#" id="usermanagement">
-                <i class="ri-user-settings-line"></i>
-                <span class="links_name">User Management</span>
-            </a>
-        </li>
-        <li>
-            <a href="#" id="teammanagement">
-                <i class='bx bxs-group' ></i>
-                <span class="links_name">Team Management</span>
-            </a>
-        </li>
+
+        <% if (user.calendar && user.calendar.canOpen) { %>
+            <li>
+                <a href="#" id="calendar">
+                    <i class='bx bxs-calendar'></i>
+                    <span class="links_name">Calendar</span>
+                </a>
+            </li>
+        <% } %>
+        <% if (user.championpool && user.championpool.canOpen) { %>
+            <li>
+                <a href="#" id="championpool">
+                    <i class='bx bx-trophy'></i>
+                    <span class="links_name">Championpool</span>
+                </a>
+            </li>
+        <% } %>
+        <% if (user.fileshare && user.fileshare.canOpen) { %>
+            <li>
+                <a href="#" id="fileshare">
+                    <i class='bx bxs-file-image'></i>
+                    <span class="links_name">File Share</span>
+                </a>
+            </li>
+        <% } %>
+        <% if (user.usermanagement && user.usermanagement.canOpen) { %>
+            <li>
+                <a href="#" id="usermanagement">
+                    <i class="ri-user-settings-line"></i>
+                    <span class="links_name">User Management</span>
+                </a>
+            </li>
+        <% } %>
+        <% if (user.teammanagement && user.teammanagement.canOpen) { %>
+            <li>
+                <a href="#" id="teammanagement">
+                    <i class='bx bxs-group'></i>
+                    <span class="links_name">Team Management</span>
+                </a>
+            </li>
+        <% } %>
+        <% if (user.rolemanagement && user.rolemanagement.canOpen) { %>
             <li>
                 <a href="#" id="rolemanagement">
-                    <i class='bx bx-shield-alt-2' ></i>
+                    <i class='bx bx-shield-alt-2'></i>
                     <span class="links_name">Role Management</span>
                 </a>
             </li>
         <% } %>
-        <li>
-            <a href="#" id="settings">
-                <i class='bx bx-cog'></i>
-                <span class="links_name">Settings</span>
-            </a>
-        </li>
+        <% if (user.settings && user.settings.canOpen) { %>
+            <li>
+                <a href="#" id="settings">
+                    <i class='bx bx-cog'></i>
+                    <span class="links_name">Settings</span>
+                </a>
+            </li>
+        <% } %>
         <li class="profile">
             <div class="profile-details">
                 <div class="name_job">

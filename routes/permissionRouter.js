@@ -59,7 +59,7 @@ router.post('/deassignpermission', checkNotAuthenticated, function (req, res) {
 function getAssignedPermissions(id){
     return pool.query(`SELECT pt.id, pt.location, pt."permission", pt.description FROM "permission"
                                        LEFT JOIN permissiontype AS pt ON pt.id = permissiontype_fk
-                                        WHERE roletype_fk = $1`, [id]);
+                                        WHERE roletype_fk = $1 ORDER BY pt.location, pt."permission"`, [id]);
 }
 
 /**
@@ -75,7 +75,7 @@ function getUnAssignedPermissions(id){
                                                          )
 
                                        SELECT * FROM permissiontype
-                                       WHERE id NOT IN (SELECT * FROM assigned)`, [id]);
+                                       WHERE id NOT IN (SELECT * FROM assigned) ORDER BY location, permission`, [id]);
 }
 
 /**
