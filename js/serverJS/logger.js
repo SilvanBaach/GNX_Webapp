@@ -17,11 +17,8 @@ const LogLevel = {
  */
 function logMessage(message, level, userId) {
     const hostname = os.hostname();
-    pool.query("INSERT INTO logs (message, level, account_fk, date) VALUES ($1,$2,$3,NOW())", [hostname, level, 9999], function (err, result) {
-        if (err) throw err;
-    });
 
-    if (hostname.includes('webapp')) {
+    if (hostname.includes('da')) {
         if (!userId) {
             userId = -1; //Stands for "system log"
         }
