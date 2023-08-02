@@ -142,6 +142,17 @@ router.post('/deleteUser/:username',checkNotAuthenticated, function (req, res) {
 });
 
 /**
+ * GET route for getting the users which can be assigned to a role
+ */
+router.get('/getuserstoassignrole', async (req, res) => {
+    getUsersToAssignRoleTo(req.query.roleId).then((result) => {
+        res.status(200).send(result.rows);
+    }).catch(() => {
+        res.status(500).send({message: "There was an error getting the user list! Please try again later."});
+    });
+});
+
+/**
  * GET route for Webapp member count
  */
 router.get('/getWebappMemberCount', async (req, res) => {
@@ -298,6 +309,15 @@ function deleteUser(username){
     return pool.query(`DELETE
                  FROM account
                  WHERE username = $1`, [username]);
+}
+
+/**
+ * Gets all users that are not assigned to a specific role
+ * @param roleId
+ * @returns {Promise<QueryResult<any>>}
+ */
+function getUsersToAssignRoleTo(roleId){
+    return pool.query("SELECT id, username FROM account WHERE id NOT IN (SELECT COALESCE(account_fk,0) FROM role WHERE roletype_fk=$1)", [roleId]);
 }
 
 module.exports = {

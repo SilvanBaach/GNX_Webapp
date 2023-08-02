@@ -59,4 +59,11 @@ router.get('/championpool', checkNotAuthenticated, (req, res) => {
 });
 
 
+/**
+ * GET role-management page
+ */
+router.get('/rolemanagement', checkNotAuthenticated, (req, res) => {
+    res.render('dashboard/rolemanagement.ejs', { user: req.user });
+});
+
 module.exports = router;

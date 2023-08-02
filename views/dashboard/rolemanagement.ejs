@@ -1,0 +1,137 @@
+<script src="/js/clientJS/rolemanagement.js"></script>
+
+<div class="text">Role Management</div>
+<div class="content">
+    <!-- Role Management -->
+    <div class="shadow-box">
+        <p class="purple-title">Roles</p>
+        <button class="default green new-code" id="newRole">
+            <i class="ri-add-circle-line ri-lg"></i>
+            Create new
+        </button>
+        <table id="roleTable" class="styled-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Permissions</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="roleData" class="styled-table">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="shadow-box edit-box" id="roleEdit">
+        <p class="purple-title">Edit Role</p>
+        <form id="form" class="form" action="/roletype/update" method="POST">
+            <input type="number" value="" style="display: none" id="roleTypeId" name="roleTypeId"/>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="label-form" for="name">Name</label>
+                    <input class="input-form" type="text" id="name" name="name" value="" required>
+                </div>
+                <div class="form-group">
+                    <label class="label-form" for="description">Description</label>
+                    <input class="input-form" id="description" name="description">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="label-form" for="unassigned-permissions">Unassigned Permissions</label>
+                    <div id="scrollableListUnassigned" class="scrollable-list"></div>
+                    <button id="assign" class="default green" style="float: right">
+                        assign
+                        <i class="ri-arrow-right-line ri-lg"></i>
+                    </button>
+                </div>
+                <div class="form-group">
+                    <label class="label-form" for="assigned-permissions">Assigned Permissions</label>
+                    <div id="scrollableListAssigned" class="scrollable-list"></div>
+                    <button id="deAssign" class="default red">
+                        <i class="ri-arrow-left-line ri-lg"></i>
+                        de-assign
+                    </button>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <button class="default red" style="margin-top: 18px" id="deleteRole">Delete</button>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="default" style="float: right; margin-top: 18px">Update</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="shadow-box">
+        <p class="purple-title">Manage Role assignment</p>
+        <div class="btn-container">
+            <div class="add-btn-container">
+                <button class="default green" id="assignToTeam">
+                    <i class="ri-add-circle-line ri-lg"></i>
+                    to Team
+                </button>
+                <button class="default green" id="assignToUser">
+                    <i class="ri-add-circle-line ri-lg"></i>
+                    to User
+                </button>
+            </div>
+            <div class="remove-btn-container">
+                <button class="default red" id="unassignFromTeam">
+                    <i class="ri-indeterminate-circle-line ri-lg"></i>
+                    from Team
+                </button>
+                <button class="default red" id="unassignFromUser">
+                    <i class="ri-indeterminate-circle-line ri-lg"></i>
+                    from User
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="popup-containerCreateRole" class="popup-container"></div>
+<div id="popup-containerDeleteRole" class="popup-container"></div>
+
+<div id="popup-containerAssignToTeam" class="popup-container"></div>
+<div id="popup-containerAssignToUser" class="popup-container"></div>
+<div id="popup-containerUnAssignFromTeam" class="popup-container"></div>
+<div id="popup-containerUnAssignFromUser" class="popup-container"></div>
+
+<script>
+    $(document).ready(function () {
+        loadData();
+
+        $('#assign').click(function (e) {
+            e.preventDefault();
+            assignPermission();
+        });
+
+        $('#deAssign').click(function (e) {
+            e.preventDefault();
+            deAssignPermission();
+        });
+
+        $("#form").on('submit', function (event) {
+            event.preventDefault();
+
+            let data = $(this).serialize();
+            $.ajax({
+                url: $(this).attr('action'),
+                method: $(this).attr('method'),
+                data: data,
+                success: function (response) {
+                    loadData();
+                    displaySuccess(response.message);
+                },
+                error: function (error) {
+                    displayError(error.message);
+                }
+            });
+        });
+    });
+</script>

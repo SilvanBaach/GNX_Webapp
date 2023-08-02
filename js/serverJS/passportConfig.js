@@ -100,11 +100,20 @@ function initialize(passport) {
                     }
                     user.teamtype = result.rows[0];
 
-                    pool.query('SELECT * FROM teammembership WHERE account_fk=$1 AND team_fk=6', [user.id], function (err, result) {
+                    pool.query(`SELECT permissiontype.location, permissiontype.permission FROM role
+                        LEFT JOIN roletype ON roletype.id = role.roletype_fk
+                        LEFT JOIN permission ON "permission".roletype_fk = roletype.id
+                        LEFT JOIN permissiontype ON permissiontype.id = "permission".permissiontype_fk
+                        WHERE roletype.id IS NOT NULL AND (role.team_fk = $2 OR role.account_fk = $1)
+                        GROUP BY permissiontype.location, permissiontype.permission`, [user.id, user.team.id], function (err, result) {
                         if (err) {
                             return done(err);
                         }
-                        user.isStaff = result.rows.length > 0;
+
+                        result.rows.forEach(function(row) {
+                            user[row.location] = user[row.location] || {};
+                            user[row.location][row.permission] = true;
+                        });
 
                         return done(null, results.rows[0]);
                     });

@@ -18,6 +18,17 @@ router.get('/getteams',  checkNotAuthenticated, function (req, res) {
 });
 
 /**
+ * GET route for getting all teams that can be assigned to a specific role
+ */
+router.get('/getteamstoassignrole',  checkNotAuthenticated, function (req, res) {
+    getTeamsToAssignRoleTo(req.query.roleId).then((result) => {
+        res.status(200).send(result.rows);
+    }).catch(() => {
+        res.status(500).send({message: "There was an error getting the team list! Please try again later."});
+    });
+});
+
+/**
  * POST route for inserting a new team
  */
 router.post('/insertteam', checkNotAuthenticated, function (req, res) {
@@ -101,6 +112,15 @@ function deleteTeam(id) {
  */
 function updateTeam(data) {
     return pool.query(`UPDATE team SET displayname = $1, teamtype_fk = $2, weight = $3 WHERE id = $4`,[data.teamName, data.teamType, data.teamWeight, data.id]);
+}
+
+/**
+ * Get all teams that are not assigned to that specific role
+ * @param roleId
+ * @returns {Promise<QueryResult<any>>}
+ */
+function getTeamsToAssignRoleTo(roleId) {
+    return pool.query(`SELECT * FROM team WHERE id NOT IN (SELECT team_fk FROM role WHERE roletype_fk = $1) ORDER BY displayname`,[roleId]);
 }
 
 

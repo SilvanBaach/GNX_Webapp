@@ -1,0 +1,64 @@
+.shadow-box{
+    box-sizing: border-box;
+    margin-left: 18px;
+    margin-right: 18px;
+    width: calc(50% - 36px);
+}
+
+.content{
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 18px;
+}
+
+.btn-container{
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.add-btn-container{
+    display: flex;
+    justify-content: left;
+    column-gap: 18px;
+    width: 50%;
+}
+
+.remove-btn-container{
+    display: flex;
+    justify-content: right;
+    column-gap: 18px;
+    width: 50%;
+}
+
+button{
+    width: 175px;
+}
+
+.edit-box{
+    visibility: hidden;
+}
+
+.scrollable-list {
+    height: 200px;
+    width: 100%;
+    border: 1px solid black;
+    overflow-y: scroll;
+    margin-bottom: 18px;
+}
+
+.scrollable-list p:nth-child(odd) {
+    background-color: #f2f2f2;
+}
+
+.scrollable-list p:nth-child(even) {
+    background-color: #ffffff;
+}
+
+.scrollable-list p {
+    padding: 5px 10px;
+}
+
+.scrollable-list p.clicked {
+    background-color: rgba(0, 0, 255, 0.75);
+}
