@@ -1,0 +1,100 @@
+.shadow-box-container{
+    display: flex;
+    flex-wrap: nowrap;
+    column-gap: 18px;
+    text-align: center;
+    margin-top: 100px;
+}
+
+.main-container{
+    margin-left: 18px;
+}
+
+.container2 {
+    margin-top: 18px;
+}
+
+.match-history-container{
+    max-width: 1086px;
+    min-width: 1086px;
+    margin-bottom: 18px;
+}
+
+.shadow-box-thin{
+    max-width: 350px;
+    min-width: 350px;
+}
+
+.legend-image{
+    width: 200px;
+    margin-top: -150px;
+}
+
+p{
+    font-family: "montserrat" , sans-serif;
+    font-weight: 600;
+}
+
+.player-name{
+    color: #381A53;
+    font-weight: 800;
+    font-size: 1.5rem;
+    margin-top: 18px;
+}
+
+.small-text{
+    font-size: 1rem;
+}
+
+.rank-image{
+    width: 100px;
+    margin-top: 20px;
+}
+
+.stats-container{
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    margin-top: 36px;
+    justify-content: center;
+    column-gap: 35px;
+    width: 100%;
+}
+
+.stats{
+    width: 30%;
+    text-align: left;
+}
+
+.small-title{
+    font-size: 1.2rem;
+    color: #8c0202;
+    margin-bottom: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.count {
+    font-size: 1.2rem;
+    color: black;
+}
+
+.top-percentage{
+    font-size: 0.9rem;
+    color: #178300;
+}
+
+.rpgain-title{
+    font-size: 1.2rem;
+}
+
+.rpgain{
+    font-size: 1.2rem;
+    color: #178300;
+    margin-top: 20px;
+}
+
+button {
+    margin-top: 20px;
+}

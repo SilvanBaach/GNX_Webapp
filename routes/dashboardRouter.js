@@ -59,12 +59,18 @@ router.get('/championpool', checkNotAuthenticated, permissionCheck('championpool
     res.render('dashboard/championpool.ejs', { user: req.user });
 });
 
-
 /**
  * GET role-management page
  */
 router.get('/rolemanagement', checkNotAuthenticated, permissionCheck('rolemanagement', 'canOpen'), (req, res) => {
             res.render('dashboard/rolemanagement.ejs', { user: req.user });
+});
+
+/**
+ * GET apexstats page
+ */
+router.get('/apexstats', checkNotAuthenticated, permissionCheck('apexstats', 'canOpen'), (req, res) => {
+    res.render('dashboard/apexstats.ejs', { user: req.user });
 });
 
 module.exports = router;

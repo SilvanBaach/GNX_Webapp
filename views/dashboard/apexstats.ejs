@@ -1,0 +1,77 @@
+<script src="js/clientJS/apexStats.js"></script>
+
+<div class="text">Apex Legends Stats</div>
+<div class="main-container">
+    <div class="shadow-box-container">
+        <div class="shadow-box shadow-box-thin" id="player1">
+            <p class="loading">Loading...</p>
+        </div>
+        <div class="shadow-box shadow-box-thin" id="player2">
+            <p class="loading">Loading...</p>
+        </div>
+        <div class="shadow-box shadow-box-thin" id="player3">
+            <p class="loading">Loading...</p>
+        </div>
+    </div>
+
+    <div class="shadow-box-container container2">
+        <div class="shadow-box shadow-box-thin" id="player1">
+            <p class="rpgain-title">RP Gain (last 48 Hrs)</p>
+            <p class="rpgain" id="rpgain1">Loading...</p>
+            <button class="default">Display Session History</button>
+        </div>
+        <div class="shadow-box shadow-box-thin" id="player2">
+            <p class="rpgain-title">RP Gain (last 48 Hrs)</p>
+            <p class="rpgain" id="rpgain2">Loading...</p>
+            <button class="default">Display Session History</button>
+        </div>
+        <div class="shadow-box shadow-box-thin" id="player3">
+            <p class="rpgain-title">RP Gain (last 48 Hrs)</p>
+            <p class="rpgain" id="rpgain3">Loading...</p>
+            <button class="default">Display Session History</button>
+        </div>
+    </div>
+
+    <div class="shadow-box container2 match-history-container">
+        <p class="player-name">Session History Adm_Atomschlag</p>
+        <div class="container2">
+            <p>hallo</p>
+            <p>hallo2</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        const player1 = "Adm_Atomschlag";
+        const player2 = "Exbreakr";
+        const player3 = "scherter90";
+
+        //Load Player stats boxes
+        fillApexStats("player1", player1);
+        fillApexStats("player2", player2);
+        setTimeout(function () {
+            fillApexStats("player3", player3);
+        }, 2000);
+
+        //Display RP Gain
+        function displayRPGain(playerName, timeoutDuration, elementId) {
+            setTimeout(async function () {
+                const totalRP = await getRPGain(playerName);
+                const rpgainElement = document.getElementById(elementId);
+                rpgainElement.textContent = totalRP.toString();
+                rpgainElement.style.color = totalRP < 0 ? 'red' : '';
+
+                if (totalRP < 0) {
+                    rpgainElement.style.color = 'red';
+                }
+            }, timeoutDuration);
+        }
+
+        displayRPGain(player1, 2000, 'rpgain1');
+        displayRPGain(player2, 4000, 'rpgain2');
+        displayRPGain(player3, 4000, 'rpgain3');
+
+    });
+</script>

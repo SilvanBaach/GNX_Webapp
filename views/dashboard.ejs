@@ -65,6 +65,14 @@
                 </a>
             </li>
         <% } %>
+            <% if (user.apexstats && user.apexstats.canOpen) { %>
+            <li>
+                <a href="#" id="apexstats">
+                    <i class='ri-bar-chart-fill'></i>
+                    <span class="links_name">Apex Statistics</span>
+                </a>
+            </li>
+            <% } %>
             <% if (user.fileshare && user.fileshare.canOpen) { %>
             <li>
                 <a href="#" id="fileshare">
@@ -133,7 +141,8 @@
         {id: "usermanagement", url: "/dashboard/usermanagement", css: "/css/dashboard/usermanagement.css"},
         {id: "teammanagement", url: "dashboard/teammanagement", css: "/css/dashboard/teammanagement.css"},
         {id: "rolemanagement", url: "dashboard/rolemanagement", css: "/css/dashboard/rolemanagement.css"},
-        {id: "championpool", url: "dashboard/championpool", css: "/css/dashboard/championpool.css"}
+        {id: "championpool", url: "dashboard/championpool", css: "/css/dashboard/championpool.css"},
+        {id: "apexstats", url: "dashboard/apexstats", css: "../css/dashboard/apexstats.css"}
     ];
 
     $(document).ready(function () {
