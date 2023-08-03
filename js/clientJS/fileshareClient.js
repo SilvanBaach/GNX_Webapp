@@ -104,6 +104,7 @@ async function appendFileLayout(file) {
 
     fileContainer.append(fileImage);
 
+    //<a class="copy tooltip"><span class="tooltiptext">Copy</span>
     const fileNameElement = $('<p>').addClass('file-name').text(file.name);
 
     const fileLink = $('<a>');

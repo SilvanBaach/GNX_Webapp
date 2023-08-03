@@ -103,7 +103,9 @@ router.post('/uploadFiles/:subDir', upload.array('file', 10), (req, res, next) =
         return next(error)
     }
 
-    logMessage(`User ${req.user.username} uploaded ${files.length} files to ${req.params.subDir}`, LogLevel.INFO, req.user.id)
+    const fileNames = files.map(file => file.originalname).join(', ');
+
+    logMessage(`User ${req.user.username} uploaded ${files.length} files (${fileNames}) to ${req.params.subDir}`, LogLevel.INFO, req.user.id)
     res.status(200).send({message: "Files uploaded successfully", status: "success"});
 });
 

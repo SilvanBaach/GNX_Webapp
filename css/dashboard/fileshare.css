@@ -61,6 +61,10 @@ a:hover {
 .file-name {
     margin-top: 30px;
     font-size: 1.3rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 200px;
 }
 
 .file-info {
@@ -177,9 +181,7 @@ input[type="file"] {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    margin-right: 18px;
-    margin-top: 18px;
-    margin-bottom: 18px;
+    margin: 18px 18px 18px -18px;
 }
 
 .new-folder{
