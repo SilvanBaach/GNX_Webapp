@@ -39,8 +39,8 @@ function setupSettingsPage() {
         e.preventDefault();
         const formData = {
             steam: $('#steam').val(),
-            riotgames: $('#riotgames').val(),
             origin: $('#origin').val(),
+            riotgames: $('#riotgames').val(),
             discord: $('#discord').val()
         };
 

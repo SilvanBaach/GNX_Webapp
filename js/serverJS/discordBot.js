@@ -51,7 +51,7 @@ const sendMessageToUser = async (discordUsername, message) => {
         await user.send(message);
     } catch (error) {
         console.error(error);
-        logMessage(`Error sending message to user ${discordUsername}. Error Message: ${error}`, LogLevel.ERROR, error)
+        logMessage(`Error sending message to user ${discordUsername}. Error Message: ${error}`, LogLevel.ERROR, null)
     }
 };
 
