@@ -1,4 +1,51 @@
 .main-box{
     margin-left: 18px;
-    width: 70vw;
+    width: 85vw;
 }
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.default{
+    width: 200px;
+}
+
+.current-date-text{
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+td{
+    font-size: 1rem;
+}
+
+.styled-table tr.warn {
+    background-color: rgba(255, 255, 0, 0.7) !important;
+}
+
+.styled-table tr.error {
+    background-color: rgba(255, 0, 0, 0.7) !important;
+}
+
+.styled-table tr.system {
+    background-color: rgba(0, 43, 255, 0.3) !important;
+}
+
+.filter-text{
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.filter-container{
+    margin-top: 25px;
+}
+
+.input-field{
+    width: 200px;
+    margin-left: 18px;
+}
+

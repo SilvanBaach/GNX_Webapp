@@ -132,7 +132,12 @@ router.get('/getUserList/:teamId',checkNotAuthenticated, permissionCheck('calend
  * GET route for getting all users
  */
 router.get('/getusers',checkNotAuthenticated, permissionCheck([{location: 'rolemanagement', permission: 'canOpen'},{location: 'usermanagement', permission: 'canOpen'}]) , async (req, res) => {
-    const users = await getUsers();
+    let users;
+    if (req.query.minimalData) {
+        users = await getUsersMinimal();
+    }else {
+        users = await getUsers();
+    }
     res.send(users);
 });
 
@@ -350,6 +355,18 @@ function getUserPermissions(userId, teamId){
                                             LEFT JOIN permissiontype ON permissiontype.id = "permission".permissiontype_fk
                                             WHERE roletype.id IS NOT NULL AND (role.team_fk = $2 OR role.account_fk = $1)
                                             GROUP BY permissiontype.location, permissiontype.permission`, [userId, teamId]);
+}
+
+/**
+ * Gets all  users with minimal information
+ * @returns {Promise<QueryResult<any>>}
+ */
+async function getUsersMinimal() {
+    const query = util.promisify(pool.query).bind(pool);
+    const results = await query(`SELECT id, username
+                                 FROM account ORDER BY username ASC`);
+
+    return results.rows;
 }
 
 module.exports = {

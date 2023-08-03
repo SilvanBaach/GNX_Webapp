@@ -3,14 +3,36 @@
 <div class="text">Changelog</div>
 
 <div class="shadow-box main-box">
+    <div class="button-container">
+        <button class="default" id="prevDay">
+            <i class="ri-arrow-left-s-line ri-2x"></i>
+            Previous Day
+        </button>
+        <p class="current-date-text"  id="currentDate">???</p>
+        <button class="default" id="nextDay">
+            Next Day
+            <i class="ri-arrow-right-s-line ri-2x"></i>
+        </button>
+    </div>
+    <div class="filter-container">
+        <label for="level" class="filter-text">Filter by:</label>
+        <select id="levelFilter" class="input-field">
+            <option value="-1">All levels</option>
+            <option value="0">INFO</option>
+            <option value="1">WARN</option>
+            <option value="2">ERROR</option>
+        </select>
+        <select id="userFilter" class="input-field">
+            <option value="-2">All users</option>
+        </select>
+    </div>
     <table id="logTable" class="styled-table">
         <thead>
         <tr>
-            <th>Date</th>
+            <th>Time</th>
             <th>Message</th>
             <th>User</th>
             <th>Level</th>
-            <th></th>
         </tr>
         </thead>
         <tbody id="logTableData" class="styled-table">
@@ -20,6 +42,19 @@
 
 <script>
     $(document).ready(function () {
+        buildUserFilter();
         buildLogTable();
+
+        $('#nextDay').click(function () {
+            nextDay();
+        });
+
+        $('#prevDay').click(function () {
+            previousDay();
+        });
+
+        $('#levelFilter, #userFilter').change(function () {
+            buildLogTable();
+        });
     });
 </script>
