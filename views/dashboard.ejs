@@ -105,6 +105,14 @@
                 </a>
             </li>
         <% } %>
+            <% if (user.changelog && user.changelog.canOpen) { %>
+                <li>
+                    <a href="#" id="changelog">
+                        <i class='ri-file-settings-line'></i>
+                        <span class="links_name">Changelog</span>
+                    </a>
+                </li>
+            <% } %>
         <% if (user.settings && user.settings.canOpen) { %>
             <li>
                 <a href="#" id="settings">
@@ -142,7 +150,8 @@
         {id: "teammanagement", url: "dashboard/teammanagement", css: "/css/dashboard/teammanagement.css"},
         {id: "rolemanagement", url: "dashboard/rolemanagement", css: "/css/dashboard/rolemanagement.css"},
         {id: "championpool", url: "dashboard/championpool", css: "/css/dashboard/championpool.css"},
-        {id: "apexstats", url: "dashboard/apexstats", css: "../css/dashboard/apexstats.css"}
+        {id: "apexstats", url: "dashboard/apexstats", css: "../css/dashboard/apexstats.css"},
+        {id: "changelog", url: "dashboard/changelog", css: "../css/dashboard/changelog.css"}
     ];
 
     $(document).ready(function () {

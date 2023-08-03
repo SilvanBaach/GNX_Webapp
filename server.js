@@ -65,7 +65,7 @@ app.use(passport.initialize());
 /**
  * CLEAN UP JOB FOR EXPIRED SESSIONS
  */
-cron.schedule('* * 0 * * *', function() {
+cron.schedule('0 3 * * *', function() {
     pool.query('DELETE FROM "session" WHERE "expire" < NOW()', (err) => {
         if (err) {
             console.log(err);

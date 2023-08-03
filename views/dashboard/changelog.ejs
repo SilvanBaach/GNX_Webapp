@@ -1,0 +1,25 @@
+<script src="/js/clientJS/changelog.js"></script>
+
+<div class="text">Changelog</div>
+
+<div class="shadow-box main-box">
+    <table id="logTable" class="styled-table">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Message</th>
+            <th>User</th>
+            <th>Level</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody id="logTableData" class="styled-table">
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        buildLogTable();
+    });
+</script>

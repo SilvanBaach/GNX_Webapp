@@ -73,4 +73,11 @@ router.get('/apexstats', checkNotAuthenticated, permissionCheck('apexstats', 'ca
     res.render('dashboard/apexstats.ejs', { user: req.user });
 });
 
+/**
+ * GET changelog page
+ */
+router.get('/changelog', checkNotAuthenticated, permissionCheck('changelog', 'canOpen'), (req, res) => {
+    res.render('dashboard/changelog.ejs', { user: req.user });
+});
+
 module.exports = router;
