@@ -31,7 +31,7 @@ router.post('/updatePicture/:id', checkNotAuthenticated, function (req, res) {
 //TODO only allow users to update their own password
 router.post('/updatePassword', checkNotAuthenticated, function (req, res) {
     const userId = req.user.id;
-    const password = req.body.password1;
+    const password = req.body.password;
 
     updateUserPassword(password, userId).then(() => {
         logMessage(`User ${req.user.username} updated their password`,LogLevel.INFO,req.user.id)
@@ -76,7 +76,10 @@ router.post('/updatePassword/:token',  async function (req, res) {
  */
 //TODO only allow users to update their own information
 router.post('/updateUser/:id',checkNotAuthenticated, function (req, res) {
-    const userId = req.params.id;
+    let userId = req.params.id;
+    if (userId === "-1") {
+        userId = req.user.id;
+    }
     const formData = req.body;
     let register = 0;
 
@@ -96,6 +99,10 @@ router.post('/updateUser/:id',checkNotAuthenticated, function (req, res) {
 
     if (formData.steam||formData.origin||formData.riotgames||formData.battlenet) {
         register = 3;
+    }
+
+    if (formData.discord  !== undefined){
+        register = 0;
     }
 
     updateUser(formData, userId).then(() => {
@@ -194,7 +201,7 @@ router.get('/getUserPermissions', checkNotAuthenticated, async (req, res) => {
  * @returns {Promise<*>}
  */
 async function updateUser(formData, userId) {
-    const fields = ['fullName', 'email', 'phone', 'username', 'street', 'city', 'zip', 'steam', 'origin', 'riotgames', 'battlenet','resetpasswordtoken','resetpasswordexpires', 'blocked'];
+    const fields = ['fullName', 'email', 'phone', 'username', 'street', 'city', 'zip', 'steam', 'origin', 'riotgames', 'battlenet','resetpasswordtoken','resetpasswordexpires', 'blocked', 'discord','trainingdatareminder'];
     const updates = [];
     delete formData.password;
 

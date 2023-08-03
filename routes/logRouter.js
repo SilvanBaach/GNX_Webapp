@@ -52,7 +52,7 @@ function getLogs(date, level, userId){
         queryParams.push(userId);
     }
 
-    queryText += " ORDER BY date ";
+    queryText += " ORDER BY date DESC";
 
     return pool.query(queryText, queryParams);
 }
