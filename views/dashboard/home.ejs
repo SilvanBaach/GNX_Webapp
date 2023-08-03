@@ -147,6 +147,7 @@
     </div>
 </div>
 
+<div id="popup-containerEnterDiscord" class="popup-container"></div>
 </body>
 </html>
 
@@ -156,6 +157,7 @@
         getNextTrainings('<%= user.team.id %>');
         loadDiscordMembers();
         loadWebappMembers();
+        setupDiscordPopup('<%= user.discord %>');
     });
 
 </script>

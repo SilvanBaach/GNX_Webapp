@@ -122,8 +122,10 @@ class Popup {
      */
     open(e) {
         this.popupContainer.addClass('open-popup');
-        e.preventDefault();
-        e.stopPropagation();
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
     }
 
     /**

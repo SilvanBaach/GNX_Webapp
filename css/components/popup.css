@@ -15,6 +15,7 @@
     visibility: hidden;
     transition: transform 0.4s, top 0.4s;
     box-shadow: 0 0 0 99999px rgba(0, 0, 0, .5);
+    z-index: 9999;
 }
 
 .popup-img{

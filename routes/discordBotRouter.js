@@ -13,7 +13,7 @@ module.exports = (client, guildId) => {
      * GET for how many Discord members are on our server
      */
     router.get('/discord-members', checkNotAuthenticated, permissionCheck('home', 'canOpen'), async (req, res) => {
-        const members = await discordBot.getCurrentDiscordMembers(guildId, client);
+        const members = await discordBot.getCurrentDiscordMembers();
         res.send({members: members});
     });
 

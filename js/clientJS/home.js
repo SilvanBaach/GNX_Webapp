@@ -106,3 +106,40 @@ function loadWebappMembers() {
         }
     });
 }
+
+/**
+ * Setup of the Discord Popup
+ * Only opens if the user has not set a discord tag yet
+ */
+function setupDiscordPopup(discordTag) {
+    if (!discordTag) {
+        const insertDiscordNamePopup = new Popup("popup-containerEnterDiscord");
+
+        insertDiscordNamePopup.displayInputPopupCustom("/res/others/plus.png", "Setup your connection to Discord", "Save", "btnSaveDiscord",
+            '<label for="discord" class="input-label">Discordname</label>' +
+            '<input type="text" id="discord" class="input-field"/>'
+        )
+
+        $('#btnSaveDiscord').click(function () {
+            $.ajax({
+                url: '/user/setDiscordTag',
+                type: "POST",
+                data: {
+                    discord: $('#discord').val()
+                },
+                dataType: "json",
+                success: function (data) {
+                    displaySuccess('Your connection with discord has been established successfully!');
+                    displayInfo('You can manage your discord notifications in your profile settings')
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            })
+
+          insertDiscordNamePopup.close();
+        })
+
+        insertDiscordNamePopup.open();
+    }
+}

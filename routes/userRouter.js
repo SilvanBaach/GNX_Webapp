@@ -5,9 +5,11 @@ const express = require('express');
 const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 const bcrypt = require("bcrypt");
+const discordBot = require('../js/serverJS/discordBot.js');
 const util = require("util");
 const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
 const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
+const {sendWelcomeMessage} = require("../js/serverJS/discordBot");
 
 /**
  * POST route for updating the profile picture of a user
@@ -194,6 +196,19 @@ router.get('/getUserPermissions', checkNotAuthenticated, async (req, res) => {
     });
 });
 
+/**
+ * POST route for setting the discordTag
+ */
+router.post('/setDiscordTag', checkNotAuthenticated, permissionCheck('home', 'canOpen'), async (req, res) => {
+    setDiscordTag(req.user.id, req.body.discord).then((result) => {
+        logMessage(`User ${req.user.username} set their discord tag to ${req.body.discord}`,LogLevel.INFO,req.user.id)
+        sendWelcomeMessage(req.body.discord)
+        res.status(200).send(result.rows);
+    }).catch(() => {
+        res.status(500).send({message: "There was an error getting the permission List! Please try again later."});
+    });
+});
+
 /** Updates the information of a user in the database
  * This method is generic and can be used to update any field of the user
  * @param formData the data of the user
@@ -374,6 +389,16 @@ async function getUsersMinimal() {
                                  FROM account ORDER BY username ASC`);
 
     return results.rows;
+}
+
+/**
+ * Updates the discord tag of a user
+ * @param userId
+ * @param discordTag
+ * @returns {Promise<QueryResult<any>>}
+ */
+function setDiscordTag(userId, discordTag){
+    return pool.query(`UPDATE account SET discord = $1 WHERE id = $2`, [discordTag, userId]);
 }
 
 module.exports = {

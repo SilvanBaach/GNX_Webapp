@@ -24,10 +24,12 @@ const roleTypeRouter = require('./routes/roleTypeRouter.js');
 const logRouter = require('./routes/logRouter.js');
 const permissionRouter = require('./routes/permissionRouter.js');
 const discordBotRouter = require('./routes/discordBotRouter.js');
+const discordBot = require('./js/serverJS/discordBot.js');
 const {checkAuthenticated} = require('./js/serverJS/sessionChecker.js');
 const riotRouter = require('./routes/riotRouter.js');
 const riot = require('./js/serverJS/riot.js');
 const {logMessage, LogLevel} = require('./js/serverJS/logger.js');
+const {sendTrainingDataReminders} = require("./js/serverJS/discordBot");
 
 /**
  * MIDDLEWARE
@@ -42,7 +44,9 @@ app.use(express.urlencoded({limit: '50mb', extended: true}));
  */
 const guildId = "951559378354450483";
 const client = new DiscordBot.Client({intents: 3276799});
-client.login(process.env.DISCORD_TOKEN);
+client.login(process.env.DISCORD_TOKEN).then(() => {
+    discordBot.setupDiscordBot(guildId, client);
+});
 
 /**
  * PASSPORT SETUP / SESSION HANDLING
@@ -110,6 +114,12 @@ cron.schedule('0 3 * * *', async function() {
     }
 });
 
+/**
+ * Sends discord reminders for inserting training data every morning at 10:00 AM
+ */
+cron.schedule('0 10 * * *', function() {
+    sendTrainingDataReminders();
+});
 
 /**
  * ROUTERS
