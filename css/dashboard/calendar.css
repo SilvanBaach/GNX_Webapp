@@ -175,7 +175,7 @@
     height: 50px;
     border-radius: 50%;
     overflow: hidden;
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
 .username-container{
@@ -195,4 +195,7 @@
     max-width: 90%;
 }
 
-
+.crown{
+    width: 30px;
+    height: 30px;
+}

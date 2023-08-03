@@ -86,7 +86,20 @@
         const sessionUser = userData.username
         const user = users.find(user => user.username === sessionUser)
 
-        await generateCalendar(users, currentDate, sessionUser, user.id);
+        await $.ajax({
+            url: "/team/getTeamManager",
+            data: {teamId: userData.teamId},
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                const teammanagerId = data[0].account_fk;
+                generateCalendar(users, currentDate, sessionUser, user.id, teammanagerId);
+            },
+            error: function (xhr) {
+                console.log(xhr.responseText);
+            }
+        });
+
         buildNextTrainingTable(userData.teamId)
     }
 </script>

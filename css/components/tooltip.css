@@ -5,12 +5,12 @@
 
 .tooltip .tooltiptext {
     visibility: hidden;
-    width: 70px;
+    width: auto;
     background-color: #121212;
     color: #fff;
     text-align: center;
     border-radius: 6px;
-    padding: 5px;
+    padding: 5px 10px;
     position: absolute;
     z-index: 9999;
     top: -35px;
@@ -30,9 +30,53 @@
     border-style: solid;
     transform: rotate(180deg);
     border-color: transparent transparent #121212 transparent;
+    z-index: 9999;
 }
 
 .tooltip:hover .tooltiptext {
     visibility: visible;
     opacity: 1;
+    z-index: 9999;
+}
+
+.tooltip-below {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltiptext-below {
+    visibility: hidden;
+    width: auto;
+    background-color: #121212;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 10px;
+    position: absolute;
+    z-index: 9999;
+    bottom: -35px;
+    font-size: 0.9rem !important;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip-below .tooltiptext-below::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    transform: rotate(0deg);
+    border-color: transparent transparent #121212 transparent;
+    z-index: 9999;
+}
+
+.tooltip-below:hover .tooltiptext-below {
+    visibility: visible;
+    opacity: 1;
+    z-index: 9999;
 }

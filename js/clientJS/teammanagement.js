@@ -324,6 +324,13 @@ function editTeam(name) {
 
         $("#weight").val(team.weight === "-" ? "" : team.weight);
         $("#teamId").val(team.id);
+
+        loadTeamManagerOptions().then(() => {
+            if(!team.account_fk){
+                team.account_fk = 0;
+            }
+            $("#teammanagerDropdown").val(team.account_fk);
+        });
     }
 }
 
@@ -375,6 +382,7 @@ function updateTeam(){
     const teamName = $("#name").val();
     const teamType = $("#type").val();
     const teamWeight = $("#weight").val();
+    const teamManager = $("#teammanagerDropdown").val();
 
     $.ajax({
         url: "/team/updateteam",
@@ -384,7 +392,8 @@ function updateTeam(){
             id: id,
             teamName: teamName,
             teamType: teamType,
-            teamWeight: teamWeight
+            teamWeight: teamWeight,
+            teamManager: teamManager
         },
         success: function () {
             loadTeams();
@@ -426,5 +435,34 @@ function updateTeamType(){
             console.log("Error updating team type:", errorThrown);
             displayError("Error updating Team type! Try reloading the page.")
         }
+    });
+}
+
+/**
+ * Loads  all options for the team manager
+ */
+function loadTeamManagerOptions(){
+    return new Promise((resolve) => {
+        $.ajax({
+            url: '/user/getUsers',
+            type: "GET",
+            data: {
+                minimalData: true
+            },
+            dataType: "json"
+        }).then((data) => {
+            const managerOptions = $('#teammanagerDropdown');
+            managerOptions.empty();
+
+            const option = $('<option></option>').attr('value', 0).text('No Teammanager');
+            managerOptions.append(option);
+
+            data.forEach(function (user) {
+                const option = $('<option></option>').attr('value', user.id).text(user.username);
+                managerOptions.append(option);
+            });
+
+            resolve();
+        });
     });
 }

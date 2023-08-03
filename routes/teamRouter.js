@@ -30,6 +30,17 @@ router.get('/getteamstoassignrole', permissionCheck('rolemanagement', 'canOpen')
 });
 
 /**
+ * GET route for getting the id of the teammanager
+ */
+router.get('/getTeamManager', permissionCheck('calendar', 'canOpen'), checkNotAuthenticated, function (req, res) {
+    getTeamManager(req.query.teamId).then((result) => {
+        res.status(200).send(result.rows);
+    }).catch(() => {
+        res.status(500).send({message: "There was an error getting the team manager! Please try again later."});
+    });
+});
+
+/**
  * POST route for inserting a new team
  */
 router.post('/insertteam', checkNotAuthenticated, permissionCheck('teammanagement', 'canOpen'), function (req, res) {
@@ -115,7 +126,7 @@ function deleteTeam(id) {
  * @returns {number} the id of the updated team
  */
 function updateTeam(data) {
-    return pool.query(`UPDATE team SET displayname = $1, teamtype_fk = $2, weight = $3 WHERE id = $4`,[data.teamName, data.teamType, data.teamWeight, data.id]);
+    return pool.query(`UPDATE team SET displayname = $1, teamtype_fk = $2, weight = $3, account_fk = $4 WHERE id = $5`,[data.teamName, data.teamType, data.teamWeight, data.teamManager, data.id]);
 }
 
 /**
@@ -127,5 +138,13 @@ function getTeamsToAssignRoleTo(roleId) {
     return pool.query(`SELECT * FROM team WHERE id NOT IN (SELECT team_fk FROM role WHERE roletype_fk = $1) ORDER BY displayname`,[roleId]);
 }
 
+/**
+ * Get the id of the teammanager
+ * @param id
+ * @returns {Promise<QueryResult<any>>}
+ */
+function getTeamManager(id){
+    return pool.query(`SELECT account_fk FROM team WHERE id = $1`,[id]);
+}
 
 module.exports = router;

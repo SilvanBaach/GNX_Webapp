@@ -79,9 +79,10 @@ function getDateFromDay(date, dayOfWeek) {
  * @param currentDate the current date (is the start date of the calendar)
  * @param sessionUser the user who is currently logged in
  * @param teamId the id of the team
+ * @param teamManagerId the id of the team manager
  * @returns {Promise<void>}
  */
-async function generateCalendar(users, currentDate, sessionUser, teamId) {
+async function generateCalendar(users, currentDate, sessionUser, teamId, teamManagerId) {
     const calContainer = document.querySelector('.cal-container');
     $('.cal-container').empty();
     const today = new Date();
@@ -149,6 +150,22 @@ async function generateCalendar(users, currentDate, sessionUser, teamId) {
                     userImage.src = "/res/others/blank_profile_picture.png"
                 }
                 userImage.classList.add('user-profile-img')
+
+                if(users[i].userid === teamManagerId) {
+                    const crownLink = document.createElement('a');
+                    const crownSpan = document.createElement('span');
+                    crownLink.appendChild(crownSpan);
+                    crownSpan.classList.add('tooltiptext-below');
+                    crownSpan.innerText = "Team Manager";
+                    crownLink.classList.add('tooltip-below');
+
+                    const crown = document.createElement('img');
+                    crown.src = "/res/others/crown.png";
+                    crown.classList.add('crown');
+                    crownLink.appendChild(crown);
+
+                    userNameDiv.appendChild(crownLink);
+                }
 
                 userNameDiv.appendChild(userNameSpan);
                 userNameDiv.appendChild(userImage);
