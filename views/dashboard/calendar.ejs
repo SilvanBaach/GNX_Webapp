@@ -1,6 +1,6 @@
 <script src="/js/clientJS/teamCalendar.js"></script>
 
-<div class="text"><%= user.team.displayname%> Team Calendar</div>
+<div class="text"><%= user.team.displayname %> Team Calendar</div>
 <div id="content">
     <div class="shadow-box">
         <div class="nav-btn-container">
@@ -24,25 +24,34 @@
         <div class="cal-container"></div>
     </div>
 
-    <div class="shadow-box potential-container">
-        <p class="purple-title">Next Trainings</p>
-        <table id="team-table" class="styled-table">
-            <thead>
-            <tr>
-                <th>Date</th>
-                <th>From</th>
-                <th>Until</th>
-                <th>Duration</th>
-                <th>Type</th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+    <div class="sub-container">
+        <div class="shadow-box potential-container">
+            <p class="purple-title">Next Trainings</p>
+            <table id="team-table" class="styled-table">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>From</th>
+                    <th>Until</th>
+                    <th>Duration</th>
+                    <th>Type</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="shadow-box advanced">
+            <p class="purple-title">Options</p>
+            <div class="options-btn-container">
+                <button class="default green" id="defTrainingTime">Define Training Time</button>
+            </div>
+        </div>
     </div>
 </div>
 
 <div class="popup-container" id="popup-container-edit"></div>
+<div class="popup-container" id="popup-containerDefTrainingTime"></div>
 
 <script>
 
@@ -52,6 +61,7 @@
     $(document).ready(function () {
         let currentDate = new Date();
 
+        setupDefTrainingTimePopup();
         buildCalendar(currentDate);
 
         $("#lastWeek").click(function () {

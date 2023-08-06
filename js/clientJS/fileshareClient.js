@@ -51,6 +51,7 @@ function getFileListFromServer(){
         dataType: "json",
         success: function(data) {
             const files = data;
+            console.log(files);
             removeFileShareContent();
             checkPermissions().then((permissions) => {
                 canDownload = permissions.canDownload;

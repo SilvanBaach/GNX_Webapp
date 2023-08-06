@@ -611,6 +611,37 @@ function buildNextTrainingTable(teamId) {
     });
 }
 
+/**
+ * Setup of the define training time popup
+ */
+function setupDefTrainingTimePopup() {
+    const defTrainingTimePopup = new Popup("popup-containerDefTrainingTime");
+
+    defTrainingTimePopup.displayInputPopupCustom("/res/others/edit.png", "Define Training Time", "Confirm", "btnDefineTrainingTime",
+        '<label for="training" class="input-label">Choose Training</label>' +
+        '<select id="training" class="input-field">' +
+        '<option value="" disabled selected>Select a Training</option>' +
+        getTrainingOptions() +
+        '</select>' +
+        '<label for="from" class="input-label">From</label>' +
+        `<input type="time" id="from" class="input-field"/>` +
+        '<label for="until" class="input-label">Until</label>' +
+        `<input type="time" id="until" class="input-field"/>`
+    )
+
+    $('#defTrainingTime').click(function (e) {
+        defTrainingTimePopup.open(e);
+    });
+}
+
+/**
+ * Returns all training options
+ * @returns {string}
+ */
+function getTrainingOptions() {
+    return '';
+}
+
 if (typeof process !== "undefined") {
     if (process.env.NODE_ENV.trim() === 'jest') {
         module.exports = {

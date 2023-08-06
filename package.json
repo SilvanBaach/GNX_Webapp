@@ -43,6 +43,7 @@
     "pg": "^8.11.1",
     "request": "^2.88.2",
     "riot-games-api-nodejs": "^1.0.7",
+    "sharp": "^0.32.4",
     "swiper": "^10.0.3",
     "twit": "^2.2.11",
     "typescript": "^5.1.6"

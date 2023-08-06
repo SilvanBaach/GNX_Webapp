@@ -199,3 +199,22 @@
     width: 30px;
     height: 30px;
 }
+
+.sub-container{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.advanced{
+    margin-top: 18px;
+    height: auto;
+    margin-bottom: 18px;
+    min-width: 280px;
+    width: 20%;
+}
+
+.options-btn-container{
+    display: flex;
+    justify-content: center;
+}

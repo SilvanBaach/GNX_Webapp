@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const fileshareRoot = process.env.FILESHARE_ROOT_DIR;
 const rootDir = path.resolve(path.dirname(path.dirname(__dirname)));
+const thumbnailCreator = require('./thumbnailCreator');
 
 
 /**
@@ -47,6 +48,13 @@ function returnFileList(subPath) {
                                     extension: extension,
                                     iconPath: returnIconFilePath(extension)
                                 });
+
+                                //If the file is png or jpg create a thumbnail
+                                if (stats.isFile() && (extension == 'png' || extension == 'jpg')) {
+                                    const thumbnailData = thumbnailCreator.createThumbnailFromFile(path.join(filePath, file), 100, 100);
+                                    //fileInfos.push(thumbnailData)
+                                }
+
                                 processedFiles++;
                                 if (processedFiles === files.length) {
                                     fileInfos.sort((a, b) => a.name.localeCompare(b.name));
