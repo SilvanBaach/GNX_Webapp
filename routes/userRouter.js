@@ -327,12 +327,11 @@ async function getUsers(){
     const query = util.promisify(pool.query).bind(pool);
     const results = await query(`SELECT DISTINCT account.*, team.displayname AS team_display, team.teamtype_fk AS team_teamtype_fk, team.weight AS team_weight
                                  FROM account
-                                          LEFT JOIN teammembership AS tm ON tm.account_fk = account.id
                                           LEFT JOIN team ON team.id = (
                                      SELECT t2.id
                                      FROM teammembership
                                               LEFT JOIN team AS t2 ON t2.id = team_fk
-                                     WHERE account_fk = account.id
+                                     WHERE teammembership.account_fk = account.id
                                      ORDER BY weight DESC
                                      LIMIT 1
                                  ) ORDER BY account.username, account.id`);
