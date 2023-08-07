@@ -277,11 +277,11 @@ async function buildUserTable() {
         const tdFullname = $("<td></td>").text(account.fullname);
 
         // Create an img element with the picture URL and onerror event handler
-        if (account.picture.length < 10) {
-            account.picture = "/res/others/blank_profile_picture.png";
+        if (account.thumbnail.length < 10) {
+            account.thumbnail = "/res/others/blank_profile_picture.png";
         }
 
-        const img = $("<img>").attr("src", account.picture);
+        const img = $("<img>").attr("src", account.thumbnail);
 
         img.addClass("profile-picture");
 

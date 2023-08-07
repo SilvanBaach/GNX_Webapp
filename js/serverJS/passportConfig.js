@@ -1,5 +1,6 @@
 const LocalStrategy = require("passport-local").Strategy;
 const { pool } = require("./database/dbConfig.js");
+const { getUserFields } = require("../../routes/userRouter.js");
 const bcrypt = require("bcrypt");
 const { logMessage, LogLevel } = require("./logger.js");
 
@@ -85,8 +86,10 @@ function initialize(passport) {
     // In deserializeUser that key is matched with the in memory array / database or any data resource.
     // The fetched object is attached to the request object as req.user
 
-    passport.deserializeUser((id, done) => {
-        pool.query(`SELECT *
+    passport.deserializeUser(async (id, done) => {
+        const accountFields = await getUserFields();
+
+        pool.query(`SELECT ${accountFields}
                     FROM account
                     WHERE id = $1`, [id], (err, results) => {
             if (err) {
@@ -115,7 +118,7 @@ function initialize(passport) {
                             return done(err);
                         }
 
-                        result.rows.forEach(function(row) {
+                        result.rows.forEach(function (row) {
                             user[row.location] = user[row.location] || {};
                             user[row.location][row.permission] = true;
                         });

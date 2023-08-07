@@ -158,3 +158,22 @@ function setupNotificationPopup(value){
         notificationPopup.close();
     });
 }
+
+/**
+ * Loads the full user picture
+ */
+function loadUserPicture(){
+    $.ajax({
+        url: '/user/getUserPicture',
+        method: 'GET',
+        dataType: "json",
+        success: function(response) {
+            if(response[0].picture !== null){
+                $('.player-img').attr("src", response[0].picture);
+            }
+        },
+        error: function(error) {
+            displayError(error.responseJSON.message);
+        }
+    });
+}

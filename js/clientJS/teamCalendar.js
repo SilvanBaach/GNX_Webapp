@@ -144,8 +144,8 @@ async function generateCalendar(users, currentDate, sessionUser, teamId, teamMan
                 userNameSpan.classList.add('username-span')
 
                 const userImage = document.createElement('img')
-                if (users[i].picture) {
-                    userImage.src = users[i].picture
+                if (users[i].thumbnail) {
+                    userImage.src = users[i].thumbnail
                 } else {
                     userImage.src = "/res/others/blank_profile_picture.png"
                 }

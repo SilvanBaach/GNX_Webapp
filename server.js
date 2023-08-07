@@ -141,7 +141,7 @@ app.use('/discordbot', discordBotRouter(client, guildId));
 app.use('/riot', riotRouter);
 app.use('/logs', logRouter);
 
-/**
+ /**
  * MAIN ROUTES
  */
 app.get('/', checkAuthenticated,(req, res) => {

@@ -26,7 +26,8 @@ function checkPermissions() {
  */
 function removeFileShareContent(){
     //Removes all the file elements from the fileshare-container
-    $("#fileshare-container").empty();
+    let loadingMessage = $('<div id="loading-message-container"><div id="loading-message"></div></div>');
+    $("#fileshare-container").empty().append(loadingMessage);
 }
 
 /**
@@ -51,7 +52,6 @@ function getFileListFromServer(){
         dataType: "json",
         success: function(data) {
             const files = data;
-            console.log(files);
             removeFileShareContent();
             checkPermissions().then((permissions) => {
                 canDownload = permissions.canDownload;
@@ -59,6 +59,8 @@ function getFileListFromServer(){
                 $.each(files, function (index, file) {
                     appendFileLayout(file);
                 });
+
+                $('#loading-message-container').remove();
             });
         },
         error: function(xhr, status, error) {
@@ -99,7 +101,9 @@ async function appendFileLayout(file) {
 
     if (file.type === 'directory') {
         fileImage.attr('src', '/res/fileIcons/folder.png');
-    } else {
+    } else if(file.thumbnailData) {
+        fileImage.attr('src', 'data:image/' + file.thumbnailFileType + ';base64, ' + file.thumbnailData);
+    }else{
         fileImage.attr('src', file.iconPath);
     }
 

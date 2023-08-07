@@ -4,8 +4,8 @@
 <div class="text">Settings</div>
 <div class="content">
     <div class="shadow-box player-shadow-box">
-        <% if (typeof user.picture !== 'undefined' && user.picture) { %>
-            <img class="player-img" src="<%= user.picture %>" alt="profile picture" id="profilePicture"/>
+        <% if (typeof user.thumbnail !== 'undefined' && user.thumbnail) { %>
+            <img class="player-img" src="<%= user.thumbnail %>" alt="profile picture" id="profilePicture"/>
         <% } else { %>
             <img class="player-img" src="/res/others/blank_profile_picture.png" alt="blank profile picture" id="profilePicture"/>
         <% } %>
@@ -125,6 +125,7 @@
         setupSettingsPage();
         setupPWResetPopup();
         setupNotificationPopup(<%= user.trainingdatareminder %>);
+        loadUserPicture();
 
         //Updates the profile picture
         const input = document.getElementById("fileInput");

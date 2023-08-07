@@ -28,7 +28,7 @@ function returnFileList(subPath) {
                         let file = files[i];
 
                         //For each file load the file stats
-                        fs.stat(path.join(filePath, file), (error, stats) => {
+                        fs.stat(path.join(filePath, file), async (error, stats) => {
                             if (error) {
                                 console.log(error);
                                 reject(error);
@@ -39,6 +39,12 @@ function returnFileList(subPath) {
 
                                 let extension = (/[.]/.exec(file)) ? /[^.]+$/.exec(file) : undefined;
 
+                                let thumbnailData = {};
+                                //If the file is png or jpg create a thumbnail
+                                if (stats.isFile() && (extension == 'png' || extension == 'jpg' || extension == 'jpeg')) {
+                                    thumbnailData = await thumbnailCreator.createThumbnailFromFile(path.join(filePath, file), 100, 100);
+                                }
+
                                 //Add the file metadata to an array
                                 fileInfos.push({
                                     name: file,
@@ -46,14 +52,10 @@ function returnFileList(subPath) {
                                     size: humanFileSize(stats.size),
                                     lastModified: formattedDate,
                                     extension: extension,
-                                    iconPath: returnIconFilePath(extension)
+                                    iconPath: returnIconFilePath(extension),
+                                    thumbnailData: thumbnailData.data,
+                                    thumbnailFileType: thumbnailData.fileType
                                 });
-
-                                //If the file is png or jpg create a thumbnail
-                                if (stats.isFile() && (extension == 'png' || extension == 'jpg')) {
-                                    const thumbnailData = thumbnailCreator.createThumbnailFromFile(path.join(filePath, file), 100, 100);
-                                    //fileInfos.push(thumbnailData)
-                                }
 
                                 processedFiles++;
                                 if (processedFiles === files.length) {

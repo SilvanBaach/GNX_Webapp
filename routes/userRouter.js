@@ -10,6 +10,8 @@ const util = require("util");
 const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
 const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 const {sendWelcomeMessage} = require("../js/serverJS/discordBot");
+const thumbnailCreator = require("../js/serverJS/thumbnailCreator.js");
+const {query} = require("express");
 
 /**
  * POST route for updating the profile picture of a user
@@ -197,6 +199,17 @@ router.get('/getUserPermissions', checkNotAuthenticated, async (req, res) => {
 });
 
 /**
+ * GET route for the full quality user picture
+ */
+router.get('/getUserPicture', checkNotAuthenticated, async (req, res) => {
+    getUserPicture(req.user.id).then((result) => {
+        res.status(200).send(result.rows);
+    }).catch(() => {
+        res.status(500).send({message: "There was an error getting the permission List! Please try again later."});
+    });
+});
+
+/**
  * POST route for setting the discordTag
  */
 router.post('/setDiscordTag', checkNotAuthenticated, permissionCheck('home', 'canOpen'), async (req, res) => {
@@ -243,12 +256,22 @@ async function updateUser(formData, userId) {
 }
 
 /**
+ * Fetches the full user picture out of the DB
+ * @param userId
+ * @returns {Promise<QueryResult<any>>}
+ */
+function getUserPicture(userId) {
+    return pool.query('SELECT picture FROM account WHERE id = $1', [userId]);
+}
+
+/**
  * Updates the picture of a user in the database
  * @param base64 the base64 string of the picture
  * @param userId the id of the user
  * @returns result -1 for an error, 0 for success
  */
 function updateUserPicture(base64, userId) {
+    createThumbnailOfUser(userId);
     return new Promise((resolve, reject) => {
         pool.query('UPDATE account SET picture = $1 WHERE id = $2', [Object.values(base64)[0], parseInt(userId)], (err) => {
             if (err) {
@@ -286,7 +309,7 @@ async function updateUserPassword(password, userId) {
  * @returns {Promise<*>} a Promise that resolves to an array of users
  */
 function getUsersFromTeam(teamId){
-    return  pool.query(`SELECT username, account.id AS userid, team.id, picture, tm.calendarorder FROM account 
+    return  pool.query(`SELECT username, account.id AS userid, team.id, thumbnail, tm.calendarorder FROM account 
                             LEFT JOIN teammembership AS tm ON tm.account_fk = account.id 
                             LEFT JOIN team ON team.id = tm.team_fk 
                             WHERE team.id = $1
@@ -299,8 +322,9 @@ function getUsersFromTeam(teamId){
  * @returns {Promise<*>} Promise that resolves to the user
  */
 async function getUserByToken(token) {
+    const accountFields = await getUserFields();
     const query = util.promisify(pool.query).bind(pool);
-    const result = await query('SELECT * FROM account WHERE resetpasswordtoken = $1', [token]);
+    const result = await query(`SELECT ${accountFields} FROM account WHERE resetpasswordtoken = $1`, [token]);
 
     if (result.rows.length > 0) {
         const user = result.rows[0];
@@ -319,22 +343,40 @@ async function getUserByToken(token) {
  */
 async function getUserByEmail(email) {
     const query = util.promisify(pool.query).bind(pool);
-    return query('SELECT * FROM account WHERE email = $1', [email]);
+    const accountFields = await getUserFields();
+    return query(`SELECT ${accountFields} FROM account WHERE email = $1`, [email]);
 }
 
-async function getUsers(){
-    //Get the Teamtype ID
+/**
+ * Returns a string with all account DB fields except the picture
+ * @returns string
+ */
+async function getUserFields() {
+    // Get a list of columns in the account table
+    const columnsResult = await pool.query("SELECT column_name FROM information_schema.columns WHERE table_name = 'account' AND column_name != 'picture'");
+    return columnsResult.rows.map(row => `account.${row.column_name}`).join(", ");
+}
+
+async function getUsers() {
+    const accountFields = await getUserFields();
+
+    // Build the query string dynamically
+    const queryString = `
+    SELECT DISTINCT ${accountFields}, team.displayname AS team_display, team.teamtype_fk AS team_teamtype_fk, team.weight AS team_weight
+    FROM account
+    LEFT JOIN team ON team.id = (
+        SELECT t2.id
+        FROM teammembership
+        LEFT JOIN team AS t2 ON t2.id = team_fk
+        WHERE teammembership.account_fk = account.id
+        ORDER BY weight DESC
+        LIMIT 1
+    ) ORDER BY account.username, account.id
+  `;
+
+    // Execute the query
     const query = util.promisify(pool.query).bind(pool);
-    const results = await query(`SELECT DISTINCT account.*, team.displayname AS team_display, team.teamtype_fk AS team_teamtype_fk, team.weight AS team_weight
-                                 FROM account
-                                          LEFT JOIN team ON team.id = (
-                                     SELECT t2.id
-                                     FROM teammembership
-                                              LEFT JOIN team AS t2 ON t2.id = team_fk
-                                     WHERE teammembership.account_fk = account.id
-                                     ORDER BY weight DESC
-                                     LIMIT 1
-                                 ) ORDER BY account.username, account.id`);
+    const results = await query(queryString);
 
     return results.rows.map(row => replaceNullWithHyphen(row));
 }
@@ -400,8 +442,36 @@ function setDiscordTag(userId, discordTag){
     return pool.query(`UPDATE account SET discord = $1 WHERE id = $2`, [discordTag, userId]);
 }
 
+/**
+ * Creates a thumbnail of a user picture
+ * @param userId
+ */
+function createThumbnailOfUser(userId){
+    pool.query(`SELECT picture FROM account WHERE id = $1`, [userId], (err, result) => {
+        if(err){
+            console.log(err);
+        } else {
+            if(result.rows[0].picture !== null){
+                let picture = result.rows[0].picture;
+                picture = picture.replace(/^data:image\/\w+;base64,/, "");
+
+                thumbnailCreator.createThumbnailFromBase64(picture, 75, 75).then(r => {
+                    r.data = 'data:image/' + r.fileType + ';base64, ' + r.data;
+                    pool.query(`UPDATE account SET thumbnail = $1 WHERE id = $2`, [r.data, userId], (err) => {
+                        if(err){
+                            console.log(err);
+                        }
+                    });
+                })
+            }
+        }
+    });
+}
+
 module.exports = {
     router,
     getUserByToken,
-    getUserByEmail
+    getUserByEmail,
+    getUserFields,
+    createThumbnailOfUser
 };
