@@ -26,8 +26,7 @@ function checkPermissions() {
  */
 function removeFileShareContent(){
     //Removes all the file elements from the fileshare-container
-    let loadingMessage = $('<div id="loading-message-container"><div id="loading-message"></div></div>');
-    $("#fileshare-container").empty().append(loadingMessage);
+    $("#fileshare-container").empty().append($('<div id="loading-message-container"><div id="loading-message"></div></div>'));
 }
 
 /**

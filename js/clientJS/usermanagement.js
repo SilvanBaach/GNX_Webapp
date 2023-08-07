@@ -19,63 +19,63 @@ let userPager;
 async function setupUserManagement() {
     const popup = new Popup("popup-container");
     const dropdownPromise = fetchTeamTypes();
-    await loadUserTable()
+    loadUserTable().then(() => {
+        dropdownPromise.then(dropdownOptions => {
+            popup.displayDropdownPopup("/res/others/plus.png", "Create new Registration Code", "Create", "create", "teamDropdown", dropdownOptions);
 
-    dropdownPromise.then(dropdownOptions => {
-        popup.displayDropdownPopup("/res/others/plus.png", "Create new Registration Code", "Create", "create", "teamDropdown", dropdownOptions);
+            loadRegistrationCodeTable();
 
-        loadRegistrationCodeTable();
-
-        $("#newRegistrationCode").click(function (e) {
-            popup.open(e);
-        });
-
-        $("#delUser").click(function (e) {
-            deleteUser(e);
-        });
-
-        $("#updateUser").click(function (e) {
-            updateUser();
-        });
-
-        $("#blockUser").click(function (e) {
-            blockUser(e);
-        });
-
-        $("#create").click(function () {
-            const dropdownVal = $("#teamDropdown").val();
-
-            // Wrap the AJAX call in a promise
-            const generateRegistrationCode = new Promise((resolve, reject) => {
-                $.ajax({
-                    url: '/registrationcode/generateNewRegistrationCode/' + dropdownVal,
-                    type: 'POST',
-                    dataType: "json",
-                    success: function (data) {
-                        console.log("Registration code created");
-                        resolve(); // Resolve the promise when the registration code is generated successfully
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        console.log("Error creating registration code:", errorThrown);
-                        reject(); // Reject the promise if there is an error generating the registration code
-                    }
-                });
+            $("#newRegistrationCode").click(function (e) {
+                popup.open(e);
             });
 
-            popup.close();
+            $("#delUser").click(function (e) {
+                deleteUser(e);
+            });
 
-            // Use the promise to ensure the code is loaded after the registration code is generated and the popup is closed
-            generateRegistrationCode
-                .then(() => {
-                    loadRegistrationCodeTable();
-                })
-                .catch(() => {
-                    // Handle the error if needed
+            $("#updateUser").click(function (e) {
+                updateUser();
+            });
+
+            $("#blockUser").click(function (e) {
+                blockUser(e);
+            });
+
+            $("#create").click(function () {
+                const dropdownVal = $("#teamDropdown").val();
+
+                // Wrap the AJAX call in a promise
+                const generateRegistrationCode = new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: '/registrationcode/generateNewRegistrationCode/' + dropdownVal,
+                        type: 'POST',
+                        dataType: "json",
+                        success: function (data) {
+                            console.log("Registration code created");
+                            resolve(); // Resolve the promise when the registration code is generated successfully
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.log("Error creating registration code:", errorThrown);
+                            reject(); // Reject the promise if there is an error generating the registration code
+                        }
+                    });
                 });
-        });
-    });
 
-    setupPagination()
+                popup.close();
+
+                // Use the promise to ensure the code is loaded after the registration code is generated and the popup is closed
+                generateRegistrationCode
+                    .then(() => {
+                        loadRegistrationCodeTable();
+                    })
+                    .catch(() => {
+                        // Handle the error if needed
+                    });
+            });
+        });
+
+        setupPagination()
+    });
 }
 
 /**
@@ -93,7 +93,10 @@ function setupPagination() {
     });
 
     userPager.numItems(dataAccessors.userData.length)
-    buildUserTable()
+    buildUserTable().then(() => {
+        document.querySelector('#loading-message-container').style.display = 'none';
+        document.querySelector('.content').style.display = 'flex';
+    });
 }
 
 /**

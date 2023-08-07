@@ -570,46 +570,52 @@ async function getUsers(teamId) {
  * @param teamId id of the team
  */
 function buildNextTrainingTable(teamId) {
-    const url = "/presence/nextTrainings/" + teamId;
-    $.ajax({
-        url: url,
-        type: "GET",
-        dataType: "json",
-        success: function (data) {
-            const tableBody = $("#team-table tbody");
-            tableBody.empty();
+    return new Promise((resolve, reject) => {
+        const url = "/presence/nextTrainings/" + teamId;
+        $.ajax({
+            url: url,
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                const tableBody = $("#team-table tbody");
+                tableBody.empty();
 
-            if (data.length === 0) {
-                const noDataText = $("<td></td>").attr('colspan', 5).addClass('no-data-found').text('NO DATA FOUND');
-                const tr = $("<tr></tr>").append(noDataText);
-                tableBody.append(tr);
-            } else {
-                data.forEach(function (training) {
-                    const tr = $("<tr></tr>");
-                    const tdDate = $("<td></td>").text(training.readable_date);
-                    const tdFrom = $("<td></td>").text(training.starttime);
-                    const tdUntil = $("<td></td>").text(training.endtime);
-                    const tdDuration = $("<td></td>").text(training.duration);
-                    const tdType = $("<td></td>");
-
-                    const statusIndicator = $("<div></div>").addClass("status-indicator");
-                    if (training.trainingtype === "sure") {
-                        statusIndicator.addClass("status-green");
-                    } else {
-                        statusIndicator.addClass("status-orange");
-                    }
-                    tdType.append(statusIndicator)
-
-                    tr.append(tdDate).append(tdFrom).append(tdUntil).append(tdDuration).append(tdType);
+                if (data.length === 0) {
+                    const noDataText = $("<td></td>").attr('colspan', 5).addClass('no-data-found').text('NO DATA FOUND');
+                    const tr = $("<tr></tr>").append(noDataText);
                     tableBody.append(tr);
-                });
+                } else {
+                    data.forEach(function (training) {
+                        const tr = $("<tr></tr>");
+                        const tdDate = $("<td></td>").text(training.readable_date);
+                        const tdFrom = $("<td></td>").text(training.starttime);
+                        const tdUntil = $("<td></td>").text(training.endtime);
+                        const tdDuration = $("<td></td>").text(training.duration);
+                        const tdType = $("<td></td>");
+
+                        const statusIndicator = $("<div></div>").addClass("status-indicator");
+                        if (training.trainingtype === "sure") {
+                            statusIndicator.addClass("status-green");
+                        } else {
+                            statusIndicator.addClass("status-orange");
+                        }
+                        tdType.append(statusIndicator)
+
+                        tr.append(tdDate).append(tdFrom).append(tdUntil).append(tdDuration).append(tdType);
+                        tableBody.append(tr);
+                    });
+                }
+
+                resolve(); // Resolve the promise when successful
+            },
+            error: function (data) {
+                console.log(data);
+                reject(data); // Reject the promise if there's an error
             }
-        },
-        error: function (data) {
-            console.log(data);
-        }
+        });
     });
 }
+
 
 /**
  * Setup of the define training time popup

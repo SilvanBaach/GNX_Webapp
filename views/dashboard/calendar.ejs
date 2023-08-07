@@ -1,7 +1,7 @@
 <script src="/js/clientJS/teamCalendar.js"></script>
 
 <div class="text"><%= user.team.displayname %> Team Calendar</div>
-<div id="content">
+<div id="content" class="content">
     <div class="shadow-box">
         <div class="nav-btn-container">
             <div class="btn-container">
@@ -52,13 +52,14 @@
 
 <div class="popup-container" id="popup-container-edit"></div>
 <div class="popup-container" id="popup-containerDefTrainingTime"></div>
+<div id="loading-message-container"><div id="loading-message"></div></div>
 
 <script>
 
 
     let users;
 
-    $(document).ready(function () {
+    $(document).ready( function () {
         let currentDate = new Date();
 
         setupDefTrainingTimePopup();
@@ -110,6 +111,9 @@
             }
         });
 
-        buildNextTrainingTable(userData.teamId)
+        buildNextTrainingTable(userData.teamId).then(() => {
+            document.querySelector('#loading-message-container').style.display = 'none';
+            document.querySelector('.content').style.display = 'block';
+        });
     }
 </script>

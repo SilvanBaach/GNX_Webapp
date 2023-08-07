@@ -148,6 +148,7 @@
 </div>
 
 <div id="popup-containerEnterDiscord" class="popup-container"></div>
+<div id="loading-message-container"><div id="loading-message"></div></div>
 </body>
 </html>
 
@@ -158,6 +159,11 @@
         loadDiscordMembers();
         loadWebappMembers();
         setupDiscordPopup('<%= user.discord %>');
+
+        setTimeout(function () {
+            document.querySelector('#loading-message-container').style.display = 'none';
+            document.querySelector('.content').style.display = 'block';
+        }, 400);
     });
 
 </script>

@@ -116,3 +116,7 @@ th i{
 .userbox{
     height: fit-content;
 }
+
+.content{
+    display: none;
+}

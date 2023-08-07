@@ -149,3 +149,7 @@
     width: 80px;
     height: 80px;
 }
+
+.content{
+    display: none;
+}
