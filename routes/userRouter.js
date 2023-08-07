@@ -265,25 +265,6 @@ function getUserPicture(userId) {
 }
 
 /**
- * Updates the picture of a user in the database
- * @param base64 the base64 string of the picture
- * @param userId the id of the user
- * @returns result -1 for an error, 0 for success
- */
-function updateUserPicture(base64, userId) {
-    createThumbnailOfUser(userId);
-    return new Promise((resolve, reject) => {
-        pool.query('UPDATE account SET picture = $1 WHERE id = $2', [Object.values(base64)[0], parseInt(userId)], (err) => {
-            if (err) {
-                reject();
-            } else {
-                resolve();
-            }
-        });
-    });
-}
-
-/**
  * Updates the password of a user in the database
  * @param password the new password
  * @param userId the id of the user
@@ -446,32 +427,55 @@ function setDiscordTag(userId, discordTag){
  * Creates a thumbnail of a user picture
  * @param userId
  */
-function createThumbnailOfUser(userId){
-    pool.query(`SELECT picture FROM account WHERE id = $1`, [userId], (err, result) => {
-        if(err){
-            console.log(err);
-        } else {
-            if(result.rows[0].picture !== null){
-                let picture = result.rows[0].picture;
-                picture = picture.replace(/^data:image\/\w+;base64,/, "");
-
-                thumbnailCreator.createThumbnailFromBase64(picture, 75, 75).then(r => {
-                    r.data = 'data:image/' + r.fileType + ';base64, ' + r.data;
-                    pool.query(`UPDATE account SET thumbnail = $1 WHERE id = $2`, [r.data, userId], (err) => {
-                        if(err){
-                            console.log(err);
-                        }
-                    });
-                })
-            }
-        }
+function createThumbnailOfUser(userId, base64) {
+    return new Promise((resolve, reject) => {
+        let picture = base64.replace(/^data:image\/\w+;base64,/, "");
+        thumbnailCreator.createThumbnailFromBase64(picture, 75, 75).then(r => {
+            r.data = 'data:image/' + r.fileType + ';base64, ' + r.data;
+            pool.query(`UPDATE account SET thumbnail = $1 WHERE id = $2`, [r.data, userId], (err) => {
+                if(err) {
+                    console.error(err);
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        })
+            .catch(err => {
+                console.error(err);
+                reject(err); // Handle errors from thumbnail creation
+            });
     });
+}
+
+/**
+ * Updates the picture of a user in the database
+ * @param base64 the base64 string of the picture
+ * @param userId the id of the user
+ * @returns result -1 for an error, 0 for success
+ */
+function updateUserPicture(base64, userId) {
+    return createThumbnailOfUser(userId, Object.values(base64)[0])
+        .then(() => {
+            return new Promise((resolve, reject) => {
+                pool.query('UPDATE account SET picture = $1 WHERE id = $2', [Object.values(base64)[0], parseInt(userId)], (err) => {
+                    if (err) {
+                        console.error(err);
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                });
+            });
+        })
+        .catch(err => {
+            console.error("An error occurred:", err);
+        });
 }
 
 module.exports = {
     router,
     getUserByToken,
     getUserByEmail,
-    getUserFields,
-    createThumbnailOfUser
+    getUserFields
 };

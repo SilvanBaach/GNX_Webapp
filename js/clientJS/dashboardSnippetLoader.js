@@ -5,6 +5,7 @@
  * @returns {Promise<void>}
  */
 async function loadPage(id, pages) {
+    $('#home-section').empty();
     const page = pages.find(p => p.id === id);
     if (!page) {
         return;
