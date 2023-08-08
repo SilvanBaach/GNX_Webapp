@@ -222,3 +222,27 @@
 .content{
     display: none;
 }
+
+.type-div{
+    display: flex;
+}
+
+.type-text{
+    margin-left: 5px;
+    font-style: italic;
+}
+
+.title-container{
+    display: flex;
+    justify-content: space-between;
+}
+
+.icn-settings{
+    font-size: 2rem;
+    color: #575756;
+}
+
+.tooltip#manageLink .tooltiptext,
+.tooltip#manageLink #manageSpan {
+    width: 185px;
+}

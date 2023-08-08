@@ -23,7 +23,7 @@ function getNextTrainings(teamId) {
                     const tdType = $("<td></td>");
 
                     const statusIndicator = $("<div></div>").addClass("status-indicator");
-                    if (training.trainingtype === "sure") {
+                    if (training.trainingtype === "fixed") {
                         statusIndicator.addClass("status-green");
                     } else {
                         statusIndicator.addClass("status-orange");

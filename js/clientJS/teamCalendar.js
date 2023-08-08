@@ -447,7 +447,7 @@ async function getDataFromTeam(from, until, teamId) {
     const epochUntil = Math.floor(new Date(dateUntil.getFullYear(), dateUntil.getMonth(), dateUntil.getDate()).getTime() / 1000);
 
     //Get data from server
-    return await $.ajax({
+    return $.ajax({
         url: "/presence/getPresenceListFromTeam/" + teamId + "/" + epochFrom + "/" + epochUntil,
         type: "GET",
         dataType: "json",
@@ -592,14 +592,17 @@ function buildNextTrainingTable(teamId) {
                         const tdUntil = $("<td></td>").text(training.endtime);
                         const tdDuration = $("<td></td>").text(training.duration);
                         const tdType = $("<td></td>");
+                        const typeDiv = $("<div></div>").addClass("type-div");
+                        const typeText = $("<p></p>").text(' - ' + training.trainingtype).addClass("type-text");
 
                         const statusIndicator = $("<div></div>").addClass("status-indicator");
-                        if (training.trainingtype === "sure") {
+                        if (training.trainingtype === "fixed") {
                             statusIndicator.addClass("status-green");
                         } else {
                             statusIndicator.addClass("status-orange");
                         }
-                        tdType.append(statusIndicator)
+                        typeDiv.append(statusIndicator).append(typeText);
+                        tdType.append(typeDiv);
 
                         tr.append(tdDate).append(tdFrom).append(tdUntil).append(tdDuration).append(tdType);
                         tableBody.append(tr);
