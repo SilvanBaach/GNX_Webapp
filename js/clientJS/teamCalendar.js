@@ -744,10 +744,16 @@ function getTrainingOptions(teamId, callback) {
             trainingsToBeDefined = data;
 
             for (let x = 0; x < data.length; x++) {
+                const dateParts = data[x].readable_date.split(".");
+                const date = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+
+                // Get the localized weekday name
+                const weekday = date.toLocaleString('en-US', { weekday: 'long' });
+
                 if (data[x].playercount == -1) {
-                    options += `<option value="${data[x].epochdate}" data-secondvalue="${data[x].fixedtrainings_id}">${data[x].readable_date} - fixed (${data[x].starttime} - ${data[x].endtime})</option>`;
+                    options += `<option value="${data[x].epochdate}" data-secondvalue="${data[x].fixedtrainings_id}">${weekday}, ${data[x].readable_date} - fixed (${data[x].starttime} - ${data[x].endtime})</option>`;
                 } else {
-                    options += `<option value="${data[x].epochdate}" data-secondvalue="${data[x].fixedtrainings_id}">${data[x].readable_date} - proposed (${data[x].playercount} player(s) available)</option>`;
+                    options += `<option value="${data[x].epochdate}" data-secondvalue="${data[x].fixedtrainings_id}">${weekday}, ${data[x].readable_date} - proposed (${data[x].playercount} player(s) available)</option>`;
                 }
             }
 

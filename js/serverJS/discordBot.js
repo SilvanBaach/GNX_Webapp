@@ -63,7 +63,9 @@ async function sendTrainingDataReminders() {
     const query = util.promisify(pool.query).bind(pool);
     const result = await query(`WITH prep AS( SELECT discord, username, count(presence.id) AS presenceCount FROM account
                                                 LEFT JOIN presence ON presence.account_fk = account.id
+                                                LEFT JOIN teammembership ON teammembership.account_fk = account.id
                                                 WHERE (presence.date IS NULL) OR (to_timestamp(presence.date) > NOW() AND to_timestamp(presence.date) < NOW() + INTERVAL \'5 days\') AND  trainingdatareminder = 1
+                                                AND teammembership.active = 1
                                                 GROUP BY discord, username)
                                 SELECT discord, username FROM prep WHERE presencecount < 5 AND discord IS NOT NULL`);
 
