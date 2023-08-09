@@ -286,7 +286,7 @@ async function updateUserPassword(password, userId) {
 
 /**
  * Gets all users from a team
- * @param teamId the id of the team
+ * @param teamId the team id of the team
  * @returns {Promise<*>} a Promise that resolves to an array of users
  */
 function getUsersFromTeam(teamId){
