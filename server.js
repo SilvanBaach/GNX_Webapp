@@ -22,6 +22,7 @@ const fileshareRouter = require('./routes/fileshareRouter.js');
 const teammembershipRouter = require('./routes/teammembershipRouter.js');
 const roleTypeRouter = require('./routes/roleTypeRouter.js');
 const logRouter = require('./routes/logRouter.js');
+const trainingRouter = require('./routes/trainingRouter.js');
 const permissionRouter = require('./routes/permissionRouter.js');
 const discordBotRouter = require('./routes/discordBotRouter.js');
 const discordBot = require('./js/serverJS/discordBot.js');
@@ -140,6 +141,7 @@ app.use('/permission', permissionRouter);
 app.use('/discordbot', discordBotRouter(client, guildId));
 app.use('/riot', riotRouter);
 app.use('/logs', logRouter);
+app.use('/training', trainingRouter);
 
  /**
  * MAIN ROUTES

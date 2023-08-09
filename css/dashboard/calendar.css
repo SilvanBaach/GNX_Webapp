@@ -246,3 +246,14 @@
 .tooltip#manageLink #manageSpan {
     width: 185px;
 }
+
+#btnDeleteTraining{
+    margin-top: 18px;
+    width: 150px;
+}
+
+#delTrainingDiv{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}

@@ -96,7 +96,7 @@ function initialize(passport) {
                 return done(err);
             }
             let user = results.rows[0];
-            pool.query('SELECT team.id, team.displayname, team.weight, team.teamtype_fk FROM team LEFT JOIN teammembership ON teammembership.team_fk = team.id WHERE teammembership.account_fk = $1 ORDER BY team.weight DESC LIMIT 1', [user.id], function (err, result) {
+            pool.query('SELECT team.id, team.displayname, team.weight, team.teamtype_fk, team.account_fk FROM team LEFT JOIN teammembership ON teammembership.team_fk = team.id WHERE teammembership.account_fk = $1 ORDER BY team.weight DESC LIMIT 1', [user.id], function (err, result) {
                 if (err) {
                     return done(err);
                 }

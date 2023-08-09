@@ -3,6 +3,8 @@
  */
 const daysOfWeek = ["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 let clipboard = null;
+let trainingsToBeDefined = null;
+let teamId = 0;
 
 /**
  * Format a date object into a string with the format dd.mm.yyyy
@@ -151,7 +153,7 @@ async function generateCalendar(users, currentDate, sessionUser, teamId, teamMan
                 }
                 userImage.classList.add('user-profile-img')
 
-                if(users[i].userid === teamManagerId) {
+                if (users[i].userid === teamManagerId) {
                     const crownLink = document.createElement('a');
                     const crownSpan = document.createElement('span');
                     crownLink.appendChild(crownSpan);
@@ -623,23 +625,106 @@ function buildNextTrainingTable(teamId) {
 /**
  * Setup of the define training time popup
  */
-function setupDefTrainingTimePopup() {
+function setupDefTrainingTimePopup(id) {
+    teamId = id;
     const defTrainingTimePopup = new Popup("popup-containerDefTrainingTime");
 
     defTrainingTimePopup.displayInputPopupCustom("/res/others/edit.png", "Define Training Time", "Confirm", "btnDefineTrainingTime",
         '<label for="training" class="input-label">Choose Training</label>' +
         '<select id="training" class="input-field">' +
         '<option value="" disabled selected>Select a Training</option>' +
-        getTrainingOptions() +
+        getTrainingOptions(teamId, function (options) {
+            $('#training').html('<option value="" disabled selected>Select a Training</option>' + options);
+        }) +
         '</select>' +
         '<label for="from" class="input-label">From</label>' +
         `<input type="time" id="from" class="input-field"/>` +
         '<label for="until" class="input-label">Until</label>' +
-        `<input type="time" id="until" class="input-field"/>`
+        `<input type="time" id="until" class="input-field"/>` +
+        `<div id="delTrainingDiv"><button id="btnDeleteTraining" class="default red">Delete</button></div>`
     )
 
-    $('#defTrainingTime').click(function (e) {
+    $('#manageLink').click(function (e) {
+        $("#training").val("");
+        $("#from").val("").prop("disabled", true);
+        $("#until").val("").prop("disabled", true);
+        $("#delTrainingDiv").hide();
         defTrainingTimePopup.open(e);
+    });
+
+    $('#training').change(function () {
+        const selectedTrainingEpochDate = $(this).val();
+        const fixedTrainingId = $(this).find(":selected").data("secondvalue");
+
+        if (fixedTrainingId > 0){
+            $("#delTrainingDiv").show();
+        }else{
+            $("#delTrainingDiv").hide();
+        }
+
+        if (selectedTrainingEpochDate != "") {
+            const selectedTraining = trainingsToBeDefined.find(training => training.epochdate == selectedTrainingEpochDate);
+
+            if (selectedTraining) {
+                $("#from").prop("disabled", false).val(selectedTraining.starttime);
+                $("#until").prop("disabled", false).val(selectedTraining.endtime);
+            } else {
+                $("#from").prop("disabled", true);
+                $("#until").prop("disabled", true);
+            }
+        } else {
+            $("#from").prop("disabled", true);
+            $("#until").prop("disabled", true);
+        }
+    });
+
+    $('#btnDefineTrainingTime').click(function () {
+        if (!$("#training").val()) {
+            displayError("Please select a training!");
+            return;
+        }
+        if ($("#from").val() == "") {
+            displayError("Please select a start time!");
+            return;
+        }
+        if ($("#until").val() == "") {
+            displayError("Please select an end time!");
+            return;
+        }
+
+        if ($("#from").val() >= $("#until").val()) {
+            displayError("Start time must be before end time!");
+            return;
+        }
+
+        const fixedTrainingId = $("#training").find(":selected").data("secondvalue");
+
+        let action = "create";
+        if (fixedTrainingId > 0) {
+            action = "update";
+        }
+
+        const data = {
+            epochdate: $("#training").val(),
+            starttime: $("#from").val(),
+            endtime: $("#until").val(),
+            id: fixedTrainingId,
+            team_fk: teamId
+        }
+
+        crudFixedTraining(data, action)
+
+        defTrainingTimePopup.close();
+    });
+
+    $("#btnDeleteTraining").click(function () {
+        const data = {
+            id: $("#training").find(":selected").data("secondvalue")
+        }
+
+        crudFixedTraining(data, "delete")
+
+        defTrainingTimePopup.close();
     });
 }
 
@@ -647,19 +732,53 @@ function setupDefTrainingTimePopup() {
  * Returns all training options
  * @returns {string}
  */
-function getTrainingOptions() {
-    return '';
+function getTrainingOptions(teamId, callback) {
+    let options = "";
+
+    $.ajax({
+        url: "/training/getTrainingsToBeDefined",
+        data: {teamId: teamId},
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            trainingsToBeDefined = data;
+
+            for (let x = 0; x < data.length; x++) {
+                if (data[x].playercount == -1) {
+                    options += `<option value="${data[x].epochdate}" data-secondvalue="${data[x].fixedtrainings_id}">${data[x].readable_date} - fixed (${data[x].starttime} - ${data[x].endtime})</option>`;
+                } else {
+                    options += `<option value="${data[x].epochdate}" data-secondvalue="${data[x].fixedtrainings_id}">${data[x].readable_date} - proposed (${data[x].playercount} player(s) available)</option>`;
+                }
+            }
+
+            callback(options);
+        },
+        error: function (data) {
+            console.log(data);
+        }
+    });
 }
 
-if (typeof process !== "undefined") {
-    if (process.env.NODE_ENV.trim() === 'jest') {
-        module.exports = {
-            formatDate,
-            getMondayOfWeek,
-            getXDayOfWeek,
-            getDateFromDay,
-            getDataFromDay,
-            getSundayOfCurrentWeek
-        };
-    }
+/**
+ * CRUD on fixed training
+ * @param data
+ * @param action
+ */
+function crudFixedTraining(data, action){
+    data.action = action;
+
+    $.ajax({
+        url: "/training/crud",
+        data: data,
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+            displaySuccess(data.message);
+            setupDefTrainingTimePopup(teamId)
+            buildNextTrainingTable(teamId)
+        },
+        error: function (data) {
+            displayError(data.responseJSON.message);
+        }
+    });
 }

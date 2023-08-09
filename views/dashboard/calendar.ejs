@@ -28,9 +28,11 @@
         <div class="shadow-box potential-container">
             <div class="title-container">
                 <p class="purple-title">Next Trainings</p>
+                <% if(user.team.account_fk && user.team.account_fk === user.id) { %>
                 <a class="copy tooltip" id="manageLink"><span class="tooltiptext" id="manageSpan">Manage fixed Trainings</span>
                     <i class="ri-settings-5-line icn-settings"></i>
                 </a>
+                <% } %>
             </div>
             <table id="team-table" class="styled-table">
                 <thead>
@@ -61,7 +63,7 @@
     $(document).ready( function () {
         let currentDate = new Date();
 
-        setupDefTrainingTimePopup();
+        setupDefTrainingTimePopup(<%= user.team.id %>);
         buildCalendar(currentDate);
 
         $("#lastWeek").click(function () {
