@@ -168,7 +168,7 @@ function loadUserPicture(){
         method: 'GET',
         dataType: "json",
         success: function(response) {
-            if(response[0].picture !== null){
+            if(response[0].picture !== null && response[0].picture.length > 10){
                 $('.player-img').attr("src", response[0].picture);
             }
         },

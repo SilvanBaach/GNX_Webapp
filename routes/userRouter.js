@@ -127,7 +127,7 @@ router.post('/updateUser/:id',checkNotAuthenticated, function (req, res) {
 });
 
 /**
- * GET route for getting the user list of a team
+ * GET route for getting the user list of active members of a team
  */
 router.get('/getUserList/:teamId',checkNotAuthenticated, permissionCheck('calendar', 'canOpen'), function (req, res) {
     const teamId = req.params.teamId;
@@ -293,7 +293,7 @@ function getUsersFromTeam(teamId){
     return  pool.query(`SELECT username, account.id AS userid, team.id, thumbnail, tm.calendarorder FROM account 
                             LEFT JOIN teammembership AS tm ON tm.account_fk = account.id 
                             LEFT JOIN team ON team.id = tm.team_fk 
-                            WHERE team.id = $1
+                            WHERE team.id = $1 AND tm.active = 1
                             ORDER BY tm.calendarorder DESC, username ASC`,[teamId]);
 }
 
