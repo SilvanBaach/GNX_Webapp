@@ -53,7 +53,9 @@ function loadData(level, userId){
                 resolve(data);
             },
             error: function (data) {
-                console.log(data);
+                if (data.responseJSON && data.responseJSON.redirect) {
+                    window.location.href = data.responseJSON.redirect;
+                }
                 reject(data);
             }
         });
@@ -102,7 +104,9 @@ function loadActionCount(){
                 resolve(data);
             },
             error: function (data) {
-                console.log(data);
+                if (data.responseJSON && data.responseJSON.redirect) {
+                    window.location.href = data.responseJSON.redirect;
+                }
                 reject(data);
             }
         });
@@ -125,7 +129,9 @@ function loadUserData(){
                 resolve(data);
             },
             error: function (data) {
-                console.log(data);
+                if (data.responseJSON && data.responseJSON.redirect) {
+                    window.location.href = data.responseJSON.redirect;
+                }
                 reject(data);
             }
         });

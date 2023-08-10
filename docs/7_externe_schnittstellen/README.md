@@ -1,4 +1,0 @@
-
-# Externe Schnittstellen
-
-Es gibt nur eine externe Schnittstelle. Die externe Schnittstelle besteht aus einem E-Mail-Server, der von Trendhosting bereitgestellt wird. Dieser Server ermöglicht es, E-Mails zu senden und zu empfangen. Man kann diesen E-Mail-Server über das Nodemailer-Modul im Code ansprechen. Dieser Modul ermöglicht die E-Mails zu senden und zu empfangen. Der Code verwendet nicht das REST-Kommunikationsparadigma, um mit dem E-Mail-Server zu interagieren. Stattdessen erfolgt die Kommunikation über das SMTP-Protokoll, das für den Versand von E-Mails verwendet wird. Die E-Mails, die über den E-Mail-Server von Trendhosting versendet werden, verwenden das Standard-E-Mail-Nachrichtenformat, das auf dem MIME (Multipurpose Internet Mail Extensions)-Standard basiert. Das genaue Format der E-Mails wird durch das Nodemailer-Modul und die Konfigurationen im Code bestimmt. Das Programm enthält sowohl synchronen als auch asynchronen Code.

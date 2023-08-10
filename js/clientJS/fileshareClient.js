@@ -62,8 +62,10 @@ function getFileListFromServer(){
                 $('#loading-message-container').remove();
             });
         },
-        error: function(xhr, status, error) {
-            console.error('Error: ' + error);
+        error: function(data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
         }
     });
 }
@@ -185,8 +187,10 @@ function deleteFileOrFolder(filePath) {
             loadFolder(subDir);
             displaySuccess('File or Folder deleted successfully!')
         },
-        error: function (error) {
-            console.error(error);
+        error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
             displayError('Error while deleting file or folder!')
         }
     });
@@ -240,8 +244,10 @@ function newFolderPopupSetup(){
                 loadFolder(subDir);
                 displaySuccess('Folder created successfully!')
             },
-            error: function(error) {
-                console.error(error);
+            error: function(data) {
+                if (data.responseJSON && data.responseJSON.redirect) {
+                    window.location.href = data.responseJSON.redirect;
+                }
                 displayError('Error while creating folder!')
             }
         });
@@ -272,7 +278,10 @@ function uploadFiles(formData){
                 displayError(data);
             }
         },
-        error: function() {
+        error: function(data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
             displayError('Something went wrong! Maybe the file already exists on the server?');
         }
     });
@@ -318,7 +327,10 @@ function renameFile(filePath, newName){
                 displayError(data);
             }
         },
-        error: function() {
+        error: function(data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
             displayError('Something went wrong!');
         }
     });

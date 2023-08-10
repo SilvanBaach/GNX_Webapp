@@ -54,8 +54,11 @@ async function setupUserManagement() {
                             console.log("Registration code created");
                             resolve(); // Resolve the promise when the registration code is generated successfully
                         },
-                        error: function (jqXHR, textStatus, errorThrown) {
-                            console.log("Error creating registration code:", errorThrown);
+                        error: function (data) {
+                            if (data.responseJSON && data.responseJSON.redirect) {
+                                window.location.href = data.responseJSON.redirect;
+                            }
+                            console.log("Error creating registration code:", data.responseJSON);
                             reject(); // Reject the promise if there is an error generating the registration code
                         }
                     });
@@ -157,8 +160,11 @@ async function loadRegistrationCodeTable(){
             });
 
         },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.log("Error fetching registration codes:", errorThrown);
+        error: function(data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
+            console.log("Error fetching registration codes:", data.responseJSON);
         }
     });
 }
@@ -171,7 +177,12 @@ async function fetchTeamTypes() {
         const teams = await $.ajax({
             url: '/team/getteams',
             type: 'GET',
-            dataType: 'json'
+            dataType: 'json',
+            error: function (data){
+                if (data.responseJSON && data.responseJSON.redirect) {
+                    window.location.href = data.responseJSON.redirect;
+                }
+            }
         });
 
         // Create a list of objects with value and label properties
@@ -225,8 +236,11 @@ async function updateRegisterCode(code, valid){
         success: function (data) {
 
         },
-        error: function (jqXHR, textStatus, errorThrown) {
-            console.log("Error deactivating registration code:", errorThrown);
+        error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
+            console.log("Error deactivating registration code:", data.responseJSON);
         }
     });
 
@@ -245,8 +259,11 @@ async function loadUserTable() {
         success: function (data) {
             dataAccessors.userData = data;
         },
-        error: function (jqXHR, textStatus, errorThrown) {
-            console.log("Error fetching registration codes:", errorThrown);
+        error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
+            console.log("Error fetching registration codes:", data.responseJSON);
         }
     })
 }
@@ -408,8 +425,11 @@ async function deleteUser(e){
                 $(".edit-box").hide();
                 displaySuccess("User deleted successfully!")
             },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log("Error deleting user:", errorThrown);
+            error: function (data) {
+                if (data.responseJSON && data.responseJSON.redirect) {
+                    window.location.href = data.responseJSON.redirect;
+                }
+                console.log("Error deleting user:", data.responseJSON);
                 displayError("Error deleting user! Try reloading the page.")
             }
         });
@@ -458,8 +478,11 @@ async function updateUser() {
             // Display a success message
             displaySuccess("User updated successfully!");
         },
-        error: function (jqXHR, textStatus, errorThrown) {
-            console.log("Error updating user:", errorThrown);
+        error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
+            console.log("Error updating user:", data.responseJSON);
             // Display an error message
             displayError("Error updating user! Try reloading the page.");
         }

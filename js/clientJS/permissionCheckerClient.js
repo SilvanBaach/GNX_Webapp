@@ -17,9 +17,12 @@ function hasPermission(location, permission) {
 
                 resolve(false);
             },
-            error: (error) => {
-                console.error('Error: ' + error);
-                reject(error);
+            error: (data) => {
+                if (data.responseJSON && data.responseJSON.redirect) {
+                    window.location.href = data.responseJSON.redirect;
+                }
+                console.error('Error: ' + data);
+                reject(data);
             }
         });
     });

@@ -65,8 +65,11 @@ function updateUserInfo(formData) {
                 $('#usernameBig').text(formData.username);
             }
         },
-        error: function (error) {
-            displayError(error.responseJSON.message);
+        error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
+            displayError(data.responseJSON.message);
         }
     });
 }
@@ -114,8 +117,11 @@ function setupPWResetPopup(){
             success: function(response) {
                 displaySuccess(response.message);
             },
-            error: function(error) {
-                displayError(error.responseJSON.message);
+            error: function(data) {
+                if (data.responseJSON && data.responseJSON.redirect) {
+                    window.location.href = data.responseJSON.redirect;
+                }
+                displayError(data.responseJSON.message);
             }
         });
 
@@ -172,8 +178,11 @@ function loadUserPicture(){
                 $('.player-img').attr("src", response[0].picture);
             }
         },
-        error: function(error) {
-            displayError(error.responseJSON.message);
+        error: function(data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
+            displayError(data.responseJSON.message);
         }
     });
 }

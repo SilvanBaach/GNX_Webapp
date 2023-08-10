@@ -47,6 +47,9 @@ function createNewRole(name, desc) {
             loadData();
         },
         error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
             displayError(data.error);
             console.log(data);
         }
@@ -101,7 +104,9 @@ function loadData() {
             setupDeleteRolePopup();
         },
         error: function (data) {
-            console.log(data);
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
         }
     });
 }
@@ -134,6 +139,9 @@ function editRole(id) {
             buildPermissionList(data, "scrollableListUnassigned");
         },
         error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
             displayError(data.error)
         }
     });
@@ -152,6 +160,9 @@ function editRole(id) {
             buildPermissionList(data, "scrollableListAssigned");
         },
         error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
             displayError(data.responseText)
         }
     });
@@ -203,6 +214,9 @@ function assignPermission() {
             editRole(editRoleId);
         },
         error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
             displayError(data.responseText);
         }
     });
@@ -230,6 +244,9 @@ function deAssignPermission() {
             editRole(editRoleId);
         },
         error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
             displayError(data.responseText);
         }
     });
@@ -300,6 +317,9 @@ function setupAssignToTeamPopup() {
                     });
                 },
                 error: function (error) {
+                    if (data.responseJSON && data.responseJSON.redirect) {
+                        window.location.href = data.responseJSON.redirect;
+                    }
                     displayError(error.error)
                 }
             });
@@ -446,8 +466,11 @@ function setupAssignToUserPopup() {
                         }));
                     });
                 },
-                error: function (error) {
-                    displayError(error.error)
+                error: function (data) {
+                    if (data.responseJSON && data.responseJSON.redirect) {
+                        window.location.href = data.responseJSON.redirect;
+                    }
+                    displayError(data.error)
                 }
             });
 
@@ -525,8 +548,11 @@ function setupUnAssignFromTeamPopup() {
                             }));
                         });
                     },
-                    error: function (error) {
-                        displayError(error.error)
+                    error: function (data) {
+                        if (data.responseJSON && data.responseJSON.redirect) {
+                            window.location.href = data.responseJSON.redirect;
+                        }
+                        displayError(data.error)
                     }
                 });
             } else {
@@ -601,8 +627,11 @@ function setupUnAssignFromUserPopup() {
                             }));
                         });
                     },
-                    error: function (error) {
-                        displayError(error.error)
+                    error: function (data) {
+                        if (data.responseJSON && data.responseJSON.redirect) {
+                            window.location.href = data.responseJSON.redirect;
+                        }
+                        displayError(data.error)
                     }
                 });
             } else {
@@ -639,8 +668,11 @@ function unAssignRole() {
         success: function (data) {
             displaySuccess(data);
         },
-        error: function (error) {
-            displayError(error.responseText)
+        error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
+            displayError(data.responseText)
         }
     });
 }
@@ -669,8 +701,11 @@ function assignRole() {
         success: function (data) {
             displaySuccess(data);
         },
-        error: function (error) {
-            displayError(error.responseText)
+        error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
+            displayError(data.responseText)
         }
     });
 }
@@ -692,8 +727,11 @@ function deleteRole(){
             loadData();
             displaySuccess(data.message);
         },
-        error: function (error) {
-            displayError(error.responseText)
+        error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
+            displayError(data.responseText)
         }
     });
 }

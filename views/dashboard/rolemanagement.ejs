@@ -129,8 +129,11 @@
                     loadData();
                     displaySuccess(response.message);
                 },
-                error: function (error) {
-                    displayError(error.message);
+                error: function (data) {
+                    if (data.responseJSON && data.responseJSON.redirect) {
+                        window.location.href = data.responseJSON.redirect;
+                    }
+                    displayError(data.responseJSON);
                 }
             });
         });

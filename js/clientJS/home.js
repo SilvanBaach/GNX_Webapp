@@ -36,7 +36,9 @@ function getNextTrainings(teamId) {
             }
         },
         error: function (data) {
-            console.log(data);
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
         }
     });
 }
@@ -81,7 +83,9 @@ function loadDiscordMembers() {
             totalMembers.text(data.members.totalMembers + " members");
         },
         error: function (data) {
-            console.log(data);
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
         }
     });
 }
@@ -102,7 +106,9 @@ function loadWebappMembers() {
             totalMembers.text(data.totalMembers + " members");
         },
         error: function (data) {
-            console.log(data);
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
         }
     });
 }
@@ -132,8 +138,10 @@ function setupDiscordPopup(discordTag) {
                     displaySuccess('Your connection with discord has been established successfully!');
                     displayInfo('You can manage your discord notifications in your profile settings')
                 },
-                error: function (error) {
-                    console.log(error);
+                error: function (data) {
+                    if (data.responseJSON && data.responseJSON.redirect) {
+                        window.location.href = data.responseJSON.redirect;
+                    }
                 }
             })
 

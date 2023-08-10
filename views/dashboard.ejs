@@ -154,14 +154,29 @@
         {id: "changelog", url: "dashboard/changelog", css: "../css/dashboard/changelog.css"}
     ];
 
+    async function checkSessionStatus() {
+        try {
+            const response = await $.get('/session-status');
+            return response.isAuthenticated;
+        } catch (error) {
+            console.error('Error checking session status:', error);
+            return false;
+        }
+    }
+
     $(document).ready(function () {
         loadPage("home", pages);
 
         $(function () {
             pages.forEach(page => {
-                $('#' + page.id).click(function (e) {
+                $('#' + page.id).click(async function (e) {
                     e.preventDefault();
-                    loadPage(page.id, pages);
+                    const isAuthenticated = await checkSessionStatus();
+                    if (!isAuthenticated) {
+                        window.location.href = '/?type=error&message=Session expired, please login again';
+                    }else{
+                        await loadPage(page.id, pages);
+                    }
                 });
             });
         });

@@ -61,7 +61,7 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 30 * 60 * 1000 } // Session will last 30 Minutes
+    cookie: { maxAge: 5 * 1000 } // Session will last 30 Minutes
 }));
 
 app.use(flash());
@@ -157,5 +157,17 @@ app.get('/register', (req, res) => {
 app.get('/error', (req, res) => {
     res.render('error');
 });
+
+/**
+ * GET route which returns the current session status
+ */
+app.get('/session-status', function (req, res) {
+    if (req.isAuthenticated()) {
+        res.json({ isAuthenticated: true });
+    } else {
+        res.json({ isAuthenticated: false });
+    }
+});
+
 
 module.exports = app;

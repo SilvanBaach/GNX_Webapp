@@ -292,7 +292,10 @@ async function saveNewOrder(newOrder) {
         data: {newOrder},
         success: function () {
             displaySuccess("Order saved successfully!")
-        }, error: function () {
+        }, error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
             displayError("Error saving Order! Please try again later.")
         }
     });
@@ -457,6 +460,9 @@ async function getDataFromTeam(from, until, teamId) {
             return data;
         },
         error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
             console.log(data);
         }
     });
@@ -540,7 +546,10 @@ function saveDay(username, date, presenceType, from, until, comment) {
             const year = parseInt(parts[2], 10);
             const dateDat = new Date(year, monthIndex, day);
             buildCalendar(dateDat);
-        }, error: function () {
+        }, error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
             displayError("Error saving data! Please try again later.")
         }
     });
@@ -560,7 +569,9 @@ async function getUsers(teamId) {
             users = data;
         },
         error: function (data) {
-            console.log(data);
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
         }
     });
 
@@ -614,6 +625,9 @@ function buildNextTrainingTable(teamId) {
                 resolve(); // Resolve the promise when successful
             },
             error: function (data) {
+                if (data.responseJSON && data.responseJSON.redirect) {
+                    window.location.href = data.responseJSON.redirect;
+                }
                 console.log(data);
                 reject(data); // Reject the promise if there's an error
             }
@@ -760,6 +774,9 @@ function getTrainingOptions(teamId, callback) {
             callback(options);
         },
         error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
             console.log(data);
         }
     });
@@ -784,6 +801,9 @@ function crudFixedTraining(data, action){
             buildNextTrainingTable(teamId)
         },
         error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
             displayError(data.responseJSON.message);
         }
     });

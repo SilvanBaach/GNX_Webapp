@@ -113,6 +113,9 @@ async function loadTeams() {
             dataAccessors.teamData = data;
         },
         error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
             console.log(data);
         }
     });
@@ -131,6 +134,9 @@ async function loadTeamTypes() {
             dataAccessors.teamTypeData = data;
         },
         error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
             console.log(data);
         }
     });
@@ -251,8 +257,11 @@ async function createTeam(e, popupTeam) {
                 popupTeam.close(e);
                 buildTeamTable()
             },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log("Error inserting team:", errorThrown);
+            error: function (data) {
+                if (data.responseJSON && data.responseJSON.redirect) {
+                    window.location.href = data.responseJSON.redirect;
+                }
+                console.log("Error inserting team:", data.responseJSON);
                 displayError("Error inserting Team! Try reloading the page.")
             }
         });
@@ -281,8 +290,11 @@ function createTeamType(e, popupTeamType) {
                 popupTeamType.close(e);
                 buildTeamTypeTable()
             },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log("Error inserting team type:", errorThrown);
+            error: function (data) {
+                if (data.responseJSON && data.responseJSON.redirect) {
+                    window.location.href = data.responseJSON.redirect;
+                }
+                console.log("Error inserting team type:", data.responseJSON);
                 displayError("Error inserting Team Type! Try reloading the page.")
             }
         });
@@ -363,8 +375,11 @@ function deleteTeam(e, id) {
                 $("#teamEdit").hide();
                 buildTeamTable()
             },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log("Error deleting team:", errorThrown);
+            error: function (data) {
+                if (data.responseJSON && data.responseJSON.redirect) {
+                    window.location.href = data.responseJSON.redirect;
+                }
+                console.log("Error deleting team:", data.responseJSON);
                 displayError("Error deleting Team! Try reloading the page.")
             }
         });
@@ -401,8 +416,11 @@ function updateTeam(){
             $("#teamEdit").hide();
             buildTeamTable()
         },
-        error: function (jqXHR, textStatus, errorThrown) {
-            console.log("Error updating team:", errorThrown);
+        error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
+            console.log("Error updating team:", data.responseJSON);
             displayError("Error updating Team! Try reloading the page.")
         }
     });
@@ -431,8 +449,11 @@ function updateTeamType(){
             $("#teamTypeEdit").hide();
             buildTeamTypeTable()
         },
-        error: function (jqXHR, textStatus, errorThrown) {
-            console.log("Error updating team type:", errorThrown);
+        error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
+            console.log("Error updating team type:", data.responseJSON);
             displayError("Error updating Team type! Try reloading the page.")
         }
     });
@@ -449,7 +470,12 @@ function loadTeamManagerOptions(){
             data: {
                 minimalData: true
             },
-            dataType: "json"
+            dataType: "json",
+            error: function(data){
+                if (data.responseJSON && data.responseJSON.redirect) {
+                    window.location.href = data.responseJSON.redirect;
+                }
+            }
         }).then((data) => {
             const managerOptions = $('#teammanagerDropdown');
             managerOptions.empty();

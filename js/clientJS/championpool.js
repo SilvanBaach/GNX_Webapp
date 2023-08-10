@@ -193,7 +193,9 @@ async function getDDragonData() {
             dDragonData = data;
         },
         error: function (data) {
-            console.log(data);
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
         }
     });
     return dDragonData;
@@ -225,7 +227,9 @@ async function getChampionpoolData() {
             championpoolData = data;
         },
         error: function (data) {
-            console.log(data);
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
         }
     });
 
@@ -259,8 +263,10 @@ function updateChampionpoolData(element, newChampionName, bDelete) {
         success: function() {
             //console.log("Successfully updated championpool data!");
         },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.log("Error updating Championpool", errorThrown);
+        error: function(data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
         }
     });
 }

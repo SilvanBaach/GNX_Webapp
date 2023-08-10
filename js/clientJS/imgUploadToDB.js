@@ -48,8 +48,11 @@ async function updateProfilePicture(event, userId) {
             success: function (result) {
                 resolve({picture: result.picture.data, message: result.message});
             },
-            error: function (error) {
-                reject(error.responseText);
+            error: function (data) {
+                if (data.responseJSON && data.responseJSON.redirect) {
+                    window.location.href = data.responseJSON.redirect;
+                }
+                reject(data.responseText);
             }
         });
     });

@@ -29,7 +29,7 @@ function checkNotAuthenticated(req, res, next) {
         return next();
     }
 
-    return res.redirect("/")
+    return res.status(401).json({ redirect: "/?type=error&message=Session expired, please login again" });
 }
 
 /**
