@@ -80,4 +80,12 @@ router.get('/changelog', checkNotAuthenticated, permissionCheck('changelog', 'ca
     res.render('dashboard/changelog.ejs', { user: req.user });
 });
 
+/**
+ * GET event Calendar page
+ */
+router.get('/eventCalendar', checkNotAuthenticated, permissionCheck('eventcalendar', 'canOpen'), (req, res) => {
+    res.render('dashboard/eventcalendar.ejs', { user: req.user });
+});
+
+
 module.exports = router;

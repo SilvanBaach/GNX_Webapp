@@ -1,0 +1,152 @@
+.content{
+    margin-left: 18px;
+    width: calc(100% - 400px);
+}
+
+.home-section{
+    width: calc(100% - 80px);
+}
+
+.btn-container{
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    column-gap: 15px;
+}
+
+.current-date-text{
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.current-month{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-btn-container{
+    display:flex;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    margin-right: 18px;
+}
+
+.grid-header {
+    height: 40px;
+    background-color: #31B7BC;
+    color: #fff;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    border: 1px solid #ccc;
+    font-weight: 600;
+}
+
+.cal-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    cursor: default;
+}
+
+.row-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.cell-content-container{
+    width: 100%;
+}
+
+.grid-item {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    position: relative;
+}
+
+.date-container {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    z-index: 2;
+}
+
+.strip-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    height: 100%;
+    width: 100%;
+    padding-top: 20px;
+    overflow: visible;
+    margin-top: 3px;
+}
+
+.color-strip {
+    height: 20px;
+    background-color: #3498db;
+    margin: 2px 0;
+    width: 100%;
+    border-radius: 5px;
+    color: black;
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transform: scale(1.02) translateZ(0);
+    will-change: transform;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    cursor: pointer;
+}
+
+.other-month{
+    color: #575756;
+}
+
+.date-number{
+    margin-left: 7px;
+    cursor: default;
+}
+
+.is-today .date-number {
+    color: white;
+    background-color: red;
+    border-radius: 12px;
+    padding: 2px 6px;
+    display: inline-block;
+    text-align: center;
+    margin-left: 1px;
+    margin-top: -2px;
+}
+
+.strip-text{
+    color: white;
+    font-size: 0.8rem;
+    margin-left: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 125px;
+}
+
+.strip-icon{
+    width: 12px;
+    height: 12px;
+    margin: 3px -2px 3px 3px;
+}
+
+.color-strip:hover {
+    transform: scale(1.05); /* scales up the strip 5% */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* adds a subtle shadow */
+}

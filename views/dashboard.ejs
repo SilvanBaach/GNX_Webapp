@@ -30,6 +30,7 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+    <script src="/js/clientJS/eventCalendar.js"></script>
 </head>
 
 <body>
@@ -53,10 +54,18 @@
             <li>
                 <a href="#" id="calendar">
                     <i class='bx bxs-calendar'></i>
-                    <span class="links_name">Calendar</span>
+                    <span class="links_name">Team Calendar</span>
                 </a>
             </li>
         <% } %>
+            <% if (user.eventcalendar && user.eventcalendar.canOpen) { %>
+                <li>
+                    <a href="#" id="eventCalendar">
+                        <i class='ri-calendar-event-fill'></i>
+                        <span class="links_name">GNX Event Calendar</span>
+                    </a>
+                </li>
+            <% } %>
         <% if (user.championpool && user.championpool.canOpen) { %>
             <li>
                 <a href="#" id="championpool">
@@ -151,7 +160,8 @@
         {id: "rolemanagement", url: "dashboard/rolemanagement", css: "/css/dashboard/rolemanagement.css"},
         {id: "championpool", url: "dashboard/championpool", css: "/css/dashboard/championpool.css"},
         {id: "apexstats", url: "dashboard/apexstats", css: "../css/dashboard/apexstats.css"},
-        {id: "changelog", url: "dashboard/changelog", css: "../css/dashboard/changelog.css"}
+        {id: "changelog", url: "dashboard/changelog", css: "../css/dashboard/changelog.css"},
+        {id: "eventCalendar", url: "dashboard/eventCalendar", css: "../css/dashboard/eventCalendar.css"}
     ];
 
     async function checkSessionStatus() {

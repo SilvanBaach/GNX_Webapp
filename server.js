@@ -28,6 +28,7 @@ const discordBotRouter = require('./routes/discordBotRouter.js');
 const discordBot = require('./js/serverJS/discordBot.js');
 const {checkAuthenticated} = require('./js/serverJS/sessionChecker.js');
 const riotRouter = require('./routes/riotRouter.js');
+const calendarRouter = require('./routes/calendarRouter.js');
 const riot = require('./js/serverJS/riot.js');
 const {logMessage, LogLevel} = require('./js/serverJS/logger.js');
 const {sendTrainingDataReminders} = require("./js/serverJS/discordBot");
@@ -142,6 +143,7 @@ app.use('/discordbot', discordBotRouter(client, guildId));
 app.use('/riot', riotRouter);
 app.use('/logs', logRouter);
 app.use('/training', trainingRouter);
+app.use('/calendar', calendarRouter);
 
  /**
  * MAIN ROUTES

@@ -29,7 +29,13 @@ function checkNotAuthenticated(req, res, next) {
         return next();
     }
 
-    return res.status(401).json({ redirect: "/?type=error&message=Session expired, please login again" });
+    if (req.headers['x-requested-with'] === 'XMLHttpRequest') {
+        // Respond with 401 for AJAX request
+        return res.status(401).json({ redirect: "/?type=error&message=Session expired, please login again" });
+    } else {
+        // Redirect to the index page for non-AJAX request
+        return res.redirect("/?type=error&message=Session expired, please login again");
+    }
 }
 
 /**

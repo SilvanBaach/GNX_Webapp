@@ -1,0 +1,32 @@
+<script src="/js/clientJS/eventCalendar.js"></script>
+
+<div class="text">Genetix Event Calendar</div>
+<div id="content" class="content">
+    <div class="shadow-box">
+        <div class="nav-btn-container">
+            <div class="btn-container">
+                <button class="default" id="lastMonth">
+                    <i class="ri-arrow-left-s-line ri-2x"></i>
+                    Last Month
+                </button>
+                <button class="default" id="today">Today</button>
+
+                <button class="default" id="nextMonth">
+                    Next Month
+                    <i class="ri-arrow-right-s-line ri-2x"></i>
+                </button>
+            </div>
+            <div class="current-month">
+                <p id="currentMonthText" class="current-date-text"></p>
+            </div>
+        </div>
+        <div class="cal-header"></div>
+        <div class="cal-container"></div>
+    </div>
+</div>
+
+<script>
+    $(document).ready( function () {
+        setupEventCalendar();
+    });
+</script>
