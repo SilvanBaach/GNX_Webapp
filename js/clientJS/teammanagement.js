@@ -336,6 +336,7 @@ function editTeam(name) {
 
         $("#weight").val(team.weight === "-" ? "" : team.weight);
         $("#teamId").val(team.id);
+        $("#discordnotificationdays").val(team.discordnotificationdays);
 
         loadTeamManagerOptions().then(() => {
             if(!team.account_fk){
@@ -398,6 +399,7 @@ function updateTeam(){
     const teamType = $("#type").val();
     const teamWeight = $("#weight").val();
     const teamManager = $("#teammanagerDropdown").val();
+    const discordnotificationdays = $("#discordnotificationdays").val();
 
     $.ajax({
         url: "/team/updateteam",
@@ -408,7 +410,8 @@ function updateTeam(){
             teamName: teamName,
             teamType: teamType,
             teamWeight: teamWeight,
-            teamManager: teamManager
+            teamManager: teamManager,
+            discordnotificationdays: discordnotificationdays
         },
         success: function () {
             loadTeams();

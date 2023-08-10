@@ -61,19 +61,31 @@ const sendMessageToUser = async (discordUsername, message) => {
  */
 async function sendTrainingDataReminders() {
     const query = util.promisify(pool.query).bind(pool);
-    const result = await query(`WITH prep AS( SELECT discord, username, count(presence.id) AS presenceCount FROM account
-                                                LEFT JOIN presence ON presence.account_fk = account.id
-                                                LEFT JOIN teammembership ON teammembership.account_fk = account.id
-                                                WHERE (presence.date IS NULL) OR (to_timestamp(presence.date) > NOW() AND to_timestamp(presence.date) < NOW() + INTERVAL \'5 days\') AND  trainingdatareminder = 1
-                                                AND teammembership.active = 1
-                                                GROUP BY discord, username)
-                                SELECT discord, username FROM prep WHERE presencecount < 5 AND discord IS NOT NULL`);
+    const result = await query(`WITH prep AS (SELECT discord, username, count(presence.id) AS presenceCount
+                                              FROM account
+                                                       LEFT JOIN presence ON presence.account_fk = account.id
+                                                       LEFT JOIN teammembership ON teammembership.account_fk = account.id
+                                                       LEFT JOIN team ON team.id = teammembership.team_fk
+                                              WHERE (presence.date IS NULL)
+                                                 OR (to_timestamp(presence.date) > NOW() AND
+                                                     to_timestamp(presence.date) <
+                                                     NOW() + INTERVAL '1 day' * team.discordnotificationdays) AND
+                                                    trainingdatareminder = 1 AND teammembership.active = 1
+                                              GROUP BY discord, username)
+
+                                SELECT prep.discord, prep.username, team.discordnotificationdays
+                                FROM prep
+                                         LEFT JOIN account ON account.username = prep.username
+                                         LEFT JOIN teammembership ON teammembership.account_fk = account.id
+                                         LEFT JOIN team ON team.id = teammembership.team_fk
+                                WHERE presencecount < team.discordnotificationdays
+                                  AND prep.discord IS NOT NULL`);
 
     if (result.rows.length > 0) {
         result.rows.forEach((row) => {
             sendMessageToUser(row.discord,`Hey there, ${row.username} 👋
             
-We noticed that your training data for the next 5 days hasn't been logged yet! 📝
+We noticed that your training data for the next ${row.discordnotificationdays} days hasn't been logged yet! 📝
 
 :point_right: Please visit https://webapp.teamgenetix.ch and insert your training data
 
@@ -85,7 +97,12 @@ Your Team Genetix Bot 🤖
             `)
         });
 
-        logMessage(`Sent training data reminders to ${result.rows.length} users`, LogLevel.INFO, null)
+        let userString = "";
+        result.rows.forEach((row) => {
+            userString += row.username + ", "
+        });
+
+        logMessage(`Sent training data reminders to the following users: ${userString}`, LogLevel.INFO, null)
     }else{
         logMessage(`No users found for training data reminder`, LogLevel.INFO, null)
     }
