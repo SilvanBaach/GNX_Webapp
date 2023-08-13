@@ -1,5 +1,5 @@
 ---
-version: '3.8'
+version: '3.3'
 services:
   gnxcontainer:
     container_name: gnxcontainer
@@ -25,6 +25,30 @@ services:
       - /home/genetix/docker/caddy/config:/config
       - /home/genetix/docker/caddy/Caddyfile:/etc/caddy/Caddyfile
       - /home/genetix/docker/caddy/logs/:/var/log/
+
+  wordpress:
+    image: wordpress
+    links:
+      - mariadb:mysql
+    environment:
+      - WORDPRESS_DB_PASSWORD=HgmD7nkThmP
+      - WORDPRESS_DB_USER=root
+    ports:
+      - 81:80
+    networks:
+      - reverse-proxy-network
+    volumes:
+      - ./html:/var/www/html
+      - ./upload.ini:/usr/local/etc/php/conf.d/uploads.ini
+  mariadb:
+    image: mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=HgmD7nkThmP
+      - MYSQL_DATABASE=wordpress
+    networks:
+      - reverse-proxy-network
+    volumes:
+      - ./database:/var/lib/mysql
 
 networks:
   reverse-proxy-network:

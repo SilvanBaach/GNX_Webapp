@@ -43,6 +43,7 @@
     font-size: 1.2rem;
     border: 1px solid #ccc;
     font-weight: 600;
+    min-width: 8vw;
 }
 
 .cal-header {
@@ -72,6 +73,7 @@
     align-items: center;
     white-space: nowrap;
     position: relative;
+    min-width: 8vw;
 }
 
 .date-container {
@@ -137,7 +139,7 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    max-width: 125px;
+    max-width: 8vw;
 }
 
 .strip-icon{
