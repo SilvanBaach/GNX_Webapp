@@ -1,6 +1,8 @@
 let currentMonth;
 const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 let monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+let createNewPopup;
+let currentlyClickedDate;
 
 /**
  * Main function for setting up the event calendar
@@ -24,6 +26,8 @@ function setupEventCalendar() {
     });
 
     buildCalHeader();
+
+    setupCreateNewPopup();
 
     getCalendarData().then(data => {
         generateMonthView(data);
@@ -132,10 +136,23 @@ function generateMonthView(calendarData) {
             gridItem.innerHTML =
                 '<div class="date-container">' +
                 `<p class="date-number">${dayNumber}</p>` +
+                '<a class="new tooltip"><span class="tooltiptext">Create new</span>' +
+                '<i class="ri-add-fill"></i></a>' +
                 '</div>' +
                 `<div class="strip-container">${strips}</div>`;
 
             rowContainer.appendChild(gridItem);
+
+            const createNewLink = gridItem.querySelector('.new');
+            createNewLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                $("#calendarSelect").val("");
+                $("#text").val('').prop("disabled", true);
+                $("#starttime").val('').prop("disabled", true);
+                $("#endtime").val('').prop("disabled", true);
+                createNewPopup.open(e);
+                currentlyClickedDate = new Date(year, monthIndex, dayNumber);
+            });
         }
 
         calContainer.appendChild(rowContainer);
@@ -164,5 +181,126 @@ function getCalendarData(){
                 reject(data);
             }
         });
+    });
+}
+
+/**
+ * Sets up the create new popup
+ */
+function setupCreateNewPopup(){
+    createNewPopup = new Popup("popupContainerCreateNew");
+
+    getCalendarOptions().then(function (options) {
+        createNewPopup.displayInputPopupCustom("/res/others/plus.png", "Create new Appointment", "Create", "btnCreateNewAppointment",
+            '<label for="calendar" class="input-label">Calendar</label>' +
+            '<select id="calendarSelect" class="input-field">' +
+            '<option value="" disabled selected>Select a Calendar</option>' +
+            options +
+            '</select>' +
+            '<label for="text" class="input-label">Text</label>' +
+            '<input type="text" id="text" class="input-field"/>' +
+            '<label for="starttime" class="input-label">Starttime</label>' +
+            '<input type="time" id="starttime" class="input-field"/>' +
+            '<label for="endtime" class="input-label">Endtime</label>' +
+            '<input type="time" id="endtime" class="input-field"/>'
+        )
+
+        $("#calendarSelect").change(function () {
+            $("#text").prop("disabled", false);
+            $("#starttime").prop("disabled", false);
+            $("#endtime").prop("disabled", false);
+        });
+
+        $("#btnCreateNewAppointment").click(function () {
+           if ($("#calendarSelect").val() === "") {
+               displayError("Please select a calendar!");
+               return;
+           }
+
+           if ($("#text").val() === "") {
+               displayError("Please enter a text!");
+               return;
+           }
+
+           if ($("#starttime").val() === "") {
+               displayError("Please enter a starttime!");
+               return;
+           }
+
+           if ($("#endtime").val() === "") {
+               displayError("Please enter an endtime!");
+               return;
+           }
+
+           if ($("#starttime").val() > $("#endtime").val()) {
+               displayError("Starttime must be before endtime!");
+               return;
+           }
+
+           insertNewAppointment($("#calendarSelect").val(), $("#text").val(), $("#starttime").val(), $("#endtime").val());
+
+           createNewPopup.close();
+        });
+    });
+}
+
+/**
+ * Asynchronously retrieves all the available calendars from the database
+ * @returns {string}
+ */
+async function getCalendarOptions() {
+    let options = "";
+
+    try {
+        let response = await fetch('/calendar/getCalendarDefinitionsWithWriteAccess');
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        let calendarDefinitions = await response.json();
+
+        for (let x = 0; x < calendarDefinitions.length; x++) {
+            options += `<option value="${calendarDefinitions[x].id}">${calendarDefinitions[x].displayname}</option>`;
+        }
+
+    } catch (error) {
+        console.log('Fetch error: ', error);
+    }
+
+    return options;
+}
+
+/**
+ * Inserts a new appointment into the database
+ * @param calendarId
+ * @param text
+ * @param starttime
+ * @param endtime
+ */
+function insertNewAppointment(calendarId, text, starttime, endtime){
+    $.ajax({
+        url: '/calendar/insertNewAppointment',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            calendarId: calendarId,
+            text: text,
+            starttime: starttime,
+            endtime: endtime,
+            date: currentlyClickedDate
+        },
+        success: function (data) {
+            displaySuccess(data.message);
+            getCalendarData().then(function (data) {
+                generateMonthView(data)
+            });
+        },
+        error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
+            displayError(data.responseJSON.message)
+        }
     });
 }
