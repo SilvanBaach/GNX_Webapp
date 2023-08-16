@@ -105,7 +105,8 @@ function getNextTrainings(teamId) {
     return pool.query(`SELECT readable_date, starttime, endtime, CASE WHEN playercount<0 THEN 'fixed' ELSE 'proposed' END AS trainingtype,
                                         CONCAT(EXTRACT(HOUR FROM (endtime::TIME - starttime::TIME)), ':', LPAD(EXTRACT(MINUTE FROM (endtime::TIME - starttime::TIME))::TEXT, 2, '0'),' h') AS duration
                                         FROM tranings
-                                        WHERE team_fk = $1 AND (traningtype = 'fixed' OR playercount = totalplayers)`, [teamId]);
+                                        WHERE team_fk = $1 AND (traningtype = 'fixed' OR playercount = totalplayers)
+                                        AND epochdate >= (EXTRACT(EPOCH FROM NOW())::BIGINT - 86399)`, [teamId]);
 }
 
 module.exports = router;

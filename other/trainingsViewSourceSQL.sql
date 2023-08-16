@@ -39,7 +39,7 @@ SELECT * FROM (
                          totalplayers, 0 AS fixedtrainings_id
                   FROM tmpData3
                            FULL JOIN fixedtrainings ON fixedtrainings.team_fk = tmpData3.team_fk AND time_series = fixedtrainings."date"
-                  WHERE fixedtrainings.id IS NULL
+                  WHERE fixedtrainings.id IS NULL AND starttime < endtime
                   GROUP BY time_series, readable_date, tmpData3.team_fk, team, starttime, endtime, playercount, totalplayers
 
                   UNION
