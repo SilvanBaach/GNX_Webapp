@@ -45,7 +45,8 @@ router.get('/nextTrainings/:teamId', checkNotAuthenticated, permissionCheck('cal
 
     getNextTrainings(teamId).then((result) => {
         res.status(200).send(result.rows);
-    }).catch(() => {
+    }).catch((err) => {
+        console.log(err)
         res.status(500).send("There was an error getting the next trainings! Please try again later.");
     });
 });
@@ -104,9 +105,8 @@ function getNextTrainings(teamId) {
     //Generate epoch and readable date for the next 14 days
     return pool.query(`SELECT readable_date, starttime, endtime, CASE WHEN playercount<0 THEN 'fixed' ELSE 'proposed' END AS trainingtype,
                                         CONCAT(EXTRACT(HOUR FROM (endtime::TIME - starttime::TIME)), ':', LPAD(EXTRACT(MINUTE FROM (endtime::TIME - starttime::TIME))::TEXT, 2, '0'),' h') AS duration
-                                        FROM tranings
-                                        WHERE team_fk = $1 AND (traningtype = 'fixed' OR playercount = totalplayers)
-                                        AND epochdate >= (EXTRACT(EPOCH FROM NOW())::BIGINT - 86399)`, [teamId]);
+                                        FROM trainings
+                                        WHERE team_fk = $1 AND (traningtype = 'fixed' OR playercount = totalplayers) AND epochdate >= (EXTRACT(EPOCH FROM NOW())::BIGINT - 86399)`, [teamId]);
 }
 
 module.exports = router;

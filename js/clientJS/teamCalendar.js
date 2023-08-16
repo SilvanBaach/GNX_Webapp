@@ -385,7 +385,7 @@ async function editDay(username, date, e, teamId) {
                 '<input type="time" id="from" class="input-field"/>' +
                 '<label for="until" class="input-label">Until</label>' +
                 '<input type="time" id="until" class="input-field" value="23:59"/>');
-        } else if (presenceType === "3") {
+        } else if (presenceType === "3" || presenceType === "2") {
             //Add comment field
             $("#sub-data-container").empty().html('' +
                 '<label for="comment" class="input-label">Comment</label>' +
@@ -495,8 +495,12 @@ function getDataFromDay(date, username, teamData) {
                 break;
             case 2:
                 newHTML =
-                    '<i class="ri-close-line icon icon-red"></i>' +
-                    `<p class="info-text">Absent</p>`;
+                    '<i class="ri-close-line icon icon-red"></i>';
+                if (data.comment) {
+                    newHTML += `<p class="info-text">${data.comment}</p>`;
+                } else {
+                    newHTML += `<p class="info-text">Absent</p>`;
+                }
                 break;
             case 3:
                 newHTML =
