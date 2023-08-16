@@ -139,6 +139,7 @@
     color: white;
     font-size: 0.8rem;
     margin-left: 5px;
+    width: 100%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -149,6 +150,11 @@
     width: 12px;
     height: 12px;
     margin: 3px -2px 3px 3px;
+}
+
+.color-link{
+    width: 100%;
+    text-align: left;
 }
 
 .color-strip:hover {

@@ -28,6 +28,7 @@ services:
 
   wordpress:
     image: wordpress
+    container_name: docker-wordpress-1
     links:
       - mariadb:mysql
     environment:

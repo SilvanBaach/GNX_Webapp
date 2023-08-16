@@ -2,6 +2,7 @@ let currentMonth;
 const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 let monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 let createNewPopup;
+let editPopup;
 let currentlyClickedDate;
 
 /**
@@ -27,10 +28,9 @@ function setupEventCalendar() {
 
     buildCalHeader();
 
-    setupCreateNewPopup();
-
-    getCalendarData().then(data => {
-        generateMonthView(data);
+    getCalendarData().then(async data => {
+        await generateMonthView(data);
+        setupCreateNewPopup();
     })
 }
 
@@ -98,25 +98,41 @@ function generateMonthView(calendarData) {
             gridItem.classList.add('grid-item');
 
             let dayNumber;
+            let eventMonth;
+            let eventYear;
+            let isCurrentMonth = true;
 
             if (i === 0 && j < firstDay) {
                 // Leading days from the previous month
+                eventMonth = monthIndex - 1;
+                eventYear = (eventMonth < 0) ? year - 1 : year;
                 dayNumber = leadingDaysCounter++;
                 gridItem.classList.add('other-month');
+                isCurrentMonth = false;
             } else if (dayCounter > lastDay) {
                 // Trailing days from the next month
+                eventMonth = monthIndex + 1;
+                eventYear = (eventMonth > 11) ? year + 1 : year;
                 dayNumber = nextMonthCounter++;
                 gridItem.classList.add('other-month');
+                isCurrentMonth = false;
             } else {
                 // Days of the current month
+                eventMonth = monthIndex;
+                eventYear = year;
                 dayNumber = dayCounter++;
+                isCurrentMonth = true;
             }
 
             if (dayNumber === currentDay && monthIndex === currentMonthIndex && year === currentYear) {
                 gridItem.classList.add('is-today');
             }
 
-            const dayEvents = calendarData.filter(event => new Date(event.startdate).getDate() === dayNumber && new Date(event.startdate).getMonth() === monthIndex);
+            const dayEvents = calendarData.filter(event =>
+                new Date(event.startdate).getDate() === dayNumber &&
+                new Date(event.startdate).getMonth() === eventMonth &&
+                new Date(event.startdate).getFullYear() === eventYear
+            );
 
             const strips = dayEvents.map(event => {
                 let iconHTML = "";
@@ -125,19 +141,30 @@ function generateMonthView(calendarData) {
                 }
 
                 return (
-                    `<div class="color-strip" style="background-color:${event.color}">
-                        ${iconHTML}
-                        <p class="strip-text">${event.text}</p>
-                    </div>`
+                    `<a id="colorStrip" class="color-link" 
+                        data-text="${event.text}"
+                        data-startdate="${event.startdate}"
+                        data-enddate="${event.enddate}"
+                        data-id="${event.id}"
+                    >
+                        <div class="color-strip" style="background-color:${event.color}">               
+                            ${iconHTML}
+                            <p class="strip-text">${event.text}</p>
+                        </div>                      
+                    </a>`
                 );
             }).join('');
 
+            const createNewLinkHTML = isCurrentMonth ?
+                '<a class="new tooltip"><span class="tooltiptext">Create new</span><i class="ri-add-fill"></i></a>' :
+                '';
 
             gridItem.innerHTML =
                 '<div class="date-container">' +
                 `<p class="date-number">${dayNumber}</p>` +
                 '<a class="new tooltip"><span class="tooltiptext">Create new</span>' +
-                '<i class="ri-add-fill"></i></a>' +
+                createNewLinkHTML +
+                '</a>' +
                 '</div>' +
                 `<div class="strip-container">${strips}</div>`;
 
@@ -146,17 +173,29 @@ function generateMonthView(calendarData) {
             const createNewLink = gridItem.querySelector('.new');
             createNewLink.addEventListener('click', function(e) {
                 e.preventDefault();
+                currentlyClickedDate = new Date(year, monthIndex, dayNumber);
+
                 $("#calendarSelect").val("");
                 $("#text").val('').prop("disabled", true);
                 $("#starttime").val('').prop("disabled", true);
                 $("#endtime").val('').prop("disabled", true);
+                $("#allDay").prop("checked", false).prop("disabled", true);
+                $("#timeFields").show();
+                $("#dateFields").hide();
+
+                let tmpDate = new Date(currentlyClickedDate);
+                tmpDate.setDate(tmpDate.getDate() + 1);
+                $("#startdate").val(tmpDate.toISOString().slice(0, 10));
+                $("#enddate").val(tmpDate.toISOString().slice(0, 10));
+
                 createNewPopup.open(e);
-                currentlyClickedDate = new Date(year, monthIndex, dayNumber);
             });
         }
 
         calContainer.appendChild(rowContainer);
     }
+
+    setupEditPopup();
 }
 
 /**
@@ -199,16 +238,37 @@ function setupCreateNewPopup(){
             '</select>' +
             '<label for="text" class="input-label">Text</label>' +
             '<input type="text" id="text" class="input-field"/>' +
-            '<label for="starttime" class="input-label">Starttime</label>' +
+            '<label for="allDay" class="input-label">All Day</label>' +
+            '<input type="checkbox" id="allDay" class="input-checkbox input-field"/>' +
+            '<div id="timeFields" class="popup-flexbox" style="margin-top: 0">' +
+            '<label for="starttime" class="input-label">Start Time</label>' +
             '<input type="time" id="starttime" class="input-field"/>' +
-            '<label for="endtime" class="input-label">Endtime</label>' +
-            '<input type="time" id="endtime" class="input-field"/>'
+            '<label for="endtime" class="input-label">End Time</label>' +
+            '<input type="time" id="endtime" class="input-field"/>' +
+            '</div>' +
+            '<div id="dateFields" class="popup-flexbox" style="display:none;  margin-top: 0">' +
+            '<label for="startdate" class="input-label">Start Date</label>' +
+            '<input type="date" id="startdate" class="input-field"/>' +
+            '<label for="enddate" class="input-label">End Date</label>' +
+            '<input type="date" id="enddate" class="input-field"/>' +
+            '</div>'
         )
+
+        $("#allDay").change(function () {
+            if ($(this).prop("checked")) {
+                $("#timeFields").hide();
+                $("#dateFields").show();
+            } else {
+                $("#timeFields").show();
+                $("#dateFields").hide();
+            }
+        });
 
         $("#calendarSelect").change(function () {
             $("#text").prop("disabled", false);
             $("#starttime").prop("disabled", false);
             $("#endtime").prop("disabled", false);
+            $("#allDay").prop("disabled", false)
         });
 
         $("#btnCreateNewAppointment").click(function () {
@@ -222,13 +282,13 @@ function setupCreateNewPopup(){
                return;
            }
 
-           if ($("#starttime").val() === "") {
-               displayError("Please enter a starttime!");
+           if ($("#starttime").val() === "" && $("#startdate").val() === "") {
+               displayError("Please enter a Start Time/Date!");
                return;
            }
 
-           if ($("#endtime").val() === "") {
-               displayError("Please enter an endtime!");
+           if ($("#endtime").val() === "" && $("#enddate").val() === "") {
+               displayError("Please enter an End Time/Date!");
                return;
            }
 
@@ -237,7 +297,12 @@ function setupCreateNewPopup(){
                return;
            }
 
-           insertNewAppointment($("#calendarSelect").val(), $("#text").val(), $("#starttime").val(), $("#endtime").val());
+              if ($("#startdate").val() > $("#enddate").val()) {
+                displayError("Startdate must be before Enddate!");
+                return;
+              }
+
+           insertNewAppointment($("#calendarSelect").val(), $("#text").val(), $("#starttime").val(), $("#endtime").val(), $("#startdate").val(), $("#enddate").val(), $("#allDay").prop("checked"));
 
            createNewPopup.close();
         });
@@ -277,8 +342,11 @@ async function getCalendarOptions() {
  * @param text
  * @param starttime
  * @param endtime
+ * @param startdate
+ * @param enddate
+ * @param allDay
  */
-function insertNewAppointment(calendarId, text, starttime, endtime){
+function insertNewAppointment(calendarId, text, starttime, endtime, startdate, enddate, allDay){
     $.ajax({
         url: '/calendar/insertNewAppointment',
         type: 'POST',
@@ -288,7 +356,116 @@ function insertNewAppointment(calendarId, text, starttime, endtime){
             text: text,
             starttime: starttime,
             endtime: endtime,
-            date: currentlyClickedDate
+            date: currentlyClickedDate,
+            startdate: startdate,
+            enddate: enddate,
+            allDay: allDay
+        },
+        success: function (data) {
+            displaySuccess(data.message);
+            getCalendarData().then(function (data) {
+                generateMonthView(data)
+            });
+        },
+        error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
+            displayError(data.responseJSON.message)
+        }
+    });
+}
+
+/**
+ * Sets up the edit popup
+ */
+function setupEditPopup(){
+    editPopup = new Popup("popupContainerEdit");
+
+    editPopup.displayInputPopupCustom2Btn("/res/others/edit.png", "Edit Appointment","Delete", "btnDeleteAppointment", "Update", "btnUpdateAppointment",
+            '<input type="hidden" id="appointmentIdEdit"/>' +
+            '<input type="hidden" id="appointmentFullDateEdit"/>' +
+            '<label for="textEdit" class="input-label">Text</label>' +
+            '<input type="text" id="textEdit" class="input-field"/>' +
+            '<label for="starttimeEdit" class="input-label">Starttime</label>' +
+            '<input type="time" id="starttimeEdit" class="input-field"/>' +
+            '<label for="endtimeEdit" class="input-label">Endtime</label>' +
+            '<input type="time" id="endtimeEdit" class="input-field"/>'
+    )
+
+    $(".color-link").click(function (e) {
+        const startDate = new Date($(this).attr("data-startdate"))
+        const endDate = new Date($(this).attr("data-enddate"))
+
+        const startTime = startDate.getHours().toString().padStart(2, '0') + ":" + startDate.getMinutes().toString().padStart(2, '0');
+        const endTime = endDate.getHours().toString().padStart(2, '0') + ":" + endDate.getMinutes().toString().padStart(2, '0');
+
+        $("#textEdit").val($(this).attr("data-text"));
+        $("#starttimeEdit").val(startTime);
+        $("#endtimeEdit").val(endTime);
+        $("#appointmentIdEdit").val($(this).attr("data-id"));
+        $("#appointmentFullDateEdit").val($(this).attr("data-startdate"));
+        editPopup.open(e)
+    });
+
+    $("#btnDeleteAppointment").click(function () {
+        deleteAppointment($("#appointmentIdEdit").val());
+        editPopup.close();
+    });
+
+    $("#btnUpdateAppointment").click(function () {
+        const data = {
+            id: $("#appointmentIdEdit").val(),
+            text: $("#textEdit").val(),
+            starttime: $("#starttimeEdit").val(),
+            endtime: $("#endtimeEdit").val(),
+            date: $("#appointmentFullDateEdit").val()
+        }
+        updateAppointment(data);
+        editPopup.close();
+    });
+}
+
+/**
+ * Deletes an appointment from the database
+ */
+function deleteAppointment(id){
+    $.ajax({
+        url: '/calendar/deleteAppointment',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            id: id,
+        },
+        success: function (data) {
+            displaySuccess(data.message);
+            getCalendarData().then(function (data) {
+                generateMonthView(data)
+            });
+        },
+        error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
+            displayError(data.responseJSON.message)
+        }
+    });
+}
+
+/**
+ * Updates an appointment in the database
+ */
+function updateAppointment(data){
+    $.ajax({
+        url: '/calendar/updateAppointment',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            id: data.id,
+            text: data.text,
+            starttime: data.starttime,
+            endtime: data.endtime,
+            date: data.date
         },
         success: function (data) {
             displaySuccess(data.message);

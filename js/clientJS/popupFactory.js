@@ -59,6 +59,32 @@ class Popup {
     }
 
     /**
+     * Setups a simple popup with a custom inner html
+     * @param imgSrc which image should be displayed
+     * @param title the title of the popup
+     * @param buttonText1
+     * @param buttonID1
+     * @param buttonText2
+     * @param buttonID2
+     * @param inputHTML the html that should be displayed
+     */
+    displayInputPopupCustom2Btn(imgSrc, title, buttonText1, buttonID1, buttonText2, buttonID2, inputHTML) {
+        this.popupContainer.empty();
+
+        const newHTML = `<img src="${imgSrc}" class="popup-img"/>` +
+            `<div class="popup-flexbox">` +
+            `<h2>${title}</h2>` +
+            `<a id="closeLink"><i class="ri-close-fill close"></i></a>` +
+            inputHTML +
+            `<div class="button-container">` +
+            `<button type="button" id="${buttonID1}" class="default red ok-btn">${buttonText1}</button>` +
+            `<button type="button" id="${buttonID2}" class="default green ok-btn">${buttonText2}</button>` +
+            `</div>` +
+            `</div>`;
+        this.popupContainer.append(newHTML);
+    }
+
+    /**
      * Setups a simple popup with a dropdown
      * @param imgSrc which image should be displayed
      * @param title the title of the popup
