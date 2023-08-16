@@ -30,6 +30,7 @@ class Popup {
         const newHTML = `<img src="${imgSrc}" class="popup-img"/>` +
             `<div class="popup-flexbox">` +
             `<h2>${title}</h2>` +
+            `<a id="closeLink"><i class="ri-close-fill close"></i></a>` +
             `<input type="text" id="${inputID}" class="input-field"/>` +
             `<button type="button" id="${buttonID}" class="default green ok-btn">${buttonText}</button>` +
             `</div>`;
@@ -50,6 +51,7 @@ class Popup {
         const newHTML = `<img src="${imgSrc}" class="popup-img"/>` +
             `<div class="popup-flexbox">` +
             `<h2>${title}</h2>` +
+            `<a id="closeLink"><i class="ri-close-fill close"></i></a>` +
             inputHTML +
             `<button type="button" id="${buttonID}" class="default green ok-btn">${buttonText}</button>` +
             `</div>`;
@@ -71,6 +73,7 @@ class Popup {
         const newHTML = `<img src="${imgSrc}" class="popup-img"/>` +
             `<div class="popup-flexbox">` +
             `<h2>${title}</h2>` +
+            `<a id="closeLink"><i class="ri-close-fill close"></i></a>` +
             `<select id="${dropdownID}" class="input-field"/>` +
             `<button type="button" id="${buttonID}" class="default green ok-btn">${buttonText}</button>` +
             `</div>`;
@@ -98,6 +101,7 @@ class Popup {
         const newHTML = `<img src="${imgSrc}" class="popup-img"/>` +
             `<div class="popup-flexbox">` +
             `<h2 style="margin-bottom: 10px">${title}</h2>` +
+            `<a id="closeLink"><i class="ri-close-fill close"></i></a>` +
             `<p>${text}</p>` +
             `<div class="button-container">` +
             `<button type="button" id="${buttonID1}" class="default green ok-btn">${buttonText1}</button>` +
@@ -122,6 +126,11 @@ class Popup {
      */
     open(e) {
         this.popupContainer.addClass('open-popup');
+
+        $('body').on('click', '#closeLink', () => {
+            this.close();
+        });
+
         if (e) {
             e.preventDefault();
             e.stopPropagation();

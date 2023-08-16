@@ -428,7 +428,7 @@ async function editDay(username, date, e, teamId) {
         if (elementWithUsername.state === 0) {
             $("#from").val(elementWithUsername.from);
             $("#until").val(elementWithUsername.until);
-        } else if (elementWithUsername.state === 3) {
+        } else if (elementWithUsername.state === 3 || elementWithUsername.state === 2) {
             $("#comment").val(elementWithUsername.comment);
         }
     }
