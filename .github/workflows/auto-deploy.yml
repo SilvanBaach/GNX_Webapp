@@ -154,6 +154,9 @@ jobs:
             echo "PORT=3000" >> /home/genetix/.env
             echo "DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}" >> /home/genetix/.env
             echo "SESSION_SECRET=${{ secrets.SESSION_SECRET }}" >> /home/genetix/.env
+            echo "WOOCOMMERECE_CONSUM_KEY=${{ secrets.WOOCOMMERECE_CONSUM_KEY }}" >> /home/genetix/.env
+            echo "WOOCOMMERECE_CONSUM_SECRET=${{ secrets.WOOCOMMERECE_CONSUM_SECRET }}" >> /home/genetix/.env
+            echo "WOOCOMMERECE_HASH_SECRET=${{ secrets.WOOCOMMERECE_HASH_SECRET }}" >> /home/genetix/.env
             docker compose -f /home/genetix/docker/docker-compose.yml up -d
 
       
