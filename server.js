@@ -3,6 +3,7 @@ const fs = require('fs');
 const app = express();
 const passport = require('passport');
 const passportConfig = require('./js/serverJS/passportConfig.js');
+const wooCommerceIntegration = require('./js/serverJS/wooCommerceIntegration.js');
 const DiscordBot = require('discord.js');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
@@ -29,9 +30,11 @@ const discordBot = require('./js/serverJS/discordBot.js');
 const {checkAuthenticated} = require('./js/serverJS/sessionChecker.js');
 const riotRouter = require('./routes/riotRouter.js');
 const calendarRouter = require('./routes/calendarRouter.js');
+const wooCommereceRouter = require('./routes/wooCommerceRouter.js');
 const riot = require('./js/serverJS/riot.js');
 const {logMessage, LogLevel} = require('./js/serverJS/logger.js');
 const {sendTrainingDataReminders} = require("./js/serverJS/discordBot");
+const crypto = require("crypto");
 
 /**
  * MIDDLEWARE
@@ -82,6 +85,11 @@ cron.schedule('0 3 * * *', function() {
         }
     });
 });
+
+/**
+ * WOO COMMERCE WEBHOOK
+ */
+wooCommerceIntegration.addCreateOrderWebhook();
 
 /**
  * Get the newest DDragonData from the Riot API every morning at 3:00 AM
@@ -144,6 +152,7 @@ app.use('/riot', riotRouter);
 app.use('/logs', logRouter);
 app.use('/training', trainingRouter);
 app.use('/calendar', calendarRouter);
+app.use('/wooCommerce', wooCommereceRouter);
 
  /**
  * MAIN ROUTES
@@ -170,6 +179,5 @@ app.get('/session-status', function (req, res) {
         res.json({ isAuthenticated: false });
     }
 });
-
 
 module.exports = app;
