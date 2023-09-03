@@ -4,7 +4,7 @@
 const express = require('express');
 const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
-const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
+const {checkNotAuthenticated, permissionCheck, hasUserWriteAccessToCalendar} = require("../js/serverJS/sessionChecker");
 const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 
 /**
@@ -19,21 +19,22 @@ router.get('/getCalendarData',  checkNotAuthenticated, permissionCheck('eventcal
 });
 
 /**
- * GET route for getting all calendar definitions on which you have wirte access
+ * GET route for getting all calendar definitions on which you have write access
+ * You have write access to all calendars where you are inside the team, or you have the isAdmin permission on the site
  */
 router.get('/getCalendarDefinitionsWithWriteAccess', checkNotAuthenticated, permissionCheck('eventcalendar', 'canOpen'), function (req, res) {
     getCalendarDefinitionsWithWriteAccess(req.user.id).then((result) => {
         res.status(200).send(result.rows);
-    }).catch(() => {
+    }).catch((err) => {
+        console.log(err);
         res.status(500).send({message: "There was an error getting the calendars! Please try again later."});
     });
 });
 
 /**
  * POST route for creating a new appointment
- * TODO: Check if the user really has write access to the given calendar
  */
-router.post('/insertNewAppointment', checkNotAuthenticated, permissionCheck('eventcalendar', 'canOpen'), function (req, res) {
+router.post('/insertNewAppointment', hasUserWriteAccessToCalendar(), checkNotAuthenticated, permissionCheck('eventcalendar', 'canOpen'), function (req, res) {
     insertNewAppointment(req.body).then((result) => {
         logMessage(LogLevel.INFO, `User ${req.user.id} created a new appointment in calendar ${req.body.calendarId} with the text ${req.body.text}!`);
         res.status(200).send({message: 'Appointment successfully inserted!'});
@@ -45,9 +46,8 @@ router.post('/insertNewAppointment', checkNotAuthenticated, permissionCheck('eve
 
 /**
  * POST route to update an existing appointment
- * TODO: Check if the user really has write access to the given calendar
  */
-router.post('/updateAppointment', checkNotAuthenticated, permissionCheck('eventcalendar', 'canOpen'), function (req, res) {
+router.post('/updateAppointment', hasUserWriteAccessToCalendar, checkNotAuthenticated, permissionCheck('eventcalendar', 'canOpen'), function (req, res) {
     updateAppointment(req.body).then((result) => {
         logMessage(LogLevel.INFO, `User ${req.user.id} updated the appointment with the id ${req.body.id} with the text ${req.body.text}!`);
         res.status(200).send({message: 'Appointment successfully updated!'});
@@ -58,9 +58,8 @@ router.post('/updateAppointment', checkNotAuthenticated, permissionCheck('eventc
 
 /**
  * POST route to delete an existing appointment
- * TODO: Check if the user really has write access to the given calendar
  */
-router.post('/deleteAppointment', checkNotAuthenticated, permissionCheck('eventcalendar', 'canOpen'), function (req, res) {
+router.post('/deleteAppointment', hasUserWriteAccessToCalendar, checkNotAuthenticated, permissionCheck('eventcalendar', 'canOpen'), function (req, res) {
     deleteAppointment(req.body).then((result) => {
         logMessage(LogLevel.INFO, `User ${req.user.id} deleted the appointment with the id ${req.body.id}!`);
         res.status(200).send({message: 'Appointment successfully deleted!'});
@@ -104,8 +103,10 @@ function  getCalendarData(date, userId){
  */
 function getCalendarDefinitionsWithWriteAccess(userId){
     return pool.query(`SELECT calendardefinition.id, calendardefinition.displayname FROM calendardefinition
-                                        LEFT JOIN team ON team.id = team_fk
-                                        WHERE team.account_fk = $1 OR 1 = (SELECT COUNT(*) FROM accountpermission_view WHERE id = $1 AND location = 'eventcalendar' AND permission = 'isAdmin')`, [userId])
+                                        LEFT JOIN teammembership AS tm ON tm.team_fk = calendardefinition.team_fk
+                                        WHERE tm.account_fk = $1 OR 1 = (SELECT COUNT(*) FROM accountpermission_view WHERE id = $1 AND location = 'eventcalendar' AND permission = 'isAdmin')
+                                        GROUP BY calendardefinition.id, calendardefinition.displayname
+                                        ORDER BY calendardefinition.displayname`, [userId])
 }
 
 /**

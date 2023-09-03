@@ -249,7 +249,7 @@ function updateChampionpoolData(element, newChampionName, bDelete) {
     const championpoolTableType = $container.data("tabletype")
     const lane= $container.data("lane")
     const row = $container.data("row")
-    //TODO: If there are more than 1 team check of teamNames
+
     const team = 0;
     const championpoolData = [playerOfChampion, championpoolTableType, lane, row, newChampionName, team, bDelete]
 
@@ -334,8 +334,6 @@ function fillAllTablesWithData(data) {
         const tableElement = $(`.row-container[data-lane=${lane}][data-row=${row}][data-tabletype=${tableType}]`);
 
         if (tableElement.length === 0) {
-            //TODO Delete value from DB
-            // No elements were found
             console.log("No elements found that meet the criteria.");
         } else {
             // Fill the elements with the data

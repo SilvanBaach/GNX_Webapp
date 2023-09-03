@@ -5,7 +5,7 @@ const express = require('express');
 const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 const util = require("util");
-const { checkNotAuthenticated, permissionCheck } = require('../js/serverJS/sessionChecker.js'); //If not logged in to Index
+const { checkNotAuthenticated, permissionCheck, isUserAllowedToEditOtherUser } = require('../js/serverJS/sessionChecker.js'); //If not logged in to Index
 const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 
 /**
@@ -26,8 +26,7 @@ router.get('/getPresenceListFromTeam/:teamId/:epochFrom/:epochUntil', checkNotAu
 /**
  * POST route for saving the presence data of a user
  */
-//TODO: Check if the user is allowed to save the presence data
-router.post('/save', checkNotAuthenticated, function (req, res) {
+router.post('/save', checkNotAuthenticated, isUserAllowedToEditOtherUser, function (req, res) {
     const data = req.body;
     savePresence(data).then(() => {
         logMessage(`User ${req.user.username} saved a presence`,LogLevel.INFO,req.user.id);
@@ -103,10 +102,10 @@ async function savePresence(data) {
  */
 function getNextTrainings(teamId) {
     //Generate epoch and readable date for the next 14 days
-    return pool.query(`SELECT readable_date, starttime, endtime, CASE WHEN playercount<0 THEN 'fixed' ELSE 'proposed' END AS trainingtype,
+    return pool.query(`SELECT *, CASE WHEN playercount<0 THEN 'fixed' ELSE 'proposed' END AS trainingtype,
                                         CONCAT(EXTRACT(HOUR FROM (endtime::TIME - starttime::TIME)), ':', LPAD(EXTRACT(MINUTE FROM (endtime::TIME - starttime::TIME))::TEXT, 2, '0'),' h') AS duration
                                         FROM trainings
-                                        WHERE team_fk = $1 AND (traningtype = 'fixed' OR playercount = totalplayers) AND epochdate >= (EXTRACT(EPOCH FROM NOW())::BIGINT - 86399)`, [teamId]);
+                                        WHERE team_fk = $1 AND (traningtype = 'fixed' OR totalplayers =  playercount) AND epochdate >= (EXTRACT(EPOCH FROM NOW())::BIGINT - 86399)`, [teamId]);
 }
 
 module.exports = router;

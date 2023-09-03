@@ -90,7 +90,8 @@
     async function buildCalendar(currentDate) {
         const userData = {
             username: '<%= user.username %>',
-            teamId: '<%= user.team.id %>'
+            teamId: '<%= user.team.id %>',
+            isAdmin: '<%= user.usermanagement && user.usermanagement.canEditOthers %>'
         };
 
         const users = await getUsers(userData.teamId);
@@ -107,7 +108,7 @@
                         window.location.href = data.redirect;
                     }
                     const teammanagerId = data[0].account_fk;
-                    generateCalendar(users, currentDate, sessionUser, userData.teamId, teammanagerId);
+                    generateCalendar(users, currentDate, sessionUser, userData.teamId, teammanagerId, userData.isAdmin);
                 },
                 error: function (data) {
                     if (data.responseJSON && data.responseJSON.redirect) {

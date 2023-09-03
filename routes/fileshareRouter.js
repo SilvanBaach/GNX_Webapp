@@ -10,8 +10,6 @@ const fileshareRoot = process.env.FILESHARE_ROOT_DIR;
 const rootDir = path.resolve(path.dirname(__dirname));
 const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 
-//TODO: Add permission checking to all routes
-
 /**
  * Multer configuration
  */

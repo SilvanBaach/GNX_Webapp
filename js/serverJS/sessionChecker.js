@@ -1,5 +1,6 @@
 const {pool} = require("./database/dbConfig");
 const { logMessage, LogLevel } = require("./logger.js");
+const util = require("util");
 
 /**
  * Checks if the user is authenticated
@@ -110,8 +111,79 @@ function hasUserPermission(user, permissions) {
     });
 }
 
+/**
+ * Checks if a user has write access to a calendar
+ */
+function hasUserWriteAccessToCalendar() {
+    return function(req, res, next) {
+        pool.query(`SELECT calendardefinition.id FROM calendardefinition
+                                LEFT JOIN teammembership AS tm ON tm.team_fk = calendardefinition.team_fk
+                                WHERE (tm.account_fk = $1 OR 1 = (SELECT COUNT(*) FROM accountpermission_view WHERE id = $1 AND location = 'eventcalendar' AND permission = 'isAdmin')) AND calendardefinition.id = $2
+                                GROUP BY calendardefinition.id`, [req.user.id, req.body.calendarId]).then(result => {
+            if (result.rowCount > 0) {
+                next();
+            }else{
+                logMessage(`User ${req.user.username} tried to edit calendar ${req.body.calendarId} but has no permission`, LogLevel.WARNING, req.user.id)
+                res.status(403).send({ error: 'Forbidden' });
+            }
+        });
+    }
+}
+
+/**
+ * Checks if a user is really the team manager of a team
+ * @returns {(function(*, *, *): void)|*}
+ */
+async function isUserTeamManager(req, res, next) {
+    // Extract team ID from request query parameter
+    let teamId = req.query.teamId;
+    if (!teamId) {
+        teamId = req.body.teamId;
+    }
+
+    try {
+        const result = await pool.query('SELECT account_fk FROM team WHERE id = $1', [teamId]);
+        if (result.rows.length === 0 || result.rows[0].account_fk !== req.user.id) {
+            logMessage(`User ${req.user.username} tried to perform a team manager action in team ${teamId} but is not the team manager`, LogLevel.WARNING, req.user.id)
+            return res.status(403).send({ message: 'You are not authorized to perform this action.' });
+        }
+        next();
+    } catch (err) {
+        console.error(err);
+        res.status(500).send({ message: 'Internal Server Error' });
+    }
+}
+
+/**
+ * Checks if a user is allowed to edit user data
+ * Either the user is the user itself or the has the permission 'isAdmin' for the location 'usermanagement'
+ * @returns {(function(*, *, *): void)|*}
+ */
+async function isUserAllowedToEditOtherUser(req, res, next) {
+    if (req.params.is )
+
+    try {
+        const result = await pool.query(`
+            SELECT * FROM account
+            WHERE username = $2 AND (id = $1 OR 1 = (SELECT COUNT(*) FROM accountpermission_view WHERE id = $1 AND location = 'usermanagement' 
+            AND permission = 'canEditOthers'))`, [req.user.id, req.body.username]);
+
+        if (result.rows.length === 0) {
+            logMessage(`User ${req.user.username} tried to edit user ${req.body.username} but is not allowed to`, LogLevel.WARNING, req.user.id)
+            return res.status(403).send({ message: 'You are not authorized to perform this action.' });
+        }
+        next();
+    } catch (err) {
+        console.error(err);
+        res.status(500).send({ message: 'Internal Server Error' });
+    }
+}
+
 module.exports = {
     checkAuthenticated,
     checkNotAuthenticated,
-    permissionCheck
+    permissionCheck,
+    hasUserWriteAccessToCalendar,
+    isUserTeamManager,
+    isUserAllowedToEditOtherUser
 }

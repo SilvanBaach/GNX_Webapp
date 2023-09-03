@@ -58,7 +58,6 @@ class EmailSender {
         if (!isProduction) {
             action = `http://webapp.teamgenetix.ch/resetPassword/${token}`;
         } else {
-            //TODO: Change this to the production url
             console.log('Running in production mode');
             action = '';
         }

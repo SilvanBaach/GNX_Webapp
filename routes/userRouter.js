@@ -7,7 +7,7 @@ const {pool} = require('../js/serverJS/database/dbConfig.js');
 const bcrypt = require("bcrypt");
 const discordBot = require('../js/serverJS/discordBot.js');
 const util = require("util");
-const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
+const {checkNotAuthenticated, permissionCheck, isUserAllowedToEditOtherUser} = require("../js/serverJS/sessionChecker");
 const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 const {sendWelcomeMessage} = require("../js/serverJS/discordBot");
 const thumbnailCreator = require("../js/serverJS/thumbnailCreator.js");
@@ -79,7 +79,7 @@ router.post('/updatePassword/:token',  async function (req, res) {
  * POST route for updating the information of a user
  */
 //TODO only allow users to update their own information
-router.post('/updateUser/:id',checkNotAuthenticated, function (req, res) {
+router.post('/updateUser/:id', checkNotAuthenticated, isUserAllowedToEditOtherUser, function (req, res) {
     let userId = req.params.id;
     if (userId === "-1") {
         userId = req.user.id;

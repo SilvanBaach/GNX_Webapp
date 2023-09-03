@@ -82,9 +82,10 @@ function getDateFromDay(date, dayOfWeek) {
  * @param sessionUser the user who is currently logged in
  * @param teamId the id of the team
  * @param teamManagerId the id of the team manager
+ * @param isAdmin
  * @returns {Promise<void>}
  */
-async function generateCalendar(users, currentDate, sessionUser, teamId, teamManagerId) {
+async function generateCalendar(users, currentDate, sessionUser, teamId, teamManagerId, isAdmin) {
     const calContainer = document.querySelector('.cal-container');
     $('.cal-container').empty();
     const today = new Date();
@@ -180,7 +181,7 @@ async function generateCalendar(users, currentDate, sessionUser, teamId, teamMan
                     '<div class="edit-content-row">' +
                     `<input type="text" value="${users[i].username}" style="display: none" id="inputUsername"/>` +
                     `<input type="text" value="${formatDate(getXDayOfWeek(currentDate, j - 1))}" style="display: none" id="inputDate"/>`;
-                if (users[i].username === sessionUser) {
+                if (users[i].username === sessionUser || isAdmin) {
                     innerHTML +=
                         '<a class="copy tooltip"><span class="tooltiptext">Copy</span>' +
                         '<i class="ri-file-copy-2-line"></i>' +
@@ -205,7 +206,7 @@ async function generateCalendar(users, currentDate, sessionUser, teamId, teamMan
 
                 gridItem.innerHTML = innerHTML;
                 // Add click event handler to edit link
-                if (users[i].username === sessionUser) {
+                if (users[i].username === sessionUser || isAdmin) {
                     if (jDayObj.getTime() >= today.getTime()) {
                         const editLink = gridItem.querySelector('.edit');
                         editLink.addEventListener('click', function (e) {
@@ -554,7 +555,7 @@ function saveDay(username, date, presenceType, from, until, comment) {
             if (data.responseJSON && data.responseJSON.redirect) {
                 window.location.href = data.responseJSON.redirect;
             }
-            displayError("Error saving data! Please try again later.")
+            displayError(data.responseJSON.message)
         }
     });
 }

@@ -4,14 +4,13 @@
 const express = require('express');
 const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
-const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
+const {checkNotAuthenticated, permissionCheck, isUserTeamManager} = require("../js/serverJS/sessionChecker");
 const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 
 /**
  * GET route for getting all trainings which can be fixed or edited by the team manager
  */
-//TODO Check if user is team manager
-router.get('/getTrainingsToBeDefined',  checkNotAuthenticated, permissionCheck('calendar', 'canOpen'), function (req, res) {
+router.get('/getTrainingsToBeDefined', isUserTeamManager, checkNotAuthenticated, permissionCheck('calendar', 'canOpen'), function (req, res) {
     getTrainingsToBeDefined(req.query.teamId).then((result) => {
         res.status(200).send(result.rows);
     }).catch(() => {
@@ -22,8 +21,7 @@ router.get('/getTrainingsToBeDefined',  checkNotAuthenticated, permissionCheck('
 /**
  * POST route for CRUD operations on trainings
  */
-//TODO Check if user is team manager
-router.post('/crud',  checkNotAuthenticated, permissionCheck('calendar', 'canOpen'), function (req, res) {
+router.post('/crud', isUserTeamManager, checkNotAuthenticated, permissionCheck('calendar', 'canOpen'), function (req, res) {
     crudTrainings(req.body).then((result) => {
         res.status(200).send({message: "Successfully modified the trainings!"});
     }).catch((error) => {
