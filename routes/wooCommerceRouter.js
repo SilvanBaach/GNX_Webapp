@@ -8,23 +8,21 @@ const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 const crypto = require('crypto');
 
 router.post('/orderCreated', (req, res) => {
-    console.log('Received webhook');
-    discordBot.sendMessageToUser('admatomschlag', 'Webhook received' )
     const receivedSignature = req.headers['x-wc-webhook-signature'];
     const payload = JSON.stringify(req.body);
 
     const generatedSignature = crypto
-        .createHmac('sha256', 'your-secret-key')
+        .createHmac('sha256', process.env.WOOCOMMERECE_HASH_SECRET)
         .update(payload)
         .digest('base64');
 
     if (receivedSignature === generatedSignature) {
         // Handle the webhook event
-        discordBot.sendMessageToUser('admatomschlag', 'New order received! Check the admin panel for more details! Payload: ' + payload )
+        discordBot.sendMessageToChannel('1147985961955885168', 'Received valid webhook! Payload: ' + payload )
         console.log('Received valid webhook');
     } else {
         // Log an error or possibly respond with an error status
-        discordBot.sendMessageToUser('admatomschlag', 'Received invalid webhook! Payload: ' + payload )
+        discordBot.sendMessageToChannel('1147985961955885168', 'Received invalid webhook! Payload: ' + payload )
         console.log('Received invalid webhook');
     }
 });

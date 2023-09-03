@@ -119,11 +119,48 @@ You have successfully linked your Discord account with your Team Genetix Webapp 
 Your Team Genetix Bot 🤖`)
 }
 
+/**
+ * Method which sends a message to a specific channel by its name
+ * @param channelId
+ * @param message
+ * @returns
+ */
+const sendMessageToChannel = async (channelId, message) => {
+    let guild;
+    let channel;
+
+    try {
+        guild = client.guilds.cache.get(guildId);
+        if (!guild) {
+            logMessage(`Invalid Guild ID or the bot is not a member of the guild.`, LogLevel.ERROR, null);
+            console.error('Invalid Guild ID or the bot is not a member of the guild.');
+        }
+
+        if (guild.channels.cache.size === 0) {
+            await guild.channels.fetch()
+        }
+
+        channel = guild.channels.cache.find(ch => ch.id === channelId);
+        console.log(guild.channels.cache);
+
+        if (!channel) {
+            logMessage(`Channel ${channelId} not found`, LogLevel.ERROR, null);
+            console.error(`Channel ${channelId} not found`);
+        }
+
+        await channel.send(message);
+    } catch (error) {
+        console.error(error);
+        logMessage(`Error sending message to channel ${channelId}. Error Message: ${error}`, LogLevel.ERROR, null)
+    }
+};
+
 module.exports = {
     getCurrentDiscordMembers,
     sendMessageToUser,
     sendTrainingDataReminders,
     setupDiscordBot,
-    sendWelcomeMessage
+    sendWelcomeMessage,
+    sendMessageToChannel
 };
 
