@@ -141,7 +141,6 @@ const sendMessageToChannel = async (channelId, message) => {
         }
 
         channel = guild.channels.cache.find(ch => ch.id === channelId);
-        console.log(guild.channels.cache);
 
         if (!channel) {
             logMessage(`Channel ${channelId} not found`, LogLevel.ERROR, null);

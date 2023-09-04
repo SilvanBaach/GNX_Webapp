@@ -5,7 +5,7 @@ const express = require('express');
 const router = express.Router();
 const discordBot = require('../js/serverJS/discordBot.js')
 const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
-const crypto = require('crypto');
+const staffRoleId = '951561165283160094';
 
 /**
  * POST route for receiving a new order
@@ -27,7 +27,7 @@ router.post('/orderCreated', (req, res) => {
     const billing = payload.billing;
 
     const message = `
-**@Staff Order Received! 🎉**
+**<@&${staffRoleId}> Order Received! 🎉**
 Order ID: **${orderId}**
 Status: **${orderStatus}**
 Currency: **${currency}**
@@ -73,7 +73,7 @@ router.post('/newContactInquiry', (req, res) => {
     const remoteIp = payload.meta.remote_ip.value;
 
     const discordMessage = `
-**@Staff New Inquiry 📨**
+**<@&${staffRoleId}> New Inquiry 📨**
 **Name:** ${name}
 **Email:** ${email}
 **Message:**
