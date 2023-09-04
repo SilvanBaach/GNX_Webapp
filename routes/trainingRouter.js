@@ -37,7 +37,7 @@ router.post('/crud', isUserTeamManager, checkNotAuthenticated, permissionCheck('
  * @returns {*}
  */
 function  getTrainingsToBeDefined(teamId){
-    return pool.query(`SELECT * FROM trainings WHERE team_fk = $1 AND ((100 / totalplayers * playercount) >= 60 OR traningtype = 'fixed')`,[teamId]);
+    return pool.query(`SELECT * FROM trainings WHERE team_fk = $1 AND ((100 / totalplayers * playercount) >= 60 OR traningtype = 'fixed') AND epochdate >= EXTRACT(EPOCH FROM NOW() - INTERVAL '1 day')`,[teamId]);
 }
 
 /**

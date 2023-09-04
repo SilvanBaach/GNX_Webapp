@@ -140,6 +140,9 @@ async function isUserTeamManager(req, res, next) {
     if (!teamId) {
         teamId = req.body.teamId;
     }
+    if (!teamId) {
+        teamId = req.user.team.id
+    }
 
     try {
         const result = await pool.query('SELECT account_fk FROM team WHERE id = $1', [teamId]);
@@ -149,7 +152,7 @@ async function isUserTeamManager(req, res, next) {
         }
         next();
     } catch (err) {
-        console.error(err);
+        console.error('Err: ' + err);
         res.status(500).send({ message: 'Internal Server Error' });
     }
 }
