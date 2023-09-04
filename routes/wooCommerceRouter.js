@@ -28,17 +28,17 @@ router.post('/orderCreated', (req, res) => {
 
     const message = `
 **<@&${staffRoleId}> Order Received! 🎉**
-Order ID: **${orderId}**
-Status: **${orderStatus}**
-Currency: **${currency}**
-Date Created: **${dateCreated}**
-Total: **${currency} ${total}**
+**Order ID:** ${orderId}
+**Status:** ${orderStatus}
+**Currency:** ${currency}
+**Date Created:** ${dateCreated}
+**Total:** ${currency} ${total}
 
 Billing Information: 
-- First Name: **${billing.first_name || "Not provided"}**
-- Last Name: **${billing.last_name || "Not provided"}**
-- Email: **${billing.email || "Not provided"}**
-- Phone: **${billing.phone || "Not provided"}**
+- **First Name:** ${billing.first_name || "Not provided"}
+- **Last Name:** ${billing.last_name || "Not provided"}
+- **Email:** ${billing.email || "Not provided"}
+- **Phone:** ${billing.phone || "Not provided"}
 `;
 
     discordBot.sendMessageToChannel('1147985961955885168', message);
@@ -52,9 +52,28 @@ Billing Information:
 router.post('/orderUpdated', (req, res) => {
     const payload = req.body;
 
-    discordBot.sendMessageToChannel('1147985961955885168', 'Payload: ' +  JSON.stringify(payload));
+    const orderId = payload.id;
+    const orderStatus = payload.status;
+    const dateModified = formatDate(payload.date_modified);
+    const total = payload.total;
+    const billing = payload.billing;
+
+    const message = `
+**<@&${staffRoleId}> Order Updated! 🔄**
+**Order ID:** ${orderId}
+**Status:** ${orderStatus}
+**Date Modified:** ${dateModified}
+**Total:** ${total}
+
+**Billing Information:**
+- **First Name:** ${billing.first_name}
+- **Last Name:** ${billing.last_name}
+- **Email:** ${billing.email}
+- **Phone:** ${billing.phone}
+`;
+
+    discordBot.sendMessageToChannel('1147985961955885168', message);
     console.log('Sent Order Updated message to Discord');
-    logMessage('Sent Order Updated message to Discord',LogLevel.INFO,null)
 
     res.sendStatus(200);
 });
