@@ -55,7 +55,7 @@ function updateOrInsertChampionpool(data) {
     existsPromise.then((exists) => {
         if (exists) {
             // UPDATE or DELETE existing entry                                                                         // playerOfChampion, championpoolTableType, lane, row, championName, team
-            if (array[6]){
+            if (array[6].toString() === "true"){
                 promises.push(pool.query(`DELETE FROM championpool WHERE lane = $1 AND row = $2 AND type = $3`, [array[2], array[3], array[1]]));
             }else{
                 promises.push(pool.query(`UPDATE championpool SET champion = $1 WHERE lane = $2 AND row = $3 AND type = $4`, [array[4], array[2], array[3], array[1]]));
