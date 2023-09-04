@@ -64,7 +64,7 @@ router.post('/orderUpdated', (req, res) => {
 router.post('/newContactInquiry', (req, res) => {
     const payload = req.body;
 
-    discordBot.sendMessageToChannel('1148167251778867201', 'Payload: ' + payload);
+    discordBot.sendMessageToChannel('1148167251778867201', 'Payload: ' + JSON.stringify(payload));
     console.log('Sent new Contact Inquiry message to Discord');
 
     res.sendStatus(200);
