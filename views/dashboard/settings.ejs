@@ -113,17 +113,24 @@
         <div class="button-container2">
             <button class="default green reset-pw-btn" id="resetPassword">Reset Password</button>
             <button class="default green reset-pw-btn" id="manageNotifications">Manage Notifications</button>
+
+            <button class="default reset-pw-btn shop" id="shopAccountButton"></button>
         </div>
     </div>
 </div>
 
 <div id="popup-containerResetPassword" class="popup-container"></div>
+<div id="popup-containerLinkShopAccount" class="popup-container"></div>
+<div id="popup-containerUnlinkShopAccount" class="popup-container"></div>
 <div id="popup-containerManageNotifications" class="popup-container"></div>
 
 <script>
     $(document).ready(function () {
+        updateShopButton(<%= user.wpuserid %>)
         setupSettingsPage();
         setupPWResetPopup();
+        setupLinkShopAccountPopup();
+        setupUnlinkShopAccountPopup();
         setupNotificationPopup(<%= user.trainingdatareminder %>);
         loadUserPicture();
 

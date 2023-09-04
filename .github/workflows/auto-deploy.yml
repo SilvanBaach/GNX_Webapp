@@ -157,6 +157,10 @@ jobs:
             echo "WOOCOMMERECE_CONSUM_KEY=${{ secrets.WOOCOMMERECE_CONSUM_KEY }}" >> /home/genetix/.env
             echo "WOOCOMMERECE_CONSUM_SECRET=${{ secrets.WOOCOMMERECE_CONSUM_SECRET }}" >> /home/genetix/.env
             echo "WOOCOMMERECE_HASH_SECRET=${{ secrets.WOOCOMMERECE_HASH_SECRET }}" >> /home/genetix/.env
+            echo "ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }}" >> /home/genetix/.env
+            echo "OAUTH_CLIENT_ID=${{ secrets.OAUTH_CLIENT_ID }}" >> /home/genetix/.env
+            echo "OAUTH_CLIENT_SECRET=${{ secrets.OAUTH_CLIENT_SECRET }}" >> /home/genetix/.env
+            echo "OAUTH_REFER_URI=${{ secrets.OAUTH_REFER_URI }}" >> /home/genetix/.env
             docker compose -f /home/genetix/docker/docker-compose.yml up -d
 
       

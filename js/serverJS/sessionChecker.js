@@ -163,7 +163,10 @@ async function isUserTeamManager(req, res, next) {
  * @returns {(function(*, *, *): void)|*}
  */
 async function isUserAllowedToEditOtherUser(req, res, next) {
-    if (req.params.is )
+    if (req.params.id == -1){
+        next();
+        return;
+    }
 
     try {
         const result = await pool.query(`

@@ -5,7 +5,6 @@ const express = require('express');
 const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 const bcrypt = require("bcrypt");
-const discordBot = require('../js/serverJS/discordBot.js');
 const util = require("util");
 const {checkNotAuthenticated, permissionCheck, isUserAllowedToEditOtherUser} = require("../js/serverJS/sessionChecker");
 const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
@@ -84,6 +83,9 @@ router.post('/updateUser/:id', checkNotAuthenticated, isUserAllowedToEditOtherUs
     if (userId === "-1") {
         userId = req.user.id;
     }
+
+    console.log("ssss")
+
     const formData = req.body;
     let register = 0;
 
@@ -229,7 +231,7 @@ router.post('/setDiscordTag', checkNotAuthenticated, permissionCheck('home', 'ca
  * @returns {Promise<*>}
  */
 async function updateUser(formData, userId) {
-    const fields = ['fullName', 'email', 'phone', 'username', 'street', 'city', 'zip', 'steam', 'origin', 'riotgames', 'battlenet','resetpasswordtoken','resetpasswordexpires', 'blocked', 'discord','trainingdatareminder'];
+    const fields = ['fullName', 'email', 'phone', 'username', 'street', 'city', 'zip', 'steam', 'origin', 'riotgames', 'battlenet','resetpasswordtoken','resetpasswordexpires', 'blocked', 'discord','trainingdatareminder','wpuserid','wptoken','wprefreshtoken'];
     const updates = [];
     delete formData.password;
 
@@ -477,5 +479,6 @@ module.exports = {
     router,
     getUserByToken,
     getUserByEmail,
-    getUserFields
+    getUserFields,
+    updateUser
 };

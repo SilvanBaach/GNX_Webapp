@@ -64,6 +64,7 @@ function updateUserInfo(formData) {
             if (formData.username !== $('#usernameBig').text()) {
                 $('#usernameBig').text(formData.username);
             }
+
         },
         error: function (data) {
             if (data.responseJSON && data.responseJSON.redirect) {
@@ -186,3 +187,92 @@ function loadUserPicture(){
         }
     });
 }
+
+/**
+ * Setup code for the Link GNX account popup
+ */
+function setupLinkShopAccountPopup(){
+    const linkShopAccountPopup = new Popup("popup-containerLinkShopAccount");
+
+    linkShopAccountPopup.displayInputPopupCustom("/res/logo/GNXClothingLogo.png", "Link GNX Clothing Account", "Link", "btnLinkShopAccount",
+        '<label for="usernameShop" class="input-label">Username</label>' +
+        '<input type="text" id="usernameShop" class="input-field"/>' +
+        '<label for="password" class="input-label">Password</label>' +
+        '<input type="password" id="password" class="input-field"/>'
+    )
+
+    $("#btnLinkShopAccount").click(function () {
+        $.ajax({
+            url: '/wooCommerce/linkShopAccount',
+            method: 'POST',
+            dataType: "json",
+            data: {
+                username: $('#usernameShop').val(),
+                password: $('#password').val()
+            },
+            success: function (message) {
+                displaySuccess(message.message)
+                updateShopButton(999)
+            },
+            error: function (data) {
+                if (data.responseJSON && data.responseJSON.redirect) {
+                    window.location.href = data.responseJSON.redirect;
+                }
+                displayError(data.responseJSON.message);
+            }
+        })
+
+        linkShopAccountPopup.close();
+    });
+
+    $(document).on('click', '#linkShoppAccount', function(e) {
+        $('#usernameShop').val('');
+        $('#password').val('');
+        linkShopAccountPopup.open(e);
+    });
+}
+
+/**
+ * Setup code for the unLink GNX account popup
+ */
+function setupUnlinkShopAccountPopup(userId){
+    const unlinkShopAccountPopup = new Popup("popup-containerUnlinkShopAccount");
+
+    unlinkShopAccountPopup.displayYesNoPopup("/res/logo/GNXClothingLogo.png", "Unlink Account", "Do you really want to unlink you GNX Clothing account?",
+        "Yes", "No", "btnUnlinkShopAccount", "btnCancelUnlinkShopAccount")
+
+    $(document).on('click', '#unlinkShoppAccount', function(e) {
+        unlinkShopAccountPopup.open(e);
+    });
+
+    $("#btnUnlinkShopAccount").click(function () {
+        updateUserInfo({wpuserid: 0, wptoken: "", wprefreshtoken: ""});
+        updateShopButton(0)
+        unlinkShopAccountPopup.close();
+    });
+
+    $("#btnCancelUnlinkShopAccount").click(function () {
+        unlinkShopAccountPopup.close();
+    });
+}
+
+/**
+ * Updates the GNX Clothing account button
+ * @param wpUserId
+ */
+function updateShopButton(wpUserId) {
+    const $button = $('.shop');
+
+    if (wpUserId === 0) {
+        $button.text('Link GNX Clothing Account')
+            .removeClass('red')
+            .addClass('green')
+            .attr('id', 'linkShoppAccount');
+    } else {
+        $button.text('Unlink GNX Clothing Account')
+            .removeClass('green')
+            .addClass('red')
+            .attr('id', 'unlinkShoppAccount');
+    }
+}
+
