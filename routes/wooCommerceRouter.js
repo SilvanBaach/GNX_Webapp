@@ -52,7 +52,7 @@ Billing Information:
 router.post('/orderUpdated', (req, res) => {
     const payload = req.body;
 
-    discordBot.sendMessageToChannel('1147985961955885168', 'Payload: ' + payload);
+    discordBot.sendMessageToChannel('1148167251778867201', 'Payload: ' +  JSON.stringify(payload));
     console.log('Sent Order Updated message to Discord');
 
     res.sendStatus(200);
