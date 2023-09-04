@@ -27,7 +27,7 @@ router.post('/orderCreated', (req, res) => {
     const billing = payload.billing;
 
     const message = `
-Order Received! 🎉
+**Order Received! 🎉**
 Order ID: **${orderId}**
 Status: **${orderStatus}**
 Currency: **${currency}**
@@ -64,11 +64,32 @@ router.post('/orderUpdated', (req, res) => {
 router.post('/newContactInquiry', (req, res) => {
     const payload = req.body;
 
-    discordBot.sendMessageToChannel('1148167251778867201', 'Payload: ' + JSON.stringify(payload));
+    const name = payload.fields.name.value;
+    const email = payload.fields.email.value;
+    const message = payload.fields.message.value;
+    const date = payload.meta.date.value;
+    const time = payload.meta.time.value;
+    const pageUrl = payload.meta.page_url.value;
+    const userAgent = payload.meta.user_agent.value;
+    const remoteIp = payload.meta.remote_ip.value;
+
+    const discordMessage = `
+**New Inquiry 📨**
+Name: **${name}**
+Email: **${email}**
+Message:
+**${message}**
+Date: **${date} at ${time}**
+User Agent: **${userAgent}**
+Remote IP: **${remoteIp}**
+    `;
+
+    discordBot.sendMessageToChannel('1148167251778867201', discordMessage);
     console.log('Sent new Contact Inquiry message to Discord');
 
     res.sendStatus(200);
 });
+
 
 /**
  * Format a date string to a german date string
