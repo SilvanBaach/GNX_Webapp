@@ -147,7 +147,7 @@ async function isUserTeamManager(req, res, next) {
     try {
         const result = await pool.query('SELECT account_fk FROM team WHERE id = $1', [teamId]);
         if (result.rows.length === 0 || result.rows[0].account_fk !== req.user.id) {
-            logMessage(`User ${req.user.username} tried to perform a team manager action in team ${teamId} but is not the team manager`, LogLevel.WARNING, req.user.id)
+            logMessage(`User ${req.user.username} tried to perform a team manager action in team ${teamId} but is not the team manager. Req: ${JSON.stringify(req)}`, LogLevel.WARNING, req.user.id)
             return res.status(403).send({ message: 'You are not authorized to perform this action.' });
         }
         next();
