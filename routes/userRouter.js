@@ -84,8 +84,6 @@ router.post('/updateUser/:id', checkNotAuthenticated, isUserAllowedToEditOtherUs
         userId = req.user.id;
     }
 
-    console.log("ssss")
-
     const formData = req.body;
     let register = 0;
 
