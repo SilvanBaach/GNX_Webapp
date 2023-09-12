@@ -58,6 +58,14 @@
                 </a>
             </li>
         <% } %>
+            <% if (user.trainingnotes && user.trainingnotes.canOpen) { %>
+                <li>
+                    <a href="#" id="trainingNotes">
+                        <i class='ri-book-mark-line'></i>
+                        <span class="links_name">Training Notes</span>
+                    </a>
+                </li>
+            <% } %>
             <% if (user.eventcalendar && user.eventcalendar.canOpen) { %>
                 <li>
                     <a href="#" id="eventCalendar">
@@ -161,7 +169,8 @@
         {id: "championpool", url: "dashboard/championpool", css: "/css/dashboard/championpool.css"},
         {id: "apexstats", url: "dashboard/apexstats", css: "../css/dashboard/apexstats.css"},
         {id: "changelog", url: "dashboard/changelog", css: "../css/dashboard/changelog.css"},
-        {id: "eventCalendar", url: "dashboard/eventCalendar", css: "../css/dashboard/eventcalendar.css"}
+        {id: "eventCalendar", url: "dashboard/eventCalendar", css: "../css/dashboard/eventcalendar.css"},
+        {id: "trainingNotes", url: "dashboard/trainingNotes", css: "../css/dashboard/trainingNotes.css"}
     ];
 
     async function checkSessionStatus() {
