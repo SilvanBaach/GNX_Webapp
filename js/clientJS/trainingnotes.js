@@ -138,6 +138,7 @@ function addSection(type){
         case '4':
             break;
         case '5':
+            html = addVideoSection();
             break;
         case '6':
             break;
@@ -194,4 +195,11 @@ function addRichTextSection(){
     currentNoteSections.push({type: 3, editor: null, fieldRef: null});
 
     return html;
+}
+
+/**
+ * This function returns the html for a new video section
+ */
+function addVideoSection(){
+
 }

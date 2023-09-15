@@ -1,5 +1,7 @@
-<script src="/js/clientJS/trainingnotes.js"></script>
+<link href="https://vjs.zencdn.net/8.5.2/video-js.css" rel="stylesheet" />
 <link rel="stylesheet" href="/richtexteditor/rte_theme_default.css"/>
+
+<script src="/js/clientJS/trainingnotes.js"></script>
 <script type="text/javascript" src="/richtexteditor/rte.js"></script>
 <script type="text/javascript" src='/richtexteditor/plugins/all_plugins.js'></script>
 
@@ -63,6 +65,9 @@
             </div>
             <div id="sectionContainer" class="sectionContainer">
                 <!-- Here are the sections of a note being added -->
+                <video id="my-video" class="video-js" controls preload="auto" width="640" height="264" poster="/filestorage/test/thumbnail.jpg" data-setup="{}">
+                    <source src="/filestorage/test/Clip19.mp4" type="video/mp4" />
+                </video>
             </div>
             <div class="footer">
                 <button class="default green" id="addNewSection" type="button">Add new Section
@@ -80,5 +85,41 @@
         initTrainingNotes();
 
         buildExistingNodesTable();
+
+        videojs('my-video').ready(function() {
+            let player = this;
+
+            player.on('timeupdate', function() {
+                let currentTime = player.currentTime();
+
+                // Implement custom logic based on the current time.
+                if (currentTime >= 9.5 && currentTime < 10) {
+                    console.log("Reached the 9.5 second mark.");
+                    // You can add any custom logic or action here.
+                }
+                if (currentTime >= 16 && currentTime < 17) {
+                    console.log("Reached the 16 second mark.");
+                    // You can add any custom logic or action here.
+                }
+                // ... Add more custom timestamps as needed.
+            });
+
+            player.one('loadedmetadata', function() {
+                let progressControl = player.controlBar.progressControl;
+                let seekBarEl = progressControl.seekBar.el();
+
+                let markerWidth = 10; // in pixels
+                let markerPos = (10 / player.duration()) * 100; // position as percentage
+
+                let markerEl = document.createElement('div');
+                markerEl.style.position = 'absolute';
+                markerEl.style.height = '100%';
+                markerEl.style.width = markerWidth + 'px';
+                markerEl.style.backgroundColor = 'red';
+                markerEl.style.left = markerPos + '%';
+
+                seekBarEl.appendChild(markerEl);
+            });
+        });
     });
 </script>

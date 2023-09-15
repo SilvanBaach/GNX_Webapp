@@ -47,7 +47,9 @@
     "sharp": "^0.32.4",
     "swiper": "^10.0.3",
     "twit": "^1.1.20",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "video.js": "^8.5.2",
+    "videojs-markers": "^1.0.1"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.16",
