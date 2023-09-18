@@ -159,3 +159,8 @@
     flex-direction: row;
     column-gap: 18px;
 }
+
+.richtexteditor{
+    width: 90%;
+    margin-left: 10px;
+}

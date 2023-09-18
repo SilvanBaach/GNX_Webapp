@@ -190,8 +190,13 @@ function editNote() {
  */
 function saveNote(){
     $.each(currentNoteSections, function(index, section) {
-        let element = $(section.fieldRef);
-        section.value = element.val();
+        if (section.editor) {
+            section.value = section.editor.getHTMLCode();
+            section.editor = null;
+        }else {
+            let element = $(section.fieldRef);
+            section.value = element.val();
+        }
     });
 
     for (let i = 0; i < currentNoteSections.length; i++) {
@@ -220,7 +225,7 @@ function setupAddSectionPopup(){
     const popupAddSection = new Popup("popupContainerAddSection");
 
     popupAddSection.displayDropdownPopup('/res/others/plus.png','Add new Section','Add','btnAddSection','sectionDropdown',
-        [{value: 1, label: "Title"},{value: 2, label: "Simple Text"},{value: 3, label: "Rich Text"},{value: 4, label: "Picture"},{value: 5, label: "Video"},{value: 6, label: "LoL Game-Stats"}])
+        [{value: 1, label: "Title"},{value: 2, label: "Simple Text"},{value: 3, label: "Rich Text"},{value: 4, label: "Video"},{value: 5, label: "LoL Game-Stats"}])
 
     $("#addNewSection").click(function (e) {
         $("#sectionDropdown").val(1);
@@ -254,7 +259,7 @@ function setupDelSectionPopup(){
  * Function which setups the popup for deleting a note
  */
 function setupDelNotePopup(){
-    const popupDelNote = new Popup("popupContainerDelSection");
+    const popupDelNote = new Popup("popupContainerDelNote");
     popupDelNote.displayYesNoPopup('/res/others/alert.png','Delete Note','Do you really want to delete this note?','No','Yes','btnNoDelNote', 'btnYesDelNote')
 
     $("#deleteNote").click(function (e) {
@@ -297,11 +302,9 @@ function addSection(type, mode, value, newSection = false, internalSectionId) {
             html = addRichTextSection(mode, value, newSection, internalSectionId);
             break;
         case 4:
+            html = addVideoSection(mode, value, newSection, internalSectionId);
             break;
         case 5:
-            html = addVideoSection();
-            break;
-        case 6:
             break;
     }
 
@@ -309,8 +312,19 @@ function addSection(type, mode, value, newSection = false, internalSectionId) {
         $("#sectionDisplayContainer").append(html);
     }else {
         $("#sectionContainer").append(html);
-        if (type === 3 && newSection) {
-            currentNoteSections[currentNoteSections.length - 1].editor = new RichTextEditor("#editor" + internalSectionId);
+        if (type === 3) {
+
+            //Configure the Rich Text Editor
+            let editorCfg = {}
+            editorCfg.toolbar = "basic";
+            editorCfg.showFloatParagraph = false;
+            editorCfg.skin = "rounded-corner";
+            editorCfg.editorResizeMode = "height";
+            editorCfg.showSelectedBlock = false;
+            editorCfg.showPlusButton = false;
+            editorCfg.showTagList = false;
+            currentNoteSections[internalSectionId - 1].editor = new RichTextEditor("#editor" + internalSectionId, editorCfg);
+            currentNoteSections[internalSectionId - 1].editor.setHTMLCode(value);
         }
     }
 }
@@ -385,14 +399,21 @@ function addRichTextSection(mode, value, newSection, internalSectionId){
     let html;
 
     if (mode === 0){
-
+        html = `<div class="section">
+                    ${value}
+                </div>`
     }else{
         html= `<div class="section">
-                <div id="editor${internalSectionId}">
+                <div class="new-title-container">
+                    ${getActionHtml()}
+                    <label class="label">Rich Text</label>
+                    <div id="editor${internalSectionId}" class="richtexteditor">
                 </div>
             </div>`;
 
-        currentNoteSections.push({type: 3, editor: null, fieldRef: null});
+        if (newSection) {
+            currentNoteSections.push({type: 3, editor: null, fieldRef: null});
+        }
     }
 
     return html;
@@ -401,8 +422,34 @@ function addRichTextSection(mode, value, newSection, internalSectionId){
 /**
  * This function returns the html for a new video section
  */
-function addVideoSection(){
+function addVideoSection(mode, value, newSection, internalSectionId){
+    let html;
 
+    if(mode === 0){
+
+    }else {
+        if (newSection) {
+            currentNoteSections.push({type: 4, editor: null, fieldRef: "#newVideo" + internalSectionId, order: internalSectionId});
+        }else{
+            currentNoteSections[internalSectionId-1].fieldRef = "#newVideo" + internalSectionId;
+        }
+
+        html = `<div class="section">
+                        <div class="new-title-container">
+                            ${getActionHtml()}
+                            <label class="label">Video</label>
+                            <button class="default purple" data-internalId="${internalSectionId}" onclick="uploadVideo(${internalSectionId})">Upload Video <i class="ri-upload-2-line"></i></button>
+                        </div>
+                      </div>`;
+    }
+    return html;
+}
+
+/**
+ * This function uploads a video
+ */
+function uploadVideo(internalSectionId){
+    console.log("Upload Video: " + internalSectionId);
 }
 
 /**
