@@ -12,7 +12,7 @@
         <div class="shadow-box existing-notes-box">
             <div class="header-container">
                 <p class="purple-title">Training Notes</p>
-                <button class="default green" type="button">New Note
+                <button class="default green" type="button" id="newNote">New Note
                     <i class="ri-add-circle-line ri-lg"></i>
                 </button>
             </div>
@@ -23,7 +23,7 @@
                     <th style="width: 175px">Created At</th>
                     <th>Title</th>
                     <th style="width: 175px">Author</th>
-                    <th style="width: 175px">Editor</th>
+                    <th style="width: 175px">Last Editor</th>
                     <th style="width: 175px">Last Edited</th>
                     <th style="width: 100px"></th>
                 </tr>
@@ -42,9 +42,17 @@
             <button class="default purple" id="editNote" type="button">Edit Note
                 <i class="ri-edit-line ri-lg"></i>
             </button>
-            <button class="default green" id="saveNote" type="button">Save Note
-                <i class="ri-save-line ri-lg"></i>
-            </button>
+            <div class="edit-mode-btn-container" id="editBtnContainer">
+                <button class="default red" id="deleteNote" type="button">Delete Note
+                    <i class="ri-close-circle-line ri-lg"></i>
+                </button>
+                <button class="default purple" id="discardChanges" type="button">Discard Changes
+                    <i class="ri-delete-bin-2-line ri-lg"></i>
+                </button>
+                <button class="default green" id="saveNote" type="button">Save Note
+                    <i class="ri-save-line ri-lg"></i>
+                </button>
+            </div>
         </div>
         <div class="nothing-placeholder" id="nothingPlaceholder">
             <p class="no-data-found">NO NOTE SELECTED</p>
@@ -53,6 +61,9 @@
             <div class="title-container">
                 <p id="noteTitle" class="note-title"></p>
                 <p id="noteCreation" class="note-creation"></p>
+            </div>
+            <div id="sectionDisplayContainer" class="section-container">
+                <!-- Here are the sections of a note being added for display mode -->
             </div>
         </div>
         <div id="editNoteContainer">
@@ -63,11 +74,11 @@
                 </div>
                 <p id="noteCreationEdit" class="note-creation"></p>
             </div>
-            <div id="sectionContainer" class="sectionContainer">
-                <!-- Here are the sections of a note being added -->
-                <video id="my-video" class="video-js" controls preload="auto" width="640" height="264" poster="/filestorage/test/thumbnail.jpg" data-setup="{}">
+            <div id="sectionContainer" class="section-container">
+                <!-- Here are the sections of a note being added for edit mode -->
+                <!--<video id="my-video" class="video-js" controls preload="auto" width="640" height="264" poster="/filestorage/test/thumbnail.jpg" data-setup="{}">
                     <source src="/filestorage/test/Clip19.mp4" type="video/mp4" />
-                </video>
+                </video>-->
             </div>
             <div class="footer">
                 <button class="default green" id="addNewSection" type="button">Add new Section
@@ -79,6 +90,8 @@
 </div>
 
 <div id="popupContainerAddSection" class="popup-container"></div>
+<div id="popupContainerDelSection" class="popup-container"></div>
+<div id="popupContainerDelNote" class="popup-container"></div>
 
 <script>
     $(document).ready(function () {
@@ -86,7 +99,7 @@
 
         buildExistingNodesTable();
 
-        videojs('my-video').ready(function() {
+        /*videojs('my-video').ready(function() {
             let player = this;
 
             player.on('timeupdate', function() {
@@ -120,6 +133,6 @@
 
                 seekBarEl.appendChild(markerEl);
             });
-        });
+        });*/
     });
 </script>
