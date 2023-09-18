@@ -449,6 +449,20 @@ function addVideoSection(mode, value, newSection, internalSectionId){
  * This function uploads a video
  */
 function uploadVideo(internalSectionId){
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'video/mp4';
+
+    input.onchange = function() {
+        const file = this.files[0];
+        if(file) {
+            console.log("Uploading:", file.name);
+            console.log(currentSection);
+            // Implement your file upload logic here
+        }
+    }
+
+    input.click();
     console.log("Upload Video: " + internalSectionId);
 }
 

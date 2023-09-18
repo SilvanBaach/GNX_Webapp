@@ -6,6 +6,23 @@ const router = express.Router();
 const {pool} = require('../js/serverJS/database/dbConfig.js');
 const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
 const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
+const multer = require('multer');
+const path = require('path');
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const destinationPath = path.join(__dirname, '/filestorage/trainingnotes/', req.params.id);
+        if (!fs.existsSync(destinationPath)) {
+            fs.mkdirSync(destinationPath, { recursive: true });
+        }
+        cb(null, destinationPath);
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
+    }
+});
+
+const upload = multer({ storage: storage });
 
 /**
  * GET route for getting all training notes
@@ -29,6 +46,17 @@ router.get('/getSections', checkNotAuthenticated, permissionCheck('trainingnotes
         console.log("Error: " + err);
         res.status(500).send({message: "There was an error getting the Sections! Please try again later."});
     });
+});
+
+/**
+ * POST route for uploading a video
+ */
+router.post('/uploadVideo/:id', checkNotAuthenticated, permissionCheck('trainingnotes', 'canOpen'), upload.single('video'), function (req, res) {
+    if (req.file) {
+        res.status(200).send({message: "Successfully uploaded the video!"});
+    } else {
+        res.status(500).send({message: "There was an error uploading the video! Please try again later."});
+    }
 });
 
 /**
