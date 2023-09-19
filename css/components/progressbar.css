@@ -1,0 +1,26 @@
+.progress-bar-container {
+    width: 300px;
+    height: 20px;
+    background-color: #575756;
+    border-radius: 4px;
+    transform: skew(30deg);
+}
+
+.progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background-color: #F3E600;
+    border-radius: 4px;
+}
+
+.percentage {
+    font-size: 1rem;
+    font-weight: bold;
+    font-family: 'Orbitron', monospace;
+    color: #000000;
+    position: absolute;
+    left: 2%;
+    top: 0;
+    translateY(-50%) skewX(-30deg);
+}
+

@@ -87,5 +87,12 @@ router.get('/eventCalendar', checkNotAuthenticated, permissionCheck('eventcalend
     res.render('dashboard/eventcalendar.ejs', { user: req.user });
 });
 
+/**
+ * GET training notes page
+ */
+router.get('/trainingNotes', checkNotAuthenticated, permissionCheck('trainingnotes', 'canOpen'), (req, res) => {
+    res.render('dashboard/trainingnotes.ejs', { user: req.user });
+});
+
 
 module.exports = router;

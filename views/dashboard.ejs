@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/css/components/popup.css">
     <link rel="stylesheet" href="/css/components/table.css">
     <link rel="stylesheet" href="/css/components/tooltip.css">
+    <link rel="stylesheet" href="/css/components/progressbar.css">
     <link rel="icon" type="favicon" href="../res/logo/favico.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
@@ -31,6 +32,7 @@
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <script src="/js/clientJS/eventCalendar.js"></script>
+    <script type="module" src="https://vjs.zencdn.net/8.5.2/video.min.js"></script>
 </head>
 
 <body>
@@ -58,6 +60,14 @@
                 </a>
             </li>
         <% } %>
+            <% if (user.trainingnotes && user.trainingnotes.canOpen) { %>
+                <li>
+                    <a href="#" id="trainingNotes">
+                        <i class='ri-book-mark-line'></i>
+                        <span class="links_name">Training Notes</span>
+                    </a>
+                </li>
+            <% } %>
             <% if (user.eventcalendar && user.eventcalendar.canOpen) { %>
                 <li>
                     <a href="#" id="eventCalendar">
@@ -161,7 +171,8 @@
         {id: "championpool", url: "dashboard/championpool", css: "/css/dashboard/championpool.css"},
         {id: "apexstats", url: "dashboard/apexstats", css: "../css/dashboard/apexstats.css"},
         {id: "changelog", url: "dashboard/changelog", css: "../css/dashboard/changelog.css"},
-        {id: "eventCalendar", url: "dashboard/eventCalendar", css: "../css/dashboard/eventcalendar.css"}
+        {id: "eventCalendar", url: "dashboard/eventCalendar", css: "../css/dashboard/eventcalendar.css"},
+        {id: "trainingNotes", url: "dashboard/trainingNotes", css: "../css/dashboard/trainingNotes.css"}
     ];
 
     async function checkSessionStatus() {

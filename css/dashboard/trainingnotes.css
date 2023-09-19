@@ -1,0 +1,196 @@
+.existing-notes-box{
+    margin-left: 18px;
+    width: 60%;
+}
+
+.header-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.view-note-box{
+    margin-left: 18px;
+    width: 98%;
+    margin-top: 18px;
+    margin-bottom: 18px;
+}
+
+.nothing-placeholder{
+    display: flex;
+    justify-content: center;
+}
+
+.no-data-found{
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.note-title{
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.title-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.note-creation{
+    font-size: 1.2rem;
+}
+
+.first-row{
+    display: flex;
+    flex-direction: row;
+    column-gap: 18px;
+}
+
+.filters-container{
+    width: 37%;
+}
+
+.title-container-edit{
+    display: flex;
+    flex-direction: row;
+    column-gap: 18px;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.title-input{
+    width: 600px;
+    text-align: left;
+}
+
+.input-label-edit{
+    margin-top: 0;
+}
+
+.input-field-edit{
+    margin-top: 0;
+}
+
+.footer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 18px;
+}
+
+.section-container{
+    display: flex;
+    flex-direction: column;
+    row-gap: 35px;
+    margin-top: 50px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.label{
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.input{
+    height: 35px;
+    font-size: 1rem;
+    font-weight: 600;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-color: var(--text-grey);
+    border-width: 1px;
+    border-style: solid;
+}
+
+.input-textarea{
+    font-size: 1rem;
+    padding: 10px 10px 10px 10px;
+    border-color: var(--text-grey);
+    border-width: 1px;
+    border-style: solid;
+    width: 80%;
+    resize: none;
+}
+
+.section-display-title{
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.section-display-simpletext{
+    font-size: 1.1rem;
+}
+
+.edit-icon{
+    margin-top: 5px;
+    text-decoration: none;
+    color: #5C5C5C;
+}
+
+.edit-icon :hover{
+    color: red;
+}
+
+.action-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 5px;
+}
+
+.edit-mode-btn-container{
+    display: flex;
+    flex-direction: row;
+    column-gap: 18px;
+}
+
+.richtexteditor{
+    width: 90%;
+    margin-left: 10px;
+}
+
+.video-player-container{
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.video-player{
+    width: 50%;
+}
+
+.annotation{
+    display: flex;
+    flex-direction: row;
+    column-gap: 18px;
+    align-items: center;
+}
+
+.new-title-container > :not(.annotation-container) {
+    align-self: center;
+}
+
+.new-title-container {
+    display: flex;
+    flex-direction: row;
+    column-gap: 18px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    position: relative;
+}
+
+.new-title-container > :nth-child(2) {
+    width: 150px;
+}
+
+.annotation-container{
+    display: flex;
+    flex-direction: column;
+    row-gap: 18px;
+    align-items: flex-start;
+    height: 100%;
+    width: 100%;
+}
