@@ -77,9 +77,6 @@
             </div>
             <div id="sectionContainer" class="section-container">
                 <!-- Here are the sections of a note being added for edit mode -->
-                <!--<video id="my-video" class="video-js" controls preload="auto" width="640" height="264" poster="/filestorage/test/thumbnail.jpg" data-setup="{}">
-                    <source src="/filestorage/test/Clip19.mp4" type="video/mp4" />
-                </video>-->
             </div>
             <div class="footer">
                 <button class="default green" id="addNewSection" type="button">Add new Section
@@ -93,47 +90,12 @@
 <div id="popupContainerAddSection" class="popup-container"></div>
 <div id="popupContainerDelSection" class="popup-container"></div>
 <div id="popupContainerDelNote" class="popup-container"></div>
+<div id="popupContainerAddAnnotation" class="popup-container"></div>
 
 <script>
     $(document).ready(function () {
         initTrainingNotes();
 
         buildExistingNodesTable();
-
-        /*videojs('my-video').ready(function() {
-            let player = this;
-
-            player.on('timeupdate', function() {
-                let currentTime = player.currentTime();
-
-                // Implement custom logic based on the current time.
-                if (currentTime >= 9.5 && currentTime < 10) {
-                    console.log("Reached the 9.5 second mark.");
-                    // You can add any custom logic or action here.
-                }
-                if (currentTime >= 16 && currentTime < 17) {
-                    console.log("Reached the 16 second mark.");
-                    // You can add any custom logic or action here.
-                }
-                // ... Add more custom timestamps as needed.
-            });
-
-            player.one('loadedmetadata', function() {
-                let progressControl = player.controlBar.progressControl;
-                let seekBarEl = progressControl.seekBar.el();
-
-                let markerWidth = 10; // in pixels
-                let markerPos = (10 / player.duration()) * 100; // position as percentage
-
-                let markerEl = document.createElement('div');
-                markerEl.style.position = 'absolute';
-                markerEl.style.height = '100%';
-                markerEl.style.width = markerWidth + 'px';
-                markerEl.style.backgroundColor = 'red';
-                markerEl.style.left = markerPos + '%';
-
-                seekBarEl.appendChild(markerEl);
-            });
-        });*/
     });
 </script>

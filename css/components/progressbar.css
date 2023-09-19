@@ -1,43 +1,26 @@
-.range {
-    position: relative;
-    background-color: #333;
+.progress-bar-container {
     width: 300px;
-    height: 30px;
+    height: 20px;
+    background-color: #575756;
+    border-radius: 4px;
     transform: skew(30deg);
-    font-family: 'Orbitron', monospace;
 }
 
-.range:before {
-    --width: calc(var(--p) * 1%);
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0;
+.progress-bar-fill {
     height: 100%;
+    width: 0%;
     background-color: #F3E600;
-    z-index: 0;
-    animation: load .5s forwards linear, glitch 2s infinite linear;
+    border-radius: 4px;
 }
 
-.range:after {
-    counter-reset: progress var(--p);
-    content: counter(progress) '%';
-    color: #000;
+.percentage {
+    font-size: 1rem;
+    font-weight: bold;
+    font-family: 'Orbitron', monospace;
+    color: #000000;
     position: absolute;
-    left: 5%;
-    top: 50%;
-    transform: translateY(-50%) skewX(-30deg);
-    z-index: 1;
+    left: 2%;
+    top: 0;
+    translateY(-50%) skewX(-30deg);
 }
 
-.range__label {
-    transform: skew(-30deg) translateY(-100%);
-    line-height: 1.5;
-}
-
-@keyframes load {
-    to {
-        width: var(--width);
-    }
-}

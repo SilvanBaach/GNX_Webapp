@@ -13,7 +13,6 @@ const fs = require('fs');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         const destinationPath = path.join(__dirname, '../filestorage/trainingnotes/', req.params.id);
-        console.log("Destination path: " + destinationPath);
         if (!fs.existsSync(destinationPath)) {
             fs.mkdirSync(destinationPath, { recursive: true });
         }
@@ -47,6 +46,76 @@ router.get('/getSections', checkNotAuthenticated, permissionCheck('trainingnotes
     }).catch((err) => {
         console.log("Error: " + err);
         res.status(500).send({message: "There was an error getting the Sections! Please try again later."});
+    });
+});
+
+/**
+ * GET route for fetching a video based on UUID
+ * It checks the header fields for the range and returns the video in chunks
+ */
+router.get('/getVideo/:uuid', checkNotAuthenticated, permissionCheck('trainingnotes', 'canOpen'), function (req, res) {
+    const uuid = req.params.uuid;
+    const folderPath = path.join(__dirname, '../filestorage/trainingnotes/', uuid);
+
+    fs.readdir(folderPath, (err, files) => {
+        if (err || files.length === 0) {
+            console.error(`Error reading folder or folder is empty with UUID ${uuid}: ${err}`);
+            res.status(500).send("Error fetching video");
+            return;
+        }
+
+        const videoPath = path.join(folderPath, files[0]);
+
+        fs.stat(videoPath, (err, stats) => {
+            if (err) {
+                console.error(`Error fetching video with UUID ${uuid}: ${err}`);
+                res.status(500).send("Error fetching video");
+                return;
+            }
+
+            if (!stats.size) {
+                res.status(500).send("Could not determine video size");
+                return;
+            }
+
+            const range = req.headers.range;
+            if (!range) {
+                res.status(400).send("Requires Range header");
+                return;
+            }
+
+            const positions = range.replace(/bytes=/, "").split("-");
+
+            if (positions.length !== 2) {
+                res.status(400).send("Invalid Range header format");
+                return;
+            }
+
+            const start = positions[0] ? parseInt(positions[0], 10) : 0;
+            const end = positions[1] ? parseInt(positions[1], 10) : stats.size - 1;
+
+            if (isNaN(start) || isNaN(end)) {
+                res.status(400).send("Invalid Range header values");
+                return;
+            }
+
+            if (start >= stats.size || end >= stats.size) {
+                res.status(416).send("Requested Range Not Satisfiable");
+                return;
+            }
+
+            const chunkSize = (end - start) + 1;
+            const file = fs.createReadStream(videoPath, { start, end });
+
+            res.writeHead(206, {
+                "Content-Range": `bytes ${start}-${end}/${stats.size}`,
+                "Accept-Ranges": "bytes",
+                "Content-Length": chunkSize,
+                "Content-Type": "video/mp4"
+            });
+
+            file.pipe(res);
+        });
     });
 });
 
