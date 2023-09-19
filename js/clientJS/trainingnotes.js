@@ -193,7 +193,7 @@ function saveNote(){
         if (section.editor) {
             section.value = section.editor.getHTMLCode();
             section.editor = null;
-        }else {
+        }else if(section.fieldRef) {
             let element = $(section.fieldRef);
             section.value = element.val();
         }
@@ -426,19 +426,30 @@ function addVideoSection(mode, value, newSection, internalSectionId){
     let html;
 
     if(mode === 0){
-
+        if (value) {
+            html = `<div class="section">
+                        <video width="100%" controls>
+                            <source src="/trainingNotes/getVideo/${value}" type="video/mp4">
+                        </video>
+                    </div>`
+        }else{
+            html = `<div class="section">
+                        <p class="section-display-simpletext"><i class="ri-file-unknow-line ri-lg" style="color: red; margin-right: 10px"></i>No video found...</p>
+                    </div>`
+        }
     }else {
         if (newSection) {
-            currentNoteSections.push({type: 4, editor: null, fieldRef: "#newVideo" + internalSectionId, order: internalSectionId});
-        }else{
-            currentNoteSections[internalSectionId-1].fieldRef = "#newVideo" + internalSectionId;
+            currentNoteSections.push({type: 4, editor: null, fieldRef: null + internalSectionId, order: internalSectionId});
         }
 
         html = `<div class="section">
                         <div class="new-title-container">
                             ${getActionHtml()}
                             <label class="label">Video</label>
-                            <button class="default purple" data-internalId="${internalSectionId}" onclick="uploadVideo(${internalSectionId})">Upload Video <i class="ri-upload-2-line"></i></button>
+                            <button class="default purple" data-internalId="${internalSectionId}" id="uploadBtn-${internalSectionId}" onclick="uploadVideo(${internalSectionId})">Upload Video <i class="ri-upload-2-line"></i></button>
+                            <div class="progress-container" style="display: none;">
+                                <div class="progress-bar"></div>
+                            </div>
                         </div>
                       </div>`;
     }
@@ -456,14 +467,55 @@ function uploadVideo(internalSectionId){
     input.onchange = function() {
         const file = this.files[0];
         if(file) {
+            const formData = new FormData();
+            formData.append('video', file);
+
+            //Generate UUID for the video
+            const myUUID = uuidv4();
+            currentNoteSections[internalSectionId-1].value = myUUID;
+
             console.log("Uploading:", file.name);
-            console.log(currentSection);
-            // Implement your file upload logic here
+            const progressBar = $(`#uploadBtn-${internalSectionId}`).siblings('.progress-container').find('.progress-bar');
+
+            $.ajax({
+                url: '/trainingNotes/uploadVideo/' + myUUID,
+                type: 'POST',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                xhr: function() {
+                    let xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener("progress", function(evt) {
+                        if (evt.lengthComputable) {
+                            let percentComplete = evt.loaded / evt.total;
+                            percentComplete = parseInt(percentComplete * 100);
+                            progressBar.width(percentComplete + '%');
+                            if (percentComplete === 100) {
+                                progressBar.parent().hide();
+                            }
+                        }
+                    }, false);
+                    return xhr;
+                },
+                beforeSend: function() {
+                    progressBar.parent().show();
+                    progressBar.width('0%');
+                },
+                success: function(data) {
+                    displaySuccess(data.message);
+                },
+                error: function(data) {
+                    if (data.responseJSON && data.responseJSON.redirect) {
+                        window.location.href = data.responseJSON.redirect;
+                    }
+                    console.log("Error uploading the video:", data.responseJSON);
+                }
+            });
         }
     }
 
     input.click();
-    console.log("Upload Video: " + internalSectionId);
 }
 
 /**

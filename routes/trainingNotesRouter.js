@@ -8,10 +8,12 @@ const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/session
 const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        const destinationPath = path.join(__dirname, '/filestorage/trainingnotes/', req.params.id);
+        const destinationPath = path.join(__dirname, '../filestorage/trainingnotes/', req.params.id);
+        console.log("Destination path: " + destinationPath);
         if (!fs.existsSync(destinationPath)) {
             fs.mkdirSync(destinationPath, { recursive: true });
         }
