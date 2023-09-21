@@ -134,6 +134,10 @@
     color: red;
 }
 
+.play :hover{
+    color: green;
+}
+
 .action-container{
     display: flex;
     flex-direction: row;
@@ -156,10 +160,12 @@
     display: flex;
     justify-content: center;
     position: relative;
+    flex-direction: column;
 }
 
 .video-player{
     width: 50%;
+    align-self: center;
 }
 
 .annotation{
@@ -193,4 +199,13 @@
     align-items: flex-start;
     height: 100%;
     width: 100%;
+}
+
+.annotation-container-display{
+    align-self: center;
+    width: 50%;
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 18px;
 }

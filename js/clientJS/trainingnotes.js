@@ -34,8 +34,14 @@ function initTrainingNotes() {
     setupDelSectionPopup();
     setupDelNotePopup();
     setupAddAnnotationPopup();
+    setupActionButtons();
+}
 
-    $(document).off('click', '.edit-icon').on('click', '.edit-icon', function(e) {
+/**
+ * This function setups the action buttons for the sections
+ */
+function setupActionButtons() {
+    $(document).off('click', '.section-action').on('click', '.section-action', function(e) {
         e.preventDefault();
 
         const sectionElement = $(this).closest('.section');
@@ -112,7 +118,7 @@ function loadExistingNotes(){
  * Displays the training note with the given noteId
  * @param noteId
  */
-function displayTrainingNote(noteId) {
+async function displayTrainingNote(noteId) {
     if (!noteId) {
         $("#editBtnContainer").hide();
         $("#editNoteContainer").hide();
@@ -128,25 +134,45 @@ function displayTrainingNote(noteId) {
         return;
     }
 
-    //Load the sections
-    getSections(noteId).then((result) => {
-        currentNoteSections = result;
+    const result = await getSections(noteId);
+    currentNoteSections = result;
 
-        $("#nothingPlaceholder").hide();
-        $("#editBtnContainer").hide();
-        $("#editNoteContainer").hide();
-        $("#noteDisplayContainer").show();
-        $("#sectionDisplayContainer").empty();
-        $("#editNote").show();
+    $("#nothingPlaceholder").hide();
+    $("#editBtnContainer").hide();
+    $("#editNoteContainer").hide();
+    $("#noteDisplayContainer").show();
+    $("#sectionDisplayContainer").empty();
+    $("#editNote").show();
 
-        $("#noteTitle").text(currentNote.title);
-        $("#noteCreation").html("Created at <strong>" + currentNote.created + "</strong> by <strong>" + currentNote.creator + "</strong>");
+    $("#noteTitle").text(currentNote.title);
+    $("#noteCreation").html("Created at <strong>" + currentNote.created + "</strong> by <strong>" + currentNote.creator + "</strong>");
 
-        //Add all the Sections to display them
-        currentNoteSections.forEach(function (section) {
-            currentSection = section;
-            addSection(section.type,0, section.value);
+    //Load all the annotations
+    allAnnotations = [];
+
+    const annotationPromises = currentNoteSections.map(async function (section) {
+        const data = await $.ajax({
+            url: '/trainingNotes/getAnnotations',
+            type: 'GET',
+            data: {sectionId: section.id},
+            dataType: 'json'
+        }).fail(data => {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
+            console.log("Error getting annotations:", data.responseJSON);
         });
+
+        if (data) {
+            allAnnotations = allAnnotations.concat(data);
+        }
+    });
+
+    await Promise.all(annotationPromises);
+
+    currentNoteSections.forEach(function (section) {
+        currentSection = section;
+        addSection(section.type, 0, section);
     });
 }
 
@@ -174,6 +200,7 @@ function getSections(noteId){
  */
 function editNote() {
     $("#noteDisplayContainer").hide();
+    $("#sectionDisplayContainer").empty();
     $("#editNote").hide();
     $("#editBtnContainer").show();
     $("#editNoteContainer").show();
@@ -184,7 +211,7 @@ function editNote() {
 
     //Add all the Sections to display them
     for(let i = 0; i < currentNoteSections.length; i++) {
-        addSection(currentNoteSections[i].type, 1, currentNoteSections[i].value, false, i+1);
+        addSection(currentNoteSections[i].type, 1, currentNoteSections[i], false, i+1);
     }
 }
 
@@ -213,14 +240,6 @@ function saveNote(){
         currentNoteSections[i].order = i+1;
     }
 
-    //After the sorting the order = internalSectionId
-    allAnnotations.forEach(function (annotation) {
-        const section = currentNoteSections.find(section => section.order === annotation.internalId)
-        annotation.section_fk = section.id
-    });
-
-    console.log(allAnnotations)
-
     currentNote.title = $("#editTitle").val();
 
     upsertTrainingNote().then(() => {
@@ -229,6 +248,7 @@ function saveNote(){
         $("#editBtnContainer").hide();
         $("#editNoteContainer").hide();
         $("#sectionDisplayContainer").empty();
+        $("#sectionContainer").empty();
 
         buildExistingNodesTable();
         currentNote = allNotes[0];
@@ -270,6 +290,13 @@ function setupAddAnnotationPopup(){
         currentInternalId = $(this).data('internalid');
         $("#annotationTitle").val("");
         $("#annotationText").val("");
+
+        // Pause the video player
+        const videoElement = $(this).closest('.section').find('video.video-player')[0];
+        if (videoElement) {
+            videoElement.pause();
+        }
+
         popupAddAnnotation.open(e);
     });
 
@@ -287,7 +314,8 @@ function addAnnotation() {
     const title = $("#annotationTitle").val();
     const text = $("#annotationText").val();
 
-    allAnnotations.push({internalId: currentInternalId, time: currentTime, title: title, text: text});
+    allAnnotations.push({internalId: currentInternalId, time: currentTime, title: title, text: text, section_fk: currentNoteSections[currentInternalId-1].id, id: ((allAnnotations.length+1)*-1)});
+
     redrawAnnotations();
 }
 
@@ -295,17 +323,7 @@ function addAnnotation() {
  * Redraws all annotations of the current section
  */
 function redrawAnnotations() {
-    $("#annotationList" + currentInternalId).empty();
-    allAnnotations.forEach(function (annotation) {
-       if (annotation.internalId === currentInternalId){
-              $("#annotationList" + currentInternalId).append(`<div class="annotation">
-                 <a href="" class="edit-icon"><i class="ri-close-circle-line ri-xl"></i></a>
-                 <a href="" class="edit-icon"><i class="ri-play-circle-line ri-xl"></i></a>
-                 <p>${annotation.time}</p>
-                 <p>${annotation.title}</p>
-                </div>`)
-       }
-    });
+    $("#annotationList" + currentInternalId).empty().append(getAnnotationHtml(currentNoteSections[currentInternalId-1].id, 1));
 }
 
 /**
@@ -375,11 +393,11 @@ function setupDelNotePopup(){
  * This function adds a new section to the note
  * @param type
  * @param mode 0 = display, 1 = edit
- * @param value the value of the field
+ * @param section the section object
  * @param newSection true if the section is new
  * @param internalSectionId the id of the section in the array
  */
-function addSection(type, mode, value, newSection = false, internalSectionId) {
+function addSection(type, mode, section, newSection = false, internalSectionId) {
     let html;
 
     if (typeof type === 'string') {
@@ -388,16 +406,16 @@ function addSection(type, mode, value, newSection = false, internalSectionId) {
 
     switch (type) {
         case 1:
-            html = addTitleSection(mode, value, newSection, internalSectionId);
+            html = addTitleSection(mode, section.value, newSection, internalSectionId);
             break;
         case 2:
-            html = addSimpleTextSection(mode, value, newSection, internalSectionId);
+            html = addSimpleTextSection(mode, section.value, newSection, internalSectionId);
             break;
         case 3:
-            html = addRichTextSection(mode, value, newSection, internalSectionId);
+            html = addRichTextSection(mode, section.value, newSection, internalSectionId);
             break;
         case 4:
-            html = addVideoSection(mode, value, newSection, internalSectionId);
+            html = addVideoSection(mode, section.value, newSection, internalSectionId, section.id);
             break;
         case 5:
             break;
@@ -405,9 +423,12 @@ function addSection(type, mode, value, newSection = false, internalSectionId) {
 
     if (mode === 0){
         $("#sectionDisplayContainer").append(html);
+        setupPlayButton();
+        setupDelAnnotationButton();
     }else {
         $("#sectionContainer").append(html);
         setupAddAnnotationPopup();
+        setupActionButtons();
         if (type === 3) {
 
             //Configure the Rich Text Editor
@@ -420,7 +441,11 @@ function addSection(type, mode, value, newSection = false, internalSectionId) {
             editorCfg.showPlusButton = false;
             editorCfg.showTagList = false;
             currentNoteSections[internalSectionId - 1].editor = new RichTextEditor("#editor" + internalSectionId, editorCfg);
-            currentNoteSections[internalSectionId - 1].editor.setHTMLCode(value);
+            if (section.value) {
+                currentNoteSections[internalSectionId - 1].editor.setHTMLCode(section.value);
+            }else {
+                currentNoteSections[internalSectionId - 1].editor.setHTMLCode(' ');
+            }
         }
     }
 }
@@ -442,6 +467,10 @@ function addTitleSection(mode, value, newSection, internalSectionId){
             currentNoteSections[internalSectionId-1].fieldRef = "#newTitle" + internalSectionId;
         }
 
+        if (!value) {
+            value= "";
+        }
+
         html = `<div class="section">
                         <div class="new-title-container">
                             ${getActionHtml()}
@@ -458,6 +487,10 @@ function addTitleSection(mode, value, newSection, internalSectionId){
  */
 function addSimpleTextSection(mode, value, newSection, internalSectionId){
     let html;
+
+    if (!value) {
+        value= "";
+    }
 
     if(mode === 0){
         html = `<div class="section">
@@ -518,7 +551,7 @@ function addRichTextSection(mode, value, newSection, internalSectionId){
 /**
  * This function returns the html for a new video section
  */
-function addVideoSection(mode, value, newSection, internalSectionId){
+function addVideoSection(mode, value, newSection, internalSectionId, id){
     let html;
 
     if (value){
@@ -528,6 +561,10 @@ function addVideoSection(mode, value, newSection, internalSectionId){
                             <video class="video-player" controls>
                                 <source src="/trainingNotes/getVideo/${value}" type="video/mp4">
                             </video>
+                            <p class="purple-title" style="align-self: center; margin-top: 36px; color: #381A53">Annotations</p>
+                            <div class="annotation-container-display">
+                                ${getAnnotationHtml(id, mode)}
+                            </div>
                         </div>
                     </div>`
         }else{
@@ -541,7 +578,7 @@ function addVideoSection(mode, value, newSection, internalSectionId){
                             <div class="annotation-container">
                                 <button class="default purple addAnnotation" data-internalId="${internalSectionId}"><i class="ri-map-pin-add-line ri-lg"></i>Add Annotation</button>
                                 <div class="annoation-list" id="annotationList${internalSectionId}">
-                                    ${getAnnotationHtml(internalSectionId)}
+                                    ${getAnnotationHtml(id, mode)}
                                 </div>                          
                             </div>
                         </div>
@@ -575,15 +612,84 @@ function addVideoSection(mode, value, newSection, internalSectionId){
 
 /**
  * This function returns the html for all existing annotations
- * @param internalSectionId
+ * @param sectionId
+ * @param mode is it edit mode or display mode
  */
-function getAnnotationHtml(internalSectionId){
-    return `<div class="annotation">
-                <a href="" class="edit-icon"><i class="ri-close-circle-line ri-xl"></i></a>
-                <a href="" class="edit-icon"><i class="ri-play-circle-line ri-xl"></i></a>
-                <p>2:37</p>
-                <p>Good Play</p>
+function getAnnotationHtml(sectionId, mode){
+    let html = '';
+    allAnnotations.forEach(function (annotation) {
+        if (annotation.section_fk === sectionId){
+            html += '<div class="annotation">';
+            if (mode === 1){
+                html += `<a href="" class="edit-icon del-anno" data-annotationId="${annotation.id}"><i class="ri-close-circle-line ri-xl"></i></a>`;
+            }
+
+            html += `<a href="" class="edit-icon play" id="playButton" data-time="${annotation.time}"><i class="ri-play-circle-line ri-xl"></i></a>
+                <p style="font-style: italic">${annotation.time}</p>
+                <p style="font-weight: bold">${annotation.title}</p>
+                <p>${annotation.text}</p>
             </div>`
+        }
+    });
+
+    if (html === ''){
+        html = '<p style="color: #5C5C5C; align-self: center">NO ANNOTATIONS FOUND</p>'
+    }
+
+    return html;
+}
+
+/**
+ * Setups the play events for the play buttons of a video
+ */
+function setupPlayButton(){
+    $(document).off('click').on('click', '.play', function(event) {
+        event.preventDefault();
+        const time = $(this).data('time');
+        const timeArray = time.split(":");
+        const seconds = (+timeArray[0]) * 60 * 60 + (+timeArray[1]) * 60 + (+timeArray[2]);
+        const videoElement = $(this).closest('.section').find('video.video-player')[0];
+
+        if (videoElement) {
+            videoElement.currentTime = seconds;
+            videoElement.play();
+        }
+    });
+
+}
+
+/**
+ * Setups the delete annotation events for the delete buttons of a video
+ */
+function setupDelAnnotationButton(){
+    $(document).on('click', '.del-anno', function(event) {
+        event.preventDefault();
+        const annotationId = $(this).data('annotationid');
+        let sectionId = allAnnotations.find(annotation => annotation.id === annotationId).section_fk;
+        allAnnotations = allAnnotations.filter(annotation => annotation.id !== annotationId);
+
+        if (annotationId > 0) {
+            $.ajax({
+                url: '/trainingNotes/deleteAnnotation',
+                type: 'DELETE',
+                data: {annotationId: annotationId},
+                dataType: 'json',
+                success: function (response) {
+                    displaySuccess(response.message);
+                },
+                error: function (data) {
+                    if (data.responseJSON && data.responseJSON.redirect) {
+                        window.location.href = data.responseJSON.redirect;
+                    }
+                    console.log("Error getting training notes:", data.responseJSON);
+                }
+            });
+        }
+
+        // Update the annotations display
+        const newHtml = getAnnotationHtml(sectionId, 1);
+        $(this).closest('.annotation-container').find('.annoation-list').html(newHtml);
+    });
 }
 
 /**
@@ -642,7 +748,11 @@ function uploadVideo(internalSectionId){
                     if (data.responseJSON && data.responseJSON.redirect) {
                         window.location.href = data.responseJSON.redirect;
                     }
-                    console.log("Error uploading the video:", data.responseJSON);
+                    if (data.status === 413) {
+                        displayError(data.responseJSON.message)
+                    }else {
+                        console.log("Error uploading the video:", data.responseJSON);
+                    }
                 }
             });
         }
@@ -674,7 +784,7 @@ function upsertTrainingNote() {
                 if (data.responseJSON && data.responseJSON.redirect) {
                     window.location.href = data.responseJSON.redirect;
                 }
-                console.log("Error upserting training notes:", data.responseJSON);
+                console.log("Error getting training notes:", data.responseJSON);
                 reject(data); // Reject the promise with the error data
             }
         });
@@ -686,9 +796,9 @@ function upsertTrainingNote() {
  */
 function getActionHtml(){
     return `<div class="action-container">
-                <a href="" class="edit-icon"><i class="ri-arrow-up-line ri-xl"></i></a>
-                <a href="" class="edit-icon"><i class="ri-arrow-down-line ri-xl"></i></a>
-                <a href="" class="edit-icon"><i class="ri-close-circle-line ri-xl"></i></a>
+                <a class="edit-icon section-action"><i class="ri-arrow-up-line ri-xl"></i></a>
+                <a class="edit-icon section-action"><i class="ri-arrow-down-line ri-xl"></i></a>
+                <a class="edit-icon section-action"><i class="ri-close-circle-line ri-xl"></i></a>
             </div>`
 }
 
@@ -746,34 +856,46 @@ function deleteSection(index) {
  * This function deletes the current note
  */
 function deleteNote(){
-    $.ajax({
-        url: '/trainingNotes/delete',
-        type: 'POST',
-        data: { noteId: currentNote.id },
-        success: function(data) {
-            displaySuccess(data.message);
-            currentNote = null;
-            currentNoteSections = [];
-            currentSection = null;
+    if (currentNote && currentNote.id > 0) {
+        $.ajax({
+            url: '/trainingNotes/delete',
+            type: 'POST',
+            data: {noteId: currentNote.id},
+            success: function (data) {
+                displaySuccess(data.message);
+                currentNote = null;
+                currentNoteSections = [];
+                currentSection = null;
 
-            $("#editNoteContainer").hide();
-            $("#editBtnContainer").hide();
-            $("#nothingPlaceholder").show();
-            buildExistingNodesTable();
-        },
-        error: function(data) {
-            if (data.responseJSON && data.responseJSON.redirect) {
-                window.location.href = data.responseJSON.redirect;
+                $("#editNoteContainer").hide();
+                $("#editBtnContainer").hide();
+                $("#nothingPlaceholder").show();
+                buildExistingNodesTable();
+            },
+            error: function (data) {
+                if (data.responseJSON && data.responseJSON.redirect) {
+                    window.location.href = data.responseJSON.redirect;
+                }
+                console.log("Error deleting note: ", data.responseJSON);
             }
-            console.log("Error deleting note: ", data.responseJSON);
-        }
-    });
+        });
+    }else{
+        $("#editNoteContainer").hide();
+        $("#nothingPlaceholder").show();
+        $("#editNote").hide();
+        $("#editBtnContainer").hide();
+    }
 }
 
 /**
  * This function creates a new note
  */
 function createNewNote(){
+    currentNote = {};
+    currentNoteSections = [];
+    currentSection = null;
+    currentInternalId = 0;
+    allAnnotations = [];
     if ($("#editNoteContainer").is(":visible")) {
         displayError("Please save or cancel your changes first!")
         return;
@@ -784,8 +906,7 @@ function createNewNote(){
     $("#nothingPlaceholder").hide();
     $("#noteDisplayContainer").hide();
     $("#editNote").hide();
+    $("#sectionContainer").empty();
 
     $("#editTitle").val("");
-
-    currentNote = {};
 }
