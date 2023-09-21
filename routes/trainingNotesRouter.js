@@ -9,13 +9,16 @@ const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const FILE_SIZE_LIMIT = 250 * 1024 * 1024; // 250MB
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         const destinationPath = path.join(__dirname, '../filestorage/trainingnotes/', req.params.id);
+
         if (!fs.existsSync(destinationPath)) {
             fs.mkdirSync(destinationPath, {recursive: true});
         }
+
         cb(null, destinationPath);
     },
     filename: function (req, file, cb) {
@@ -23,7 +26,11 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({storage: storage});
+const upload = multer({
+    storage: storage,
+    limits: {fileSize: FILE_SIZE_LIMIT} // 5 MB
+});
+
 
 /**
  * GET route for getting all training notes
@@ -134,12 +141,24 @@ router.get('/getVideo/:uuid', checkNotAuthenticated, permissionCheck('trainingno
 /**
  * POST route for uploading a video
  */
-router.post('/uploadVideo/:id', checkNotAuthenticated, permissionCheck('trainingnotes', 'canOpen'), upload.single('video'), function (req, res) {
-    if (req.file) {
-        res.status(200).send({message: "Successfully uploaded the video!"});
-    } else {
-        res.status(500).send({message: "There was an error uploading the video! Please try again later."});
-    }
+router.post('/uploadVideo/:id', checkNotAuthenticated, permissionCheck('trainingnotes', 'canOpen'), function (req, res, next) {
+    upload.single('video')(req, res, function (err) {
+        if (err instanceof multer.MulterError) {
+            if (err.code === 'LIMIT_FILE_SIZE') {
+                return res.status(413).json({ message: `File Size is too large. Allowed file size is ${FILE_SIZE_LIMIT/(1024*1024)} MB` });
+            }
+            return res.status(500).json({ message: err.message });
+        } else if (err) {
+            return res.status(500).json({ message: err.message });
+        }
+
+        // file successfully uploaded
+        if (req.file) {
+            res.status(200).send({ message: "Successfully uploaded the video!" });
+        } else {
+            res.status(400).send({ message: "No file provided!" });
+        }
+    });
 });
 
 /**
@@ -188,21 +207,25 @@ router.post('/upsert', checkNotAuthenticated, permissionCheck('trainingnotes', '
             .then(() => {
                 //Load all sections with the ids again ordered by order
                 getSections(returnedNoteId).then((result) => {
-                    const sections = result.rows;
-                    allAnnotations = allAnnotations.filter(annotation => {
-                        const section = sections.find(section => section.order === parseInt(annotation.internalId));
-                        if (section) {
-                            annotation.section_fk = section.id;
-                            return true;
-                        }
-                        return false;
-                    });
-                    upsertAnnotations(allAnnotations).then(() => {
+                    if (allAnnotations && allAnnotations.length > 0) {
+                        const sections = result.rows;
+                        allAnnotations = allAnnotations.filter(annotation => {
+                            const section = sections.find(section => section.order === parseInt(annotation.internalId));
+                            if (section) {
+                                annotation.section_fk = section.id;
+                                return true;
+                            }
+                            return false;
+                        });
+                        upsertAnnotations(allAnnotations).then(() => {
+                            res.status(200).send({message: "Successfully upserted the note!"});
+                        }).catch((err) => {
+                            console.log("Error: " + err);
+                            res.status(500).send({message: "There was an error upserting the annotations of the note! Please try again later."});
+                        });
+                    }else{
                         res.status(200).send({message: "Successfully upserted the note!"});
-                    }).catch((err) => {
-                        console.log("Error: " + err);
-                        res.status(500).send({message: "There was an error upserting the annotations of the note! Please try again later."});
-                    });
+                    }
                 }).catch((err) => {
                     console.log("Error: " + err);
                     res.status(500).send({message: "There was an error getting the Sections! Please try again later."});

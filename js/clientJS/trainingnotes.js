@@ -200,6 +200,7 @@ function getSections(noteId){
  */
 function editNote() {
     $("#noteDisplayContainer").hide();
+    $("#sectionDisplayContainer").empty();
     $("#editNote").hide();
     $("#editBtnContainer").show();
     $("#editNoteContainer").show();
@@ -247,6 +248,7 @@ function saveNote(){
         $("#editBtnContainer").hide();
         $("#editNoteContainer").hide();
         $("#sectionDisplayContainer").empty();
+        $("#sectionContainer").empty();
 
         buildExistingNodesTable();
         currentNote = allNotes[0];
@@ -288,6 +290,13 @@ function setupAddAnnotationPopup(){
         currentInternalId = $(this).data('internalid');
         $("#annotationTitle").val("");
         $("#annotationText").val("");
+
+        // Pause the video player
+        const videoElement = $(this).closest('.section').find('video.video-player')[0];
+        if (videoElement) {
+            videoElement.pause();
+        }
+
         popupAddAnnotation.open(e);
     });
 
@@ -432,7 +441,11 @@ function addSection(type, mode, section, newSection = false, internalSectionId) 
             editorCfg.showPlusButton = false;
             editorCfg.showTagList = false;
             currentNoteSections[internalSectionId - 1].editor = new RichTextEditor("#editor" + internalSectionId, editorCfg);
-            currentNoteSections[internalSectionId - 1].editor.setHTMLCode(section.value);
+            if (section.value) {
+                currentNoteSections[internalSectionId - 1].editor.setHTMLCode(section.value);
+            }else {
+                currentNoteSections[internalSectionId - 1].editor.setHTMLCode(' ');
+            }
         }
     }
 }
@@ -454,6 +467,10 @@ function addTitleSection(mode, value, newSection, internalSectionId){
             currentNoteSections[internalSectionId-1].fieldRef = "#newTitle" + internalSectionId;
         }
 
+        if (!value) {
+            value= "";
+        }
+
         html = `<div class="section">
                         <div class="new-title-container">
                             ${getActionHtml()}
@@ -470,6 +487,10 @@ function addTitleSection(mode, value, newSection, internalSectionId){
  */
 function addSimpleTextSection(mode, value, newSection, internalSectionId){
     let html;
+
+    if (!value) {
+        value= "";
+    }
 
     if(mode === 0){
         html = `<div class="section">
@@ -540,7 +561,7 @@ function addVideoSection(mode, value, newSection, internalSectionId, id){
                             <video class="video-player" controls>
                                 <source src="/trainingNotes/getVideo/${value}" type="video/mp4">
                             </video>
-                            <p class="purple-title purple" style="align-self: center; margin-top: 36px">Annotations</p>
+                            <p class="purple-title" style="align-self: center; margin-top: 36px; color: #381A53">Annotations</p>
                             <div class="annotation-container-display">
                                 ${getAnnotationHtml(id, mode)}
                             </div>
@@ -652,6 +673,7 @@ function setupDelAnnotationButton(){
                 url: '/trainingNotes/deleteAnnotation',
                 type: 'DELETE',
                 data: {annotationId: annotationId},
+                dataType: 'json',
                 success: function (response) {
                     displaySuccess(response.message);
                 },
@@ -665,7 +687,6 @@ function setupDelAnnotationButton(){
         }
 
         // Update the annotations display
-        console.log("sectionId: ", sectionId);
         const newHtml = getAnnotationHtml(sectionId, 1);
         $(this).closest('.annotation-container').find('.annoation-list').html(newHtml);
     });
@@ -727,7 +748,11 @@ function uploadVideo(internalSectionId){
                     if (data.responseJSON && data.responseJSON.redirect) {
                         window.location.href = data.responseJSON.redirect;
                     }
-                    console.log("Error uploading the video:", data.responseJSON);
+                    if (data.status === 413) {
+                        displayError(data.responseJSON.message)
+                    }else {
+                        console.log("Error uploading the video:", data.responseJSON);
+                    }
                 }
             });
         }
@@ -831,34 +856,46 @@ function deleteSection(index) {
  * This function deletes the current note
  */
 function deleteNote(){
-    $.ajax({
-        url: '/trainingNotes/delete',
-        type: 'POST',
-        data: { noteId: currentNote.id },
-        success: function(data) {
-            displaySuccess(data.message);
-            currentNote = null;
-            currentNoteSections = [];
-            currentSection = null;
+    if (currentNote && currentNote.id > 0) {
+        $.ajax({
+            url: '/trainingNotes/delete',
+            type: 'POST',
+            data: {noteId: currentNote.id},
+            success: function (data) {
+                displaySuccess(data.message);
+                currentNote = null;
+                currentNoteSections = [];
+                currentSection = null;
 
-            $("#editNoteContainer").hide();
-            $("#editBtnContainer").hide();
-            $("#nothingPlaceholder").show();
-            buildExistingNodesTable();
-        },
-        error: function(data) {
-            if (data.responseJSON && data.responseJSON.redirect) {
-                window.location.href = data.responseJSON.redirect;
+                $("#editNoteContainer").hide();
+                $("#editBtnContainer").hide();
+                $("#nothingPlaceholder").show();
+                buildExistingNodesTable();
+            },
+            error: function (data) {
+                if (data.responseJSON && data.responseJSON.redirect) {
+                    window.location.href = data.responseJSON.redirect;
+                }
+                console.log("Error deleting note: ", data.responseJSON);
             }
-            console.log("Error deleting note: ", data.responseJSON);
-        }
-    });
+        });
+    }else{
+        $("#editNoteContainer").hide();
+        $("#nothingPlaceholder").show();
+        $("#editNote").hide();
+        $("#editBtnContainer").hide();
+    }
 }
 
 /**
  * This function creates a new note
  */
 function createNewNote(){
+    currentNote = {};
+    currentNoteSections = [];
+    currentSection = null;
+    currentInternalId = 0;
+    allAnnotations = [];
     if ($("#editNoteContainer").is(":visible")) {
         displayError("Please save or cancel your changes first!")
         return;
@@ -869,8 +906,7 @@ function createNewNote(){
     $("#nothingPlaceholder").hide();
     $("#noteDisplayContainer").hide();
     $("#editNote").hide();
+    $("#sectionContainer").empty();
 
     $("#editTitle").val("");
-
-    currentNote = {};
 }
