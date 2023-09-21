@@ -79,7 +79,7 @@ async function sendTrainingDataReminders() {
                                          LEFT JOIN teammembership ON teammembership.account_fk = account.id
                                          LEFT JOIN team ON team.id = teammembership.team_fk
                                 WHERE (presencecount +  1) < team.discordnotificationdays
-                                  AND prep.discord IS NOT NULL AND account.trainingdatareminder = 1 AND prep.username='AdmAtomschlag'`);
+                                  AND prep.discord IS NOT NULL AND account.trainingdatareminder = 1`);
 
     if (result.rows.length > 0) {
         result.rows.forEach((row) => {

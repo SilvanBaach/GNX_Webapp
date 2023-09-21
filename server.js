@@ -127,8 +127,8 @@ cron.schedule('0 3 * * *', async function() {
 /**
  * Sends discord reminders for inserting training data every morning at 10:00 AM
  */
-//0 10 * * *
-cron.schedule('*/3 * * * *', function() {
+//*/3 * * * *
+cron.schedule('0 10 * * *', function() {
     console.log("Sending training data reminders...");
     sendTrainingDataReminders();
 });
