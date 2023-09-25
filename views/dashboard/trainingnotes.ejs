@@ -1,6 +1,8 @@
 <link href="https://vjs.zencdn.net/8.5.2/video-js.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuidv4.min.js"></script>
 <link rel="stylesheet" href="/richtexteditor/rte_theme_default.css"/>
+<script src="/js/library/anyPaginator.js"></script>
+<link href="/css/library/anyPaginator.css" rel="stylesheet"/>
 
 <script src="/js/clientJS/trainingnotes.js"></script>
 <script type="text/javascript" src="/richtexteditor/rte.js"></script>
@@ -32,6 +34,7 @@
                 <tbody id="existingNotesData" class="styled-table">
                 </tbody>
             </table>
+            <div id="notesPager"></div>
         </div>
         <div class="shadow-box filters-container">
             <p class="purple-title">Filters</p>
@@ -95,7 +98,5 @@
 <script>
     $(document).ready(function () {
         initTrainingNotes();
-
-        buildExistingNodesTable();
     });
 </script>

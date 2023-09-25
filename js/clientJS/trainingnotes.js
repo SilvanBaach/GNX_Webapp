@@ -6,6 +6,7 @@ let currentInternalId = 0;
 let allAnnotations = [];
 
 let sectionIndexToBeDeleted = null;
+let existingNotesPager = null;
 
 const popupDelSection = new Popup("popupContainerDelSection");
 const popupAddAnnotation = new Popup("popupContainerAddAnnotation");
@@ -30,6 +31,7 @@ function initTrainingNotes() {
         createNewNote();
     });
 
+    setupPaginationForExistingNotes();
     setupAddSectionPopup();
     setupDelSectionPopup();
     setupDelNotePopup();
@@ -70,17 +72,26 @@ function buildExistingNodesTable() {
     table.empty();
 
     loadExistingNotes().then((result) => {
-        allNotes = result;
+        existingNotesPager.numItems(result.length);
 
-        for (let i = 0; i < result.length; i++) {
+        if(existingNotesPager.currentPage() > existingNotesPager.numPages()){
+            existingNotesPager.currentPage(existingNotesPager.numPages());
+        }
+
+        let start = (existingNotesPager.currentPage() - 1) * existingNotesPager.options.itemsPerPage;
+        let stop = start + existingNotesPager.options.itemsPerPage - 1;
+
+        for (let i = start; i <= stop; i++) {
             let note = result[i];
-            // Create a new row and add it to the table
+            if (!note) break;
+
             let newRow = $('<tr>');
             newRow.append($('<td>').text(note.created));
             newRow.append($('<td style="font-weight: bold">').text(note.title));
             newRow.append($('<td>').text(note.creator));
             newRow.append($('<td>').text(note.editor));
             newRow.append($('<td>').text(note.lastedited));
+
             let viewButton = $('<button class="default purple" style="height: 30px"><i class="ri-eye-line ri-lg"></i>View</button>');
             viewButton.attr('data-id', note.id);
             viewButton.on('click', function() {
@@ -95,6 +106,27 @@ function buildExistingNodesTable() {
             newRow.append($('<td>').append(viewButton));
             table.append(newRow);
         }
+    });
+}
+
+/**
+ * Setup for Table pagination
+ */
+function setupPaginationForExistingNotes() {
+    existingNotesPager = $("#notesPager").anyPaginator({
+        itemsPerPage: 5,
+        mode: 1,
+        hideGoto: true,
+        prevText: "&lsaquo; Previous",
+        nextText: "Next &rsaquo;",
+        hideIfOne: false,
+        onClick: buildExistingNodesTable,
+    });
+
+    loadExistingNotes().then((result) => {
+        existingNotesPager.numItems(result.length);
+        existingNotesPager.currentPage(1);
+        buildExistingNodesTable();
     });
 }
 
