@@ -12,14 +12,17 @@
     <link rel="stylesheet" href="/css/registration/name.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="icon" type="favicon" href="../../res/logo/favico.png">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="js/clientJS/imgUploadToDB.js"></script>
+    <script src="js/clientJS/toastMessages.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </head>
 <body>
 <div id="nav-placeholder"></div>
 
-<h1 class="big-title title">Hi, <%= userdata.username %></h1>
+<h1 class="big-title title">Hi, <%= username %></h1>
 
 <p class="small-white-text text">You are just a few steps away from completing your profile registration!</p>
 
@@ -31,7 +34,7 @@
 </button>
 
 <p class="small-white-text">Please enter your full name</p>
-<form action="/user/updateUser/<%= userdata.id %>" method="POST" id="the-form">
+<form action="/register/step-1" method="POST" id="the-form">
     <div class="form-row">
         <div>
             <label for="firstname" class="label-login">First Name *</label>
@@ -54,23 +57,20 @@
     // HANDLE PROFILE PICTURE UPLOAD
     const input = document.getElementById("fileInput");
     input.addEventListener("change", async (e) => {
-        const userData = {
-            id: '<%= userdata.id %>',
-            registerCode: '<%= userdata.registrationCode %>'
-        };
-        const userId = userData.id;
-        await updateProfilePicture(e, userId);
+        registerProfilePicture(e).then(r => {
 
-        // Display the chosen image in the img tag
-        const file = e.target.files[0];
+            // Display the chosen image in the img tag
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                const img = document.getElementById("profilePicture");
+                img.src = event.target.result;
+            };
 
-        const reader = new FileReader();
-        reader.onload = function (event) {
-            const img = document.getElementById("profilePicture");
-            img.src = event.target.result;
-        };
-
-        reader.readAsDataURL(file);
+            reader.readAsDataURL(file);
+        }).catch(err => {
+            displayError(err)
+        });
     });
 </script>
 </body>

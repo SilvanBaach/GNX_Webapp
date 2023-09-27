@@ -21,7 +21,7 @@
 
 <img class="address-img" src="/res/teams/address.png"/>
 
-<form action="/user/updateUser/<%= userdata.id %>" method="POST">
+<form action="/register/step-2" method="POST">
     <div class="form-row">
         <div>
             <label for="street" class="label-login">Street</label>
@@ -32,8 +32,8 @@
             <input type="text" id="city" name="city" class="input-login"/>
         </div>
         <div>
-            <label for="zipR" class="label-login">ZIP Code</label>
-            <input type="number" id="zip" name="zipR" class="input-login"/>
+            <label for="zip" class="label-login">ZIP Code</label>
+            <input type="number" id="zip" name="zip" class="input-login"/>
         </div>
     </div>
     <div class="button-container">
@@ -49,7 +49,13 @@
 
         // AJAX REQUEST FOR SKIPPING
         $("#skip").click(function () {
-            window.location.href = "/register/gameaccounts";
+            $.ajax({
+                url: '/register/step-2',
+                type: 'POST',
+                success: function() {
+                    window.location.href = "/register/step-3";
+                }
+            });
         });
     });
 </script>

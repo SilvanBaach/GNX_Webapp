@@ -2,6 +2,7 @@
  * This file contains the functions to upload an image to the database
  * Manly used to upload profile pictures
  */
+const MAX_FILE_SIZE = 10 * 1024 * 1024; //10 MB
 
 /**
  * Converts a file to a base64 string
@@ -35,7 +36,7 @@ async function updateProfilePicture(event, userId) {
     const base64 = await convertBase64(file);
     const url = "/user/updatePicture/" + userId;
 
-    if (file.size > 10 * 1024 * 1024) {
+    if (file.size > MAX_FILE_SIZE) {
         return Promise.reject("Please upload a file smaller than 10 MB!");
     }
 
@@ -57,3 +58,35 @@ async function updateProfilePicture(event, userId) {
         });
     });
 };
+
+/**
+ * Registers a profile picture for a user while he is registering
+ * @param event
+ * @returns {Promise<never>|Promise<unknown>}
+ */
+async function registerProfilePicture(event) {
+    const file = event.target.files[0];
+    const base64 = await convertBase64(file);
+
+    if (file.size > MAX_FILE_SIZE) {
+        return Promise.reject("Please upload a file smaller than 10 MB!");
+    }
+
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type: "POST",
+            url: 'register/registerPicture',
+            dataType: "json",
+            data: {data: base64},
+            success: function () {
+                resolve();
+            },
+            error: function (data) {
+                if (data.responseJSON && data.responseJSON.redirect) {
+                    window.location.href = data.responseJSON.redirect;
+                }
+                reject(data.responseText);
+            }
+        });
+    });
+}

@@ -1,4 +1,3 @@
-const bcrypt = require("bcrypt");
 const {pool} = require("../../js/serverJS/database/dbConfig.js");
 const util = require('util');
 const {isPasswordSecure} = require('../../js/clientJS/passwordChecker.js');
@@ -38,27 +37,29 @@ async function isRegisterCodeValid(code) {
 
 /**
  * Registers a user
- * @param registrationCode  the registration code
- * @param username the username
- * @param email the email
- * @param password the password
- * @returns {Promise<*>}
+ * @param userdata all the data which the user entered at the registration process
  */
-async function registerUser(registrationCode, username, email, password) {
-    let hashedPassword = await bcrypt.hash(password, 10);
+async function registerUser(userdata) {
+    let query = util.promisify(pool.query).bind(pool);
 
-    //Register the user in DB
-    const query = util.promisify(pool.query).bind(pool);
-    const result = await query(`INSERT INTO account (username, password, email) VALUES ($1, $2, $3) RETURNING id, password, email, username`, [username, hashedPassword, email]);
+    let zip = parseInt(userdata.zip);
+    if (isNaN(zip)) {
+        zip = null;
+    }
+    let fullName = `${userdata.firstname} ${userdata.lastname}`;
 
-    //Make a teamlink for the user
-    const teamId = await query(`SELECT team_fk FROM registrationcode WHERE code = $1`, [registrationCode]);
-    await query(`INSERT INTO teammembership (id, account_fk, team_fk) VALUES (DEFAULT, $1, $2)`, [result.rows[0].id, teamId.rows[0].team_fk]);
+    let result = await query(`INSERT INTO account (username, password, email, picture, fullname, street, city, zip, steam, origin, riotgames, battlenet) 
+            VALUES ($1, $2, $3, $4, $5,$6, $7, $8, $9, $10, $11, $12) RETURNING id`,
+        [userdata.username, userdata.password, userdata.email, userdata.picture, fullName, userdata.street, userdata.city,
+            zip, userdata.steam, userdata.origin, userdata.riotgames, userdata.battlenet])
 
-    //Make Registration Code invalid
-    await query(`UPDATE registrationcode SET used = $1 WHERE code = $2`, [1, registrationCode]);
+    const userId = result.rows[0].id;
 
-    return result.rows[0];
+    result = await query(`SELECT team_fk FROM registrationcode WHERE code = $1`, [userdata.registrationCode]);
+    const teamId = result.rows[0].team_fk;
+
+    await query(`INSERT INTO teammembership (id, account_fk, team_fk) VALUES (DEFAULT, $1, $2)`, [userId, teamId]);
+    await query(`UPDATE registrationcode SET used = $1 WHERE code = $2`, [1, userdata.registrationCode]);
 }
 
 /**

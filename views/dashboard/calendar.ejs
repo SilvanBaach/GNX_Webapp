@@ -63,7 +63,10 @@
     $(document).ready( function () {
         let currentDate = new Date();
 
-        setupDefTrainingTimePopup(<%= user.team.id %>);
+        if(<%= user.team.account_fk %> === <%= user.id %>)
+        {
+            setupDefTrainingTimePopup(<%= user.team.id %>);
+        }
         buildCalendar(currentDate);
 
         $("#lastWeek").click(function () {

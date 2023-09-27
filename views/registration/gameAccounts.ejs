@@ -21,7 +21,7 @@
 <h1 class="big-title title">Game Accounts</h1>
 <p class="small-white-text text">Link your game accounts to see your individual game stats!</p>
 
-<form action="/user/updateUser/<%= userdata.id %>" method="POST">
+<form action="/register/step-3" method="POST">
     <div class="form-row">
         <div>
             <img src="/res/teams/steam.png" class="center-img"/>
@@ -57,9 +57,15 @@
     $(document).ready(function () {
         $("#nav-placeholder").load("/html/nav.html");
 
-        // AJAX REQUEST FOR SKIPPING
+// AJAX REQUEST FOR SKIPPING
         $("#skip").click(function () {
-            window.location.href = "/register/success";
+            $.ajax({
+                url: '/register/step-3',
+                type: 'POST',
+                success: function() {
+                    window.location.href = "/register/step-4";
+                }
+            });
         });
 
     });
