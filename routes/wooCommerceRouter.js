@@ -10,6 +10,19 @@ const axios = require('axios');
 const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
 const userRouter = require("./userRouter");
 const encryptLogic = require("../js/serverJS/encryptLogic");
+const WooCommerceAPI = require('woocommerce-api');
+const {pool} = require("../js/serverJS/database/dbConfig");
+
+/**
+ * WooCommerce API configuration for admin
+ */
+const wooCommerce = new WooCommerceAPI({
+    url: 'https://store.teamgenetix.ch',
+    consumerKey: process.env.WOOCOMMERECE_CONSUM_KEY,
+    consumerSecret: process.env.WOOCOMMERECE_CONSUM_SECRET,
+    wpAPI: true,
+    version: 'wc/v3'
+});
 
 /**
  * POST route for receiving a new order
@@ -156,6 +169,129 @@ router.post('/linkShopAccount', checkNotAuthenticated, permissionCheck('settings
         res.status(400).json({ message: "Error authenticating with the shop. " + error.response.data.error_description});
     }
 });
+
+/**
+ * GET route for retrieving a coupon code for the user
+ */
+router.get('/getCouponCode', checkNotAuthenticated, permissionCheck('settings', 'canOpen'), async (req, res) => {
+    try {
+        let accessToken = encryptLogic.decrypt(req.user.wptoken);
+        const refreshToken = encryptLogic.decrypt(req.user.wprefreshtoken);
+        const wpUserId = req.user.wpuserid;
+
+        if (!await testAccessToken(accessToken)) {
+            accessToken = await refreshAccessToken(refreshToken, req.user.id);
+            if (!accessToken) {
+                res.status(401).json({ error: 'Failed to refresh token' });
+                return;
+            }
+        }
+
+        const userEmail = await getUserEmailByWpId(wpUserId, accessToken);
+
+        if (!userEmail) {
+            res.status(400).json({ error: 'User email not found' });
+            return;
+        }
+
+        const couponData = {
+            code: generateCouponCode(),
+            discount_type: 'percent',
+            amount: `${req.user.team.salepercentage}`,
+            individual_use: true,
+            email_restrictions: [userEmail]
+        };
+
+        const response = await wooCommerce.postAsync('coupons', couponData);
+        if (response.statusCode === 201) {
+            res.json(JSON.parse(response.body));
+        } else {
+            res.status(response.statusCode).json(JSON.parse(response.body));
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+});
+
+/**
+ * Generates a new coupon code string
+ * @returns {string}
+ */
+function generateCouponCode() {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = 'GNX-';
+    for (let i = 0; i < 7; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+}
+
+/**
+ * Returns the email of a given user by wp id
+ * @param wpUserId
+ * @param accessToken
+ * @returns {Promise<*|null>}
+ */
+async function getUserEmailByWpId(wpUserId, accessToken) {
+    try {
+        const response = await axios.get(`https://store.teamgenetix.ch/wp-json/wp/v2/users/${wpUserId}`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+
+        if (response.data && response.data.email) {
+            return response.data.email;
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.error(`Failed to get user email: ${error}`);
+        return null;
+    }
+}
+
+/**
+ * Refreshes the access token using the refresh token
+ * @param refreshToken
+ * @param userId
+ * @returns {Promise<*|null>}
+ */
+async function refreshAccessToken(refreshToken, userId) {
+    try {
+        const response = await axios.post('https://store.teamgenetix.ch/oauth/token', {
+            grant_type: 'refresh_token',
+            refresh_token: refreshToken,
+            client_id: process.env.OAUTH_CLIENT_ID,
+            client_secret: process.env.OAUTH_CLIENT_SECRET
+        });
+
+        pool.query(`UPDATE account SET wptoken = $1, wprefreshtoken = $2 WHERE id = $3`, [response.data.access_token, response.data.refresh_token, userId], (err) => {
+            return response.data.access_token;
+        });
+    } catch (error) {
+        console.error(`Failed to refresh token: ${error}`);
+        return null;
+    }
+}
+
+/**
+ * Tests if the access token is still valid
+ * @param accessToken
+ * @returns {Promise<boolean>}
+ */
+async function testAccessToken(accessToken) {
+    try {
+        const response = await axios.get('https://store.teamgenetix.ch/wp-json/wp/v2/users/me', {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        return response.status === 200;
+    } catch (error) {
+        return false;
+    }
+}
 
 /**
  * Format a date string to a german date string

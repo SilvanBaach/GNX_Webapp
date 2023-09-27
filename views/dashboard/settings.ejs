@@ -113,8 +113,8 @@
         <div class="button-container2">
             <button class="default green reset-pw-btn" id="resetPassword">Reset Password</button>
             <button class="default green reset-pw-btn" id="manageNotifications">Manage Notifications</button>
-
             <button class="default reset-pw-btn shop" id="shopAccountButton"></button>
+            <button class="default green reset-pw-btn" id="getCouponCode">Get my Coupon Code</button>
         </div>
     </div>
 </div>
@@ -145,6 +145,23 @@
                     displayError(error);
                 });
             }
+        });
+
+        $("#getCouponCode").click(function() {
+            $.ajax({
+                url: "/wooCommerce/getCouponCode",
+                type: "GET",
+                success: function (result) {
+                    console.log(result);
+                    displaySuccess(result.message);
+                },
+                error: function (data) {
+                    if (data.responseJSON && data.responseJSON.redirect) {
+                        window.location.href = data.responseJSON.redirect;
+                    }
+                    displayError(data.responseJSON.message);
+                }
+            });
         });
 
     });
