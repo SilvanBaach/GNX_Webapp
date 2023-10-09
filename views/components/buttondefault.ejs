@@ -1,0 +1,20 @@
+<!-- Button Default component -->
+<button type="<%= type %>" id="<%= id %>" class="bg-action-grey hover:bg-action-dark font-montserrat text-base text-almost-white pl-6 pr-6 pt-2 pb-2
+    rounded-md relative overflow-hidden font-semibold" onmouseover="animateLine(this)" onmouseout="reverseAnimation(this)">
+    <%= text %>
+    <i class="ri-arrow-right-line ri-lg"></i>
+    <div class="absolute bottom-0 left-0 w-full h-0.75 bg-btn-grey"></div>
+    <div id="<%= id %>-line" class="absolute bottom-0 left-0 w-0 h-0.75 bg-turquoise transition-all ease-out duration-300"></div>
+</button>
+
+<script>
+    function animateLine(button) {
+        const line = document.getElementById(`${button.id}-line`);
+        line.style.width = '100%';
+    }
+
+    function reverseAnimation(button) {
+        const line = document.getElementById(`${button.id}-line`);
+        line.style.width = '0%';
+    }
+</script>

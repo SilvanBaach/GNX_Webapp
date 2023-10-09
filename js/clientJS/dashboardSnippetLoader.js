@@ -13,18 +13,32 @@ async function loadPage(id, pages) {
     $.get(page.url, function (html) {
         $('#home-section').html(html);
     });
-    removeBodyCSS();
-    $("<link/>", {
-        rel: "stylesheet",
-        type: "text/css",
-        href: page.css
-    }).appendTo("body");
+
+    $('#'+id).addClass('bg-grey-level3');
+    $('#'+id+'-line').addClass('bg-almost-white').removeClass('bg-transparent');
+
+    pages.forEach(p => {
+        if (p.id !== id) {
+            $('#'+p.id).removeClass('bg-grey-level3');
+            $('#'+p.id+'-line').removeClass('bg-almost-white');
+
+            if (!$('#'+p.id+'-line').hasClass('bg-transparent')) {
+                $('#'+p.id+'-line').addClass('bg-transparent');
+            }
+        }
+    });
 }
 
 /**
- * Remove all the CSS files from the body
+ * Checks if a user is still authenticated
+ * @returns {Promise<*|boolean>}
  */
-function removeBodyCSS() {
-    const links = document.body.querySelectorAll('link[rel="stylesheet"]');
-    links.forEach(link => link.parentNode.removeChild(link));
+async function checkSessionStatus() {
+    try {
+        const response = await $.get('/session-status');
+        return response.isAuthenticated;
+    } catch (error) {
+        console.error('Error checking session status:', error);
+        return false;
+    }
 }

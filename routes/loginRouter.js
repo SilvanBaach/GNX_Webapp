@@ -26,20 +26,17 @@ module.exports = (passport) => {
      * GET login page
      * Param: teamname - the teamname of the team the user wants to log in to
      */
-    router.get('/:teamname', checkAuthenticated, (req, res) => {
-        const teamname = req.params.teamname;
-        res.render('login', {teamname: teamname});
+    router.get('/', checkAuthenticated, (req, res) => {
+        res.render('login');
     });
 
     /**
      * POST login page
-     * Param: teamname - the teamname of the team the user wants to log in to
      */
-    router.post('/:teamname', checkAuthenticated, (req, res, next) => {
-        const teamname = req.params.teamname;
+    router.post('/', checkAuthenticated, (req, res, next) => {
         passport.authenticate('local', {
             successRedirect: '/dashboard',
-            failureRedirect: `/login/${teamname}`,
+            failureRedirect: `/login`,
             failureFlash: true
         })(req, res, next);
     });

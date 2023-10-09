@@ -4,26 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="/css/dashboard.css">
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/components/button.css">
-    <link rel="stylesheet" href="/css/components/shadowbox.css">
-    <link rel="stylesheet" href="/css/components/popup.css">
-    <link rel="stylesheet" href="/css/components/table.css">
-    <link rel="stylesheet" href="/css/components/tooltip.css">
-    <link rel="stylesheet" href="/css/components/progressbar.css">
     <link rel="icon" type="favicon" href="../res/logo/favico.png">
     <link href="/dist/output.css" rel="stylesheet">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet"/>
 
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="/js/clientJS/dashboardSnippetLoader.js"></script>
     <script src="/js/clientJS/toastMessages.js"></script>
@@ -37,157 +26,122 @@
 </head>
 
 <body>
-<div class="sidebar">
-    <div class="logo-details">
-        <img class="bx bxl-c-plus-plus icon" src="/res/logo/logo_white.png"/>
-        <div class="logo_name">Genetix</div>
-        <i class='bx bx-menu' id="btn"></i>
-    </div>
-    <ul class="nav-list">
+<div style="z-index: 2; position: relative;">
+    <%- include('./components/header.ejs') %>
+</div>
+
+<i class="ri-menu-line ri-2x absolute left-4 top-2 z-50 text-almost-white md:hidden" id="menu"></i>
+
+<div class="flex flex-row">
+    <div class="bg-grey-level2 h-screen w-[270px] min-w-[270px] flex-col items-start relative hidden md:flex" id="navBar">
+    <div class="mt-16 md:mt-8 mb-8"></div>
+
         <% if (user.home && user.home.canOpen) { %>
-            <li>
-                <a href="#" id="home">
-                    <i class='bx bx-grid-alt'></i>
-                    <span class="links_name">Dashboard</span>
-                </a>
-            </li>
+            <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer" id="home">
+                <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full" id="home-line"></div>
+                <i class="ri-home-2-line ri-xl text-almost-white ml-4"></i>
+                <a class="text-almost-white font-semibold font-montserrat ml-4">Dashboard</a>
+            </div>
         <% } %>
 
         <% if (user.calendar && user.calendar.canOpen) { %>
-            <li>
-                <a href="#" id="calendar">
-                    <i class='bx bxs-calendar'></i>
-                    <span class="links_name">Team Calendar</span>
-                </a>
-            </li>
-        <% } %>
-            <% if (user.trainingnotes && user.trainingnotes.canOpen) { %>
-                <li>
-                    <a href="#" id="trainingNotes">
-                        <i class='ri-book-mark-line'></i>
-                        <span class="links_name">Training Notes</span>
-                    </a>
-                </li>
-            <% } %>
-            <% if (user.eventcalendar && user.eventcalendar.canOpen) { %>
-                <li>
-                    <a href="#" id="eventCalendar">
-                        <i class='ri-calendar-event-fill'></i>
-                        <span class="links_name">GNX Event Calendar</span>
-                    </a>
-                </li>
-            <% } %>
-        <% if (user.championpool && user.championpool.canOpen) { %>
-            <li>
-                <a href="#" id="championpool">
-                    <i class='bx bx-trophy'></i>
-                    <span class="links_name">Championpool</span>
-                </a>
-            </li>
-        <% } %>
-            <% if (user.apexstats && user.apexstats.canOpen) { %>
-            <li>
-                <a href="#" id="apexstats">
-                    <i class='ri-bar-chart-fill'></i>
-                    <span class="links_name">Apex Statistics</span>
-                </a>
-            </li>
-            <% } %>
-            <% if (user.fileshare && user.fileshare.canOpen) { %>
-            <li>
-                <a href="#" id="fileshare">
-                    <i class='bx bxs-file-image'></i>
-                    <span class="links_name">File Share</span>
-                </a>
-            </li>
-            <% } %>
-        <% if (user.usermanagement && user.usermanagement.canOpen) { %>
-            <li>
-                <a href="#" id="usermanagement">
-                    <i class="ri-user-settings-line"></i>
-                    <span class="links_name">User Management</span>
-                </a>
-            </li>
-        <% } %>
-        <% if (user.teammanagement && user.teammanagement.canOpen) { %>
-            <li>
-                <a href="#" id="teammanagement">
-                    <i class='bx bxs-group'></i>
-                    <span class="links_name">Team Management</span>
-                </a>
-            </li>
-        <% } %>
-        <% if (user.rolemanagement && user.rolemanagement.canOpen) { %>
-            <li>
-                <a href="#" id="rolemanagement">
-                    <i class='bx bx-shield-alt-2'></i>
-                    <span class="links_name">Role Management</span>
-                </a>
-            </li>
-        <% } %>
-            <% if (user.changelog && user.changelog.canOpen) { %>
-                <li>
-                    <a href="#" id="changelog">
-                        <i class='ri-file-settings-line'></i>
-                        <span class="links_name">Changelog</span>
-                    </a>
-                </li>
-            <% } %>
-        <% if (user.settings && user.settings.canOpen) { %>
-            <li>
-                <a href="#" id="settings">
-                    <i class='bx bx-cog'></i>
-                    <span class="links_name">Settings</span>
-                </a>
-            </li>
-        <% } %>
-        <li class="profile">
-            <div class="profile-details">
-                <div class="name_job">
-                    <div class="name opentext"><%= user.username %></div>
-                    <div class="job opentext"><%= user.team.displayname %></div>
-                </div>
+            <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer" id="calendar">
+                <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full" id="calendar-line"></div>
+                <i class="ri-calendar-2-line ri-xl text-almost-white ml-4"></i>
+                <a class="text-almost-white font-semibold font-montserrat ml-4">Team Calendar</a>
             </div>
-            <form action="/login/logout" method="GET">
-                <button type="submit" class="bx bx-log-out logout" id="log_out"></button>
-            </form>
-        </li>
-    </ul>
+        <% } %>
+
+        <% if (user.championpool && user.championpool.canOpen) { %>
+            <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer" id="championpool">
+                <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full" id="championpool-line"></div>
+                <i class="ri-trophy-line ri-xl text-almost-white ml-4"></i>
+                <a class="text-almost-white font-semibold font-montserrat ml-4">Championpool</a>
+            </div>
+        <% } %>
+
+        <% if (user.trainingnotes && user.trainingnotes.canOpen) { %>
+            <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer" id="trainingnotes">
+                <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full" id="trainingnotes-line"></div>
+                <i class="ri-sticky-note-line ri-xl text-almost-white ml-4"></i>
+                <a class="text-almost-white font-semibold font-montserrat ml-4">Training Notes</a>
+            </div>
+        <% } %>
+
+        <% if (user.apexstats && user.apexstats.canOpen) { %>
+            <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer" id="apexstats">
+                <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full" id="apexstats-line"></div>
+                <i class="ri-bar-chart-2-line ri-xl text-almost-white ml-4"></i>
+                <a class="text-almost-white font-semibold font-montserrat ml-4">Apex Statistics</a>
+            </div>
+        <% } %>
+
+        <% if (user.fileshare && user.fileshare.canOpen) { %>
+            <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer" id="fileshare">
+                <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full" id="fileshare-line"></div>
+                <i class="ri-file-cloud-line ri-xl text-almost-white ml-4"></i>
+                <a class="text-almost-white font-semibold font-montserrat ml-4">Fileshare</a>
+            </div>
+        <% } %>
+
+        <% if (user.usermanagement && user.usermanagement.canOpen) { %>
+            <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer" id="usermanagement">
+                <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full" id="usermanagement-line"></div>
+                <i class="ri-user-settings-line ri-xl text-almost-white ml-4"></i>
+                <a class="text-almost-white font-semibold font-montserrat ml-4">User Management</a>
+            </div>
+        <% } %>
+
+        <% if (user.teammanagement && user.teammanagement.canOpen) { %>
+            <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer" id="teammanagement">
+                <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full" id="teammanagement-line"></div>
+                <i class="ri-team-line ri-xl text-almost-white ml-4"></i>
+                <a class="text-almost-white font-semibold font-montserrat ml-4">Team Management</a>
+            </div>
+        <% } %>
+
+        <% if (user.rolemanagement && user.rolemanagement.canOpen) { %>
+            <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer" id="rolemanagement">
+                <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full" id="rolemanagement-line"></div>
+                <i class="ri-shield-line ri-xl text-almost-white ml-4"></i>
+                <a class="text-almost-white font-semibold font-montserrat ml-4">Role Management</a>
+            </div>
+        <% } %>
+
+        <% if (user.changelog && user.changelog.canOpen) { %>
+            <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer" id="changelog">
+                <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full" id="changelog-line"></div>
+                <i class="ri-exchange-line ri-xl text-almost-white ml-4"></i>
+                <a class="text-almost-white font-semibold font-montserrat ml-4">Changelog</a>
+            </div>
+        <% } %>
+
+    </div>
+
+    <img src="/res/logo/gnx.png" alt="GNX Icon" class="absolute left-[95px] bottom-10 h-20 hidden md:block" id="GNXIcon"/>
+
+    <section class="bg-grey-level1 w-full h-screen" id="home-section"></section>
 </div>
+</body>
 
-<section class="home-section" id="home-section"></section>
-
-<!-- DASHBOARD SNIPPET LOADING -->
 <script>
-
     //Array with all available pages
     const pages = [
-        {id: "home", url: "/dashboard/home", css: "/css/dashboard/home.css"},
-        {id: "settings", url: "/dashboard/settings", css: "/css/dashboard/settings.css"},
-        {id: "calendar", url: "/dashboard/calendar", css: "/css/dashboard/calendar.css"},
-        {id: "fileshare", url: "/dashboard/fileshare", css: "/css/dashboard/fileshare.css"},
-        {id: "usermanagement", url: "/dashboard/usermanagement", css: "/css/dashboard/usermanagement.css"},
-        {id: "teammanagement", url: "dashboard/teammanagement", css: "/css/dashboard/teammanagement.css"},
-        {id: "rolemanagement", url: "dashboard/rolemanagement", css: "/css/dashboard/rolemanagement.css"},
-        {id: "championpool", url: "dashboard/championpool", css: "/css/dashboard/championpool.css"},
-        {id: "apexstats", url: "dashboard/apexstats", css: "../css/dashboard/apexstats.css"},
-        {id: "changelog", url: "dashboard/changelog", css: "../css/dashboard/changelog.css"},
-        {id: "eventCalendar", url: "dashboard/eventCalendar", css: "../css/dashboard/eventcalendar.css"},
-        {id: "trainingNotes", url: "dashboard/trainingNotes", css: "../css/dashboard/trainingnotes.css"}
+        {id: "home", url: "/dashboard/home"},
+        {id: "settings", url: "/dashboard/settings"},
+        {id: "calendar", url: "/dashboard/calendar"},
+        {id: "fileshare", url: "/dashboard/fileshare"},
+        {id: "usermanagement", url: "/dashboard/usermanagement"},
+        {id: "teammanagement", url: "dashboard/teammanagement"},
+        {id: "rolemanagement", url: "dashboard/rolemanagement"},
+        {id: "championpool", url: "dashboard/championpool"},
+        {id: "apexstats", url: "dashboard/apexstats"},
+        {id: "changelog", url: "dashboard/changelog"},
+        {id: "trainingnotes", url: "dashboard/trainingNotes"}
     ];
 
-    async function checkSessionStatus() {
-        try {
-            const response = await $.get('/session-status');
-            return response.isAuthenticated;
-        } catch (error) {
-            console.error('Error checking session status:', error);
-            return false;
-        }
-    }
-
     $(document).ready(function () {
-        loadPage("home", pages);
+        loadPage('home', pages)
 
         $(function () {
             pages.forEach(page => {
@@ -202,26 +156,12 @@
                 });
             });
         });
+
+        $("#menu").click(function() {
+            $("#navBar").toggleClass("hidden md:block").toggleClass("-translate-x-full translate-x-0");
+            $("#GNXIcon").toggleClass("hidden md:block");
+            $("#menu").toggleClass("ri-menu-line ri-close-line");
+        })
     });
 </script>
-
-<!-- NAVBAR SCRIPTS -->
-<script>
-    let sidebar = document.querySelector(".sidebar");
-    let closeBtn = document.querySelector("#btn");
-    let searchBtn = document.querySelector(".bx-search");
-    closeBtn.addEventListener("click", () => {
-        sidebar.classList.toggle("open");
-        menuBtnChange();
-    });
-
-    function menuBtnChange() {
-        if (sidebar.classList.contains("open")) {
-            closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");
-        } else {
-            closeBtn.classList.replace("bx-menu-alt-right", "bx-menu");
-        }
-    }
-</script>
-</body>
 </html>

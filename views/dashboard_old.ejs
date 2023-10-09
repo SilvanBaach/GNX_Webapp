@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" type="favicon" href="../res/logo/favico.png">
+    <link href="/dist/output.css" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet"/>
+
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="/js/clientJS/dashboardSnippetLoader.js"></script>
+    <script src="/js/clientJS/toastMessages.js"></script>
+    <script src="/js/clientJS/permissionCheckerClient.js"></script>
+    <script src="/js/clientJS/popupFactory.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+    <script src="/js/clientJS/eventCalendar.js"></script>
+    <script type="module" src="https://vjs.zencdn.net/8.5.2/video.min.js"></script>
+</head>
+
+<body>
+<div class="sidebar">
+    <div class="logo-details">
+        <img class="bx bxl-c-plus-plus icon" src="/res/logo/logo_white.png"/>
+        <div class="logo_name">Genetix</div>
+        <i class='bx bx-menu' id="btn"></i>
+    </div>
+    <ul class="nav-list">
+        <% if (user.home && user.home.canOpen) { %>
+            <li>
+                <a href="#" id="home">
+                    <i class='bx bx-grid-alt'></i>
+                    <span class="links_name">Dashboard</span>
+                </a>
+            </li>
+        <% } %>
+
+        <% if (user.calendar && user.calendar.canOpen) { %>
+            <li>
+                <a href="#" id="calendar">
+                    <i class='bx bxs-calendar'></i>
+                    <span class="links_name">Team Calendar</span>
+                </a>
+            </li>
+        <% } %>
+            <% if (user.trainingnotes && user.trainingnotes.canOpen) { %>
+                <li>
+                    <a href="#" id="trainingNotes">
+                        <i class='ri-book-mark-line'></i>
+                        <span class="links_name">Training Notes</span>
+                    </a>
+                </li>
+            <% } %>
+            <% if (user.eventcalendar && user.eventcalendar.canOpen) { %>
+                <li>
+                    <a href="#" id="eventCalendar">
+                        <i class='ri-calendar-event-fill'></i>
+                        <span class="links_name">GNX Event Calendar</span>
+                    </a>
+                </li>
+            <% } %>
+        <% if (user.championpool && user.championpool.canOpen) { %>
+            <li>
+                <a href="#" id="championpool">
+                    <i class='bx bx-trophy'></i>
+                    <span class="links_name">Championpool</span>
+                </a>
+            </li>
+        <% } %>
+            <% if (user.apexstats && user.apexstats.canOpen) { %>
+            <li>
+                <a href="#" id="apexstats">
+                    <i class='ri-bar-chart-fill'></i>
+                    <span class="links_name">Apex Statistics</span>
+                </a>
+            </li>
+            <% } %>
+            <% if (user.fileshare && user.fileshare.canOpen) { %>
+            <li>
+                <a href="#" id="fileshare">
+                    <i class='bx bxs-file-image'></i>
+                    <span class="links_name">File Share</span>
+                </a>
+            </li>
+            <% } %>
+        <% if (user.usermanagement && user.usermanagement.canOpen) { %>
+            <li>
+                <a href="#" id="usermanagement">
+                    <i class="ri-user-settings-line"></i>
+                    <span class="links_name">User Management</span>
+                </a>
+            </li>
+        <% } %>
+        <% if (user.teammanagement && user.teammanagement.canOpen) { %>
+            <li>
+                <a href="#" id="teammanagement">
+                    <i class='bx bxs-group'></i>
+                    <span class="links_name">Team Management</span>
+                </a>
+            </li>
+        <% } %>
+        <% if (user.rolemanagement && user.rolemanagement.canOpen) { %>
+            <li>
+                <a href="#" id="rolemanagement">
+                    <i class='bx bx-shield-alt-2'></i>
+                    <span class="links_name">Role Management</span>
+                </a>
+            </li>
+        <% } %>
+            <% if (user.changelog && user.changelog.canOpen) { %>
+                <li>
+                    <a href="#" id="changelog">
+                        <i class='ri-file-settings-line'></i>
+                        <span class="links_name">Changelog</span>
+                    </a>
+                </li>
+            <% } %>
+        <% if (user.settings && user.settings.canOpen) { %>
+            <li>
+                <a href="#" id="settings">
+                    <i class='bx bx-cog'></i>
+                    <span class="links_name">Settings</span>
+                </a>
+            </li>
+        <% } %>
+        <li class="profile">
+            <div class="profile-details">
+                <div class="name_job">
+                    <div class="name opentext"><%= user.username %></div>
+                    <div class="job opentext"><%= user.team.displayname %></div>
+                </div>
+            </div>
+            <form action="/login/logout" method="GET">
+                <button type="submit" class="bx bx-log-out logout" id="log_out"></button>
+            </form>
+        </li>
+    </ul>
+</div>
+
+<section class="home-section" id="home-section"></section>
+
+<!-- DASHBOARD SNIPPET LOADING -->
+<script>
+
+    //Array with all available pages
+    const pages = [
+        {id: "home", url: "/dashboard/home", css: "/css/dashboard/home.css"},
+        {id: "settings", url: "/dashboard/settings", css: "/css/dashboard/settings.css"},
+        {id: "calendar", url: "/dashboard/calendar", css: "/css/dashboard/calendar.css"},
+        {id: "fileshare", url: "/dashboard/fileshare", css: "/css/dashboard/fileshare.css"},
+        {id: "usermanagement", url: "/dashboard/usermanagement", css: "/css/dashboard/usermanagement.css"},
+        {id: "teammanagement", url: "dashboard/teammanagement", css: "/css/dashboard/teammanagement.css"},
+        {id: "rolemanagement", url: "dashboard/rolemanagement", css: "/css/dashboard/rolemanagement.css"},
+        {id: "championpool", url: "dashboard/championpool", css: "/css/dashboard/championpool.css"},
+        {id: "apexstats", url: "dashboard/apexstats", css: "../css/dashboard/apexstats.css"},
+        {id: "changelog", url: "dashboard/changelog", css: "../css/dashboard/changelog.css"},
+        {id: "eventCalendar", url: "dashboard/eventCalendar", css: "../css/dashboard/eventcalendar.css"},
+        {id: "trainingNotes", url: "dashboard/trainingNotes", css: "../css/dashboard/trainingnotes.css"}
+    ];
+
+    async function checkSessionStatus() {
+        try {
+            const response = await $.get('/session-status');
+            return response.isAuthenticated;
+        } catch (error) {
+            console.error('Error checking session status:', error);
+            return false;
+        }
+    }
+
+    $(document).ready(function () {
+        loadPage("home", pages);
+
+        $(function () {
+            pages.forEach(page => {
+                $('#' + page.id).click(async function (e) {
+                    e.preventDefault();
+                    const isAuthenticated = await checkSessionStatus();
+                    if (!isAuthenticated) {
+                        window.location.href = '/?type=error&message=Session expired, please login again';
+                    }else{
+                        await loadPage(page.id, pages);
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+<!-- NAVBAR SCRIPTS -->
+<script>
+    let sidebar = document.querySelector(".sidebar");
+    let closeBtn = document.querySelector("#btn");
+    let searchBtn = document.querySelector(".bx-search");
+    closeBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("open");
+        menuBtnChange();
+    });
+
+    function menuBtnChange() {
+        if (sidebar.classList.contains("open")) {
+            closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");
+        } else {
+            closeBtn.classList.replace("bx-menu-alt-right", "bx-menu");
+        }
+    }
+</script>
+</body>
+</html>

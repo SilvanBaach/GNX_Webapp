@@ -161,7 +161,7 @@ app.use('/trainingNotes', trainingNotesRouter);
  * MAIN ROUTES
  */
 app.get('/', checkAuthenticated,(req, res) => {
-    res.render('index');
+    res.redirect('/login');
 });
 
 app.get('/register', (req, res) => {

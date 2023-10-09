@@ -2,51 +2,47 @@
 <html>
 <head>
     <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <link rel="stylesheet" href="../css/login.css">
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/components/button.css">
+
     <link rel="icon" type="favicon" href="../res/logo/favico.png">
-<body>
-<div id="nav-placeholder"></div>
+    <link href="/dist/output.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
 
-<h1 class="big-title">Login</h1>
-<img class="teamImg" id="teamImg" alt="Image from the Team" src="">
-<div>
-    <% if (messages.error) { %>
-        <p class="err-msg"><%= messages.error %></p>
-    <% } %>
-</div>
-<form action="/login/<%= teamname %>" method="POST">
-    <label for="username" class="label-login">Username</label>
-    <input type="text" name="username" id="username" class="input-login" />
-    <label for="password" class="label-login">Password</label>
-    <input type="password" name="password" id="password" class="input-login"/>
-    <div class="button-container">
-        <button type="button" id="back" class="default login">Back</button>
-        <button type="submit" class="default login">Login ➔</button>
+<body style="background-image: url('/res/backgrounds/dark_bg.png'); background-position: center -50px; overflow-y: hidden; background-size: cover;">
+<%- include('./components/header.ejs') %>
+
+<div class="flex items-center flex-col h-screen justify-center pt-[calc(100% + 1rem)] min-h-screen">
+    <img class="mb-10" alt="GNX Icon" src="/res/logo/gnx.png">
+    <div>
+        <% if (messages.error) { %>
+            <p class="err-msg"><%= messages.error %></p>
+        <% } %>
     </div>
-</form>
 
-<div class="pwreset-container">
-    <div class="pwreset-text">Forgot the password?</div>
-    <a href="/resetPassword" class="pwreset-text">Reset here!</a>
+    <form action="/login" method="POST">
+        <div class="flex flex-col mb-4">
+            <label for="username" class="text-almost-white font-montserrat text-base">Username</label>
+            <%- include('./components/entryfield', {type: 'text', name: 'username', id: 'username'}) %>
+        </div>
+        <div class="flex flex-col">
+            <label for="password" class="text-almost-white font-montserrat text-base">Password</label>
+            <%- include('./components/entryfield', {type: 'password', name: 'password', id: 'password'}) %>
+        </div>
+
+        <div class="flex justify-center mt-6 mb-16">
+            <%- include('./components/buttondefault', {type: 'submit', id: '', text: 'Login'}) %>
+        </div>
+    </form>
+
+    <div class="flex flex-col sm:flex-row items-center w-full mx-auto text-center sm:text-left">
+        <div class="w-full sm:flex-1 text-center font-montserrat text-base text-almost-white whitespace-nowrap sm:whitespace-normal mb-4 sm:mb-0 sm:mr-6 sm:text-right">No Account yet? <a class="text-turquoise font-semibold" href="/register">Register here!</a></div>
+        <div class="hidden sm:flex flex-none bg-almost-white w-px h-12"></div>
+        <div class="w-full sm:flex-1 text-center sm:text-left font-montserrat text-base text-almost-white whitespace-nowrap sm:whitespace-normal sm:ml-6">Forgot your password? <a class="text-turquoise font-semibold" href="/resetPassword">Reset here!</a></div>
+    </div>
+
 </div>
-
-
-<script>
-    $(document).ready(function() {
-        //Load the nav bar
-        $("#nav-placeholder").load("/html/nav.html");
-
-        //Load the correct Team Image
-        const teamImg = document.getElementById('teamImg');
-        teamImg.src = "/res/teams/" + "<%= teamname %>" + ".png";
-
-        $("#back").click(function() {
-            window.location.href = "/";
-        });
-    });
-</script>
 </body>
 </html>
