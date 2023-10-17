@@ -10,6 +10,7 @@ module.exports = {
           'grey-level1': '#1E1F22',
           'grey-level2': '#2B2D30',
           'grey-level3': '#43454A',
+          'success':'#23A55A',
 
           'btn-grey': '#707070',
 
