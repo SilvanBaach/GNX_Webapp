@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#2B2D30">
 
     <link rel="icon" type="favicon" href="../res/logo/favico.png">
     <link href="/dist/output.css" rel="stylesheet">
@@ -23,104 +25,129 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <script src="/js/clientJS/eventCalendar.js"></script>
     <script type="module" src="https://vjs.zencdn.net/8.5.2/video.min.js"></script>
+
+    <title>Dashboard</title>
 </head>
 
 <body>
-<div style="z-index: 2; position: relative;">
-    <%- include('./components/header.ejs') %>
-</div>
-
-<i class="ri-menu-line ri-2x absolute left-4 top-2 z-50 text-almost-white md:hidden" id="menu"></i>
-
-<div class="flex flex-row">
-    <div class="bg-grey-level2 h-screen w-[270px] min-w-[270px] flex-col items-start relative hidden md:flex" id="navBar">
-    <div class="mt-16 md:mt-8 mb-8"></div>
-
-        <% if (user.home && user.home.canOpen) { %>
-            <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer" id="home">
-                <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full" id="home-line"></div>
-                <i class="ri-home-2-line ri-xl text-almost-white ml-4"></i>
-                <a class="text-almost-white font-semibold font-montserrat ml-4">Dashboard</a>
-            </div>
-        <% } %>
-
-        <% if (user.calendar && user.calendar.canOpen) { %>
-            <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer" id="calendar">
-                <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full" id="calendar-line"></div>
-                <i class="ri-calendar-2-line ri-xl text-almost-white ml-4"></i>
-                <a class="text-almost-white font-semibold font-montserrat ml-4">Team Calendar</a>
-            </div>
-        <% } %>
-
-        <% if (user.championpool && user.championpool.canOpen) { %>
-            <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer" id="championpool">
-                <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full" id="championpool-line"></div>
-                <i class="ri-trophy-line ri-xl text-almost-white ml-4"></i>
-                <a class="text-almost-white font-semibold font-montserrat ml-4">Championpool</a>
-            </div>
-        <% } %>
-
-        <% if (user.trainingnotes && user.trainingnotes.canOpen) { %>
-            <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer" id="trainingnotes">
-                <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full" id="trainingnotes-line"></div>
-                <i class="ri-sticky-note-line ri-xl text-almost-white ml-4"></i>
-                <a class="text-almost-white font-semibold font-montserrat ml-4">Training Notes</a>
-            </div>
-        <% } %>
-
-        <% if (user.apexstats && user.apexstats.canOpen) { %>
-            <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer" id="apexstats">
-                <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full" id="apexstats-line"></div>
-                <i class="ri-bar-chart-2-line ri-xl text-almost-white ml-4"></i>
-                <a class="text-almost-white font-semibold font-montserrat ml-4">Apex Statistics</a>
-            </div>
-        <% } %>
-
-        <% if (user.fileshare && user.fileshare.canOpen) { %>
-            <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer" id="fileshare">
-                <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full" id="fileshare-line"></div>
-                <i class="ri-file-cloud-line ri-xl text-almost-white ml-4"></i>
-                <a class="text-almost-white font-semibold font-montserrat ml-4">Fileshare</a>
-            </div>
-        <% } %>
-
-        <% if (user.usermanagement && user.usermanagement.canOpen) { %>
-            <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer" id="usermanagement">
-                <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full" id="usermanagement-line"></div>
-                <i class="ri-user-settings-line ri-xl text-almost-white ml-4"></i>
-                <a class="text-almost-white font-semibold font-montserrat ml-4">User Management</a>
-            </div>
-        <% } %>
-
-        <% if (user.teammanagement && user.teammanagement.canOpen) { %>
-            <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer" id="teammanagement">
-                <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full" id="teammanagement-line"></div>
-                <i class="ri-team-line ri-xl text-almost-white ml-4"></i>
-                <a class="text-almost-white font-semibold font-montserrat ml-4">Team Management</a>
-            </div>
-        <% } %>
-
-        <% if (user.rolemanagement && user.rolemanagement.canOpen) { %>
-            <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer" id="rolemanagement">
-                <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full" id="rolemanagement-line"></div>
-                <i class="ri-shield-line ri-xl text-almost-white ml-4"></i>
-                <a class="text-almost-white font-semibold font-montserrat ml-4">Role Management</a>
-            </div>
-        <% } %>
-
-        <% if (user.changelog && user.changelog.canOpen) { %>
-            <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer" id="changelog">
-                <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full" id="changelog-line"></div>
-                <i class="ri-exchange-line ri-xl text-almost-white ml-4"></i>
-                <a class="text-almost-white font-semibold font-montserrat ml-4">Changelog</a>
-            </div>
-        <% } %>
-
+<div class="relative h-screen flex flex-col overflow-y-auto">
+    <div class="relative z-10">
+        <%- include('./components/header.ejs') %>
     </div>
 
-    <img src="/res/logo/gnx.png" alt="GNX Icon" class="absolute left-[95px] bottom-10 h-20 hidden md:block" id="GNXIcon"/>
+    <i class="ri-menu-line ri-2x absolute left-4 top-2 z-50 text-almost-white lg:hidden" id="menu"></i>
 
-    <section class="bg-grey-level1 w-full h-screen sm:h-screen" id="home-section"></section>
+    <div class="flex flex-row flex-grow">
+        <div class="bg-grey-level2 h-full w-[270px] min-w-[270px] flex-col items-start relative hidden lg:flex"
+             id="navBar">
+
+            <% if (user.home && user.home.canOpen) { %>
+                <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer"
+                     id="home">
+                    <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full"
+                         id="home-line"></div>
+                    <i class="ri-home-2-line ri-xl text-almost-white ml-4"></i>
+                    <a class="text-almost-white font-semibold font-montserrat ml-4">Dashboard</a>
+                </div>
+            <% } %>
+
+            <% if (user.calendar && user.calendar.canOpen) { %>
+                <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer"
+                     id="calendar">
+                    <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full"
+                         id="calendar-line"></div>
+                    <i class="ri-calendar-2-line ri-xl text-almost-white ml-4"></i>
+                    <a class="text-almost-white font-semibold font-montserrat ml-4">Team Calendar</a>
+                </div>
+            <% } %>
+
+            <% if (user.championpool && user.championpool.canOpen) { %>
+                <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer"
+                     id="championpool">
+                    <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full"
+                         id="championpool-line"></div>
+                    <i class="ri-trophy-line ri-xl text-almost-white ml-4"></i>
+                    <a class="text-almost-white font-semibold font-montserrat ml-4">Championpool</a>
+                </div>
+            <% } %>
+
+            <% if (user.trainingnotes && user.trainingnotes.canOpen) { %>
+                <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer"
+                     id="trainingnotes">
+                    <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full"
+                         id="trainingnotes-line"></div>
+                    <i class="ri-sticky-note-line ri-xl text-almost-white ml-4"></i>
+                    <a class="text-almost-white font-semibold font-montserrat ml-4">Training Notes</a>
+                </div>
+            <% } %>
+
+            <% if (user.apexstats && user.apexstats.canOpen) { %>
+                <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer"
+                     id="apexstats">
+                    <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full"
+                         id="apexstats-line"></div>
+                    <i class="ri-bar-chart-2-line ri-xl text-almost-white ml-4"></i>
+                    <a class="text-almost-white font-semibold font-montserrat ml-4">Apex Statistics</a>
+                </div>
+            <% } %>
+
+            <% if (user.fileshare && user.fileshare.canOpen) { %>
+                <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer"
+                     id="fileshare">
+                    <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full"
+                         id="fileshare-line"></div>
+                    <i class="ri-file-cloud-line ri-xl text-almost-white ml-4"></i>
+                    <a class="text-almost-white font-semibold font-montserrat ml-4">Fileshare</a>
+                </div>
+            <% } %>
+
+            <% if (user.usermanagement && user.usermanagement.canOpen) { %>
+                <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer"
+                     id="usermanagement">
+                    <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full"
+                         id="usermanagement-line"></div>
+                    <i class="ri-user-settings-line ri-xl text-almost-white ml-4"></i>
+                    <a class="text-almost-white font-semibold font-montserrat ml-4">User Management</a>
+                </div>
+            <% } %>
+
+            <% if (user.teammanagement && user.teammanagement.canOpen) { %>
+                <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer"
+                     id="teammanagement">
+                    <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full"
+                         id="teammanagement-line"></div>
+                    <i class="ri-team-line ri-xl text-almost-white ml-4"></i>
+                    <a class="text-almost-white font-semibold font-montserrat ml-4">Team Management</a>
+                </div>
+            <% } %>
+
+            <% if (user.rolemanagement && user.rolemanagement.canOpen) { %>
+                <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer"
+                     id="rolemanagement">
+                    <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full"
+                         id="rolemanagement-line"></div>
+                    <i class="ri-shield-line ri-xl text-almost-white ml-4"></i>
+                    <a class="text-almost-white font-semibold font-montserrat ml-4">Role Management</a>
+                </div>
+            <% } %>
+
+            <% if (user.changelog && user.changelog.canOpen) { %>
+                <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer"
+                     id="changelog">
+                    <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full"
+                         id="changelog-line"></div>
+                    <i class="ri-exchange-line ri-xl text-almost-white ml-4"></i>
+                    <a class="text-almost-white font-semibold font-montserrat ml-4">Changelog</a>
+                </div>
+            <% } %>
+
+        </div>
+
+        <!--<img src="/res/logo/gnx.png" alt="GNX Icon" class="fixed left-[95px] bottom-10 h-20 hidden md:block"
+             id="GNXIcon"/>-->
+
+        <section class="bg-grey-level1 flex-grow h-full" id="home-section"></section>
+    </div>
 </div>
 </body>
 
@@ -150,16 +177,16 @@
                     const isAuthenticated = await checkSessionStatus();
                     if (!isAuthenticated) {
                         window.location.href = '/?type=error&message=Session expired, please login again';
-                    }else{
+                    } else {
                         await loadPage(page.id, pages);
                     }
                 });
             });
         });
 
-        $("#menu").click(function() {
-            $("#navBar").toggleClass("hidden md:block").toggleClass("-translate-x-full translate-x-0");
-            //$("#GNXIcon").toggleClass("hidden md:block");
+        $("#menu").click(function () {
+            $("#navBar").toggleClass("hidden lg:block").toggleClass("absolute z-50 w-full top-0");
+
             $("#menu").toggleClass("ri-menu-line ri-close-line");
         })
     });

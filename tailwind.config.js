@@ -26,6 +26,9 @@ module.exports = {
         '0.75': '0.1875rem',
         '3': '0.75rem',
       },
+        boxShadow: {
+            'dashboard': '5px 5px 9px 0px rgba(0,0,0,0.2);'
+        },
     },
   },
   plugins: [],

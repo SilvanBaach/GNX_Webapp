@@ -3,6 +3,8 @@
 <head>
     <title>Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#2B2D30">
 
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 
@@ -11,10 +13,10 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 </head>
 
-<body style="background-image: url('/res/backgrounds/dark_bg.png'); background-position: center -50px; overflow-y: hidden; background-size: cover;">
+<body style="background-image: url('/res/backgrounds/dark_bg.png'); background-position: center -50px; background-size: cover; min-width: 350px;" class="h-full">
 <%- include('./components/header.ejs') %>
 
-<div class="flex items-center flex-col h-screen justify-center pt-[calc(100% + 1rem)] min-h-screen">
+<div class="flex items-center flex-col h-screen justify-center">
     <img class="mb-10" alt="GNX Icon" src="/res/logo/gnx.png">
     <div>
         <% if (messages.error) { %>
