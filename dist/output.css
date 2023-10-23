@@ -801,6 +801,10 @@ video {
   margin-bottom: 1.25rem;
 }
 
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
 .mb-8 {
   margin-bottom: 2rem;
 }
@@ -829,6 +833,10 @@ video {
   margin-top: 0.125rem;
 }
 
+.mt-10 {
+  margin-top: 2.5rem;
+}
+
 .mt-2 {
   margin-top: 0.5rem;
 }
@@ -839,6 +847,10 @@ video {
 
 .mt-8 {
   margin-top: 2rem;
+}
+
+.mt-4 {
+  margin-top: 1rem;
 }
 
 .box-border {
@@ -1038,6 +1050,10 @@ video {
 
 .w-80 {
   width: 20rem;
+}
+
+.w-\[150px\] {
+  width: 150px;
 }
 
 .w-\[270px\] {
@@ -2046,6 +2062,11 @@ video {
   background-color: rgb(112 112 112 / var(--tw-bg-opacity));
 }
 
+.bg-error {
+  --tw-bg-opacity: 1;
+  background-color: rgb(218 55 60 / var(--tw-bg-opacity));
+}
+
 .bg-grey-level1 {
   --tw-bg-opacity: 1;
   background-color: rgb(30 31 34 / var(--tw-bg-opacity));
@@ -2064,6 +2085,11 @@ video {
 .bg-header-cover-grey {
   --tw-bg-opacity: 1;
   background-color: rgb(64 64 64 / var(--tw-bg-opacity));
+}
+
+.bg-success {
+  --tw-bg-opacity: 1;
+  background-color: rgb(35 165 90 / var(--tw-bg-opacity));
 }
 
 .bg-transparent {
@@ -2789,6 +2815,12 @@ video {
   transition-duration: 150ms;
 }
 
+.transition-transform {
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
 .duration-300 {
   transition-duration: 300ms;
 }
@@ -2884,6 +2916,21 @@ video {
       max-width: 1536px;
     }
   }
+}
+
+.hover\:scale-105:hover {
+  --tw-scale-x: 1.05;
+  --tw-scale-y: 1.05;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.hover\:transform:hover {
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.hover\:bg-grey-level2:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(43 45 48 / var(--tw-bg-opacity));
 }
 
 .hover\:bg-turquoise:hover {
@@ -2982,10 +3029,6 @@ video {
 @media (min-width: 768px) {
   .md\:block {
     display: block;
-  }
-
-  .md\:hidden {
-    display: none;
   }
 }
 

@@ -11,6 +11,7 @@ module.exports = {
           'grey-level2': '#2B2D30',
           'grey-level3': '#43454A',
           'success':'#23A55A',
+          'error': '#DA373C',
 
           'btn-grey': '#707070',
 
