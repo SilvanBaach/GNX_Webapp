@@ -1,51 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Enter Address</title>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>Register</title>
 
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/components/button.css">
-    <link rel="stylesheet" href="/css/registration/address.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#2B2D30">
+
+    <link href="/dist/output.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="icon" type="favicon" href="../../res/logo/favico.png">
 
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 </head>
-<body>
-<div id="nav-placeholder"></div>
+<body style="background-image: url('/res/backgrounds/dark_bg.png'); background-position: center -50px; background-size: cover; min-width: 350px;" class="h-full">
+<%- include('../components/header.ejs') %>
 
-<h1 class="big-title title">Address</h1>
+<div class="flex flex-col h-full justify-center items-center">
+    <h1 class="font-orbitron text-2xl font-semibold mt-16">Address</h1>
+    <img class="mt-10 mb-4 w-[150px]" alt="Address Picture" src="/res/teams/address.png">
 
-<img class="address-img" src="/res/teams/address.png"/>
-
-<form action="/register/step-2" method="POST">
-    <div class="form-row">
-        <div>
-            <label for="street" class="label-login">Street</label>
-            <input type="text" id="street" name="street" class="input-login"/>
+    <form action="/register/step-2" method="POST" class="space-y-6 mt-6">
+        <div class="flex flex-wrap">
+            <div class="">
+                <label for="street" class="font-montserrat text-base text-almost-white">Street</label>
+                <%- include('../components/entryfield', {type: 'text', name: 'street', id: 'street'}) %>
+            </div>
+            <div class="ml-6">
+                <label for="city" class="font-montserrat text-base text-almost-white">City</label>
+                <%- include('../components/entryfield', {type: 'text', name: 'city', id: 'city'}) %>
+            </div>
         </div>
-        <div>
-            <label for="city" class="label-login">City</label>
-            <input type="text" id="city" name="city" class="input-login"/>
+        <div class="flex flex-wrap">
+            <div class="">
+                <label for="zip" class="font-montserrat text-base text-almost-white">ZIP Code</label>
+                <%- include('../components/entryfield', {type: 'number', name: 'zip', id: 'zip'}) %>
+            </div>
         </div>
-        <div>
-            <label for="zip" class="label-login">ZIP Code</label>
-            <input type="number" id="zip" name="zip" class="input-login"/>
+        <div class="flex flex-row gap-4 justify-between">
+            <%- include('../components/buttondefault', {type: 'button', id: 'skip', text: 'Skip', icon: 'ri-arrow-right-line', width: 'w-28'}) %>
+            <%- include('../components/buttondefault', {type: 'submit', id: 'next', text: 'Next', icon: 'ri-arrow-right-line', width: 'w-28'}) %>
         </div>
-    </div>
-    <div class="button-container">
-        <button type="button" class="default login button" id="skip">Skip ➔</button>
-        <input type="submit" class="default login button" value="Next ➔"/>
-    </div>
-</form>
+    </form>
+</div>
 
 <script>
-    // LOAD NAVIGATION BAR
     $(document).ready(function () {
-        $("#nav-placeholder").load("/html/nav.html");
 
         // AJAX REQUEST FOR SKIPPING
         $("#skip").click(function () {

@@ -3,69 +3,66 @@
 <head>
     <title>Register</title>
 
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#2B2D30">
 
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/components/button.css">
-    <link rel="stylesheet" href="/css/registration/register.css">
+    <link href="/dist/output.css" rel="stylesheet">
     <link rel="icon" type="favicon" href="../../res/logo/favico.png">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
 
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 </head>
-<body>
+<body style="background-image: url('/res/backgrounds/dark_bg.png'); background-position: center -50px; background-size: cover; min-width: 350px;" class="h-full">
+<%- include('../components/header.ejs') %>
 
-<div id="nav-placeholder"></div>
+<div class="flex flex-col h-screen justify-center items-center">
+    <h1 class="font-orbitron text-2xl font-semibold">Register</h1>
+    <img class="mt-10 mb-4 w-[150px]" alt="Reload Picture" src="/res/teams/register.png">
 
-<h1 class="big-title">Register</h1>
+    <div>
+        <% if (typeof errors != 'undefined') { %> <% errors.forEach(error => { %>
+            <p class="font-semibold text-base font-montserrat text-error"><%= error.message %></p>
+        <% }) %>
+        <% } %>
+    </div>
 
-<img class="teamImg" id="teamImg" src="/res/teams/register.png">
+    <form action="/register" method="POST" class="space-y-6 mt-10">
+        <div class="flex flex-col">
+            <label for="registrationCode" class="font-montserrat text-base text-almost-white">Registration Code *</label>
+            <%- include('../components/entryfield', {type: 'text', name: 'registrationCode', id: 'registrationCode', required: 'yes'}) %>
+        </div>
+        <div class="flex flex-wrap">
+            <div class="">
+                <label for="username" class="font-montserrat text-base text-almost-white">Username *</label>
+                <%- include('../components/entryfield', {type: 'text', name: 'username', id: 'username', required: 'yes'}) %>
+            </div>
+            <div class="ml-6">
+                <label for="email" class="font-montserrat text-base text-almost-white">E-Mail *</label>
+                <%- include('../components/entryfield', {type: 'email', name: 'email', id: 'email', required: 'yes'}) %>
+            </div>
+        </div>
+        <div class="flex flex-wrap">
+            <div class="">
+                <label for="password" class="font-montserrat text-base text-almost-white">Password *</label>
+                <%- include('../components/entryfield', {type: 'password', name: 'password', id: 'password', required: 'yes'}) %>
+            </div>
+            <div class="ml-6">
+                <label for="password2" class="font-montserrat text-base text-almost-white">Confirm Password *</label>
+                <%- include('../components/entryfield', {type: 'password', name: 'password2', id: 'password2', required: 'yes'}) %>
+            </div>
+        </div>
+        <div class="flex justify-between mt-6">
+            <%- include('../components/buttondefault', {type: 'button', id: 'back', text: 'Back', width: 'w-40'}) %>
+            <%- include('../components/buttondefault', {type: 'submit', id: 'register', text: 'Register', icon: 'ri-arrow-right-line', btnType: 'Success',  width: 'w-40'}) %>
+        </div>
+    </form>
 
-<div>
-    <% if (typeof errors != 'undefined') { %> <% errors.forEach(error => { %>
-        <p class="err-msg"><%= error.message %></p>
-    <% }) %>
-    <% } %>
+    <div class="font-montserrat text-base text-almost-white mt-10">If you don't have a valid registration code please contact Staff</div>
 </div>
-
-<form action="/register" method="POST">
-    <div style="margin-bottom: 5vh">
-        <label for="registrationCode" class="label-login">Registration Code *</label>
-        <input type="text" id="registrationCode" name="registrationCode" required class="input-login"/>
-    </div>
-    <div class="form-row">
-        <div>
-            <label for="username" class="label-login">Username *</label>
-            <input type="text" id="username" name="username" required class="input-login"/>
-        </div>
-        <div>
-            <label for="email" class="label-login">E-Mail *</label>
-            <input type="email" id="email" name="email" required class="input-login"/>
-        </div>
-    </div>
-    <div class="form-row">
-        <div>
-            <label for="password" class="label-login">Password *</label>
-            <input type="password" id="password" name="password" required class="input-login"/>
-        </div>
-        <div>
-            <label for="password2" class="label-login">Confirm Password *</label>
-            <input type="password" id="password2" name="password2" required class="input-login"/>
-        </div>
-    </div>
-    <div class="button-container">
-        <button class="default login button" id="back">Back</button>
-        <input type="submit" value="Register ➔" class="default login button"/>
-    </div>
-</form>
-
-<div class="registercode-text">If you don't have a valid registration code please contact Staff</div>
 
 <script>
     $(document).ready(function () {
-        $("#nav-placeholder").load("html/nav.html");
-
         $("#back").click(function () {
             window.location.href = "/";
         });

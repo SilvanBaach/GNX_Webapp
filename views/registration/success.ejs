@@ -3,32 +3,29 @@
 <head>
     <title>Registration Successful</title>
 
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#2B2D30">
 
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/components/button.css">
-    <link rel="stylesheet" href="/css/registration/registrationsuccess.css">
+    <link href="/dist/output.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="icon" type="favicon" href="../../res/logo/favico.png">
 
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 </head>
-<body>
-<div id="nav-placeholder"></div>
+<body style="background-image: url('/res/backgrounds/dark_bg.png'); background-position: center -50px; background-size: cover; min-width: 350px;" class="h-full">
+<%- include('../components/header.ejs') %>
 
-<h1 class="big-title title">Registration successful!</h1>
-<img src="/res/teams/checkmark.png" class="success-img" alt="Picture of a checkmark"/>
+<div class="flex flex-col h-full justify-center items-center">
+    <h1 class="font-orbitron text-2xl font-semibold mt-16">Registration successful!</h1>
+    <img class="mt-10 mb-4 w-[150px]" alt="Picture of a checkmark" src="/res/teams/checkmark.png">
+    <p class="font-montserrat text-almost-white text-base mt-4 mb-8">You can now log in via the button below</p>
 
-<p class="small-white-text text">You can now log in via the button below</p>
-<button class="default login button" id="login">Login ➔</button>
+    <%- include('../components/buttondefault', {type: 'button', id: 'login', text: 'Login', icon: 'ri-arrow-right-line'}) %>
+</div>
 
 <script>
     $(document).ready(function () {
-        // LOAD NAVIGATION BAR
-        $("#nav-placeholder").load("/html/nav.html");
-
         $("#login").click(function () {
             window.location.href = "/";
         });

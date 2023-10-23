@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Enter Name</title>
+    <title>Register</title>
 
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#2B2D30">
 
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/components/button.css">
-    <link rel="stylesheet" href="/css/registration/name.css">
+    <link href="/dist/output.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="icon" type="favicon" href="../../res/logo/favico.png">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
@@ -19,41 +17,35 @@
     <script src="js/clientJS/toastMessages.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </head>
-<body>
-<div id="nav-placeholder"></div>
+<body style="background-image: url('/res/backgrounds/dark_bg.png'); background-position: center -50px; background-size: cover; min-width: 350px;" class="h-full">
+<%- include('../components/header.ejs') %>
 
-<h1 class="big-title title">Hi, <%= username %></h1>
+<div class="flex flex-col h-full justify-center items-center">
+    <h1 class="font-orbitron text-2xl font-semibold mt-16">Hi, <%= username %></h1>
+    <p class="font-montserrat text-almost-white text-base mt-4">You are just a few steps away from completing your profile registration!</p>
 
-<p class="small-white-text text">You are just a few steps away from completing your profile registration!</p>
+    <img class="w-48 rounded-full mt-10 mb-6" src="/res/others/blank_profile_picture.png" id="profilePicture" alt="Profile Picture"/>
+    <%- include('../components/buttondefault', {type: 'button', id: 'upload', text: 'Upload', icon: 'ri-upload-line', inputId: 'fileInput'}) %>
 
-<img class="profile-picture" src="/res/others/blank_profile_picture.png" id="profilePicture"/>
-<button class="default login upload" id="upload">
-    Upload
-    <i class="ri-upload-2-fill upload-icon"></i>
-    <input type="file" id="fileInput" accept="image/png, image/jpeg" class="file-input">
-</button>
-
-<p class="small-white-text">Please enter your full name</p>
-<form action="/register/step-1" method="POST" id="the-form">
-    <div class="form-row">
-        <div>
-            <label for="firstname" class="label-login">First Name *</label>
-            <input type="text" id="firstname" name="firstname" required class="input-login"/>
+    <p class="font-montserrat text-almost-white text-base mt-10 mb-6 font-semibold">Please enter your full name</p>
+    <form action="/register/step-1" method="POST" id="the-form" class="space-y-6">
+        <div class="flex flex-wrap">
+            <div class="">
+                <label for="firstname" class="text-base font-semibold text-almost-white">First Name *</label>
+                <%- include('../components/entryfield', {type: 'text', name: 'firstname', id: 'firstname', required: 'yes'}) %>
+            </div>
+            <div class="ml-6">
+                <label for="lastname" class="text-base font-semibold text-almost-white">Last Name *</label>
+                <%- include('../components/entryfield', {type: 'text', name: 'lastname', id: 'lastname', required: 'yes'}) %>
+            </div>
         </div>
-        <div>
-            <label for="lastname" class="label-login">Last Name *</label>
-            <input type="text" id="lastname" name="lastname" required class="input-login"/>
+        <div class="flex justify-center">
+            <%- include('../components/buttondefault', {type: 'submit', id: 'next', text: 'Next', icon: 'ri-arrow-right-line'}) %>
         </div>
-    </div>
-    <input type="submit" class="default login next" value="Next ➔"/>
-</form>
+    </form>
+</div>
 
 <script>
-    // LOAD NAVIGATION BAR
-    $(document).ready(function () {
-        $("#nav-placeholder").load("/html/nav.html");
-    });
-
     // HANDLE PROFILE PICTURE UPLOAD
     const input = document.getElementById("fileInput");
     input.addEventListener("change", async (e) => {

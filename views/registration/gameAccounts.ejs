@@ -3,61 +3,57 @@
 <head>
     <title>Link Game Accounts</title>
 
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#2B2D30">
 
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/components/button.css">
-    <link rel="stylesheet" href="/css/registration/gameaccounts.css">
+    <link href="/dist/output.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="icon" type="favicon" href="../../res/logo/favico.png">
 
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 </head>
-<body>
-<div id="nav-placeholder"></div>
+<body style="background-image: url('/res/backgrounds/dark_bg.png'); background-position: center -50px; background-size: cover; min-width: 350px;" class="h-full">
+<%- include('../components/header.ejs') %>
 
-<h1 class="big-title title">Game Accounts</h1>
-<p class="small-white-text text">Link your game accounts to see your individual game stats!</p>
+<div class="flex flex-col h-full justify-center items-center">
+    <h1 class="font-orbitron text-2xl font-semibold mt-16">Game Accounts</h1>
+    <p class="font-montserrat text-almost-white text-base mt-4">Link your game accounts to see your individual game stats!</p>
 
-<form action="/register/step-3" method="POST">
-    <div class="form-row">
-        <div>
-            <img src="/res/teams/steam.png" class="center-img"/>
-            <label for="steam" class="label-login">Steam</label>
-            <input type="text" id="steam" name="steam" class="input-login"  required/>
+    <form action="/register/step-3" method="POST" class="space-y-6 mt-10">
+        <div class="flex flex-wrap">
+            <div class="">
+                <img src="/res/teams/steam.png" alt="Steam" class="mx-auto w-32 mb-4"/>
+                <label for="steam" class="font-montserrat text-base text-almost-white">Steam</label>
+                <%- include('../components/entryfield', {type: 'text', name: 'steam', id: 'steam'}) %>
+            </div>
+            <div class="ml-6">
+                <img src="/res/teams/origin.png" class="mx-auto w-32 mb-4" alt="Origin"/>
+                <label for="origin" class="font-montserrat text-base text-almost-white">Origin</label>
+                <%- include('../components/entryfield', {type: 'text', name: 'origin', id: 'origin'}) %>
+            </div>
         </div>
-        <div>
-            <img src="/res/teams/origin.png" class="center-img"/>
-            <label for="origin" class="label-login">Origin</label>
-            <input type="text" id="origin" name="origin" class="input-login"/>
+        <div class="flex flex-wrap">
+            <div class="">
+                <img src="/res/teams/riotgames.png" class="mx-auto w-32 mb-4" alt="Riot Games"/>
+                <label for="riotgames" class="font-montserrat text-base text-almost-white">Riot Games</label>
+                <%- include('../components/entryfield', {type: 'text', name: 'riotgames', id: 'riotgames'}) %>
+            </div>
+            <div class="ml-6">
+                <img src="/res/teams/battlenet.png" class="mx-auto w-32 mb-4" alt="Battlenet"/>
+                <label for="battlenet" class="font-montserrat text-base text-almost-white">Battlenet</label>
+                <%- include('../components/entryfield', {type: 'text', name: 'battlenet', id: 'battlenet'}) %>
+            </div>
         </div>
-    </div>
-    <div class="form-row">
-        <div>
-            <img src="/res/teams/riotgames.png" class="center-img"/>
-            <label for="riotgames" class="label-login">Riot Games</label>
-            <input type="text" id="riotgames" name="riotgames" class="input-login"/>
+        <div class="flex flex-row gap-4 justify-between">
+            <%- include('../components/buttondefault', {type: 'button', id: 'skip', text: 'Skip', icon: 'ri-arrow-right-line', width: 'w-28'}) %>
+            <%- include('../components/buttondefault', {type: 'submit', id: 'finish', text: 'Finish', icon: 'ri-arrow-right-line', width: 'w-28'}) %>
         </div>
-        <div>
-            <img src="/res/teams/battlenet.png" class="center-img"/>
-            <label for="battlenet" class="label-login">Battlenet</label>
-            <input type="text" id="battlenet" name="battlenet" class="input-login"/>
-        </div>
-    </div>
-    <div class="button-container">
-        <button type="button" class="default login button" id="skip">Skip ➔</button>
-        <input type="submit" class="default login button" value="Finish ➔"/>
-    </div>
-</form>
+    </form>
+</div>
 
 <script>
-    // LOAD NAVIGATION BAR
     $(document).ready(function () {
-        $("#nav-placeholder").load("/html/nav.html");
-
-// AJAX REQUEST FOR SKIPPING
         $("#skip").click(function () {
             $.ajax({
                 url: '/register/step-3',
@@ -67,9 +63,7 @@
                 }
             });
         });
-
     });
-
 </script>
 </body>
 
