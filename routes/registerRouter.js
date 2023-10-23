@@ -83,7 +83,7 @@ router.post('/step-2', checkRegistrationStep (2), (req, res) => {
     req.session.userdata.zip = req.body.zip || "";
 
     req.session.registrationStep = 3;
-    res.render('registration/gameaccounts.ejs');
+    res.render('registration/gameAccounts.ejs');
 });
 
 /**
