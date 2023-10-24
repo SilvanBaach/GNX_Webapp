@@ -1,9 +1,65 @@
 <!-- Component for the Header of all pages -->
 <div class="relative w-full h-16">
-    <div class="absolute w-full h-16 bg-gradient-to-r from-header-purple via-header-light-blue to-action-grey">
+    <div class="absolute w-full h-16 bg-gradient-to-r from-header-purple via-header-light-blue to-action-grey z-10">
     </div>
 
-    <div class="absolute w-full h-16 bg-opacity-50 bg-header-cover-grey flex justify-center items-center">
-        <img src="/res/logo/logo_white_widescape.png" alt="Genetix Logo" class="h-14">
+    <div class="absolute w-full h-16 bg-opacity-50 bg-header-cover-grey flex justify-center items-center z-10">
+        <img src="/res/logo/logo_white_widescape.png" alt="Genetix Logo" class="h-14 hidden sm:block">
     </div>
+
+    <% if (typeof userIcon !== 'undefined') { %>
+        <div class="absolute right-2 flex top-1 pt-2 pb-2 pl-2 items-center hover:bg-turquoise hover:bg-opacity-20 transition duration-700 ease-in-out z-40" id="userPopup">
+            <div class="bg-opacity-20 transition duration-100 ease-in-out w-full h-full absolute" id="userPopupBg"></div>
+            <img src="<%= user.thumbnail %>" alt="User Image" class="rounded-full w-10 h-10">
+            <div class="flex flex-row items-center ml-2">
+                <span class="font-semibold text-base text-almost-white"><%= user.username %></span>
+                <i class="ri-arrow-down-s-line ri-xl"></i>
+            </div>
+        </div>
+        <div class="popup-modal fixed hidden flex z-50">
+            <div class="bg-grey-level3 shadow-md popup-container fixed top-[60px] right-2 w-40 z-50">
+                <div class="flex items-center w-full pl-4 py-3 pr-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer"
+                     id="home">
+                    <i class="ri-settings-3-line ri-lg text-almost-white"></i>
+                    <a class="text-almost-white font-montserrat ml-4 text-base" id="settingLink">Settings</a>
+                </div>
+                <div class="flex items-center w-full pl-4 py-3 pr-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer"
+                     id="home">
+                    <i class="ri-logout-box-r-line ri-lg text-almost-white"></i>
+                    <a class="text-almost-white font-montserrat ml-4 text-base" id="logoutLink">Logout</a>
+                </div>
+            </div>
+        </div>
+
+    <% } %>
 </div>
+
+<script>
+    $(document).ready(function() {
+        let timer;
+
+        const handleMouseEnter = () => {
+            clearTimeout(timer);
+            $(".popup-modal").stop(true, true).fadeIn();
+        };
+
+        const handleMouseLeave = () => {
+            timer = setTimeout(() => {
+                $(".popup-modal").stop(true, true).fadeOut();
+            }, 100);
+        };
+
+        $("#userPopup").hover(handleMouseEnter, handleMouseLeave);
+        $(".popup-modal").hover(handleMouseEnter, handleMouseLeave);
+
+        $("#logoutLink").click(() => {
+            window.location.href = "/login/logout";
+        });
+
+        $("#settingLink").click(() => {
+            window.location.href = "/dashboard/settings";
+        });
+    });
+
+</script>
+

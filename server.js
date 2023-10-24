@@ -160,9 +160,10 @@ app.use('/trainingNotes', trainingNotesRouter);
  /**
  * MAIN ROUTES
  */
-app.get('/', checkAuthenticated,(req, res) => {
-    res.redirect('/login');
-});
+ app.get('/', checkAuthenticated, (req, res) => {
+     const originalQuery = req.originalUrl.split('?')[1];
+     res.redirect(`/login${originalQuery ? '?' + originalQuery : ''}`);
+ });
 
 app.get('/register', (req, res) => {
     res.render('register');

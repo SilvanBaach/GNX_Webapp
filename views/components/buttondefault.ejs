@@ -1,10 +1,13 @@
 <!-- Button Default component -->
-<button type="<%= type %>" id="<%= id %>" class="bg-action-grey hover:bg-grey-level2 font-montserrat text-base text-almost-white pl-6 pr-6 pt-2 pb-2
+<button type="<%= type %>" id="<%= id %>" class="bg-action-grey hover:bg-black hover:bg-opacity-30 font-montserrat text-base text-almost-white pl-4 pr-4 pt-2 pb-2
     rounded-md relative overflow-hidden font-semibold flex items-center justify-center transition-transform duration-300 hover:transform hover:scale-105
-    <% if (typeof width !== 'undefined') { %><%= width %><% } %>"
-    onmouseover="animateLine(this)" onmouseout="reverseAnimation(this)" style="will-change: transform; backface-visibility: hidden;">
+    <% if (typeof width !== 'undefined') { %><%= width %><% } %>" onmouseover="animateLine(this)" onmouseout="reverseAnimation(this)"
+    style="will-change: transform; backface-visibility: hidden;">
+    <% if (typeof icon !== 'undefined' && typeof iconPos !== 'undefined') { %>
+        <i class="<%= icon %> ri-lg mr-2"></i>
+    <% } %>
     <%= text %>
-    <% if (typeof icon !== 'undefined') { %>
+    <% if (typeof icon !== 'undefined' && typeof iconPos === 'undefined') { %>
         <i class="<%= icon %> ri-lg ml-2"></i>
     <% } %>
     <div class="absolute bottom-0 left-0 w-full h-0.75 bg-btn-grey"></div>

@@ -1,0 +1,12 @@
+<!-- Component for Table -->
+<table id="<%= id %>" class="text-left gap-6 w-full component-table">
+    <thead class="font-montserrat font-semibold text-almost-white text-base">
+    <tr>
+        <% headers.forEach(header => { %>
+            <th class="pl-2 pr-2"><%= header.text %></th>
+        <% }) %>
+    </tr>
+    </thead>
+    <tbody id="<%= bodyId %>">
+    </tbody>
+</table>

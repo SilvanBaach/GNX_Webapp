@@ -11,15 +11,15 @@ function buildLogTable(){
         data.forEach(function(log) {
             const tr = $("<tr></tr>");
 
-            if (log.level === 1) tr.addClass('warn');
-            else if (log.level === 2) tr.addClass('error');
-
-            if (log.user === 'System' && log.level !== 1 && log.level !== 2) tr.addClass('system');
-
             const tdDate = $("<td></td>").text(log.date);
             const tdMessage = $("<td></td>").text(log.message);
             const tdUser = $("<td></td>").text(log.user);
             const tdLevel = $("<td></td>").text(getLevelText(log.level));
+
+            if (log.level === 1) tr.addClass('text-warning');
+            else if (log.level === 2) tr.addClass('text-[#9A0000]')
+
+            if (log.user === 'System' && log.level !== 1 && log.level !== 2) tr.addClass('text-gnx-blue');
 
             tr.append(tdDate).append(tdMessage).append(tdUser).append(tdLevel);
             tableBody.append(tr);
@@ -31,7 +31,7 @@ function buildLogTable(){
         let month = ('0' + (date.getMonth() + 1)).slice(-2);  // Remember to +1 for getMonth()!
         let year = date.getFullYear();
 
-        $('#currentDate').text(`${day}.${month}.${year} - ${data[0].count} total actions`);
+        $('#currentDate').text(`${day}.${month}.${year} - ${data[0].count} actions`);
     });
 }
 

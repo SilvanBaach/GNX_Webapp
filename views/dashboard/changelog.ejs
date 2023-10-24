@@ -1,43 +1,24 @@
 <script src="/js/clientJS/changelog.js"></script>
 
-<div class="text">Changelog</div>
+<div class="mt-8 ml-8 mr-8 mb-8">
+    <p class="font-orbitron text-almost-white text-2xl font-semibold">Changelog</p>
 
-<div class="shadow-box main-box">
-    <div class="button-container">
-        <button class="default" id="prevDay">
-            <i class="ri-arrow-left-s-line ri-2x"></i>
-            Previous Day
-        </button>
-        <p class="current-date-text"  id="currentDate">???</p>
-        <button class="default" id="nextDay">
-            Next Day
-            <i class="ri-arrow-right-s-line ri-2x"></i>
-        </button>
+    <div class="bg-grey-level2 mt-4 p-4">
+        <div class="flex flex-row justify-between">
+            <%- include('../components/buttondefault', {type: 'button', id: 'prevDay', text: 'Previous Day', icon: 'ri-arrow-left-s-line', width: 'w-[170px]', iconPos: 'left'}) %>
+            <p class="font-semibold font-montserrat text-[22px] pl-4 pr-4" id="currentDate">???</p>
+            <%- include('../components/buttondefault', {type: 'button', id: 'nextDay', text: 'Next Day', icon: 'ri-arrow-right-s-line', width: 'w-[170px]'}) %>
+        </div>
+
+        <div class="mt-6 mb-6 space-x-4 flex flex-row items-center">
+            <label for="level" class="text-base font-montserrat font-semibold">Filter by:</label>
+            <%- include('../components/dropdown', {id: 'levelFilter', options: [{value: -1, text: "All levels"},
+            {value: 0, text: "INFO"}, {value: 1, text: "WARN"}, {value: 2, text: "ERROR"}], width: 'w-40'}) %>
+            <%- include('../components/dropdown', {id: 'userFilter', options: [{value: -2, text: "All users"}], width: 'w-40'}) %>
+        </div>
+
+        <%- include('../components/table', {id: 'logTable', bodyId: 'logTableData', headers: [{text: 'Time'}, {text: 'Message'}, {text: 'User'}, {text: 'Level'}]}) %>
     </div>
-    <div class="filter-container">
-        <label for="level" class="filter-text">Filter by:</label>
-        <select id="levelFilter" class="input-field">
-            <option value="-1">All levels</option>
-            <option value="0">INFO</option>
-            <option value="1">WARN</option>
-            <option value="2">ERROR</option>
-        </select>
-        <select id="userFilter" class="input-field">
-            <option value="-2">All users</option>
-        </select>
-    </div>
-    <table id="logTable" class="styled-table">
-        <thead>
-        <tr>
-            <th>Time</th>
-            <th>Message</th>
-            <th>User</th>
-            <th>Level</th>
-        </tr>
-        </thead>
-        <tbody id="logTableData" class="styled-table">
-        </tbody>
-    </table>
 </div>
 
 <script>

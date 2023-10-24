@@ -12,6 +12,8 @@ module.exports = {
           'grey-level3': '#43454A',
           'success':'#23A55A',
           'error': '#DA373C',
+          'warning': '#F29423',
+          'gnx-blue': '#000F42',
 
           'btn-grey': '#707070',
 
@@ -32,6 +34,20 @@ module.exports = {
         },
     },
   },
-  plugins: [],
+  plugins: [
+      function ({ addComponents }) {
+          addComponents({
+              '.component-table': {
+                  'borderCollapse': 'separate',
+                  'borderSpacing': '0 0.5rem',  // Adjust this for vertical spacing
+              },
+              '.component-table td': {
+                  '@apply bg-grey-level3 pl-2 pr-2 pb-2 pt-2': {},
+                  'borderRight': '1rem solid transparent',
+                  'boxShadow': '-1rem 0 0 transparent',
+              }
+          })
+      }
+  ],
 }
 

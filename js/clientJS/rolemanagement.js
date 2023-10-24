@@ -78,15 +78,31 @@ function loadData() {
                 const tdDescription = $("<td></td>").text(roleType.description);
                 const tdPermissions = $("<td></td>").text(roleType.permissioncount);
 
+                // Button for editing
                 const tdButton = $("<td></td>");
                 const button = $("<button></button>");
-                button.addClass("default purple table-btn");
-                button.append($("<i></i>").addClass("ri-file-edit-line").addClass("ri-2x"));
+                button.addClass("flex items-center justify-center");
+                button.append($("<i></i>").addClass("ri-edit-fill ri-xl hover:text-turquoise"));
 
-                button.on("click", function () {
-                    const row = $(this).closest("tr");
-                    const id = row.find("td:first").text();
+                // Edit form
+                const editFormRow = $("<tr></tr>").addClass("edit-form hidden");
+                const editFormCell = $("<td></td>").attr("colspan", 5);
 
+                const editForm = $("#editFormDefinition").clone().show();
+                editFormCell.append(editForm);
+
+                editFormRow.append(editFormCell);
+
+                button.on("click", function() {
+                    const form = $(this).closest("tr").next(".edit-form");
+
+                    if(form.hasClass("hidden")) {
+                        form.removeClass("hidden");
+                    } else {
+                        form.addClass("hidden");
+                    }
+
+                    const id = $(this).closest("tr").find("td:first").text();
                     editRole(id);
                 });
 
@@ -94,6 +110,7 @@ function loadData() {
 
                 tr.append(tdId).append(tdName).append(tdDescription).append(tdPermissions).append(tdButton);
                 tableBody.append(tr);
+                tableBody.append(editFormRow); // Append the edit form row after the data row
             }
 
             setupCreateRolePopup();

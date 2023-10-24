@@ -29,10 +29,10 @@
     <title>Dashboard</title>
 </head>
 
-<body>
+<body class="overflow-x-hidden">
 <div class="relative h-screen flex flex-col overflow-y-auto">
     <div class="relative z-10">
-        <%- include('./components/header.ejs') %>
+        <%- include('./components/header.ejs', {userIcon: 'true'}) %>
     </div>
 
     <i class="ri-menu-line ri-2x absolute left-4 top-2 z-50 text-almost-white lg:hidden" id="menu"></i>
@@ -43,7 +43,7 @@
 
             <% if (user.home && user.home.canOpen) { %>
                 <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer"
-                     id="home">
+                     id="home1">
                     <div class="absolute left-0 w-1 bg-transparent group-hover:bg-turquoise h-full"
                          id="home-line"></div>
                     <i class="ri-home-2-line ri-xl text-almost-white ml-4"></i>
@@ -143,9 +143,6 @@
 
         </div>
 
-        <!--<img src="/res/logo/gnx.png" alt="GNX Icon" class="fixed left-[95px] bottom-10 h-20 hidden md:block"
-             id="GNXIcon"/>-->
-
         <section class="bg-grey-level1 flex-grow h-full" id="home-section"></section>
     </div>
 </div>
@@ -154,8 +151,6 @@
 <script>
     //Array with all available pages
     const pages = [
-        {id: "home", url: "/dashboard/home"},
-        {id: "settings", url: "/dashboard/settings"},
         {id: "calendar", url: "/dashboard/calendar"},
         {id: "fileshare", url: "/dashboard/fileshare"},
         {id: "usermanagement", url: "/dashboard/usermanagement"},
@@ -164,11 +159,12 @@
         {id: "championpool", url: "dashboard/championpool"},
         {id: "apexstats", url: "dashboard/apexstats"},
         {id: "changelog", url: "dashboard/changelog"},
-        {id: "trainingnotes", url: "dashboard/trainingNotes"}
+        {id: "trainingnotes", url: "dashboard/trainingNotes"},
+        {id: "home1", url: "/dashboard/home"}
     ];
 
     $(document).ready(function () {
-        loadPage('home', pages)
+        loadPage('home1', pages)
 
         $(function () {
             pages.forEach(page => {
@@ -188,7 +184,7 @@
             $("#navBar").toggleClass("hidden lg:block").toggleClass("absolute z-50 w-full top-0");
 
             $("#menu").toggleClass("ri-menu-line ri-close-line");
-        })
+        });
     });
 </script>
 </html>

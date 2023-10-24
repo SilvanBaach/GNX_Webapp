@@ -1,0 +1,44 @@
+<!-- Dropdown component -->
+<% if (typeof width === 'undefined') { %>
+        <% width = 'w-32' %>
+<% } %>
+
+<div class="relative overflow-hidden">
+        <select id="<%= id %>" class="p-1 pl-2 pr-8 font-montserrat text-base text-almost-white appearance-none <%= width %> rounded-md outline-none"
+                onblur="reverseAnimationDropdown(this)" onchange="reverseAnimationDropdown(this)">
+                <% options.forEach(option => { %>
+                        <option value="<%= option.value %>" class="font-montserrat text-almost-white text-base"><%= option.text %></option>
+                <% }) %>
+        </select>
+        <div class="pointer-events-none absolute inset-y-0 right-0 pr-3 flex items-center text-almost-white">
+                <i class="ri-arrow-down-s-line ri-xl"></i>
+        </div>
+        <div id="<%= id %>-line-dropdown" class="absolute bottom-0 left-0 w-0 h-0.75 bg-turquoise transition-all ease-out duration-300"></div>
+</div>
+
+<script>
+        function animateDropdownLine(input) {
+                const line = document.getElementById(`${input.id}-line-dropdown`);
+                line.style.width = '100%';
+        }
+
+        function reverseAnimationDropdown(input) {
+                const line = document.getElementById(`${input.id}-line-dropdown`);
+                setTimeout(() => {
+                        line.style.width = '0%';
+                }, 0);
+        }
+
+        $(document).ready(function() {
+                let dropdownOpened = false;
+
+                $('select').on('click', function() {
+                        if(dropdownOpened) {
+                                reverseAnimationDropdown(this);
+                        } else {
+                                animateDropdownLine(this);
+                        }
+                        dropdownOpened = !dropdownOpened;
+                });
+        });
+</script>

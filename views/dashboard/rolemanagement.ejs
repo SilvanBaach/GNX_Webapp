@@ -1,106 +1,52 @@
 <script src="/js/clientJS/rolemanagement.js"></script>
 
-<div class="text">Role Management</div>
-<div class="content">
-    <!-- Role Management -->
-    <div class="shadow-box">
-        <p class="purple-title">Roles</p>
-        <button class="default green new-code" id="newRole">
-            <i class="ri-add-circle-line ri-lg"></i>
-            Create new
-        </button>
-        <table id="roleTable" class="styled-table">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Permissions</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody id="roleData" class="styled-table">
-            </tbody>
-        </table>
+<div class="mt-8 ml-8 mr-8 mb-8">
+
+    <div class="flex justify-between">
+        <p class="font-orbitron text-almost-white text-2xl font-semibold">Role Management</p>
+        <%- include('../components/buttondefault', {type: 'button', id: 'newRole', text: 'Create new Role', icon: 'ri-add-circle-line', btnType: 'Success'}) %>
     </div>
 
-    <div class="shadow-box edit-box" id="roleEdit">
-        <p class="purple-title">Edit Role</p>
-        <form id="form" class="form" action="/roletype/update" method="POST">
-            <input type="number" value="" style="display: none" id="roleTypeId" name="roleTypeId"/>
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="label-form" for="name">Name</label>
-                    <input class="input-form" type="text" id="name" name="name" value="" required>
-                </div>
-                <div class="form-group">
-                    <label class="label-form" for="description">Description</label>
-                    <input class="input-form" id="description" name="description">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="label-form" for="unassigned-permissions">Unassigned Permissions</label>
-                    <div id="scrollableListUnassigned" class="scrollable-list"></div>
-                    <button id="assign" class="default green" style="float: right">
-                        assign
-                        <i class="ri-arrow-right-line ri-lg"></i>
-                    </button>
-                </div>
-                <div class="form-group">
-                    <label class="label-form" for="assigned-permissions">Assigned Permissions</label>
-                    <div id="scrollableListAssigned" class="scrollable-list"></div>
-                    <button id="deAssign" class="default red">
-                        <i class="ri-arrow-left-line ri-lg"></i>
-                        de-assign
-                    </button>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <button class="default red" style="margin-top: 18px" id="deleteRole">Delete</button>
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="default" style="float: right; margin-top: 18px">Update</button>
-                </div>
-            </div>
-        </form>
+    <div class="bg-grey-level2 mt-4 p-4">
+        <%- include('../components/table', {id: 'roleTable', bodyId: 'roleData', headers: [{text: 'ID'}, {text: 'Name'}, {text: 'Description'}, {text: 'Permissions'}]}) %>
     </div>
 
-    <div class="shadow-box">
-        <p class="purple-title">Manage Role assignment</p>
-        <div class="btn-container">
-            <div class="add-btn-container">
-                <button class="default green" id="assignToTeam">
-                    <i class="ri-add-circle-line ri-lg"></i>
-                    to Team
-                </button>
-                <button class="default green" id="assignToUser">
-                    <i class="ri-add-circle-line ri-lg"></i>
-                    to User
-                </button>
+</div>
+
+<div id="editFormDefinition" style="display: none">
+    <div class="flex flex-wrap space-x-4" id="editForm">
+        <div class="flex flex-col space-y-4">
+            <div class="space-y-2">
+                <label for="editName" class="font-montserrat text-base text-almost-white">Name</label>
+                <%- include('../components/entryfield', {type: 'text', name: 'editName', id: 'editName'}) %>
             </div>
-            <div class="remove-btn-container">
-                <button class="default red" id="unassignFromTeam">
-                    <i class="ri-indeterminate-circle-line ri-lg"></i>
-                    from Team
-                </button>
-                <button class="default red" id="unassignFromUser">
-                    <i class="ri-indeterminate-circle-line ri-lg"></i>
-                    from User
-                </button>
+            <div class="space-y-2">
+                <label for="editDescription" class="font-montserrat text-base text-almost-white">Description</label>
+                <%- include('../components/entryfield', {type: 'text', name: 'editDescription', id: 'editDescription'}) %>
+            </div>
+        </div>
+        <div class="flex space-x-4">
+            <div class="flex flex-col">
+                <label for="unassignedPermissions" class="font-montserrat text-base text-almost-white block mb-2">Unassigned Permissions</label>
+                <select id="unassignedPermissions" multiple class="w-64 h-[250px]"></select>
+                <div class="mt-2 flex justify-end">
+                    <%- include('../components/buttondefault', {type: 'button', id: 'assign', text: 'assign', icon: 'ri-arrow-right-line', btnType: 'Success'}) %>
+                </div>
+            </div>
+            <div class="flex flex-col">
+                <label for="assignedPermissions" class="font-montserrat text-base text-almost-white block mb-2">Assigned Permissions</label>
+                <select id="assignedPermissions" multiple class="w-64 h-[250px]"></select>
+                <div class="mt-2 flex">
+                    <%- include('../components/buttondefault', {type: 'button', id: 'deAssign', text: 'de-assign', icon: 'ri-arrow-left-s-line', iconPos: 'left'}) %>
+                </div>
+            </div>
+            <div class="flex flex-col space-y-2 mt-8">
+                <%- include('../components/buttondefault', {type: 'button', id: 'deleteRole', text: 'Update'}) %>
+                <%- include('../components/buttondefault', {type: 'button', id: 'updateRole', text: 'Delete'}) %>
             </div>
         </div>
     </div>
 </div>
-
-<div id="popup-containerCreateRole" class="popup-container"></div>
-<div id="popup-containerDeleteRole" class="popup-container"></div>
-
-<div id="popup-containerAssignToTeam" class="popup-container"></div>
-<div id="popup-containerAssignToUser" class="popup-container"></div>
-<div id="popup-containerUnAssignFromTeam" class="popup-container"></div>
-<div id="popup-containerUnAssignFromUser" class="popup-container"></div>
 
 <script>
     $(document).ready(function () {

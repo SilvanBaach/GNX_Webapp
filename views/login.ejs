@@ -7,10 +7,13 @@
     <meta name="theme-color" content="#2B2D30">
 
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="/js/clientJS/toastMessages.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <link rel="icon" type="favicon" href="../res/logo/favico.png">
     <link href="/dist/output.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 
 <body style="background-image: url('/res/backgrounds/dark_bg.png'); background-position: center -50px; background-size: cover; min-width: 350px;" class="h-full">
@@ -47,4 +50,16 @@
 
 </div>
 </body>
+<script>
+    //Display Toast Message if needed
+    const searchParams = new URLSearchParams(window.location.search);
+    const message = searchParams.get('message')
+    const type = searchParams.get('type')
+
+    if (type && type === "error") {
+        displayError(message);
+    } else if (message !== null) {
+        displaySuccess(message);
+    }
+</script>
 </html>
