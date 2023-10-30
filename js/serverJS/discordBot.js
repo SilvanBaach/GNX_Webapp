@@ -5,10 +5,106 @@ const {logMessage, LogLevel} = require("./logger");
 let guildId;
 let client;
 
-function setupDiscordBot(pGuildId,pClient){
+function setupDiscordBot(pGuildId, pClient) {
     guildId = pGuildId;
     client = pClient;
+
+    registerFriendCommand();
 }
+
+/**
+ * Registers the /setFriend command
+ * This allows everybody with the role Community Member or higher to assign the friend role to a user
+ */
+function registerFriendCommand() {
+    client.guilds.fetch(guildId).then(async (guild) => {
+        await guild.commands.create({
+            name: 'setfriend',
+            description: 'Assign the friend role to a guest',
+            options: [
+                {
+                    name: 'username',
+                    type: 3,
+                    description: 'The username of the guest to be set as a friend',
+                    required: true,
+                },
+            ],
+        });
+        console.log('Setfriend command registered');
+    });
+
+    // Event listener for when a slash command is invoked
+    client.on('interactionCreate', async (interaction) => {
+        if (!interaction.isCommand()) return;
+
+        const {commandName, options} = interaction;
+
+        if (commandName === 'setfriend') {
+            const username = options.getString('username');
+
+            // Call your setFriendRole function here
+            const result = await setFriendRole(username, interaction.member);
+
+            if (result.success) {
+                await interaction.reply(`Success: ${result.message}`);
+            } else {
+                await interaction.reply({content: `Error: ${result.message}`, ephemeral: true});
+            }
+        }
+    });
+}
+
+/**
+ * Sets a friend role to a user
+ * @param username
+ */
+const setFriendRole = async (username, sender) => {
+    let guild;
+    let user;
+    let friendRole;
+    let minimumRole;
+
+    guild = client.guilds.cache.get(guildId);
+    if (!guild) {
+        logMessage(`/setFriend: Invalid Guild ID or the bot is not a member of the guild.`, LogLevel.ERROR, null);
+        return {
+            success: false,
+            message: `An unexpected error occurred. If the issue persists please contact Staff! Errorcode: db-01`
+        };
+    }
+
+    const members = await guild.members.fetch();
+    user = members.find(member => member.user.username === username);
+
+    if (!user) {
+        return {success: false, message: `Sorry no user with the username "${username}" was found on the server!`};
+    }
+
+    friendRole = guild.roles.cache.get('1055920519746158614'); //Friend Role ID
+    minimumRole = guild.roles.cache.get('952109499668373524'); //Community Member ID
+
+    if (!friendRole) {
+        return {
+            success: false,
+            message: `An unexpected error occurred. If the issue persists please contact Staff! Errorcode: db-02`
+        };
+    }
+    if (!minimumRole) {
+        return {
+            success: false,
+            message: `An unexpected error occurred. If the issue persists please contact Staff! Errorcode: db-03`
+        };
+    }
+
+    const hasMinRoleOrHigher = sender.roles.cache.some(role => role.position >= minimumRole.position);
+    if (hasMinRoleOrHigher) {
+        await user.roles.add(friendRole);
+        logMessage(`/setFriend: ${sender.user.username} set ${username} as a friend.`, LogLevel.INFO, null);
+        return {success: true, message: `Successfully set "${username}" as a friend.`};
+    } else {
+        return {success: false, message: `You do not have the permission to promote any members! If you think that's an error, please contact staff.`};
+    }
+};
 
 /**
  * Method which returns the amount of discord members
@@ -78,13 +174,14 @@ async function sendTrainingDataReminders() {
                                          LEFT JOIN account ON account.username = prep.username
                                          LEFT JOIN teammembership ON teammembership.account_fk = account.id
                                          LEFT JOIN team ON team.id = teammembership.team_fk
-                                WHERE (presencecount +  1) < team.discordnotificationdays
-                                  AND prep.discord IS NOT NULL AND account.trainingdatareminder = 1`);
+                                WHERE (presencecount + 1) < team.discordnotificationdays
+                                  AND prep.discord IS NOT NULL
+                                  AND account.trainingdatareminder = 1`);
 
     if (result.rows.length > 0) {
         result.rows.forEach((row) => {
             console.log(`Sending training data reminder to ${row.username}...`);
-            sendMessageToUser(row.discord,`Hey there, ${row.username} 👋
+            sendMessageToUser(row.discord, `Hey there, ${row.username} 👋
             
 We noticed that your training data for the next ${row.discordnotificationdays} days hasn't been logged yet! 📝
 
@@ -104,7 +201,7 @@ Your Team Genetix Bot 🤖
         });
 
         logMessage(`Sent training data reminders to the following users: ${userString}`, LogLevel.INFO, null)
-    }else{
+    } else {
         logMessage(`No users found for training data reminder`, LogLevel.INFO, null)
     }
 }
@@ -112,7 +209,7 @@ Your Team Genetix Bot 🤖
 /**
  * This function sends a welcome message to a new user
  */
-function sendWelcomeMessage(discordUsername){
+function sendWelcomeMessage(discordUsername) {
     sendMessageToUser(discordUsername, `Hey there, ${discordUsername} 👋
 
 You have successfully linked your Discord account with your Team Genetix Webapp account! 🎉
