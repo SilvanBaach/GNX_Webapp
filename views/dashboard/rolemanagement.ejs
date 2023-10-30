@@ -14,10 +14,11 @@
 </div>
 
 <div id="editFormDefinition" style="display: none">
+    <form id="editFormDefinition" class="update-form" action="/roletype/update" method="POST">
     <div class="flex flex-wrap space-x-4" id="editForm">
         <div class="flex flex-col space-y-4">
             <div class="space-y-2">
-                <label for="editName" class="font-montserrat text-base text-almost-white">Name</label>
+                <label for="editName" class="font-montnserrat text-base text-almost-white">Name</label>
                 <%- include('../components/entryfield', {type: 'text', name: 'editName', id: 'editName'}) %>
             </div>
             <div class="space-y-2">
@@ -26,46 +27,47 @@
             </div>
         </div>
         <div class="flex space-x-4">
+            <input type="number" value="" style="display: none" id="roleTypeId" name="roleTypeId"/>
             <div class="flex flex-col">
                 <label for="unassignedPermissions" class="font-montserrat text-base text-almost-white block mb-2">Unassigned Permissions</label>
-                <select id="unassignedPermissions" multiple class="w-64 h-[250px]"></select>
+                <select id="unassignedPermissions" multiple class="w-64 h-[250px] focus:outline-none focus:ring-0"></select>
                 <div class="mt-2 flex justify-end">
-                    <%- include('../components/buttondefault', {type: 'button', id: 'assign', text: 'assign', icon: 'ri-arrow-right-line', btnType: 'Success'}) %>
+                    <%- include('../components/buttondefault', {type: 'button', id: 'assign', text: 'assign', icon: 'ri-arrow-right-line', btnType: 'Success', customClasses: 'assignBtn'}) %>
                 </div>
             </div>
             <div class="flex flex-col">
                 <label for="assignedPermissions" class="font-montserrat text-base text-almost-white block mb-2">Assigned Permissions</label>
-                <select id="assignedPermissions" multiple class="w-64 h-[250px]"></select>
+                <select id="assignedPermissions" multiple class="w-64 h-[250px] focus:outline-none focus:ring-0"></select>
                 <div class="mt-2 flex">
-                    <%- include('../components/buttondefault', {type: 'button', id: 'deAssign', text: 'de-assign', icon: 'ri-arrow-left-s-line', iconPos: 'left'}) %>
+                    <%- include('../components/buttondefault', {type: 'button', id: 'deAssign', text: 'de-assign', icon: 'ri-arrow-left-s-line', iconPos: 'left',  btnType: 'Error', customClasses: 'deassignBtn'}) %>
                 </div>
             </div>
             <div class="flex flex-col space-y-2 mt-8">
-                <%- include('../components/buttondefault', {type: 'button', id: 'deleteRole', text: 'Update'}) %>
+                <%- include('../components/buttondefault', {type: 'submit', id: 'deleteRole', text: 'Update'}) %>
                 <%- include('../components/buttondefault', {type: 'button', id: 'updateRole', text: 'Delete'}) %>
             </div>
         </div>
     </div>
+    </form>
 </div>
+
+<div id="popup-containerDeleteRole"></div>
 
 <script>
     $(document).ready(function () {
         loadData();
 
-        $('#assign').click(function (e) {
+        $('body').on('click', '.assignBtn', function(e) {
             e.preventDefault();
-            assignPermission();
-        });
-
-        $('#deAssign').click(function (e) {
+            assignPermission(this);
+        }).on('click', '.deassignBtn', function(e) {
             e.preventDefault();
-            deAssignPermission();
-        });
-
-        $("#form").on('submit', function (event) {
+            deAssignPermission(this);
+        }).on('submit', '.update-form',function (event) {
             event.preventDefault();
 
             let data = $(this).serialize();
+            console.log(data);
             $.ajax({
                 url: $(this).attr('action'),
                 method: $(this).attr('method'),

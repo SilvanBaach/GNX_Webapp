@@ -69,6 +69,9 @@ function loadData() {
             roleData = data;
             const tableBody = $("#roleData");
             tableBody.empty();
+            $("#editFormDefinition").find('[id]').each(function() {
+                $(this).attr('data-original-id', $(this).attr('id'));
+            });
 
             for (let x = 0; x < data.length; x++) {
                 const roleType = data[x];
@@ -89,8 +92,12 @@ function loadData() {
                 const editFormCell = $("<td></td>").attr("colspan", 5);
 
                 const editForm = $("#editFormDefinition").clone().show();
-                editFormCell.append(editForm);
+                editForm.find('[id]').each(function() {
+                    const originalId = $(this).attr('data-original-id');
+                    $(this).attr('id', originalId + '-' + roleType.id);
+                });
 
+                editFormCell.append(editForm);
                 editFormRow.append(editFormCell);
 
                 button.on("click", function() {
@@ -136,11 +143,9 @@ function editRole(id) {
     editRoleId = id;
     const localRoleData = roleData.filter(role => parseInt(role.id) === parseInt(id));
 
-    $("#roleEdit").removeClass('edit-box');
-
-    $("#name").val(localRoleData[0].displayname);
-    $("#roleTypeId").val(localRoleData[0].id);
-    $("#description").val(localRoleData[0].description === "-" ? "" : localRoleData[0].description);
+    $("#editName-" + editRoleId).val(localRoleData[0].displayname);
+    $("#roleTypeId-" + editRoleId).val(localRoleData[0].id);
+    $("#editDescription-" + editRoleId).val(localRoleData[0].description === "-" ? "" : localRoleData[0].description);
 
     //Load all unassigned permissions
     $.ajax({
@@ -153,7 +158,7 @@ function editRole(id) {
         cache: false,
         success: function (data) {
             //Build the list
-            buildPermissionList(data, "scrollableListUnassigned");
+            buildPermissionList(data, "unassignedPermissions-" + editRoleId);
         },
         error: function (data) {
             if (data.responseJSON && data.responseJSON.redirect) {
@@ -174,7 +179,7 @@ function editRole(id) {
         cache: false,
         success: function (data) {
             //Build the list
-            buildPermissionList(data, "scrollableListAssigned");
+            buildPermissionList(data, "assignedPermissions-" + editRoleId);
         },
         error: function (data) {
             if (data.responseJSON && data.responseJSON.redirect) {
@@ -195,78 +200,92 @@ function buildPermissionList(data, listRef) {
     listContainer.empty();
 
     $.each(data, function (index, value) {
-        let listItem = $('<p></p>');
-        listItem.text(value.location + " -> " + value.permission);
-        listItem.data('id', value.id);
-        listItem.on('click', function () {
-            // Remove the 'clicked' class from all child elements of listContainer
-            listContainer.children().removeClass('clicked');
+        let optionItem = $('<option></option>');
+        optionItem.text(value.location + " ⯈ " + value.permission);
+        optionItem.val(value.id);
 
-            // Add the 'clicked' class to the currently clicked item
-            $(this).addClass('clicked');
+        listContainer.append(optionItem);
+    });
+}
+
+/**
+ * Assigns a permission to a role and saves it in the database
+ */
+function assignPermission(clickedButton) {
+    const roleId = clickedButton.id.split('-')[1];
+    const selectedPermissionTypeIds = $('#unassignedPermissions-' + roleId + ' option:selected').map(function() {
+        return $(this).val();
+    }).get();
+
+    const ajaxCalls = [];
+
+    $.each(selectedPermissionTypeIds, function(index, permissiontypeId) {
+        const ajaxCall = $.ajax({
+            url: "/permission/assignpermission",
+            type: "POST",
+            dataType: "json",
+            data: {
+                roleId: roleId,
+                permissionTypeId: permissiontypeId
+            },
+            cache: false
         });
-        listContainer.append(listItem);
+
+        ajaxCalls.push(ajaxCall);
     });
-}
 
-/**
- * Assigns a permission to a role and saves it in the database
- */
-function assignPermission() {
-    // Retrieve the id from the clicked line
-    const permissiontypeId = $('#scrollableListUnassigned').find('.clicked').data('id');
-
-    // Send ajax request
-    $.ajax({
-        url: "/permission/assignpermission",
-        type: "POST",
-        dataType: "json",
-        data: {
-            roleId: editRoleId,
-            permissionTypeId: permissiontypeId
+    $.when.apply($, ajaxCalls).then(
+        function() {
+            displaySuccess("Permission(s) successfully assigned.");
+            editRole(roleId);
         },
-        cache: false,
-        success: function (data) {
-            displaySuccess("Permission successfully assigned.");
-            editRole(editRoleId);
-        },
-        error: function (data) {
+        function(data) {
             if (data.responseJSON && data.responseJSON.redirect) {
                 window.location.href = data.responseJSON.redirect;
             }
             displayError(data.responseText);
         }
-    });
+    );
 }
 
 /**
  * Assigns a permission to a role and saves it in the database
  */
-function deAssignPermission() {
-    // Retrieve the id from the clicked line
-    const permissiontypeId = $('#scrollableListAssigned').find('.clicked').data('id');
+function deAssignPermission(clickedButton) {
+    const roleId = clickedButton.id.split('-')[1];
+    const selectedPermissionTypeIds = $('#assignedPermissions-' + roleId + ' option:selected').map(function() {
+        return $(this).val();
+    }).get();
 
-    // Send ajax request
-    $.ajax({
-        url: "/permission/deassignpermission",
-        type: "POST",
-        dataType: "json",
-        data: {
-            roleId: editRoleId,
-            permissionTypeId: permissiontypeId
+    const ajaxCalls = [];
+
+    $.each(selectedPermissionTypeIds, function(index, permissiontypeId) {
+        const ajaxCall = $.ajax({
+            url: "/permission/deassignpermission",
+            type: "POST",
+            dataType: "json",
+            data: {
+                roleId: roleId,
+                permissionTypeId: permissiontypeId
+            },
+            cache: false
+        });
+
+        ajaxCalls.push(ajaxCall);
+    });
+
+    $.when.apply($, ajaxCalls).then(
+        function() {
+            displaySuccess("Permission(s) successfully deassigned.");
+            editRole(roleId);
         },
-        cache: false,
-        success: function (data) {
-            displaySuccess("Permission successfully deassigned.");
-            editRole(editRoleId);
-        },
-        error: function (data) {
+        function(data) {
             if (data.responseJSON && data.responseJSON.redirect) {
                 window.location.href = data.responseJSON.redirect;
             }
             displayError(data.responseText);
         }
-    });
+    );
 }
 
 /**

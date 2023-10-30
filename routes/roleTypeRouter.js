@@ -80,7 +80,7 @@ router.post('/unassignrole', checkNotAuthenticated, permissionCheck('rolemanagem
  * POST route for updating a role type
  */
 router.post('/update', checkNotAuthenticated, permissionCheck('rolemanagement', 'canOpen'), function (req, res) {
-    updateRoleType(req.body.roleTypeId, req.body.name, req.body.description).then(() => {
+    updateRoleType(req.body.roleTypeId, req.body.editName, req.body.editDescription).then(() => {
         logMessage(`User ${req.user.username} updated the role type ${req.body.name}`,LogLevel.INFO,req.user.id)
         res.status(200).send({message: "Role type updated successfully!"});
     }).catch(() => {

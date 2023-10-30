@@ -13,8 +13,8 @@
         <div class="mt-6 mb-6 space-x-4 flex flex-row items-center">
             <label for="level" class="text-base font-montserrat font-semibold">Filter by:</label>
             <%- include('../components/dropdown', {id: 'levelFilter', options: [{value: -1, text: "All levels"},
-            {value: 0, text: "INFO"}, {value: 1, text: "WARN"}, {value: 2, text: "ERROR"}], width: 'w-40'}) %>
-            <%- include('../components/dropdown', {id: 'userFilter', options: [{value: -2, text: "All users"}], width: 'w-40'}) %>
+            {value: 0, text: "INFO"}, {value: 1, text: "WARN"}, {value: 2, text: "ERROR"}], width: 'w-48'}) %>
+            <%- include('../components/dropdown', {id: 'userFilter', options: [{value: -2, text: "All users"}], width: 'w-48'}) %>
         </div>
 
         <%- include('../components/table', {id: 'logTable', bodyId: 'logTableData', headers: [{text: 'Time'}, {text: 'Message'}, {text: 'User'}, {text: 'Level'}]}) %>

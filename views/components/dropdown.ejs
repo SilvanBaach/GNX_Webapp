@@ -3,7 +3,7 @@
         <% width = 'w-32' %>
 <% } %>
 
-<div class="relative overflow-hidden">
+<div class="relative overflow-hidden rounded-md">
         <select id="<%= id %>" class="p-1 pl-2 pr-8 font-montserrat text-base text-almost-white appearance-none <%= width %> rounded-md outline-none"
                 onblur="reverseAnimationDropdown(this)" onchange="reverseAnimationDropdown(this)">
                 <% options.forEach(option => { %>
@@ -30,15 +30,17 @@
         }
 
         $(document).ready(function() {
-                let dropdownOpened = false;
-
-                $('select').on('click', function() {
-                        if(dropdownOpened) {
-                                reverseAnimationDropdown(this);
-                        } else {
-                                animateDropdownLine(this);
-                        }
-                        dropdownOpened = !dropdownOpened;
+                $('select').each(function() {
+                        $(this).data('dropdownOpened', false);
+                }).on('focus', function() {
+                        animateDropdownLine(this);
+                        $(this).data('dropdownOpened', true);
+                }).on('blur', function() {
+                        reverseAnimationDropdown(this);
+                        $(this).data('dropdownOpened', false);
+                }).on('change', function() {
+                        reverseAnimationDropdown(this);
+                        $(this).data('dropdownOpened', true);
                 });
         });
 </script>

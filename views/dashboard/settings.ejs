@@ -1,168 +1,131 @@
-<script src="/js/clientJS/imgUploadToDB.js"></script>
-<script src="/js/clientJS/settings.js"></script>
-
-<div class="text">Settings</div>
-<div class="content">
-    <div class="shadow-box player-shadow-box">
-        <% if (user.thumbnail) { %>
-            <img class="player-img" src="<%= user.thumbnail %>" alt="profile picture" id="profilePicture"/>
-        <% } else { %>
-            <img class="player-img" src="/res/others/blank_profile_picture.png" alt="blank profile picture" id="profilePicture"/>
-        <% } %>
-
-        <p class="player-name" id="usernameBig"> <%= user.username %></p>
-        <p class="team-name"> <%= user.team.displayname %></p>
-        <div class="button-container">
-            <button class="default red player-btn" id="deleteUser">Delete User</button>
-            <button class="default player-btn" id="upload">Upload
-                <i class="ri-upload-2-fill upload-icon"></i>
-                <input type="file" id="fileInput" accept="image/png, image/jpeg" class="file-input">
-            </button>
-        </div>
+<div class="bg-grey-level1 max-w-[1127px] mt-8 ml-8 mr-8 mb-8">
+    <div class="flex justify-between max-h-10 pr-2.5 md:pr-0">
+        <h3 class="text-2xl md:mb-0 mb-5 font-bold font-orbitron text-white">Settings</h3>
+        <%- include('../components/buttondefault', {type: 'button', id: 'save', text: 'Save', icon: 'ri-save-line', btnType: 'Success', customClasses: 'h-auto'}) %>
     </div>
-    <div class="vert-shadow-box-container">
-        <div class="shadow-box personal-shadow-box">
-            <form id="formPersInfo" class="form">
-                <p class="purple-title">Personal Information</p>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="fullName">Full Name*</label>
-                        <input type="text" id="fullName" name="fullName" class="input-left"
-                               value="<%= user.fullname %>">
+    <div class="flex lg:flex-nowrap flex-wrap lg:max-w-full max-w-[590px] items-start mt-[14px]">
+        <div class="w-full lg:order-1 order-2 lg:max-w-[719px] sm:mt-0 mt-5 max-w-full pr-2.5">
+            <div class="bg-grey-level2 sm:p-6 px-4 py-6 font-montserrat">
+                <h4 class="text-lg text-white font-bold">Personal Information</h4>
+                <form>
+                    <div class="flex items-center justify-between mt-4">
+                        <div class="w-1/2 xl:pr-4 pr-2">
+                            <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Full Name *</label>
+                            <%- include('../components/entryfield', {type: 'text', name: 'fullname', id: 'fullname', required: 'yes'}) %>
+                        </div>
+                        <div class="w-1/2 xl:pl-4 pl-2">
+                            <label class="xl:text-base text-sm font-montserrat font-semibold text-white">E-Mail *</label>
+                            <%- include('../components/entryfield', {type: 'email', name: 'email', id: 'email', required: 'yes'}) %>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="email">E-Mail*</label>
-                        <input type="email" id="email" name="email" value="<%= user.email %>">
+                    <div class="flex items-center justify-between xl:mt-5 mt-3">
+                        <div class="w-1/2 xl:pr-4 pr-2">
+                            <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Phone Number</label>
+                            <%- include('../components/entryfield', {type: 'text', name: 'phone', id: 'phone'}) %>
+                        </div>
+                        <div class="w-1/2 xl:pl-4 pl-2">
+                            <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Username *</label>
+                            <%- include('../components/entryfield', {type: 'text', name: 'username', id: 'username', required: 'yes'}) %>
+                        </div>
                     </div>
+                    <div class="flex items-center justify-between xl:mt-5 mt-3">
+                        <div class="w-1/2 xl:pr-4 pr-2">
+                            <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Street</label>
+                            <%- include('../components/entryfield', {type: 'text', name: 'street', id: 'street'}) %>
+                        </div>
+                        <div class="w-1/2 xl:pl-4 pl-2">
+                            <label class="xl:text-base text-sm font-montserrat font-semibold text-white">City</label>
+                            <%- include('../components/entryfield', {type: 'text', name: 'city', id: 'city'}) %>
+                        </div>
+                    </div>
+                    <div class="w-1/2 mt-5 xl:pr-5 pr-2">
+                        <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Zip Code</label>
+                        <%- include('../components/entryfield', {type: 'number', name: 'zip', id: 'zip'}) %>
+                    </div>
+                </form>
+            </div>
+            <div class="bg-grey-level2 sm:p-6 px-4 py-6 my-5">
+                <h4 class="text-lg text-white font-bold">Notifications</h4>
+                <p class="xl:text-base text-sm text-white font-semibold font-montserrat pt-4">
+                    Send a Discord notification if your trainingdata is not complete
+                </p>
+                <div>
+                    <input type="radio" id="html" name="fav_language" value="HTML">
+                    <label for="html" class="text-base text-white">Yes</label>
+                    <input type="radio" id="css" name="fav_language" value="CSS">
+                    <label for="css" class="text-base text-white">No</label>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="phone">Phone</label>
-                        <input type="text" id="phone" name="phone" class="input-left" value="<%= user.phone %>">
+            </div>
+            <div class="bg-grey-level2 sm:p-6 px-4 py-6 font-montserrat">
+                <h4 class="text-lg text-white font-bold">Linked Accounts</h4>
+                <form>
+                    <div class="flex items-center justify-between mt-4">
+                        <div class="w-1/2 xl:pr-4 pr-2">
+                            <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Steam</label>
+                            <%- include('../components/entryfield', {type: 'text', name: 'steam', id: 'steam'}) %>
+                        </div>
+                        <div class="w-1/2 xl:pl-4 pl-2">
+                            <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Origin</label>
+                            <%- include('../components/entryfield', {type: 'text', name: 'origin', id: 'origin'}) %>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="username">Username*</label>
-                        <input type="text" id="username" name="username" value="<%= user.username %>">
+                    <div class="flex flex-wrap sm:items-center justify-between xl:mt-5 mt-3">
+                        <div class="sm:w-1/2 w-full xl:pr-4 pr-2">
+                            <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Discord</label>
+                            <%- include('../components/entryfield', {type: 'text', name: 'discord', id: 'discord'}) %>
+                        </div>
+                        <div class="sm:w-1/2 w-full xl:pl-4 sm:mt-0 mt-5 sm:pl-2">
+                            <label class="xl:text-base text-sm font-montserrat font-semibold text-white ">Riot Games</label>
+                            <div class="flex items-center justify-between">
+                                <%- include('../components/entryfield', {type: 'text', name: 'riot', id: 'riot'}) %>
+                                <span class="text-white sm:mt-0 mt-2 sm:text-center text-center inline-block mx-3 ">#</span>
+                                <%- include('../components/entryfield', {type: 'text', name: 'riotid', id: 'riotid'}) %>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
-
-        <div class="shadow-box personal-shadow-box">
-            <form id="formAdress" class="form">
-                <p class="purple-title">Address</p>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="street">Street</label>
-                        <input type="text" id="street" name="street" class="input-left"
-                               value="<%= user.street %>">
+        <div class="w-full lg:order-2 order-1 xl:max-w-[537px] lg:max-w-[405px] max-w-full lg:pl-2.5 pr-2.5 lg:pr-0 sm:pb-5 lg:pb-0">
+            <div class="bg-grey-level2 px-6 pt-12 pb-8 font-montserrat">
+                <div class=" flex-col flex items-center justify-center">
+                    <a href="#"><img src="/res/tmp/Group.jpg" class="rounded-full sm:max-w-full max-w-[110px] mx-auto" alt=""></a>
+                    <h2 class="md:text-2xl text-xl font-orbitron font-bold text-white md:pt-10 pt-5 md:pb-4 pb-2">
+                        AdmAtomschlag
+                    </h2>
+                    <p class="text-lg text-white font-bold font-montserrat">Team Apex</p>
+                </div>
+                <div class="sm:flex items-center justify-between lg:pt-16 pt-8">
+                    <div class="sm:w-40  w-full flex-col flex items-center justify-center bg-grey-level3 xl:py-7 py-5 mr-5">
+                        <h4 class="xl:text-lg sm:text-xs text-sm font-montserrat font-bold text-white">GNX-Level</h4>
+                        <h3 class="text-turquoise xl:text-4xl sm:text-2xl text-3xl font-bold xl:pt-3 pt-1 font-orbitron">8</h3>
                     </div>
-                    <div class="form-group">
-                        <label for="city">City</label>
-                        <input type="text" id="city" name="city" value="<%= user.city %>">
+                    <div
+                            class="sm:w-40 sm:mt-0 mt-5 w-full flex-col flex items-center justify-center bg-grey-level3 xl:py-7 py-5 mr-5">
+                        <h4 class="xl:text-lg sm:text-xs text-sm font-montserrat font-bold text-white">GNX-Points</h4>
+                        <h3 class="text-turquoise xl:text-4xl sm:text-2xl text-3xl font-bold xl:pt-3 pt-1 font-orbitron">53</h3>
+                    </div>
+                    <div
+                            class="sm:w-40 sm:mt-0 mt-5 w-full flex-col flex items-center justify-center bg-grey-level3 xl:py-7 py-5 ">
+                        <h4 class="xl:text-lg sm:text-xs text-sm font-montserrat font-bold text-white">Total Sessions</h4>
+                        <h3 class="text-turquoise xl:text-4xl sm:text-2xl text-3xl font-bold xl:pt-3 pt-1 font-orbitron">1028
+                        </h3>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="zipcode">Zip Code</label>
-                        <input type="text" id="zipcode" name="zipcode" class="input-left" value="<%= user.zip %>">
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" class="default submit">Save</button>
+                <div class="bg-grey-level3 mt-10 sm:pt-9 pt-5 sm:pb-12 pb-5 xl:px-10 px-5">
+                    <h4 class="text-error font-bold text-lg text-center">DANGER ZONE</h4>
+                    <div class="sm:flex items-center xl:gap-5 gap-2 justify-between sm:mt-10 mt-5">
+                        <button
+                                class="bg-action-grey hover:bg-grey-level2 shadow-dashboard hover:border-red-text py-2 border-b-4 xl:max-w-[190px] lg:max-w-[154px] w-full border-b-btn-grey xl:text-base lg:text-xs text-sm font-montserrat font-semibold text-white rounded-t-lg ">Delete
+                            User <span class="xl:ml-2.5 ml-1.5"><img src="/res/tmp/ic-file-download.svg" class="inline-block"
+                                                                     alt=""></span></button>
+                        <button
+                                class="bg-action-grey py-2 sm:mt-0 mt-3 shadow-dashboard hover:bg-grey-level2 hover:border-red-text border-b-4 xl:max-w-[190px] lg:max-w-[154px] w-full border-b-btn-grey xl:text-base lg:text-xs text-sm font-montserrat font-semibold text-white rounded-t-lg ">Reset
+                            Password <span class="xl:ml-2.5 ml-1.5"><img src="/res/tmp/ic-file-download.svg" class="inline-block"
+                                                                         alt=""></span></button>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
-<div class="content">
-    <div class="shadow-box password-shadow-box">
-        <form id="linkedAccountsForm" class="form">
-            <p class="purple-title">Linked Accounts</p>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="city">Steam</label>
-                    <input type="text" id="steam" name="steam" value="<%= user.steam %>">
-                </div>
-                <div class="form-group">
-                    <label for="riotgames">Riot Games</label>
-                    <input type="text" id="riotgames" name="riotgames" value="<%= user.riotgames %>">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="origin">Origin</label>
-                    <input type="text" id="origin" name="origin" value="<%= user.origin %>">
-                </div>
-                <div class="form-group">
-                    <label for="discord">Discord</label>
-                    <input type="text" id="discord" name="discord" value="<%= user.discord %>">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="default save-linked-accs">Save</button>
-                </div>
-            </div>
-        </form>
-    </div>
-    <div class="shadow-box whatever-shadow-box">
-        <p class="purple-title form  pw-text">Others</p>
-        <div class="button-container2">
-            <button class="default green reset-pw-btn" id="resetPassword">Reset Password</button>
-            <button class="default green reset-pw-btn" id="manageNotifications">Manage Notifications</button>
-            <button class="default reset-pw-btn shop" id="shopAccountButton"></button>
-            <button class="default green reset-pw-btn" id="getCouponCode">Get my Coupon Code</button>
-        </div>
-    </div>
-</div>
-
-<div id="popup-containerResetPassword" class="popup-container"></div>
-<div id="popup-containerLinkShopAccount" class="popup-container"></div>
-<div id="popup-containerUnlinkShopAccount" class="popup-container"></div>
-<div id="popup-containerManageNotifications" class="popup-container"></div>
-
-<script>
-    $(document).ready(function () {
-        updateShopButton(<%= user.wpuserid %>)
-        setupSettingsPage();
-        setupPWResetPopup();
-        setupLinkShopAccountPopup();
-        setupUnlinkShopAccountPopup();
-        setupNotificationPopup(<%= user.trainingdatareminder %>);
-        loadUserPicture();
-
-        //Updates the profile picture
-        const input = document.getElementById("fileInput");
-        input.addEventListener("change", (e) => {
-            if (e.target.files.length > 0) {
-                updateProfilePicture(e, <%= user.id %>).then((result) => {
-                    displaySuccess(result.message);
-                    $('.player-img').attr("src", result.picture);
-                }).catch((error) => {
-                    displayError(error);
-                });
-            }
-        });
-
-        $("#getCouponCode").click(function() {
-            $.ajax({
-                url: "/wooCommerce/getCouponCode",
-                type: "GET",
-                success: function (result) {
-                    console.log(result);
-                    displaySuccess(result.message);
-                },
-                error: function (data) {
-                    if (data.responseJSON && data.responseJSON.redirect) {
-                        window.location.href = data.responseJSON.redirect;
-                    }
-                    displayError(data.responseJSON.message);
-                }
-            });
-        });
-
-    });
-</script>

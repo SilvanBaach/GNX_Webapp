@@ -57,7 +57,7 @@
         });
 
         $("#settingLink").click(() => {
-            window.location.href = "/dashboard/settings";
+            loadPage('settings', [{id: "settings", url: "/dashboard/settings"}])
         });
     });
 
