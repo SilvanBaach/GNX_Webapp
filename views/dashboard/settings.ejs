@@ -1,46 +1,48 @@
-<div class="bg-grey-level1 max-w-[1127px] mt-8 ml-8 mr-8 mb-8">
-    <div class="flex justify-between max-h-10 pr-2.5 md:pr-0">
+<div class="bg-grey-level1 max-w-[1330px] xl:pr-4 lg:pr-0 pr-4 px-8 py-6">
+    <div class="flex justify-between">
         <h3 class="text-2xl md:mb-0 mb-5 font-bold font-orbitron text-white">Settings</h3>
-        <%- include('../components/buttondefault', {type: 'button', id: 'save', text: 'Save', icon: 'ri-save-line', btnType: 'Success', customClasses: 'h-auto'}) %>
+        <div class="text-right lg:mr-2.5 md:mb-0 mb-5">
+            <%- include('../components/buttondefault', {type: 'button', id: '', text: 'Update', icon: 'ri-save-line'}) %>
+        </div>
     </div>
-    <div class="flex lg:flex-nowrap flex-wrap lg:max-w-full max-w-[590px] items-start mt-[14px]">
-        <div class="w-full lg:order-1 order-2 lg:max-w-[719px] sm:mt-0 mt-5 max-w-full pr-2.5">
+    <div class="flex lg:flex-nowrap flex-wrap lg:max-w-full max-w-[590px] lg:-mx-2.5 items-start justify-between mt-[14px]">
+        <div class="w-full lg:order-1 order-2 lg:max-w-[719px] sm:mt-0 mt-5 max-w-full lg:mx-2.5 lg:mr-5">
             <div class="bg-grey-level2 sm:p-6 px-4 py-6 font-montserrat">
                 <h4 class="text-lg text-white font-bold">Personal Information</h4>
                 <form>
                     <div class="flex items-center justify-between mt-4">
                         <div class="w-1/2 xl:pr-4 pr-2">
-                            <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Full Name *</label>
-                            <%- include('../components/entryfield', {type: 'text', name: 'fullname', id: 'fullname', required: 'yes'}) %>
+                            <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Fullname *</label>
+                            <%- include('../components/entryfield', {type: 'text', name: 'fullname', id: 'fullname', width: 'w-full'}) %>
                         </div>
                         <div class="w-1/2 xl:pl-4 pl-2">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">E-Mail *</label>
-                            <%- include('../components/entryfield', {type: 'email', name: 'email', id: 'email', required: 'yes'}) %>
+                            <%- include('../components/entryfield', {type: 'email', name: 'email', id: 'email', width: 'w-full'}) %>
                         </div>
                     </div>
                     <div class="flex items-center justify-between xl:mt-5 mt-3">
                         <div class="w-1/2 xl:pr-4 pr-2">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Phone Number</label>
-                            <%- include('../components/entryfield', {type: 'text', name: 'phone', id: 'phone'}) %>
+                            <%- include('../components/entryfield', {type: 'text', name: 'phone', id: 'phone', width: 'w-full'}) %>
                         </div>
                         <div class="w-1/2 xl:pl-4 pl-2">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Username *</label>
-                            <%- include('../components/entryfield', {type: 'text', name: 'username', id: 'username', required: 'yes'}) %>
+                            <%- include('../components/entryfield', {type: 'text', name: 'username', id: 'username', width: 'w-full'}) %>
                         </div>
                     </div>
                     <div class="flex items-center justify-between xl:mt-5 mt-3">
                         <div class="w-1/2 xl:pr-4 pr-2">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Street</label>
-                            <%- include('../components/entryfield', {type: 'text', name: 'street', id: 'street'}) %>
+                            <%- include('../components/entryfield', {type: 'text', name: 'street', id: 'street', width: 'w-full'}) %>
                         </div>
                         <div class="w-1/2 xl:pl-4 pl-2">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">City</label>
-                            <%- include('../components/entryfield', {type: 'text', name: 'city', id: 'city'}) %>
+                            <%- include('../components/entryfield', {type: 'text', name: 'city', id: 'city', width: 'w-full'}) %>
                         </div>
                     </div>
                     <div class="w-1/2 mt-5 xl:pr-5 pr-2">
                         <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Zip Code</label>
-                        <%- include('../components/entryfield', {type: 'number', name: 'zip', id: 'zip'}) %>
+                        <%- include('../components/entryfield', {type: 'number', name: 'zip', id: 'zip', width: 'w-full'}) %>
                     </div>
                 </form>
             </div>
@@ -62,31 +64,27 @@
                     <div class="flex items-center justify-between mt-4">
                         <div class="w-1/2 xl:pr-4 pr-2">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Steam</label>
-                            <%- include('../components/entryfield', {type: 'text', name: 'steam', id: 'steam'}) %>
+                            <%- include('../components/entryfield', {type: 'text', name: 'steam', id: 'steam', width: 'w-full'}) %>
                         </div>
                         <div class="w-1/2 xl:pl-4 pl-2">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Origin</label>
-                            <%- include('../components/entryfield', {type: 'text', name: 'origin', id: 'origin'}) %>
+                            <%- include('../components/entryfield', {type: 'text', name: 'origin', id: 'origin', width: 'w-full'}) %>
                         </div>
                     </div>
-                    <div class="flex flex-wrap sm:items-center justify-between xl:mt-5 mt-3">
-                        <div class="sm:w-1/2 w-full xl:pr-4 pr-2">
+                    <div class="flex items-center justify-between mt-4">
+                        <div class="w-1/2 xl:pr-4 pr-2">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Discord</label>
-                            <%- include('../components/entryfield', {type: 'text', name: 'discord', id: 'discord'}) %>
+                            <%- include('../components/entryfield', {type: 'text', name: 'discord', id: 'discord', width: 'w-full'}) %>
                         </div>
-                        <div class="sm:w-1/2 w-full xl:pl-4 sm:mt-0 mt-5 sm:pl-2">
-                            <label class="xl:text-base text-sm font-montserrat font-semibold text-white ">Riot Games</label>
-                            <div class="flex items-center justify-between">
-                                <%- include('../components/entryfield', {type: 'text', name: 'riot', id: 'riot'}) %>
-                                <span class="text-white sm:mt-0 mt-2 sm:text-center text-center inline-block mx-3 ">#</span>
-                                <%- include('../components/entryfield', {type: 'text', name: 'riotid', id: 'riotid'}) %>
-                            </div>
+                        <div class="w-1/2 xl:pl-4 pl-2">
+                            <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Riot</label>
+                            <%- include('../components/entryfield', {type: 'text', name: 'riot', id: 'riot', width: 'w-full'}) %>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
-        <div class="w-full lg:order-2 order-1 xl:max-w-[537px] lg:max-w-[405px] max-w-full lg:pl-2.5 pr-2.5 lg:pr-0 sm:pb-5 lg:pb-0">
+        <div class="w-full lg:order-2 order-1 xl:max-w-[537px] lg:max-w-[405px] max-w-full sm:mb-5">
             <div class="bg-grey-level2 px-6 pt-12 pb-8 font-montserrat">
                 <div class=" flex-col flex items-center justify-center">
                     <a href="#"><img src="/res/tmp/Group.jpg" class="rounded-full sm:max-w-full max-w-[110px] mx-auto" alt=""></a>
@@ -95,7 +93,7 @@
                     </h2>
                     <p class="text-lg text-white font-bold font-montserrat">Team Apex</p>
                 </div>
-                <div class="sm:flex items-center justify-between lg:pt-16 pt-8">
+                <div class="sm:flex items-center justify-between pt-8 lg:pt-[43px] xl:pt-[66px]">
                     <div class="sm:w-40  w-full flex-col flex items-center justify-center bg-grey-level3 xl:py-7 py-5 mr-5">
                         <h4 class="xl:text-lg sm:text-xs text-sm font-montserrat font-bold text-white">GNX-Level</h4>
                         <h3 class="text-turquoise xl:text-4xl sm:text-2xl text-3xl font-bold xl:pt-3 pt-1 font-orbitron">8</h3>
@@ -112,17 +110,11 @@
                         </h3>
                     </div>
                 </div>
-                <div class="bg-grey-level3 mt-10 sm:pt-9 pt-5 sm:pb-12 pb-5 xl:px-10 px-5">
+                <div class="bg-grey-level3 mt-10 pt-5 sm:pb-12 pb-5 xl:px-10 px-5 h-48">
                     <h4 class="text-error font-bold text-lg text-center">DANGER ZONE</h4>
-                    <div class="sm:flex items-center xl:gap-5 gap-2 justify-between sm:mt-10 mt-5">
-                        <button
-                                class="bg-action-grey hover:bg-grey-level2 shadow-dashboard hover:border-red-text py-2 border-b-4 xl:max-w-[190px] lg:max-w-[154px] w-full border-b-btn-grey xl:text-base lg:text-xs text-sm font-montserrat font-semibold text-white rounded-t-lg ">Delete
-                            User <span class="xl:ml-2.5 ml-1.5"><img src="/res/tmp/ic-file-download.svg" class="inline-block"
-                                                                     alt=""></span></button>
-                        <button
-                                class="bg-action-grey py-2 sm:mt-0 mt-3 shadow-dashboard hover:bg-grey-level2 hover:border-red-text border-b-4 xl:max-w-[190px] lg:max-w-[154px] w-full border-b-btn-grey xl:text-base lg:text-xs text-sm font-montserrat font-semibold text-white rounded-t-lg ">Reset
-                            Password <span class="xl:ml-2.5 ml-1.5"><img src="/res/tmp/ic-file-download.svg" class="inline-block"
-                                                                         alt=""></span></button>
+                    <div class="flex flex-col items-center xl:gap-5 gap-2 mt-5">
+                        <%- include('../components/buttondefault', {type: 'button', id: '', text: 'Delete User', icon: 'ri-delete-bin-2-line'}) %>
+                        <%- include('../components/buttondefault', {type: 'button', id: '', text: 'Reset Password', icon: 'ri-refresh-line'}) %>
                     </div>
                 </div>
             </div>
