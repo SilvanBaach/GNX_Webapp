@@ -1,6 +1,6 @@
 WITH times AS (
-    SELECT CAST(EXTRACT(epoch FROM day AT TIME ZONE 'CEST') AS INTEGER) AS time_series,
-           to_char(to_timestamp(EXTRACT(epoch FROM day AT TIME ZONE 'CEST')), 'DD.MM.YYYY') AS readable_date
+    SELECT CAST(EXTRACT(epoch FROM (day::timestamp AT TIME ZONE 'Europe/Berlin')) AS INTEGER) AS time_series,
+           to_char(day::timestamp AT TIME ZONE 'Europe/Berlin', 'DD.MM.YYYY') AS readable_date
     FROM generate_series(current_date, current_date + interval '40 days', '1 day') AS day
 ),
 
