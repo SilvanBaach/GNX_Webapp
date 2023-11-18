@@ -63,7 +63,7 @@
     $(document).ready( function () {
         let currentDate = new Date();
 
-        if(<%= user.team.account_fk %> === <%= user.id %>)
+        if('<%= user.team.account_fk %>' === '<%= user.id %>')
         {
             setupDefTrainingTimePopup(<%= user.team.id %>);
         }
