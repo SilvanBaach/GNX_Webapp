@@ -159,6 +159,10 @@ async function displayTrainingNote(noteId) {
         return;
     }
 
+    await loadExistingNotes().then((result) => {
+        allNotes = result
+        })
+
     currentNote = allNotes.find(note => note.id == noteId);
 
     if (!currentNote) {
