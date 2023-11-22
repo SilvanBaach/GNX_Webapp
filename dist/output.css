@@ -1110,8 +1110,8 @@ video {
   height: 0.75rem;
 }
 
-.h-36 {
-  height: 9rem;
+.h-48 {
+  height: 12rem;
 }
 
 .h-8 {
@@ -1136,14 +1136,6 @@ video {
 
 .h-screen {
   height: 100vh;
-}
-
-.h-44 {
-  height: 11rem;
-}
-
-.h-48 {
-  height: 12rem;
 }
 
 .max-h-10 {
@@ -3607,20 +3599,8 @@ video {
     padding-right: 1.25rem;
   }
 
-  .xl\:pt-10 {
-    padding-top: 2.5rem;
-  }
-
   .xl\:pt-3 {
     padding-top: 0.75rem;
-  }
-
-  .xl\:pt-16 {
-    padding-top: 4rem;
-  }
-
-  .xl\:pt-\[65px\] {
-    padding-top: 65px;
   }
 
   .xl\:pt-\[66px\] {

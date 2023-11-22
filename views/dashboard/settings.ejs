@@ -1,3 +1,6 @@
+<script src="/js/clientJS/imgUploadToDB.js"></script>
+<script src="/js/clientJS/settings.js"></script>
+
 <div class="bg-grey-level1 max-w-[1330px] xl:pr-4 lg:pr-0 pr-4 px-8 py-6">
     <div class="flex justify-between">
         <h3 class="text-2xl md:mb-0 mb-5 font-bold font-orbitron text-white">Settings</h3>
@@ -13,7 +16,7 @@
                     <div class="flex items-center justify-between mt-4">
                         <div class="w-1/2 xl:pr-4 pr-2">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Fullname *</label>
-                            <%- include('../components/entryfield', {type: 'text', name: 'fullname', id: 'fullname', width: 'w-full'}) %>
+                            <%- include('../components/entryfield', {type: 'text', name: 'fullname', id: 'fullname', width: 'w-full', value: user.fullname }) %>
                         </div>
                         <div class="w-1/2 xl:pl-4 pl-2">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">E-Mail *</label>
@@ -121,3 +124,24 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+
+        setupSettingsPage();
+        loadUserPicture();
+
+        //Updates the profile picture
+        const input = document.getElementById("fileInput");
+        input.addEventListener("change", (e) => {
+            if (e.target.files.length > 0) {
+                updateProfilePicture(e, <%= user.id %>).then((result) => {
+                    displaySuccess(result.message);
+                    $('.player-img').attr("src", result.picture);
+                }).catch((error) => {
+                    displayError(error);
+                });
+            }
+        });
+    });
+</script>

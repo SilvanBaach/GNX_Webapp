@@ -4,6 +4,7 @@
             type="<%= type %>"
             name="<%= name %>"
             id="<%= id %>"
+            value="<% if (typeof value !== 'undefined') { %><%= value %><% } %>"
             class="font-montserrat text-almost-white text-base bg-action-grey <% if (typeof width !== 'undefined') { %><%= width %><% } else {%> w-64 <%}%> h-9 p-2
             focus:outline-none focus:ring-0 line-entry-input"
     <% if (typeof required !== 'undefined') { %>
