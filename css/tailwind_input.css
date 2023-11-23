@@ -11,3 +11,7 @@
     font-family: "orbitron";
     src: url("/fonts/Orbitron-VariableFont_wght.ttf") format("truetype");
 }
+
+input:checked + .slider {
+    @apply bg-turquoise;
+}

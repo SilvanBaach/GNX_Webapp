@@ -22,7 +22,7 @@ router.post('/updatePicture/:id', checkNotAuthenticated, function (req, res) {
 
     updateUserPicture(base64, userId).then(() => {
         logMessage(`User ${req.user.username} updated the profile picture of user ${userId}`,LogLevel.INFO,req.user.id)
-        res.status(200).send({picture: base64, message: "Profile Picture updated successfully"});
+        res.status(200).send({picture: base64, message: "Profile picture updated successfully"});
     }).catch(() => {
         res.status(500).send("There was an error updating the profile picture! Please try again later.");
     });

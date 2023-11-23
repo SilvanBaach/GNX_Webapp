@@ -5,7 +5,7 @@
     <div class="flex justify-between">
         <h3 class="text-2xl md:mb-0 mb-5 font-bold font-orbitron text-white">Settings</h3>
         <div class="text-right lg:mr-2.5 md:mb-0 mb-5">
-            <%- include('../components/buttondefault', {type: 'button', id: '', text: 'Update', icon: 'ri-save-line'}) %>
+            <%- include('../components/buttondefault', {type: 'button', id: 'updateBtn', text: 'Update', icon: 'ri-save-line'}) %>
         </div>
     </div>
     <div class="flex lg:flex-nowrap flex-wrap lg:max-w-full max-w-[590px] lg:-mx-2.5 items-start justify-between mt-[14px]">
@@ -20,45 +20,42 @@
                         </div>
                         <div class="w-1/2 xl:pl-4 pl-2">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">E-Mail *</label>
-                            <%- include('../components/entryfield', {type: 'email', name: 'email', id: 'email', width: 'w-full'}) %>
+                            <%- include('../components/entryfield', {type: 'email', name: 'email', id: 'email', width: 'w-full', value: user.email}) %>
                         </div>
                     </div>
                     <div class="flex items-center justify-between xl:mt-5 mt-3">
                         <div class="w-1/2 xl:pr-4 pr-2">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Phone Number</label>
-                            <%- include('../components/entryfield', {type: 'text', name: 'phone', id: 'phone', width: 'w-full'}) %>
+                            <%- include('../components/entryfield', {type: 'text', name: 'phone', id: 'phone', width: 'w-full', value: user.phone}) %>
                         </div>
                         <div class="w-1/2 xl:pl-4 pl-2">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Username *</label>
-                            <%- include('../components/entryfield', {type: 'text', name: 'username', id: 'username', width: 'w-full'}) %>
+                            <%- include('../components/entryfield', {type: 'text', name: 'username', id: 'username', width: 'w-full', value: user.username}) %>
                         </div>
                     </div>
                     <div class="flex items-center justify-between xl:mt-5 mt-3">
                         <div class="w-1/2 xl:pr-4 pr-2">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Street</label>
-                            <%- include('../components/entryfield', {type: 'text', name: 'street', id: 'street', width: 'w-full'}) %>
+                            <%- include('../components/entryfield', {type: 'text', name: 'street', id: 'street', width: 'w-full', value: user.street}) %>
                         </div>
                         <div class="w-1/2 xl:pl-4 pl-2">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">City</label>
-                            <%- include('../components/entryfield', {type: 'text', name: 'city', id: 'city', width: 'w-full'}) %>
+                            <%- include('../components/entryfield', {type: 'text', name: 'city', id: 'city', width: 'w-full', value: user.city}) %>
                         </div>
                     </div>
                     <div class="w-1/2 mt-5 xl:pr-5 pr-2">
                         <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Zip Code</label>
-                        <%- include('../components/entryfield', {type: 'number', name: 'zip', id: 'zip', width: 'w-full'}) %>
+                        <%- include('../components/entryfield', {type: 'number', name: 'zip', id: 'zipcode', width: 'w-full', value: user.zip}) %>
                     </div>
                 </form>
             </div>
             <div class="bg-grey-level2 sm:p-6 px-4 py-6 my-5">
                 <h4 class="text-lg text-white font-bold">Notifications</h4>
-                <p class="xl:text-base text-sm text-white font-semibold font-montserrat pt-4">
-                    Send a Discord notification if your trainingdata is not complete
-                </p>
-                <div>
-                    <input type="radio" id="html" name="fav_language" value="HTML">
-                    <label for="html" class="text-base text-white">Yes</label>
-                    <input type="radio" id="css" name="fav_language" value="CSS">
-                    <label for="css" class="text-base text-white">No</label>
+                <div class="flex justify-between items-center pt-4">
+                    <p class="xl:text-base text-sm text-white font-semibold font-montserrat">
+                        Trainingdata Reminder
+                    </p>
+                    <%- include('../components/toggle', {id: 'dcNotiYes', value: user.trainingdatareminder}) %>
                 </div>
             </div>
             <div class="bg-grey-level2 sm:p-6 px-4 py-6 font-montserrat">
@@ -67,21 +64,21 @@
                     <div class="flex items-center justify-between mt-4">
                         <div class="w-1/2 xl:pr-4 pr-2">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Steam</label>
-                            <%- include('../components/entryfield', {type: 'text', name: 'steam', id: 'steam', width: 'w-full'}) %>
+                            <%- include('../components/entryfield', {type: 'text', name: 'steam', id: 'steam', width: 'w-full', value: user.steam}) %>
                         </div>
                         <div class="w-1/2 xl:pl-4 pl-2">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Origin</label>
-                            <%- include('../components/entryfield', {type: 'text', name: 'origin', id: 'origin', width: 'w-full'}) %>
+                            <%- include('../components/entryfield', {type: 'text', name: 'origin', id: 'origin', width: 'w-full', value: user.origin}) %>
                         </div>
                     </div>
                     <div class="flex items-center justify-between mt-4">
                         <div class="w-1/2 xl:pr-4 pr-2">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Discord</label>
-                            <%- include('../components/entryfield', {type: 'text', name: 'discord', id: 'discord', width: 'w-full'}) %>
+                            <%- include('../components/entryfield', {type: 'text', name: 'discord', id: 'discord', width: 'w-full', value: user.discord}) %>
                         </div>
                         <div class="w-1/2 xl:pl-4 pl-2">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Riot</label>
-                            <%- include('../components/entryfield', {type: 'text', name: 'riot', id: 'riot', width: 'w-full'}) %>
+                            <%- include('../components/entryfield', {type: 'text', name: 'riot', id: 'riot', width: 'w-full', value: user.riotgames}) %>
                         </div>
                     </div>
                 </form>
@@ -90,26 +87,32 @@
         <div class="w-full lg:order-2 order-1 xl:max-w-[537px] lg:max-w-[405px] max-w-full sm:mb-5">
             <div class="bg-grey-level2 px-6 pt-12 pb-8 font-montserrat">
                 <div class=" flex-col flex items-center justify-center">
-                    <a href="#"><img src="/res/tmp/Group.jpg" class="rounded-full sm:max-w-full max-w-[110px] mx-auto" alt=""></a>
+                        <a href="#" id="userImageWrapper" class="relative inline-block overflow-hidden">
+                            <img id="userImage" src="<%= user.thumbnail %>" class="rounded-full w-[125px] sm:w-[200px] h-[125px] sm:h-[200px] mx-auto transition-opacity duration-300 ease-in-out" alt="">
+                            <div id="changeImageOverlay" class="opacity-0 absolute inset-0 bg-black bg-opacity-60 text-white flex justify-center items-center text-xl rounded-full transition-opacity duration-300 ease-in-out">
+                                <i class="ri-upload-cloud-2-line ri-2x"></i>
+                            </div>
+                            <input type="file" id="fileInput" class="hidden" />
+                        </a>
                     <h2 class="md:text-2xl text-xl font-orbitron font-bold text-white md:pt-10 pt-5 md:pb-4 pb-2">
-                        AdmAtomschlag
+                        <%= user.username %>
                     </h2>
-                    <p class="text-lg text-white font-bold font-montserrat">Team Apex</p>
+                    <p class="text-lg text-white font-bold font-montserrat"><%= user.team.displayname %></p>
                 </div>
                 <div class="sm:flex items-center justify-between pt-8 lg:pt-[43px] xl:pt-[66px]">
                     <div class="sm:w-40  w-full flex-col flex items-center justify-center bg-grey-level3 xl:py-7 py-5 mr-5">
                         <h4 class="xl:text-lg sm:text-xs text-sm font-montserrat font-bold text-white">GNX-Level</h4>
-                        <h3 class="text-turquoise xl:text-4xl sm:text-2xl text-3xl font-bold xl:pt-3 pt-1 font-orbitron">8</h3>
+                        <h3 class="text-turquoise xl:text-4xl sm:text-2xl text-3xl font-bold xl:pt-3 pt-1 font-orbitron">?</h3>
                     </div>
                     <div
                             class="sm:w-40 sm:mt-0 mt-5 w-full flex-col flex items-center justify-center bg-grey-level3 xl:py-7 py-5 mr-5">
                         <h4 class="xl:text-lg sm:text-xs text-sm font-montserrat font-bold text-white">GNX-Points</h4>
-                        <h3 class="text-turquoise xl:text-4xl sm:text-2xl text-3xl font-bold xl:pt-3 pt-1 font-orbitron">53</h3>
+                        <h3 class="text-turquoise xl:text-4xl sm:text-2xl text-3xl font-bold xl:pt-3 pt-1 font-orbitron">?</h3>
                     </div>
                     <div
                             class="sm:w-40 sm:mt-0 mt-5 w-full flex-col flex items-center justify-center bg-grey-level3 xl:py-7 py-5 ">
                         <h4 class="xl:text-lg sm:text-xs text-sm font-montserrat font-bold text-white">Total Sessions</h4>
-                        <h3 class="text-turquoise xl:text-4xl sm:text-2xl text-3xl font-bold xl:pt-3 pt-1 font-orbitron">1028
+                        <h3 class="text-turquoise xl:text-4xl sm:text-2xl text-3xl font-bold xl:pt-3 pt-1 font-orbitron">?
                         </h3>
                     </div>
                 </div>
@@ -127,17 +130,31 @@
 
 <script>
     $(document).ready(function () {
-
         setupSettingsPage();
         loadUserPicture();
 
+        // Hover in and out function for the profile picture
+        $('#userImageWrapper').hover(
+            function() {
+                $('#changeImageOverlay').css('opacity', '1');
+            },
+            function() {
+                $('#changeImageOverlay').css('opacity', '0');
+            }
+        );
+
+        //Trigger the File upload
+        $('#changeImageOverlay').on('click', function() {
+            $('#fileInput').click();
+        });
+
+
         //Updates the profile picture
-        const input = document.getElementById("fileInput");
-        input.addEventListener("change", (e) => {
+        $('#fileInput').on('change', function(e) {
             if (e.target.files.length > 0) {
                 updateProfilePicture(e, <%= user.id %>).then((result) => {
                     displaySuccess(result.message);
-                    $('.player-img').attr("src", result.picture);
+                    $('#userImage').attr("src", result.picture); // Update the src of #userImage
                 }).catch((error) => {
                     displayError(error);
                 });

@@ -43,6 +43,7 @@
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "pg": "^8.11.1",
+    "postcss": "^8.4.31",
     "request": "^2.88.2",
     "rimraf": "^5.0.1",
     "riot-games-api-nodejs": "^1.0.7",

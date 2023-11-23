@@ -16,16 +16,17 @@ function setupSettingsPage() {
         displayError("Uh oh - thats dangerous!");
     });
 
-    $('#formAdress').submit(function (e) {
+    $('#updateBtn').click(function (e) {
         e.preventDefault();
         const formData = {
-            fullName: $('#fullName').val(),
+            fullName: $('#fullname').val(),
             email: $('#email').val(),
             phone: $('#phone').val(),
             username: $('#username').val(),
             street: $('#street').val(),
             city: $('#city').val(),
-            zip: $('#zipcode').val()
+            zip: $('#zipcode').val(),
+            trainingdatareminder: $('#dcNotiYes').is(':checked') ? 1 : 0
         };
 
         if (formData.fullName === "" || formData.email === "" || formData.username === "") {
@@ -176,7 +177,7 @@ function loadUserPicture(){
         dataType: "json",
         success: function(response) {
             if(response[0].picture !== null && response[0].picture.length > 10){
-                $('.player-img').attr("src", response[0].picture);
+                $('#userImage').attr("src", response[0].picture);
             }
         },
         error: function(data) {

@@ -40,6 +40,11 @@ async function updateProfilePicture(event, userId) {
         return Promise.reject("Please upload a file smaller than 10 MB!");
     }
 
+    const validTypes = ['image/jpeg', 'image/png'];
+    if (!validTypes.includes(file.type.toLowerCase())) {
+        return Promise.reject("Invalid file type. Only PNG and JPG images are allowed.");
+    }
+
     return new Promise(function (resolve, reject) {
         $.ajax({
             type: "POST",
@@ -53,7 +58,8 @@ async function updateProfilePicture(event, userId) {
                 if (data.responseJSON && data.responseJSON.redirect) {
                     window.location.href = data.responseJSON.redirect;
                 }
-                reject(data.responseText);
+                console.log(data);
+                reject(data.responseJSON.message);
             }
         });
     });
