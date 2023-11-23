@@ -50,7 +50,7 @@ class Popup {
 
         const newHTML = `<img src="${imgSrc}" class="popup-img"/>` +
             `<div class="popup-flexbox">` +
-            `<h2>${title}</h2>` +
+            `<p class="text-2xl font-montserrat text-almost-white">${title}</p>` +
             `<a id="closeLink"><i class="ri-close-fill close"></i></a>` +
             inputHTML +
             `<button type="button" id="${buttonID}" class="default green ok-btn">${buttonText}</button>` +
@@ -124,11 +124,11 @@ class Popup {
     displayYesNoPopup(imgSrc, title, text, buttonText1, buttonText2, buttonID1, buttonID2) {
         this.popupContainer.empty();
 
-        const newHTML = `<div id="${this.popupContainer.id}ShadowDiv" class="fixed inset-0 bg-black bg-opacity-50 hidden"></div>
-                            <div id="${this.popupContainer.id}InnerDiv" class="w-[400px] h-auto bg-almost-white rounded-md fixed
-                            -translate-x-1/2 -translate-y-1/2 scale-0 flex flex-col items-center 
-                            text-gray-500 hidden transition-transform  duration-400 top-1/2 left-1/2
-                            transition-top transition-box-shadow shadow-2xl z-50">
+        const newHTML = `<div class="w-[400px] bg-almost-white rounded-md fixed top-1/2 left-1/2 transform 
+                                -translate-x-1/2 -translate-y-1/2 scale-0 text-center justify-center 
+                                text-gray-500 visibility-[hidden] transition-transform duration-400 
+                                transition-top duration-400 transition-box-shadow duration-400 
+                                shadow-[0 0 0 99999px rgba(0,0,0,.5)] z-[9999]">
             <img src="${imgSrc}" class="popup-img"/>` +
             `<div class="popup-flexbox">` +
             `<h2 style="margin-bottom: 10px">${title}</h2>` +
@@ -157,8 +157,7 @@ class Popup {
      * @param e the event that triggered the opening of the popup
      */
     open(e) {
-        $("#" + this.popupContainer.id + "InnerDiv").removeClass('hidden scale-0').addClass('scale-100 visible');
-        $("#" + this.popupContainer.id + "ShadowDiv").removeClass('hidden').addClass('visible');
+        this.popupContainer.addClass('open-popup');
 
         $('body').on('click', '#closeLink', () => {
             this.close();

@@ -1,0 +1,98 @@
+/* CSS Files for popup */
+.popup-container{
+    width: 400px;
+    background: #2B2D30;
+    border-radius: 6px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    text-align: center;
+    justify-content: center;
+    color: #F5F6FA;
+    visibility: hidden;
+    transition: transform 0.4s, top 0.4s, box-shadow 0.4s;
+    box-shadow: 0 0 0 99999px rgba(0, 0, 0, .5);
+    z-index: 9999;
+}
+
+.popup-img{
+    width: 100px;
+    height: 100px;
+    margin-top: -50px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #F5F6FA;
+    border-radius: 50%;
+}
+
+.popup-container h2{
+    font-size: 1.5rem;
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+.open-popup{
+    visibility: visible;
+    top: 50vh;
+    transform: translate(-50%, -50%) scale(1);
+}
+.ok-btn{
+    max-width: 150px;
+    min-width: 150px;
+    margin: 20px auto;
+}
+
+.popup-flexbox{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    margin-top: 20px;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+.input-field{
+    height: 35px;
+    width: 70%;
+    font-size: 1rem;
+    font-weight: 600;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    background-color: #43454A;
+}
+
+.input-label{
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.button-container{
+    display: flex;
+    column-gap: 20px;
+    width: 300px;
+    justify-content: center;
+    margin: auto;
+}
+
+.close{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.input-checkbox{
+    height: 20px;
+    width: 20px;
+}
