@@ -1,7 +1,7 @@
 /**
  * @fileoverview This file contains the javascript code for the team calendar page
  */
-const daysOfWeek = ["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const daysOfWeek = ["Filler", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 let clipboard = null;
 let trainingsToBeDefined = null;
 let teamId = 0;
@@ -86,159 +86,116 @@ function getDateFromDay(date, dayOfWeek) {
  * @returns {Promise<void>}
  */
 async function generateCalendar(users, currentDate, sessionUser, teamId, teamManagerId, isAdmin) {
-    const calContainer = document.querySelector('.cal-container');
-    $('.cal-container').empty();
     const today = new Date();
+
+    //Creates the header of the table
+    const calHeader = $("#calHeader");
+    calHeader.empty();
+
+    daysOfWeek.forEach(function(day) {
+        const dateStr = getDateFromDay(currentDate, day);
+        const isToday = dateStr === formatDate(new Date());
+        const headerClass = isToday ? "bg-turquoise" : "";
+        const isHidden = day === 'Filler' ? "opacity-0" : "";
+
+        // Create the <th> element
+        let th = $("<th></th>", {
+            "scope": "col",
+            "class": "px-7 border-8 border-grey-level1 py-4 bg-grey-level2 " + headerClass + " " + isHidden,
+            "html": day + "<br><span class='text-base mt-1 block font-normal'>" + dateStr + "</span>"
+        });
+
+        calHeader.append(th);
+    });
+
+    //Set the current Week text
+    $("#currentWeekText").text("Week " + formatDate(getMondayOfWeek(currentDate)) + " - " + formatDate(getSundayOfCurrentWeek(currentDate)));
 
     //Load data from monday to sunday
     const teamData = await getDataFromTeam(getMondayOfWeek(currentDate), getSundayOfCurrentWeek(currentDate), teamId)
 
-    // Create the header of the calendar
-    $(".cal-header").html(daysOfWeek.map(day => {
-        const dateStr = getDateFromDay(currentDate, day);
-        const isToday = dateStr === formatDate(new Date());
-        const headerClass = isToday ? "grid-header-today" : "grid-header";
-        return (
-            `<div class="grid-item ${headerClass}">` +
-            `<div class="header-content-container">` +
-            `<p>${day}</p>` +
-            `<p class="date">${dateStr}</p>` +
-            `</div>` +
-            `</div>`
-        );
-    }).join(""));
-
-    //Give correct calendarorder
+    //Sort users based on calendar order
     for (let x = 0; x < users.length; x++) {
         users[x].calendarorder = users.length - x
     }
 
+    //Generate the rows for each user
+    const calContainer = $("#calBody");
+    calContainer.empty();
     const numRows = users.length;
     const numCols = 8;
 
-    // Create grid layout with 8 columns and for each user a row
-    for (let i = 0; i < numRows; i++) {
+    //Data to iterate over
+    let data = {
+        actionIcons: [
+            { href: "#", iconClass: "ri-edit-line" },
+            { href: "#", iconClass: "ri-clipboard-line" },
+            { href: "#", iconClass: "ri-file-copy-2-line" }
+        ],
+        statusImgSrc: "images/ok.png",
+        statusAltText: ""
+    };
 
-        const rowContainer = document.createElement('div');
-        rowContainer.classList.add('row-container');
-        rowContainer.setAttribute('draggable', 'true');
-        rowContainer.setAttribute('id', 'user-' + users[i].userid);
-        rowContainer.setAttribute('teamid', teamId);
-        rowContainer.addEventListener('dragstart', dragStart);
-        rowContainer.addEventListener('dragover', dragOver);
-        rowContainer.addEventListener('drop', drop);
+    for (let i = 0; i < numRows; i++) {
+        // Generate the <tr> element
+        let tr = $("<tr></tr>", { "class": "border-b-8 border-grey-level1" });
 
         for (let j = 0; j < numCols; j++) {
-            const gridItem = document.createElement('div');
-            const dateStr = getDateFromDay(currentDate, daysOfWeek[j]);
-            const isToday = dateStr === formatDate(new Date());
-            const headerClass = isToday ? "grid-item-today" : "grid-item";
-            gridItem.classList.add('grid-item');
-            gridItem.classList.add(headerClass);
-            const jDayObj = new Date(getXDayOfWeek(currentDate, j - 1))
 
-            // Add username to first column
             if (j === 0) {
-                const userNameDiv = document.createElement('div');
-                userNameDiv.classList.add('username-container')
+                // Special Case: 1st column with username
+                let userImage = users[i].thumbnail ? users[i].thumbnail : "/res/others/blank_profile_picture.png";
 
-                const userNameSpan = document.createElement('span');
-                userNameSpan.innerText = users[i].username;
-                userNameSpan.classList.add('username-span')
-
-                const userImage = document.createElement('img')
-                if (users[i].thumbnail) {
-                    userImage.src = users[i].thumbnail
-                } else {
-                    userImage.src = "/res/others/blank_profile_picture.png"
-                }
-                userImage.classList.add('user-profile-img')
-
+                let crownHtml = '';
                 if (users[i].userid === teamManagerId) {
-                    const crownLink = document.createElement('a');
-                    const crownSpan = document.createElement('span');
-                    crownLink.appendChild(crownSpan);
-                    crownSpan.classList.add('tooltiptext-below');
-                    crownSpan.innerText = "Team Manager";
-                    crownLink.classList.add('tooltip-below');
-
-                    const crown = document.createElement('img');
-                    crown.src = "/res/others/crown.png";
-                    crown.classList.add('crown');
-                    crownLink.appendChild(crown);
-
-                    userNameDiv.appendChild(crownLink);
+                    crownHtml = '<img src="/res/others/crown.png" alt="Team Manager" class="w-6">';
                 }
 
-                userNameDiv.appendChild(userNameSpan);
-                userNameDiv.appendChild(userImage);
+                let tdUser = $("<td></td>", {
+                    "scope": "row",
+                    "class": "px-6 py-2 bg-grey-level2 h-[150px]",
+                    "html": `<div class="flex items-center flex-col text-center">
+                            <div class="flex flex-col items-center">
+                                ${crownHtml}
+                                <img src="${userImage}" alt="Picture of user ${users[i].username}" class="rounded-full w-16">
+                            </div>
+                            <h6 class="text-lg mt-2 font-montserrat text-white text-center font-bold">${users[i].username}</h6>
+                         </div>`
+                });
 
-                gridItem.appendChild(userNameDiv);
-                gridItem.classList.add('grid-item-username');
+                tr.append(tdUser);
             } else {
-                let innerHTML =
-                    '<div class="cell-content-container">' +
-                    '<div class="edit-content-row">' +
-                    `<input type="text" value="${users[i].username}" style="display: none" id="inputUsername"/>` +
-                    `<input type="text" value="${formatDate(getXDayOfWeek(currentDate, j - 1))}" style="display: none" id="inputDate"/>`;
-                if (users[i].username === sessionUser || isAdmin) {
-                    innerHTML +=
-                        '<a class="copy tooltip"><span class="tooltiptext">Copy</span>' +
-                        '<i class="ri-file-copy-2-line"></i>' +
-                        '</a>';
+                // All other columns
+                let tdActions = $("<td></td>").addClass("px-3 py-4 bg-grey-level2");
+                let divRelative = $("<div></div>").addClass("relative");
+                let ulIcons = $("<ul></ul>").addClass("text-end");
 
-                    if (jDayObj.getTime() >= today.getTime()) {
-                        innerHTML +=
-                            '<a class="paste tooltip"><span class="tooltiptext">Paste</span>' +
-                            '<i class="ri-clipboard-line"></i>' +
-                            '</a>' +
-                            '<a class="edit tooltip"><span class="tooltiptext">Edit</span>' +
-                            '<i class="ri-edit-fill"></i>' +
-                            '</a>';
-                    }
-                }
-                innerHTML +=
-                    '</div>' +
-                    '<div class="content-row">' +
-                    getDataFromDay(getXDayOfWeek(currentDate, j - 1), users[i].username, teamData) +
-                    '</div>' +
-                    '</div>';
+                data.actionIcons.forEach(function (icon) {
+                    let a = $("<a></a>").attr("href", icon.href);
+                    let i = $("<i></i>").addClass(`${icon.iconClass} font-normal text-sm text-white`);
+                    a.append(i); // Append the icon to the link
+                    let li = $("<li></li>").append(a); // Append the link to the list item
+                    ulIcons.append(li); // Append the list item to the unordered list
+                });
 
-                gridItem.innerHTML = innerHTML;
-                // Add click event handler to edit link
-                if (users[i].username === sessionUser || isAdmin) {
-                    if (jDayObj.getTime() >= today.getTime()) {
-                        const editLink = gridItem.querySelector('.edit');
-                        editLink.addEventListener('click', function (e) {
-                            const username = this.closest('.edit-content-row').querySelector("#inputUsername").value;
-                            const date = this.closest('.edit-content-row').querySelector("#inputDate").value;
-                            editDay(username, date, e, teamId);
-                        });
+                divRelative.append(ulIcons);
 
-                        const pasteLink = gridItem.querySelector('.paste');
-                        pasteLink.addEventListener('click', function (e) {
-                            const username = this.closest('.edit-content-row').querySelector("#inputUsername").value;
-                            const date = this.closest('.edit-content-row').querySelector("#inputDate").value;
-                            pasteDay(username, date);
-                        });
-                    }
+                // Overlay div for image
+                let divImageOverlay = $("<div></div>").addClass("absolute w-[104px] h-[107px] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2");
+                let img = $("<img>").attr({
+                    "src": data.statusImgSrc,
+                    "alt": data.statusAltText,
+                    "class": "opacity-40"
+                });
+                divImageOverlay.append(img); // Append the image to the overlay div
 
-                    const copyLink = gridItem.querySelector('.copy');
-                    copyLink.addEventListener('click', function (e) {
-                        const username = this.closest('.edit-content-row').querySelector("#inputUsername").value;
-                        const date = this.closest('.edit-content-row').querySelector("#inputDate").value;
-                        copyDay(username, date, teamId);
-                    });
-                }
+                divRelative.append(divImageOverlay); // Append the overlay div to the relative div
+                tdActions.append(divRelative); // Append the relative div to the td
+                tr.append(tdActions);
             }
-
-            rowContainer.appendChild(gridItem);
         }
-
-        calContainer.appendChild(rowContainer);
+        calContainer.append(tr);
     }
-
-    $("#currentWeekText").text("Week " + formatDate(getMondayOfWeek(currentDate)) + " - " + formatDate(getSundayOfCurrentWeek(currentDate)));
 }
 
 let draggedRow = null;
