@@ -119,8 +119,8 @@
                 <div class="bg-grey-level3 mt-10 pt-5 sm:pb-12 pb-5 xl:px-10 px-5 h-48">
                     <h4 class="text-error font-bold text-lg text-center">DANGER ZONE</h4>
                     <div class="flex flex-col items-center xl:gap-5 gap-2 mt-5">
-                        <%- include('../components/buttondefault', {type: 'button', id: '', text: 'Delete User', icon: 'ri-delete-bin-2-line'}) %>
-                        <%- include('../components/buttondefault', {type: 'button', id: '', text: 'Reset Password', icon: 'ri-refresh-line'}) %>
+                        <%- include('../components/buttondefault', {type: 'button', id: 'deleteUser', text: 'Delete User', icon: 'ri-delete-bin-2-line'}) %>
+                        <%- include('../components/buttondefault', {type: 'button', id: 'resetPassword', text: 'Reset Password', icon: 'ri-refresh-line'}) %>
                     </div>
                 </div>
             </div>
@@ -128,10 +128,13 @@
     </div>
 </div>
 
+<div id="popup-containerResetPassword" class="popup-container"></div>
+
 <script>
     $(document).ready(function () {
         setupSettingsPage();
         loadUserPicture();
+        setupPWResetPopup();
 
         // Hover in and out function for the profile picture
         $('#userImageWrapper').hover(

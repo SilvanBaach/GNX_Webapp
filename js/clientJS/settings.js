@@ -13,7 +13,7 @@ function isPasswordSecure(password) {
  */
 function setupSettingsPage() {
     $("#deleteUser").click(function () {
-        displayError("Uh oh - thats dangerous!");
+        displayError("Sorry, this feature is not available yet!");
     });
 
     $('#updateBtn').click(function (e) {
@@ -82,12 +82,18 @@ function updateUserInfo(formData) {
 function setupPWResetPopup(){
     const pwResetPopup = new Popup("popup-containerResetPassword");
 
-    pwResetPopup.displayInputPopupCustom("/res/others/plus.png", "Set new Password", "Confirm", "btnResetPassword",
-        '<label for="password1" class="input-label">New Password</label>' +
-        '<input type="password" id="password1" class="input-field"/>' +
-        '<label for="password2" class="input-label">Confirm Password</label>' +
-        '<input type="password" id="password2" class="input-field"/>'
-    )
+    let renderedHtml = '';
+    $.when(
+        fetchEntryField('password', 'password1', 'password1', 'w-52', ''),
+        fetchEntryField('password', 'password2', 'password2', 'w-52', '')
+    ).then(function(field1, field2) {
+        renderedHtml += `<label for="password1" class="input-label">New Password</label>`
+        renderedHtml += field1[0];
+        renderedHtml += `<label for="password2" class="input-label">Confirm Password</label>`
+        renderedHtml += field2[0];
+
+        pwResetPopup.displayInputPopupCustom("/res/others/plus.png", "Set new Password", "Confirm", "btnResetPassword", renderedHtml);
+    });
 
     $("#resetPassword").click(function (e) {
         $('#password1').val('');
@@ -95,7 +101,7 @@ function setupPWResetPopup(){
         pwResetPopup.open(e)
     });
 
-    $("#btnResetPassword").click(function (e) {
+    $(document).on('click', '#btnResetPassword', function() {
         const password1 = $('#password1').val();
         const password2 = $('#password2').val();
 

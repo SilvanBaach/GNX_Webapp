@@ -42,3 +42,17 @@ async function checkSessionStatus() {
         return false;
     }
 }
+
+/**
+ * Loads an Entry Field from the Server
+ */
+function fetchEntryField(type, name, id, width, value) {
+    return $.get(`/renderEntryField?type=${type}&name=${name}&id=${id}&width=${width}&value=${value}`);
+}
+
+/**
+ * Loads a button from the Server
+ */
+function fetchButton(type, id, text, width, icon, customClasses, iconPos, btnType, inputId) {
+    return $.get(`/renderButton?type=${type}&icon=${icon}&id=${id}&customClasses=${customClasses}&iconPos=${iconPos}&btnType=${btnType}&inputId=${inputId}&text=${text}&width=${width}`);
+}

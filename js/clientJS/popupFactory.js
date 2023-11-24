@@ -48,14 +48,21 @@ class Popup {
     displayInputPopupCustom(imgSrc, title, buttonText, buttonID, inputHTML) {
         this.popupContainer.empty();
 
-        const newHTML = `<img src="${imgSrc}" class="popup-img"/>` +
-            `<div class="popup-flexbox">` +
-            `<p class="text-2xl font-montserrat text-almost-white">${title}</p>` +
-            `<a id="closeLink"><i class="ri-close-fill close"></i></a>` +
-            inputHTML +
-            `<button type="button" id="${buttonID}" class="default green ok-btn">${buttonText}</button>` +
-            `</div>`;
-        this.popupContainer.append(newHTML);
+        $.when(
+            fetchButton('button', `${buttonID}`, `${buttonText}`, 'w-30', 'ri-check-line',undefined,undefined,'Success', undefined)
+        ).then((closeBtn) => {
+            const newHTML = `<img src="${imgSrc}" class="popup-img"/>` +
+                `<div class="popup-flexbox pb-6">` +
+                `<p class="text-2xl font-montserrat text-almost-white font-bold">${title}</p>` +
+                `<a id="closeLink"><i class="ri-close-fill close"></i></a>` +
+                `<div class="flex items-center flex-col">`+
+                inputHTML +
+                `<div class="mt-6 cursor-pointer"></div>` +
+                closeBtn +
+                `</div>` +
+                `</div>`;
+            this.popupContainer.append(newHTML);
+        });
     }
 
     /**

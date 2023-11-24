@@ -5,25 +5,34 @@ let roleData;
 let editRoleId;
 
 /**
- * Setup of the create role popup
+ * Setup of the creation role popup
  */
 function setupCreateRolePopup() {
     const popupCreateRole = new Popup("popup-containerCreateRole");
 
-    popupCreateRole.displayInputPopupCustom("/res/others/plus.png", "Create Role", "Create", "btnCreateRole",
-        `<label for="roleName" class="input-label">Name</label>` +
-        `<input type="text" id="roleName" class="input-field"/>` +
-        `<label for="roleDescription" class="input-label">Description</label>` +
-        `<textarea id="roleDescirption" class="input-field" rows="4" style="height: auto"/>`
-    )
+    let renderedHtml = '';
+    $.when(
+        fetchEntryField('text', 'rolename', 'roleName', 'w-52', ''),
+        fetchEntryField('text', 'roledescription', 'roleDescription', 'w-52', '')
+    ).then(function(field1, field2) {
+        renderedHtml += `<label for="roleName" class="input-label">Name</label>`
+        renderedHtml += field1[0];
+        renderedHtml += `<label for="roleDescription" class="input-label">Description</label>`
+        renderedHtml += field2[0];
 
-    $("#newRole").click(function (e) {
-        popupCreateRole.open(e);
-    });
+        popupCreateRole.displayInputPopupCustom("/res/others/plus.png", "Create Role", "Create", "btnCreateRole", renderedHtml);
 
-    $("#btnCreateRole").click(function () {
-        popupCreateRole.close()
-        createNewRole($("#roleName").val(), $("#roleDescirption").val());
+        $("#newRole").click(function (e) {
+            $("#roleName").val("");
+            $("#roleDescription").val("");
+            popupCreateRole.open(e);
+        });
+
+        $(document).on('click', '#btnCreateRole', function() {
+            console.log("Create Role");
+            popupCreateRole.close()
+            createNewRole($("#roleName").val(), $("#roleDescription").val());
+        });
     });
 }
 

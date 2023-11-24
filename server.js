@@ -184,4 +184,42 @@ app.get('/session-status', function (req, res) {
     }
 });
 
+/**
+ * GET routes for rendering a single Entry Field
+ */
+app.get('/renderEntryField', (req, res) => {
+    let { type, name, id, width, value } = req.query;
+
+    type = type === 'undefined' ? undefined : type;
+    name = name === 'undefined' ? undefined : name;
+    id = id === 'undefined' ? undefined : id;
+    width = width === 'undefined' ? undefined : width;
+    value = value === 'undefined' ? undefined : value;
+
+    res.render('components/entryfield.ejs', {
+        type, name, id, width, value
+    });
+});
+
+/**
+ * GET routes for rendering a single Button
+ */
+app.get('/renderButton', (req, res) => {
+    let { type, id, width, text, icon, customClasses, iconPos, btnType, inputId } = req.query;
+
+    type = type === 'undefined' ? undefined : type;
+    id = id === 'undefined' ? undefined : id;
+    width = width === 'undefined' ? undefined : width;
+    text = text === 'undefined' ? undefined : text;
+    icon = icon === 'undefined' ? undefined : icon;
+    customClasses = customClasses === 'undefined' ? undefined : customClasses;
+    iconPos = iconPos === 'undefined' ? undefined : iconPos;
+    btnType = btnType === 'undefined' ? undefined : btnType;
+    inputId = inputId === 'undefined' ? undefined : inputId;
+
+    res.render('components/buttondefault.ejs', {
+        type, id, width, text, icon, customClasses, iconPos, btnType, inputId
+    });
+});
+
 module.exports = app;
