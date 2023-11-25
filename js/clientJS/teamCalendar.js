@@ -128,12 +128,12 @@ async function generateCalendar(users, currentDate, sessionUser, teamId, teamMan
     //Data to iterate over
     let data = {
         actionIcons: [
-            { href: "#", iconClass: "ri-edit-line" },
-            { href: "#", iconClass: "ri-clipboard-line" },
-            { href: "#", iconClass: "ri-file-copy-2-line" }
+            { href: "#", iconClass: "ri-edit-line", id: "edit" },
+            { href: "#", iconClass: "ri-clipboard-line", id: "copy" },
+            { href: "#", iconClass: "ri-file-copy-2-line", id: "paste" }
         ],
         statusImgSrc: "images/ok.png",
-        statusAltText: ""
+        statusText: ""
     };
 
     for (let i = 0; i < numRows; i++) {
@@ -165,37 +165,90 @@ async function generateCalendar(users, currentDate, sessionUser, teamId, teamMan
 
                 tr.append(tdUser);
             } else {
+                //Search Data for the current user and date
+                const dateOrg = new Date(getXDayOfWeek(currentDate, j - 1));
+                const epoch = Math.floor(new Date(dateOrg.getFullYear(), dateOrg.getMonth(), dateOrg.getDate()).getTime() / 1000);
+
+                const presenceData = teamData.find(record => record.date == epoch && record.username == users[i].username);
+
+                //Get the correct picture
+                switch (presenceData?.state) {
+                    case 0: //Present
+                        data.statusImgSrc = "/res/teamcalendar/present.png";
+                        data.statusText = `${presenceData.from} <br>-<br> ${presenceData.until}`;
+                        break;
+                    case 1: //Open
+                        data.statusImgSrc = "/res/teamcalendar/present.png";
+                        data.statusText = "";
+                        break;
+                    case 2: //Absent
+                        data.statusImgSrc = "/res/teamcalendar/absent.png";
+                        data.statusText = presenceData.comment;
+                        break;
+                    case 3: //Unsure
+                        data.statusImgSrc = "/res/teamcalendar/unsure.png";
+                        data.statusText = presenceData.comment;
+                        break;
+                    default: //No Data
+                        data.statusImgSrc = "";
+                        data.statusText = "No Data";
+                }
+
                 // All other columns
-                let tdActions = $("<td></td>").addClass("px-3 py-4 bg-grey-level2");
+                let tdActions = $("<td></td>").addClass("px-3 py-4 bg-grey-level2").attr("date", presenceData ? formatDate(new Date(presenceData.date * 1000)) : "");
                 let divRelative = $("<div></div>").addClass("relative");
                 let ulIcons = $("<ul></ul>").addClass("text-end");
 
                 data.actionIcons.forEach(function (icon) {
-                    let a = $("<a></a>").attr("href", icon.href);
-                    let i = $("<i></i>").addClass(`${icon.iconClass} font-normal text-sm text-white`);
-                    a.append(i); // Append the icon to the link
-                    let li = $("<li></li>").append(a); // Append the link to the list item
-                    ulIcons.append(li); // Append the list item to the unordered list
+                    if((icon.id !== 'edit' && icon.id !== 'paste' || dateOrg.getTime() >= today.getTime()) && (users[i].username === sessionUser  || isAdmin)) {
+                        let a = $("<a></a>").attr("href", icon.href);
+                        let i = $("<i></i>").addClass(`${icon.iconClass} font-normal text-sm text-white ${icon.id}`);
+                        a.append(i); // Append the icon to the link
+                        let li = $("<li></li>").append(a); // Append the link to the list item
+                        ulIcons.append(li); // Append the list item to the unordered list
+                    }
                 });
 
+                if(dateOrg.getTime() < today.getTime()){
+                    ulIcons.append($("<li><div class='h-10'></div></li>"));
+                }
+
+                let text = $("<p>" + data.statusText + "</p>").addClass("text-base text-center absolute top-1/2 left-1/2 -translate-x-1/2 z-10 -translate-y-1/2 text-white font-montserrat font-semibold");
+
+                divRelative.append(text);
                 divRelative.append(ulIcons);
 
                 // Overlay div for image
                 let divImageOverlay = $("<div></div>").addClass("absolute w-[104px] h-[107px] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2");
                 let img = $("<img>").attr({
                     "src": data.statusImgSrc,
-                    "alt": data.statusAltText,
                     "class": "opacity-40"
                 });
-                divImageOverlay.append(img); // Append the image to the overlay div
+                divImageOverlay.append(img);
 
-                divRelative.append(divImageOverlay); // Append the overlay div to the relative div
-                tdActions.append(divRelative); // Append the relative div to the td
+                divRelative.append(divImageOverlay);
+                tdActions.append(divRelative);
                 tr.append(tdActions);
             }
         }
         calContainer.append(tr);
     }
+
+    $(document).on('click', '#calBody .copy', function(e) {
+        const row = $(this).closest('tr');
+        const username = row.find('td:first').text().trim();
+        const date = $(this).closest('td').attr('date');
+
+        copyDay(username, date, teamId);
+    });
+
+    $(document).on('click', '#calBody .paste', function(e) {
+        const row = $(this).closest('tr');
+        const username = row.find('td:first').text().trim();
+        const date = $(this).closest('td').attr('date');
+
+        pasteDay(username, date);
+    });
 }
 
 let draggedRow = null;
@@ -552,12 +605,13 @@ function buildNextTrainingTable(teamId) {
             type: "GET",
             dataType: "json",
             success: function (data) {
-                const tableBody = $("#team-table tbody");
+                const tableBody = $("#ntData");
                 tableBody.empty();
 
                 if (data.length === 0) {
-                    const noDataText = $("<td></td>").attr('colspan', 5).addClass('no-data-found').text('NO DATA FOUND');
-                    const tr = $("<tr></tr>").append(noDataText);
+                    const tr = $("<tr></tr>");
+                    const noDataText = $("<td></td>").attr('colspan', 4).text('NO DATA FOUND').addClass("text-center text-md font-bold");
+                    tr.append(noDataText)
                     tableBody.append(tr);
                 } else {
                     data.forEach(function (training) {
@@ -566,32 +620,20 @@ function buildNextTrainingTable(teamId) {
                         const tdFrom = $("<td></td>").text(training.starttime);
                         const tdUntil = $("<td></td>").text(training.endtime);
                         const tdDuration = $("<td></td>").text(training.duration);
-                        const tdType = $("<td></td>");
-                        const typeDiv = $("<div></div>").addClass("type-div");
-                        const typeText = $("<p></p>").text(' - ' + training.trainingtype).addClass("type-text");
 
-                        const statusIndicator = $("<div></div>").addClass("status-indicator");
-                        if (training.trainingtype === "fixed") {
-                            statusIndicator.addClass("status-green");
-                        } else {
-                            statusIndicator.addClass("status-orange");
-                        }
-                        typeDiv.append(statusIndicator).append(typeText);
-                        tdType.append(typeDiv);
-
-                        tr.append(tdDate).append(tdFrom).append(tdUntil).append(tdDuration).append(tdType);
+                        tr.append(tdDate).append(tdFrom).append(tdUntil).append(tdDuration);
                         tableBody.append(tr);
                     });
                 }
 
-                resolve(); // Resolve the promise when successful
+                resolve();
             },
             error: function (data) {
                 if (data.responseJSON && data.responseJSON.redirect) {
                     window.location.href = data.responseJSON.redirect;
                 }
                 console.log(data);
-                reject(data); // Reject the promise if there's an error
+                reject(data);
             }
         });
     });

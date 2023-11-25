@@ -1,6 +1,6 @@
 <script src="/js/clientJS/teamCalendar.js"></script>
 
-<div class="bg-grey-level1 max-w-[1330px] xl:pr-4 lg:pr-0 pr-4 px-8 py-6">
+<div class="bg-grey-level1 max-w-[1330px] xl:pr-4 lg:pr-0 pr-4 px-8 pt-6">
     <h3 class="md:text-2xl mb-5 md:block hidden text-xl font-bold font-orbitron text-white"><%= user.team.displayname%> Team Calendar
     </h3>
     <div class="md:flex block md:mt-8 justify-between">
@@ -90,7 +90,7 @@
                         <img src="images/avatar.svg" alt="">
                     </div>
                     <div class="">
-                        <img src="images/ok.png" class="w-7 mx-4" alt="">
+                        <img src="/res/teamcalendar/present.png" class="w-7 mx-4" alt="">
                     </div>
                     <div>
                         <h6 class="text-white font-montserrat font-normal text-base">19.00 - 23.00</h6>
@@ -101,7 +101,7 @@
                         <img src="images/avatar.svg" alt="">
                     </div>
                     <div class="">
-                        <img src="images/nok.png" class="w-7 mx-4" alt="">
+                        <img src="/res/teamcalendar/absent.png" class="w-7 mx-4" alt="">
                     </div>
                     <div>
                         <h6 class="text-white font-montserrat font-normal text-base">Ferien</h6>
@@ -112,7 +112,7 @@
                         <img src="images/avatar.svg" alt="">
                     </div>
                     <div class="">
-                        <img src="images/unsure.png" class="w-7 mx-4" alt="">
+                        <img src="/res/teamcalendar/unsure.png" class="w-7 mx-4" alt="">
                     </div>
                     <div>
                         <h6 class="text-white font-montserrat font-normal text-base">19.00 - 23.00</h6>
@@ -123,7 +123,7 @@
                         <img src="images/avatar.svg" alt="">
                     </div>
                     <div class="">
-                        <img src="images/unsure.png" class="w-7 mx-4" alt="">
+                        <img src="/res/teamcalendar/unsure.png" class="w-7 mx-4" alt="">
                     </div>
                     <div>
                         <h6 class="text-white font-montserrat font-normal text-base">Usgang Mabye</h6>
@@ -183,265 +183,17 @@
                 </tr>
                 </thead>
                 <tbody id="calBody">
-                <tr class="border-b-8 border-grey-level1">
-                    <td scope="row" class="px-6 py-4 bg-grey-level2">
-                        <div class="flex items-center">
-                            <div>
-                                <img src="images/yuma-img.svg" alt="">
-                            </div>
-                            <h6 class="text-lg ml-5 font-montserrat text-white font-bold">YumaTB
-                            </h6>
-                        </div>
-                    </td>
-                    <td class="px-3 py-4 bg-grey-level2">
-                        <div class="relative">
-                            <ul class="text-end">
-                                <li><a href="#"> <i
-                                                class="ri-edit-line font-normal text-sm text-white"></i></a>
-                                </li>
-                                <li><a href="#" class="my-2.5">
-                                        <i class="ri-clipboard-line font-normal text-sm text-white">
-                                        </i>
-                                    </a></li>
-                                <li><a href="#">
-                                        <i
-                                                class="ri-file-copy-2-line font-normal text-sm text-white">
-                                        </i>
-                                    </a></li>
-                            </ul>
-                            <div
-                                    class="absolute w-[104px] h-[107px] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2">
-                                <img src="images/ok.png" class="opacity-40 " alt="">
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-3 py-4 bg-btn-grey/40">
-                        <div class="relative">
-                            <div class="">
-                                <h6
-                                        class="text-base absolute top-1/2 left-1/2 -translate-x-1/2 z-10 -translate-y-1/2 text-white font-montserrat font-semibold">
-                                    Training
-                                </h6>
-                                <ul class="text-end">
-                                    <li><a href="#"> <i
-                                                    class="ri-edit-line font-normal text-sm text-white"></i></a>
-                                    </li>
-                                    <li><a href="#" class="my-2.5">
-                                            <i
-                                                    class="ri-clipboard-line font-normal text-sm text-white">
-                                            </i>
-                                        </a></li>
-                                    <li><a href="#">
-                                            <i
-                                                    class="ri-file-copy-2-line font-normal text-sm text-white">
-                                            </i>
-                                        </a></li>
-                                </ul>
-                            </div>
-
-                            <div
-                                    class="absolute top-1/2 w-[104px] h-[107px] -translate-y-1/2 left-1/2 -translate-x-1/2">
-                                <img src="images/nok.png" class="opacity-40 " alt="">
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-3 py-4 bg-grey-level2">
-                        <div class="relative">
-                            <div class="text-center">
-                                <h6
-                                        class="text-base text-center absolute top-1/2 left-1/2 -translate-x-1/2 z-10 -translate-y-1/2 text-white font-montserrat font-semibold">
-                                    Maybe<br>Usgang
-                                </h6>
-                                <ul class="text-end">
-                                    <li><a href="#"> <i
-                                                    class="ri-edit-line font-normal text-sm text-white"></i></a>
-                                    </li>
-                                    <li><a href="#" class="my-2.5">
-                                            <i
-                                                    class="ri-clipboard-line font-normal text-sm text-white">
-                                            </i>
-                                        </a></li>
-                                    <li><a href="#">
-                                            <i
-                                                    class="ri-file-copy-2-line font-normal text-sm text-white">
-                                            </i>
-                                        </a></li>
-                                </ul>
-                            </div>
-
-                            <div
-                                    class="absolute top-1/2 w-[104px] h-[107px] -translate-y-1/2 left-1/2 -translate-x-1/2">
-                                <img src="images/unsure.png" class="opacity-40 " alt="">
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-3 py-4 bg-grey-level2">
-                        <div class="relative">
-                            <div class="text-center">
-                                <h6
-                                        class="text-base leading-6 text-center absolute top-1/2 left-1/2 -translate-x-1/2 z-10 -translate-y-1/2 text-white font-montserrat font-semibold">
-                                    19:00
-                                    <br>-<br>22:30
-                                </h6>
-                                <ul class="text-end">
-                                    <li><a href="#"> <i
-                                                    class="ri-edit-line font-normal text-sm text-white"></i></a>
-                                    </li>
-                                    <li><a href="#" class="my-2.5">
-                                            <i
-                                                    class="ri-clipboard-line font-normal text-sm text-white">
-                                            </i>
-                                        </a></li>
-                                    <li><a href="#">
-                                            <i
-                                                    class="ri-file-copy-2-line font-normal text-sm text-white">
-                                            </i>
-                                        </a></li>
-                                </ul>
-                            </div>
-
-                            <div
-                                    class="absolute top-1/2 w-[104px] h-[107px] -translate-y-1/2 left-1/2 -translate-x-1/2">
-                                <img src="images/ok.png" class="opacity-40 " alt="">
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-3 py-4 bg-grey-level2">
-                        <div class="relative">
-                            <ul class="text-end">
-                                <li><a href="#"> <i
-                                                class="ri-edit-line font-normal text-sm text-white"></i></a>
-                                </li>
-                                <li><a href="#" class="my-2.5">
-                                        <i class="ri-clipboard-line font-normal text-sm text-white">
-                                        </i>
-                                    </a></li>
-                                <li><a href="#">
-                                        <i
-                                                class="ri-file-copy-2-line font-normal text-sm text-white">
-                                        </i>
-                                    </a></li>
-                            </ul>
-                            <div
-                                    class="absolute w-[104px] h-[107px] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2">
-                                <img src="images/ok.png" class="opacity-40 " alt="">
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-3 py-4 bg-grey-level2">
-                        <div class="relative">
-                            <div class="">
-                                <ul class="text-end">
-                                    <li><a href="#"> <i
-                                                    class="ri-edit-line font-normal text-sm text-white"></i></a>
-                                    </li>
-                                    <li><a href="#" class="my-2.5">
-                                            <i
-                                                    class="ri-clipboard-line font-normal text-sm text-white">
-                                            </i>
-                                        </a></li>
-                                    <li><a href="#">
-                                            <i
-                                                    class="ri-file-copy-2-line font-normal text-sm text-white">
-                                            </i>
-                                        </a></li>
-                                </ul>
-                            </div>
-
-                            <div
-                                    class="absolute top-1/2 w-[104px] h-[107px] -translate-y-1/2 left-1/2 -translate-x-1/2">
-                                <img src="images/nok.png" class="opacity-40 " alt="">
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-3 py-4 bg-grey-level2">
-                        <div class="relative">
-                            <div class="">
-                                <h6
-                                        class="text-base text-center text-white font-montserrat font-semibold">
-                                    No Data
-                                </h6>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
+                    <!-- Calendar Body gets inserted here -->
                 </tbody>
             </table>
         </div>
         <h3 class="md:text-2xl mt-8 md:mb-0 mb-5 text-xl font-bold font-orbitron text-white">Upcoming
             Trainings
         </h3>
-        <button
-                class="text-base hover:bg-grey-level2 hover:border-red-text font-semibold font-montserrat text-white bg-action-grey px-2 py-2 border-b-4 shadow-dashboard border-b-btn-grey max-w-[208px] w-full flex items-center mt-7 justify-center rounded-t-lg">
-            Manage Trainings
-            <span class="">
-                         <i class="ri-file-download-line text-white text-xl ml-2 font-normal"></i>
-                    </span>
-        </button>
+        <%- include('../components/buttondefault', {type: 'button', id: 'manageTrainings', text: 'Manage Trainings', icon: 'ri-tools-fill', customClasses: 'mt-6'}) %>
 
-        <div class="relative mt-9 bg-grey-level2 p-7 pt-6 max-w-[557px] overflow-x-auto">
-            <table class="w-full bg-grey-level2">
-                <thead class="text-white text-start font-montserrat font-bold text-lg">
-                <tr>
-                    <th scope="col" class="text-start pb-3 px-3 ">
-                        Date
-                    </th>
-                    <th scope="col" class="text-start pb-3 px-3 ">
-                        Start Time
-                    </th>
-                    <th scope="col" class="text-start pb-3 px-3 ">
-                        End Time
-                    </th>
-                    <th scope="col" class="text-start pb-3 px-3 ">
-                        Duration
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr class="bg-grey-level3 border-b-[18px] border-grey-level2">
-                    <th scope="row" class="text-white py-4 px-3 font-montserrat font-normal text-base">
-                        21.10.2023
-                    </th>
-                    <td class="text-white font-montserrat py-4 px-3 font-normal text-base">
-                        19:00
-                    </td>
-                    <td class="text-white font-montserrat py-4 px-3 font-normal text-base">
-                        21:00
-                    </td>
-                    <td class="text-white font-montserrat py-4 px-3 font-normal text-base">
-                        3:00 h
-                    </td>
-                </tr>
-                <tr class="bg-grey-level3 border-b-[18px] border-grey-level2">
-                    <th scope="row" class="text-white py-4 px-3 font-montserrat font-normal text-base">
-                        21.10.2023
-                    </th>
-                    <td class="text-white font-montserrat py-4 px-3 font-normal text-base">
-                        19:00
-                    </td>
-                    <td class="text-white font-montserrat py-4 px-3 font-normal text-base">
-                        21:00
-                    </td>
-                    <td class="text-white font-montserrat py-4 px-3 font-normal text-base">
-                        3:00 h
-                    </td>
-                </tr>
-                <tr class="bg-grey-level3">
-                    <th scope="row" class="text-white py-4 px-3 font-montserrat font-normal text-base">
-                        21.10.2023
-                    </th>
-                    <td class="text-white font-montserrat py-4 px-3 font-normal text-base">
-                        19:00
-                    </td>
-                    <td class="text-white font-montserrat py-4 px-3 font-normal text-base">
-                        21:00
-                    </td>
-                    <td class="text-white font-montserrat py-4 px-3 font-normal text-base">
-                        3:00 h
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+        <div class="mt-6 bg-grey-level2 p-4 max-w-[700px]">
+            <%- include('../components/table', {id: 'nextTrainings', bodyId: 'ntData', headers: [{text: 'Date'}, {text: 'Start Time'}, {text: 'End Time'}, {text: 'Duration'}]}) %>
         </div>
 
     </div>
@@ -455,6 +207,21 @@
     $(document).ready(function () {
         let currentDate = new Date();
         buildCalendar(currentDate);
+
+        $("#lastWeekBtn").click(function () {
+            currentDate.setDate(currentDate.getDate() - 7);
+            buildCalendar(currentDate);
+        });
+
+        $("#nextWeekBtn").click(function () {
+            currentDate.setDate(currentDate.getDate() + 7)
+            buildCalendar(currentDate);
+        });
+
+        $("#todayBtn").click(function () {
+            currentDate = new Date();
+            buildCalendar(currentDate);
+        });
     });
 
     /**
@@ -491,6 +258,11 @@
                 }
                 console.log(data.responseText);
             }
+        });
+
+        buildNextTrainingTable(userData.teamId).then(() => {
+            //document.querySelector('#loading-message-container').style.display = 'none';
+            //document.querySelector('.content').style.display = 'block';
         });
     }
 </script>
