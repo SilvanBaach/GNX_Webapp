@@ -1,5 +1,5 @@
 <!-- Button Default component -->
-<button type="<%= type %>" id="<%= id %>" class="animated-btn bg-action-grey hover:bg-black hover:bg-opacity-30 font-montserrat text-base text-almost-white pl-4 pr-4 pt-2 pb-2
+<button type="<%= type %>" id="<%= id %>" class="animated-btn bg-action-grey font-montserrat text-base text-almost-white pl-4 pr-4 pt-2 pb-2
     rounded-md relative overflow-hidden font-semibold flex items-center justify-center transition-transform duration-300 hover:transform hover:scale-105 cursor-pointer
     <% if (typeof width !== 'undefined') { %><%= width %><% } %> <% if (typeof customClasses !== 'undefined') { %><%= customClasses %><% } %>"
     style="will-change: transform; backface-visibility: hidden;">
@@ -27,13 +27,36 @@
 </button>
 
 <script>
-    $(document).on('mouseover', '.animated-btn', function() {
-        const line = $(this).find('.animated-line');
-        line.css('width', '100%');
-    });
+    $(document).ready(function() {
+        const handleHoverStart = function() {
+            const line = $(this).find('.animated-line');
+            line.css('width', '100%');
+            $(this).addClass('bg-black bg-opacity-30');
+        };
 
-    $(document).on('mouseout', '.animated-btn', function() {
-        const line = $(this).find('.animated-line');
-        line.css('width', '0%');
+        const handleHoverEnd = function() {
+            const line = $(this).find('.animated-line');
+            line.css('width', '0%');
+            $(this).removeClass('bg-black').removeClass('bg-opacity-30');
+        };
+
+        // Desktop events
+        $(document).on('mouseenter', '.animated-btn', handleHoverStart);
+        $(document).on('mouseleave', '.animated-btn', handleHoverEnd);
+
+        // Mobile events
+        $(document).on('touchstart', '.animated-btn', function(event) {
+            handleHoverStart.apply(this);
+            event.preventDefault();
+        });
+
+        $(document).on('touchend', '.animated-btn', function() {
+            setTimeout(() => {
+                handleHoverEnd.apply(this);
+            }, 300);
+        });
     });
 </script>
+
+
+
