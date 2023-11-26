@@ -1,19 +1,24 @@
 <script src="/js/clientJS/teamCalendar.js"></script>
 
-<div class="bg-grey-level1 max-w-[1330px] xl:pr-4 lg:pr-0 pr-4 px-8 pt-6">
+<div class="bg-grey-level1 max-w-[1330px] xl:pr-4 lg:pr-0 pr-4 px-4 md:px-8 pt-6">
     <h3 class="md:text-2xl mb-5 md:block hidden text-xl font-bold font-orbitron text-white"><%= user.team.displayname%> Team Calendar
     </h3>
     <div class="md:flex block md:mt-8 justify-between">
         <h4 class="text-2xl md:block hidden mb-5 font-bold font-montserrat text-white pt-5" id="currentWeekText"></h4>
-        <div class="text-right flex items-center flex-1 md:justify-end justify-between w-full gap-4">
+        <div class="text-right items-center flex-1 md:justify-end justify-between w-full gap-4 hidden md:flex">
             <%- include('../components/buttondefault', {type: 'button', id: 'lastWeekBtn', text: 'Last Week', icon: 'ri-arrow-left-s-line', iconPos: 'left'}) %>
             <%- include('../components/buttondefault', {type: 'button', id: 'todayBtn', text: 'Toady'}) %>
             <%- include('../components/buttondefault', {type: 'button', id: 'nextWeekBtn', text: 'Next Week', icon: 'ri-arrow-right-s-line'}) %>
         </div>
+        <div class="text-right items-center flex-1 md:justify-end justify-between w-full gap-4 flex md:hidden">
+            <%- include('../components/buttondefault', {type: 'button', id: 'lastWeekBtnM', text: 'Week', icon: 'ri-arrow-left-s-line', iconPos: 'left'}) %>
+            <%- include('../components/buttondefault', {type: 'button', id: 'todayBtnM', text: 'Toady'}) %>
+            <%- include('../components/buttondefault', {type: 'button', id: 'nextWeekBtnM', text: 'Week', icon: 'ri-arrow-right-s-line'}) %>
+        </div>
         <div class="md:hidden block">
 
             <div class="relative mt-5">
-                <table class="w-full ">
+                <table class="w-full sticky top-0">
                     <thead class="text-white font-montserrat text-xl font-normal bg-grey-level3">
                     <tr>
                         <th scope="col" class="text-center py-2 xs:px-4 px-2">
@@ -39,139 +44,10 @@
                         </th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr class="bg-grey-level2 text-white font-montserrat text-xl ">
-                        <td class="text-center py-2 xs:px-4 px-2">
-                            16
-                        </td>
-                        <td class="text-center py-2 xs:px-4 px-2">
-                            17
-                        </td>
-                        <td class="text-center py-2 xs:px-4 px-2">
-                            18
-                        </td>
-                        <td class="text-center py-2 xs:px-4 px-2">
-                            19
-                        </td>
-                        <td class="text-center py-2 xs:px-4 px-2">
-                            20
-                        </td>
-                        <td class="text-center py-2 xs:px-4 px-2">
-                            21
-                        </td>
-                        <td class="text-center py-2 xs:px-4 px-2">
-                            22
-                        </td>
-                    </tr>
-                    </tbody>
+                    <tbody id="calendarTable"></tbody>
                 </table>
+                <div id="calBodyMobile"></div>
             </div>
-            <div class="flex items-center justify-between px-[13px] py-2 border-t border-red-text bg-turquoise/40">
-                <div>
-                    <h5 class="text-white font-montserrat text-base font-semibold">Monday, 16. Oktober 2023
-                    </h5>
-                </div>
-                <ul class="flex">
-                    <li><a href="#"> <i class="ri-edit-line font-normal text-sm text-white"></i></a>
-                    </li>
-                    <li class="mx-[14px]"><a href="#" class="my-2.5">
-                            <i class="ri-clipboard-line font-normal text-sm text-white">
-                            </i>
-                        </a></li>
-                    <li><a href="#">
-                            <i class="ri-file-copy-2-line font-normal text-sm text-white">
-                            </i>
-                        </a></li>
-                </ul>
-            </div>
-            <div class="bg-grey-level2 pt-2">
-                <div class="flex items-center py-2  mx-4 border-b border-btn-grey">
-                    <div>
-                        <img src="images/avatar.svg" alt="">
-                    </div>
-                    <div class="">
-                        <img src="/res/teamcalendar/present.png" class="w-7 mx-4" alt="">
-                    </div>
-                    <div>
-                        <h6 class="text-white font-montserrat font-normal text-base">19.00 - 23.00</h6>
-                    </div>
-                </div>
-                <div class="flex items-center py-2  mx-4 border-b border-btn-grey">
-                    <div>
-                        <img src="images/avatar.svg" alt="">
-                    </div>
-                    <div class="">
-                        <img src="/res/teamcalendar/absent.png" class="w-7 mx-4" alt="">
-                    </div>
-                    <div>
-                        <h6 class="text-white font-montserrat font-normal text-base">Ferien</h6>
-                    </div>
-                </div>
-                <div class="flex items-center py-2  mx-4 border-b border-btn-grey">
-                    <div>
-                        <img src="images/avatar.svg" alt="">
-                    </div>
-                    <div class="">
-                        <img src="/res/teamcalendar/unsure.png" class="w-7 mx-4" alt="">
-                    </div>
-                    <div>
-                        <h6 class="text-white font-montserrat font-normal text-base">19.00 - 23.00</h6>
-                    </div>
-                </div>
-                <div class="flex items-center py-2  mx-4 mb-3 ">
-                    <div>
-                        <img src="images/avatar.svg" alt="">
-                    </div>
-                    <div class="">
-                        <img src="/res/teamcalendar/unsure.png" class="w-7 mx-4" alt="">
-                    </div>
-                    <div>
-                        <h6 class="text-white font-montserrat font-normal text-base">Usgang Mabye</h6>
-                    </div>
-                </div>
-                <div
-                        class="flex items-center justify-between px-[13px] py-2 border-t border-red-text bg-turquoise/40">
-                    <div>
-                        <h5 class="text-white font-montserrat text-base font-semibold">Tuesday, 16. Oktober
-                            2023
-                        </h5>
-                    </div>
-                    <ul class="flex">
-                        <li><a href="#"> <i class="ri-edit-line font-normal text-sm text-white"></i></a>
-                        </li>
-                        <li class="mx-[14px]"><a href="#" class="my-2.5">
-                                <i class="ri-clipboard-line font-normal text-sm text-white">
-                                </i>
-                            </a></li>
-                        <li><a href="#">
-                                <i class="ri-file-copy-2-line font-normal text-sm text-white">
-                                </i>
-                            </a></li>
-                    </ul>
-                </div>
-                <h6 class="text-white font-montserrat font-normal text-base py-4 px-3">No Data</h6>
-                <div
-                        class="flex items-center justify-between px-[13px] py-2 border-t border-red-text bg-turquoise/40">
-                    <div>
-                        <h5 class="text-white font-montserrat text-base font-semibold">Tuesday, 16. Oktober
-                            2023
-                        </h5>
-                    </div>
-                    <ul class="flex">
-                        <li><a href="#"> <i class="ri-edit-line font-normal text-sm text-white"></i></a>
-                        </li>
-                        <li class="mx-[14px]"><a href="#" class="my-2.5">
-                                <i class="ri-clipboard-line font-normal text-sm text-white">
-                                </i>
-                            </a></li>
-                        <li><a href="#">
-                                <i class="ri-file-copy-2-line font-normal text-sm text-white">
-                                </i>
-                            </a></li>
-                    </ul>
-                </div>
-            </div>
-
         </div> <!-- MOBILE -->
     </div>
     <div class="md:block hidden">
@@ -207,22 +83,39 @@
 <script>
     $(document).ready(function () {
         let currentDate = new Date();
-        buildCalendar(currentDate);
+        let previouslyBelowThreshold = window.innerWidth < 768;
+        buildCalendarBasedOnScreenSize(currentDate);
 
-        $("#lastWeekBtn").click(function () {
-            currentDate.setDate(currentDate.getDate() - 7);
-            buildCalendar(currentDate);
+        $(window).resize(function() {
+            const currentlyBelowThreshold = window.innerWidth < 768;
+
+            // Rebuild the calendar if the window crosses the 768px threshold in either direction
+            if (previouslyBelowThreshold !== currentlyBelowThreshold) {
+                buildCalendarBasedOnScreenSize(currentDate);
+                previouslyBelowThreshold = currentlyBelowThreshold; // Update the state
+            }
         });
 
-        $("#nextWeekBtn").click(function () {
-            currentDate.setDate(currentDate.getDate() + 7)
-            buildCalendar(currentDate);
+        $("#lastWeekBtn, #lastWeekBtnM").click(function() {
+            updateCalendar(-7);
         });
 
-        $("#todayBtn").click(function () {
-            currentDate = new Date();
-            buildCalendar(currentDate);
+        $("#nextWeekBtn, #nextWeekBtnM").click(function() {
+            updateCalendar(7);
         });
+
+        $("#todayBtn, #todayBtnM").click(function() {
+            updateCalendar('today');
+        });
+
+        function updateCalendar(daysToAdd) {
+            if (daysToAdd === 'today') {
+                currentDate = new Date();
+            } else {
+                currentDate.setDate(currentDate.getDate() + daysToAdd);
+            }
+            buildCalendarBasedOnScreenSize(currentDate);
+        }
 
         if(<%= user.team.account_fk %> === <%= user.id %>)
         {
@@ -231,11 +124,23 @@
     });
 
     /**
-     * Builds the calendar
-     * @param currentDate For which week the calendar should be built
-     * @returns {Promise<void>}
+     * Builds the calendar based on the screen size
+     * @param currentDate
      */
-    async function buildCalendar(currentDate) {
+    async function buildCalendarBasedOnScreenSize(currentDate) {
+        const screenWidth = window.innerWidth;
+
+        if (screenWidth < 768) {
+            // For mobile view
+            const data = await getData(currentDate);
+            buildCalendarMobile(currentDate, data);
+        } else {
+            // For desktop view
+            buildCalendar(currentDate);
+        }
+    }
+
+    async function getData(currentDate){
         const userData = {
             username: '<%= user.username %>',
             teamId: '<%= user.team.id %>',
@@ -246,7 +151,7 @@
 
         const sessionUser = userData.username
 
-        await $.ajax({
+        const data = await $.ajax({
             url: "/team/getTeamManager",
             data: {teamId: userData.teamId},
             type: "GET",
@@ -255,8 +160,6 @@
                 if(data.redirect){
                     window.location.href = data.redirect;
                 }
-                const teammanagerId = data[0].account_fk;
-                generateCalendar(users, currentDate, sessionUser, userData.teamId, teammanagerId, userData.isAdmin);
             },
             error: function (data) {
                 if (data.responseJSON && data.responseJSON.redirect) {
@@ -266,7 +169,20 @@
             }
         });
 
-        buildNextTrainingTable(userData.teamId).then(() => {
+        return {users: users, currentDate: currentDate, sessionUser: sessionUser, teamId: userData.teamId, teammanagerId: data[0].account_fk, isAdmin: userData.isAdmin};
+    }
+
+    /**
+     * Builds the calendar
+     * @param currentDate For which week the calendar should be built
+     * @returns {Promise<void>}
+     */
+    async function buildCalendar(currentDate) {
+        const data = await getData(currentDate);
+
+        generateCalendar(data.users, data.currentDate, data.sessionUser, data.teamId, data.teammanagerId, data.isAdmin);
+
+        buildNextTrainingTable(data.teamId).then(() => {
             //document.querySelector('#loading-message-container').style.display = 'none';
             //document.querySelector('.content').style.display = 'block';
         });

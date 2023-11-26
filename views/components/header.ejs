@@ -49,6 +49,10 @@
             }, 100);
         };
 
+        const hidePopup = () => {
+            $(".popup-modal").fadeOut();
+        };
+
         $("#userPopupHeader").hover(handleMouseEnter, handleMouseLeave);
         $(".popup-modal").hover(handleMouseEnter, handleMouseLeave);
 
@@ -57,9 +61,9 @@
         });
 
         $("#settingLink").click(() => {
-            loadPage('settings', [{id: "settings", url: "/dashboard/settings"}])
+            loadPage('settings', [{id: "settings", url: "/dashboard/settings"}]);
+            hidePopup(); // Hide the popup on click
         });
     });
-
 </script>
 

@@ -853,3 +853,108 @@ function crudFixedTraining(data, action){
         }
     });
 }
+
+/**
+ * Generates the calendar for the mobile view
+ * @param currentDate
+ */
+async function buildCalendarMobile(currentDate, data) {
+
+    //Build the header
+    let tr = $('<tr></tr>').addClass("bg-grey-level2 text-white font-montserrat text-xl");
+    daysOfWeek.forEach(function (day) {
+        if (day === 'Filler') return;
+
+        const dateStr = getDateFromDay(currentDate, day);
+        const dayNumber = dateStr.split('.')[0];
+
+        let td = $('<td></td>').addClass("text-center py-2 xs:px-4 px-2").text(dayNumber);
+        tr.append(td);
+    });
+
+    $('#calendarTable').empty().append(tr);
+
+    //Build the body
+    const calContainer = $("#calBodyMobile").empty();
+
+    //Load data from monday to sunday
+    const teamData = await getDataFromTeam(getMondayOfWeek(currentDate), getSundayOfCurrentWeek(currentDate), teamId)
+
+    let j = 0;
+    daysOfWeek.forEach(function (day) {
+        j++;
+        if (day === 'Filler') return;
+
+        const dateStr = getDateFromDay(currentDate, day);
+        const dateOrg = new Date(getXDayOfWeek(currentDate, j - 2));
+        const epoch = Math.floor(new Date(dateOrg.getFullYear(), dateOrg.getMonth(), dateOrg.getDate()).getTime() / 1000);
+        console.log(dateStr + " " + epoch);
+
+        // Create the div and its content
+        let dayDiv = $('<div></div>').addClass("flex items-center justify-between px-[13px] py-1 border-t border-red-text bg-turquoise/40");
+
+        let leftDiv = $('<div></div>');
+        let rightUl = $('<ul></ul>').addClass("flex");
+
+        // Left part with date
+        leftDiv.append(`<h5 class="text-white font-montserrat text-base font-semibold">${day}, ${dateStr}</h5>`);
+
+        // Right part with icons
+        const icons = ['ri-edit-line', 'ri-clipboard-line', 'ri-file-copy-2-line'];
+        icons.forEach(function (icon, index) {
+            let li = $('<li></li>').addClass(index === 1 ? 'mx-[14px]' : '');
+            li.append(`<a href="#"><i class="${icon} font-normal text-sm text-white"></i></a>`);
+            rightUl.append(li);
+        });
+
+        dayDiv.append(leftDiv).append(rightUl);
+
+        // Append the day div to the container
+        calContainer.append(dayDiv);
+
+        data.users.forEach(function(user) {
+            const presenceData = teamData.find(record => record.date == epoch && record.username == user.username);
+            let statusImgSrc = "";
+            let statusText = "";
+
+            //Get the correct picture
+            switch (presenceData?.state) {
+                case 0: //Present
+                    statusImgSrc = "/res/teamcalendar/present.png";
+                    statusText = `${presenceData.from} - ${presenceData.until}`;
+                    break;
+                case 1: //Open
+                    statusImgSrc = "/res/teamcalendar/present.png";
+                    break;
+                case 2: //Absent
+                    statusImgSrc = "/res/teamcalendar/absent.png";
+                    statusText = presenceData.comment;
+                    break;
+                case 3: //Unsure
+                    statusImgSrc = "/res/teamcalendar/unsure.png";
+                    statusText = presenceData.comment;
+                    break;
+                default: //No Data
+                    statusImgSrc = "";
+                    statusText = "No Data";
+            }
+
+            //Main Div
+            let userDiv = $('<div></div>').addClass("flex items-center py-2 mx-4 border-btn-grey");
+            if(user.username !== data.users[data.users.length - 1].username){
+                userDiv.addClass("border-b");
+            }
+
+            //User Thumbnail
+            userDiv.append(`<div><img src="${user.thumbnail}" alt="" class="rounded-full h-6 w-6"></div>`);
+
+            //Status icon
+            userDiv.append(`<div class=""><img src="${statusImgSrc}" class="w-7 mx-4" alt=""></div>`);
+
+            //Status text
+            userDiv.append(`<div><h6 class="text-white font-montserrat font-normal text-base">${statusText}</h6></div>`);
+
+            calContainer.append(userDiv);
+        });
+    });
+}

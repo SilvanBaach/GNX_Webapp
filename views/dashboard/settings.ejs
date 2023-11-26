@@ -1,7 +1,7 @@
 <script src="/js/clientJS/imgUploadToDB.js"></script>
 <script src="/js/clientJS/settings.js"></script>
 
-<div class="bg-grey-level1 max-w-[1330px] xl:pr-4 lg:pr-0 pr-4 px-8 py-6">
+<div class="bg-grey-level1 max-w-[1330px] xl:pr-4 lg:pr-0 pr-4 px-4 md:px-8 py-6">
     <div class="flex justify-between">
         <h3 class="text-2xl md:mb-0 mb-5 font-bold font-orbitron text-white">Settings</h3>
         <div class="text-right lg:mr-2.5 md:mb-0 mb-5">
@@ -13,37 +13,37 @@
             <div class="bg-grey-level2 sm:p-6 px-4 py-6 font-montserrat">
                 <h4 class="text-lg text-white font-bold">Personal Information</h4>
                 <form>
-                    <div class="flex items-center justify-between mt-4">
-                        <div class="w-1/2 xl:pr-4 pr-2">
+                    <div class="flex md:items-center justify-between mt-4 flex-col md:flex-row w-full">
+                        <div class="md:w-1/2 xl:pr-4 md:pr-2">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Fullname *</label>
-                            <%- include('../components/entryfield', {type: 'text', name: 'fullname', id: 'fullname', width: 'w-full', value: user.fullname }) %>
+                            <%- include('../components/entryfield', {type: 'text', name: 'fullname', id: 'fullname', width: 'w-[100%]', value: user.fullname }) %>
                         </div>
-                        <div class="w-1/2 xl:pl-4 pl-2">
+                        <div class="md:w-1/2 xl:pl-4 md:pl-2 mt-2 md:mt-0">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">E-Mail *</label>
                             <%- include('../components/entryfield', {type: 'email', name: 'email', id: 'email', width: 'w-full', value: user.email}) %>
                         </div>
                     </div>
-                    <div class="flex items-center justify-between xl:mt-5 mt-3">
-                        <div class="w-1/2 xl:pr-4 pr-2">
+                    <div class="flex md:items-center justify-between mt-4 flex-col md:flex-row w-full">
+                        <div class="md:w-1/2 xl:pr-4 md:pr-2">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Phone Number</label>
                             <%- include('../components/entryfield', {type: 'text', name: 'phone', id: 'phone', width: 'w-full', value: user.phone}) %>
                         </div>
-                        <div class="w-1/2 xl:pl-4 pl-2">
+                        <div class="md:w-1/2 xl:pl-4 md:pl-2 mt-2 md:mt-0">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Username *</label>
                             <%- include('../components/entryfield', {type: 'text', name: 'username', id: 'username', width: 'w-full', value: user.username}) %>
                         </div>
                     </div>
-                    <div class="flex items-center justify-between xl:mt-5 mt-3">
-                        <div class="w-1/2 xl:pr-4 pr-2">
+                    <div class="flex md:items-center justify-between mt-4 flex-col md:flex-row w-full">
+                        <div class="md:w-1/2 xl:pr-4 md:pr-2">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Street</label>
                             <%- include('../components/entryfield', {type: 'text', name: 'street', id: 'street', width: 'w-full', value: user.street}) %>
                         </div>
-                        <div class="w-1/2 xl:pl-4 pl-2">
+                        <div class="md:w-1/2 xl:pl-4 md:pl-2 mt-2 md:mt-0">
                             <label class="xl:text-base text-sm font-montserrat font-semibold text-white">City</label>
                             <%- include('../components/entryfield', {type: 'text', name: 'city', id: 'city', width: 'w-full', value: user.city}) %>
                         </div>
                     </div>
-                    <div class="w-1/2 mt-5 xl:pr-5 pr-2">
+                    <div class="md:w-1/2 xl:pr-4 md:pr-2 mt-2 md:mt-0">
                         <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Zip Code</label>
                         <%- include('../components/entryfield', {type: 'number', name: 'zip', id: 'zipcode', width: 'w-full', value: user.zip}) %>
                     </div>
