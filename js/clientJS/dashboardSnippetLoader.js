@@ -56,3 +56,25 @@ function fetchEntryField(type, name, id, width, value) {
 function fetchButton(type, id, text, width, icon, customClasses, iconPos, btnType, inputId) {
     return $.get(`/renderButton?type=${type}&icon=${icon}&id=${id}&customClasses=${customClasses}&iconPos=${iconPos}&btnType=${btnType}&inputId=${inputId}&text=${text}&width=${width}`);
 }
+
+/**
+ * Loads a dropdown from the Server
+ */
+function fetchDropdown(id, width, options, defaultOption) {
+    return $.get(`/renderDropdown?id=${id}&width=${width}&options=${options}&defaultOption=${defaultOption}`);
+}
+
+/**
+ * This function is used to wait for an element to be loaded
+ * @param selector
+ * @param callback
+ */
+function waitForElement(selector, callback) {
+    if ($(selector).length) {
+        callback();
+    } else {
+        setTimeout(function() {
+            waitForElement(selector, callback);
+        }, 100);
+    }
+}

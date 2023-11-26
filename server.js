@@ -222,4 +222,20 @@ app.get('/renderButton', (req, res) => {
     });
 });
 
+/**
+ * GET routes for rendering a single dropdown
+ */
+app.get('/renderDropdown', (req, res) => {
+    let { id, width, options, defaultOption } = req.query;
+
+    id = id === 'undefined' ? undefined : id;
+    width = width === 'undefined' ? undefined : width;
+    options = options === 'undefined' ? undefined : JSON.parse(options);
+    defaultOption = defaultOption === 'undefined' ? undefined : defaultOption;
+
+    res.render('components/dropdown.ejs', {
+        id, width, options, defaultOption
+    });
+});
+
 module.exports = app;

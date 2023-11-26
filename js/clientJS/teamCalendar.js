@@ -87,6 +87,9 @@ function getDateFromDay(date, dayOfWeek) {
  */
 async function generateCalendar(users, currentDate, sessionUser, teamId, teamManagerId, isAdmin) {
     const today = new Date();
+    $(document).off('click', '#calBody .copy');
+    $(document).off('click', '#calBody .paste');
+    $(document).off('click', '#calBody .edit');
 
     //Creates the header of the table
     const calHeader = $("#calHeader");
@@ -138,7 +141,10 @@ async function generateCalendar(users, currentDate, sessionUser, teamId, teamMan
 
     for (let i = 0; i < numRows; i++) {
         // Generate the <tr> element
-        let tr = $("<tr></tr>", { "class": "border-b-8 border-grey-level1" });
+        let tr = $("<tr></tr>", {
+            "class": "border-b-8 border-grey-level1",
+            "data-userid": users[i].userid  // Store the user's ID in the row
+        });
 
         for (let j = 0; j < numCols; j++) {
 
@@ -148,16 +154,16 @@ async function generateCalendar(users, currentDate, sessionUser, teamId, teamMan
 
                 let crownHtml = '';
                 if (users[i].userid === teamManagerId) {
-                    crownHtml = '<img src="/res/others/crown.png" alt="Team Manager" class="w-6">';
+                    crownHtml = '<img src="/res/others/crown.png" alt="Team Manager" class="w-5">';
                 }
 
                 let tdUser = $("<td></td>", {
                     "scope": "row",
-                    "class": "px-6 py-2 bg-grey-level2 h-[150px]",
+                    "class": "px-6 py-2 bg-grey-level2 h-[130px]",
                     "html": `<div class="flex items-center flex-col text-center">
                             <div class="flex flex-col items-center">
                                 ${crownHtml}
-                                <img src="${userImage}" alt="Picture of user ${users[i].username}" class="rounded-full w-16">
+                                <img src="${userImage}" alt="Picture of user ${users[i].username}" class="rounded-full w-12">
                             </div>
                             <h6 class="text-lg mt-2 font-montserrat text-white text-center font-bold">${users[i].username}</h6>
                          </div>`
@@ -215,11 +221,8 @@ async function generateCalendar(users, currentDate, sessionUser, teamId, teamMan
 
                 let text = $("<p>" + data.statusText + "</p>").addClass("text-base text-center absolute top-1/2 left-1/2 -translate-x-1/2 z-10 -translate-y-1/2 text-white font-montserrat font-semibold");
 
-                divRelative.append(text);
-                divRelative.append(ulIcons);
-
                 // Overlay div for image
-                let divImageOverlay = $("<div></div>").addClass("absolute w-[104px] h-[107px] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2");
+                let divImageOverlay = $("<div></div>").addClass("absolute w-[95px] h-[95px] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2");
                 let img = $("<img>").attr({
                     "src": data.statusImgSrc,
                     "class": "opacity-40"
@@ -227,6 +230,8 @@ async function generateCalendar(users, currentDate, sessionUser, teamId, teamMan
                 divImageOverlay.append(img);
 
                 divRelative.append(divImageOverlay);
+                divRelative.append(text);
+                divRelative.append(ulIcons);
                 tdActions.append(divRelative);
                 tr.append(tdActions);
             }
@@ -249,6 +254,22 @@ async function generateCalendar(users, currentDate, sessionUser, teamId, teamMan
 
         pasteDay(username, date);
     });
+
+    $(document).on('click', '#calBody .edit', function(e) {
+        const row = $(this).closest('tr');
+        const username = row.find('td:first').text().trim();
+        const date = $(this).closest('td').attr('date');
+
+        editDay(username, date, e, teamId);
+    });
+
+    //Make the Calendar draggable
+    calContainer.find('tr').each(function() {
+        this.setAttribute('draggable', true);
+        this.addEventListener('dragstart', dragStart);
+        this.addEventListener('dragover', dragOver);
+        this.addEventListener('drop', drop);
+    });
 }
 
 let draggedRow = null;
@@ -267,26 +288,23 @@ function dragOver(event) {
 
 async function drop(event) {
     event.preventDefault();
-    if (this.classList.contains('row-container')) {
-        $('.drag-over').removeClass('drag-over');
+    $('.drag-over').removeClass('drag-over');
 
-        if (draggedRow) {
-            this.parentNode.insertBefore(draggedRow, this);
+    if (draggedRow) {
+        this.parentNode.insertBefore(draggedRow, this);
 
-            // After updating DOM, calculate new order and save it
-            const rows = Array.from(document.querySelectorAll('.row-container'));
-            const newOrder = rows.map((row, index) => {
-                // get the user id from the row id (remove 'user-' prefix)
-                const userId = row.getAttribute('id').replace('user-', '');
-                return {
-                    userId: parseInt(userId),
-                    order: rows.length - index,
-                    teamId: parseInt(row.getAttribute('teamid'))
-                };
-            });
+        // After updating DOM, calculate new order and save it
+        const rows = Array.from($('#calBody').find('tr'));
+        const newOrder = rows.map((row, index) => {
+            const userId = $(row).data('userid');  // Retrieve the user ID from the row
+            return {
+                userId: userId,
+                order: rows.length - index,
+                teamId: teamId
+            };
+        });
 
-            await saveNewOrder(newOrder)
-        }
+        await saveNewOrder(newOrder);
     }
 }
 
@@ -373,78 +391,85 @@ async function editDay(username, date, e, teamId) {
 
     //Configure Popup to edit day
     const popup = new Popup("popup-container-edit");
-    popup.displayInputPopupCustom("/res/others/edit.png", "Edit Day", "Save", "btnSave", '' +
-        '<label for="presenceType" class="input-label">Presence Type</label>' +
-        '<select id="presenceType" class="input-field">' +
-        '<option value="" disabled selected>Select Presence Type</option>' +
-        '<option value="0">Present</option>' +
-        '<option value="1">Open</option>' +
-        '<option value="2">Absent</option>' +
-        '<option value="3">Unsure</option>' +
-        '</select>' +
-        '<div class="sub-data-container" id="sub-data-container">' +
-        '</div>'
-    );
+    $("#popup-container-edit").empty();
 
-    //Add event listener to select box
-    $("#presenceType").change(function () {
-        const presenceType = $(this).val();
-        if (presenceType === "0") {
-            //Add from until fields
-            $("#sub-data-container").empty().html('' +
-                '<label for="from" class="input-label">From</label>' +
-                '<input type="time" id="from" class="input-field"/>' +
-                '<label for="until" class="input-label">Until</label>' +
-                '<input type="time" id="until" class="input-field" value="23:59"/>');
-        } else if (presenceType === "3" || presenceType === "2") {
-            //Add comment field
-            $("#sub-data-container").empty().html('' +
-                '<label for="comment" class="input-label">Comment</label>' +
-                '<input type="text" id="comment" class="input-field" maxlength="20"/>');
-        } else {
-            $("#sub-data-container").empty();
-        }
-    });
+    $.when(
+        fetchDropdown('presenceType', 'w-60', '[{"value": "0", "text": "Present"}, {"value": "1", "text": "Open"}, {"value": "2", "text": "Absent"}, {"value": "3", "text": "Unsure"}]', 'Select Presence Type'),
+        fetchEntryField('time', 'from', 'from', undefined, ''),
+        fetchEntryField('time', 'until', 'until', undefined, '23:59'),
+        fetchEntryField('text', 'comment', 'comment', undefined, '')
+        ).then(function(dropdown, from, until, input) {
+        popup.displayInputPopupCustom("/res/others/edit.png", "Edit Day", "Save", "btnSave", '' +
+            '<label for="presenceType" class="input-label" style="margin-bottom: 10px">Presence Type</label>' +
+            dropdown[0] +
+            '<div class="flex flex-col" id="sub-data-container">' +
+            '</div>'
+        );
 
-    //Add event listener to save button
-    $("#btnSave").click(function (e) {
-        //check if all fields are filled
-        const presenceType = $("#presenceType").val();
-        let from;
-        let until;
-        const comment = $("#comment").val();
+        waitForElement('#presenceType', function() {
+            //Add event listener to select box
+            $("#presenceType").change(function () {
+                const presenceType = $(this).val();
+                if (presenceType === "0") {
+                    //Add from until fields
+                    $("#sub-data-container").empty().html('' +
+                        '<label for="from" class="input-label">From</label>' +
+                        from[0] +
+                        '<label for="until" class="input-label">Until</label>' +
+                        until[0]);
+                } else if (presenceType === "3" || presenceType === "2") {
+                    //Add comment field
+                    $("#sub-data-container").empty().html('' +
+                        '<label for="comment" class="input-label">Comment</label>' +
+                        input[0]);
+                } else {
+                    $("#sub-data-container").empty();
+                }
+            });
 
-        if (presenceType) {
-            if (presenceType === "0") {
-                from = $("#from").val();
-                until = $("#until").val();
-                if (!from || !until) {
+            if (elementWithUsername) {
+                $('#presenceType').val(elementWithUsername.state).trigger('change');
+                if (elementWithUsername.state === 0) {
+                    $("#from").val(elementWithUsername.from);
+                    $("#until").val(elementWithUsername.until);
+                } else if (elementWithUsername.state === 3 || elementWithUsername.state === 2) {
+                    $("#comment").val(elementWithUsername.comment);
+                }
+            }
+        });
+
+        //Add event listener to save button
+        waitForElement('#btnSave', function() {
+            $("#btnSave").click(function (e) {
+                //check if all fields are filled
+                const presenceType = $("#presenceType").val();
+                let from;
+                let until;
+                const comment = $("#comment").val();
+
+                if (presenceType) {
+                    if (presenceType === "0") {
+                        from = $("#from").val();
+                        until = $("#until").val();
+                        if (!from || !until) {
+                            displayError("Please fill out all fields!");
+                            return;
+                        }
+                    }
+                } else {
                     displayError("Please fill out all fields!");
                     return;
                 }
-            }
-        } else {
-            displayError("Please fill out all fields!");
-            return;
-        }
 
-        //Save data
-        saveDay(username, date, presenceType, from, until, comment);
+                //Save data
+                saveDay(username, date, presenceType, from, until, comment);
 
-        popup.close(e);
+                popup.close(e);
+            });
+        });
+
+        popup.open(e);
     });
-
-    if (elementWithUsername) {
-        $('#presenceType').val(elementWithUsername.state).trigger('change');
-        if (elementWithUsername.state === 0) {
-            $("#from").val(elementWithUsername.from);
-            $("#until").val(elementWithUsername.until);
-        } else if (elementWithUsername.state === 3 || elementWithUsername.state === 2) {
-            $("#comment").val(elementWithUsername.comment);
-        }
-    }
-
-    popup.open(e);
 }
 
 /**
@@ -643,106 +668,115 @@ function buildNextTrainingTable(teamId) {
 /**
  * Setup of the define training time popup
  */
-function setupDefTrainingTimePopup(id) {
+async function setupDefTrainingTimePopup(id) {
     teamId = id;
     const defTrainingTimePopup = new Popup("popup-containerDefTrainingTime");
 
-    defTrainingTimePopup.displayInputPopupCustom("/res/others/edit.png", "Define Training Time", "Confirm", "btnDefineTrainingTime",
-        '<label for="training" class="input-label">Choose Training</label>' +
-        '<select id="training" class="input-field">' +
-        '<option value="" disabled selected>Select a Training</option>' +
-        getTrainingOptions(teamId, function (options) {
-            $('#training').html('<option value="" disabled selected>Select a Training</option>' + options);
-        }) +
-        '</select>' +
-        '<label for="from" class="input-label">From</label>' +
-        `<input type="time" id="from" class="input-field"/>` +
-        '<label for="until" class="input-label">Until</label>' +
-        `<input type="time" id="until" class="input-field"/>` +
-        `<div id="delTrainingDiv"><button id="btnDeleteTraining" class="default red">Delete</button></div>`
-    )
+    const options = await getTrainingOptions(teamId);
 
-    $('#manageLink').click(function (e) {
-        $("#training").val("");
-        $("#from").val("").prop("disabled", true);
-        $("#until").val("").prop("disabled", true);
-        $("#delTrainingDiv").hide();
-        defTrainingTimePopup.open(e);
-    });
+    $.when(
+        fetchEntryField('time', 'from', 'from', undefined, ''),
+        fetchEntryField('time', 'until', 'until', undefined, ''),
+        fetchDropdown('presenceType', 'w-60', `${JSON.stringify(options)}`, 'Select a Training'),
+        fetchButton('button', 'btnDeleteTraining','Delete', undefined,'ri-close-line','mt-6',undefined,'Error')
+    ).then(function (from, until, dropdown, btnDeleteTraining) {
+        defTrainingTimePopup.displayInputPopupCustom("/res/others/edit.png", "Define Training Time", "Confirm", "btnDefineTrainingTime",
+            '<label for="training" class="input-label" style="margin-bottom: 10px">Choose Training</label>' +
+            dropdown[0] +
+            '<label for="from" class="input-label">From</label>' +
+            from[0] +
+            '<label for="until" class="input-label">Until</label>' +
+            until[0] +
+            `<div id="delTrainingDiv">${btnDeleteTraining[0]}</div>`
+        )
 
-    $('#training').change(function () {
-        const selectedTrainingEpochDate = $(this).val();
-        const fixedTrainingId = $(this).find(":selected").data("secondvalue");
-
-        if (fixedTrainingId > 0){
-            $("#delTrainingDiv").show();
-        }else{
+        $('#manageLink').click(function (e) {
+            $("#training").val("");
+            $("#from").val("").prop("disabled", true);
+            $("#until").val("").prop("disabled", true);
             $("#delTrainingDiv").hide();
-        }
+            defTrainingTimePopup.open(e);
+        });
 
-        if (selectedTrainingEpochDate != "") {
-            const selectedTraining = trainingsToBeDefined.find(training => training.epochdate == selectedTrainingEpochDate);
+        waitForElement('#presenceType', function() {
+            $('#presenceType').change(function () {
+                const selectedTrainingEpochDate = $(this).val();
+                const fixedTrainingId = $(this).find(":selected").data("secondvalue");
 
-            if (selectedTraining) {
-                $("#from").prop("disabled", false).val(selectedTraining.starttime);
-                $("#until").prop("disabled", false).val(selectedTraining.endtime);
-            } else {
-                $("#from").prop("disabled", true);
-                $("#until").prop("disabled", true);
+                if (fixedTrainingId > 0) {
+                    $("#delTrainingDiv").show();
+                } else {
+                    $("#delTrainingDiv").hide();
+                }
+
+                if (selectedTrainingEpochDate != "") {
+                    const selectedTraining = trainingsToBeDefined.find(training => training.epochdate == selectedTrainingEpochDate);
+
+                    if (selectedTraining) {
+                        $("#from").prop("disabled", false).val(selectedTraining.starttime);
+                        $("#until").prop("disabled", false).val(selectedTraining.endtime);
+                    } else {
+                        $("#from").prop("disabled", true);
+                        $("#until").prop("disabled", true);
+                    }
+                } else {
+                    $("#from").prop("disabled", true);
+                    $("#until").prop("disabled", true);
+                }
+            });
+        });
+
+        $(document).off('click', '#btnDefineTrainingTime');
+        $(document).on('click', '#btnDefineTrainingTime', function(e) {
+            if (!$("#presenceType").val()) {
+                displayError("Please select a training!");
+                return;
             }
-        } else {
-            $("#from").prop("disabled", true);
-            $("#until").prop("disabled", true);
-        }
-    });
+            if ($("#from").val() == "") {
+                displayError("Please select a start time!");
+                return;
+            }
+            if ($("#until").val() == "") {
+                displayError("Please select an end time!");
+                return;
+            }
 
-    $('#btnDefineTrainingTime').click(function () {
-        if (!$("#training").val()) {
-            displayError("Please select a training!");
-            return;
-        }
-        if ($("#from").val() == "") {
-            displayError("Please select a start time!");
-            return;
-        }
-        if ($("#until").val() == "") {
-            displayError("Please select an end time!");
-            return;
-        }
+            if ($("#from").val() >= $("#until").val()) {
+                displayError("Start time must be before end time!");
+                return;
+            }
 
-        if ($("#from").val() >= $("#until").val()) {
-            displayError("Start time must be before end time!");
-            return;
-        }
+            const fixedTrainingId = $("#presenceType").find(":selected").data("secondvalue");
 
-        const fixedTrainingId = $("#training").find(":selected").data("secondvalue");
+            let action = "create";
+            if (fixedTrainingId > 0) {
+                action = "update";
+            }
 
-        let action = "create";
-        if (fixedTrainingId > 0) {
-            action = "update";
-        }
+            const data = {
+                epochdate: $("#presenceType").val(),
+                starttime: $("#from").val(),
+                endtime: $("#until").val(),
+                id: fixedTrainingId,
+                team_fk: teamId
+            }
 
-        const data = {
-            epochdate: $("#training").val(),
-            starttime: $("#from").val(),
-            endtime: $("#until").val(),
-            id: fixedTrainingId,
-            team_fk: teamId
-        }
+            crudFixedTraining(data, action)
 
-        crudFixedTraining(data, action)
+            defTrainingTimePopup.close();
+        });
 
-        defTrainingTimePopup.close();
-    });
+        waitForElement('#btnDeleteTraining', function() {
+            $("#btnDeleteTraining").click(function () {
+                const data = {
+                    id: $("#presenceType").find(":selected").data("secondvalue")
+                }
 
-    $("#btnDeleteTraining").click(function () {
-        const data = {
-            id: $("#training").find(":selected").data("secondvalue")
-        }
+                crudFixedTraining(data, "delete")
 
-        crudFixedTraining(data, "delete")
-
-        defTrainingTimePopup.close();
+                defTrainingTimePopup.close();
+            });
+        });
     });
 }
 
@@ -750,39 +784,46 @@ function setupDefTrainingTimePopup(id) {
  * Returns all training options
  * @returns {string}
  */
-function getTrainingOptions(teamId, callback) {
-    let options = "";
+function getTrainingOptions(teamId) {
+    return new Promise((resolve, reject) => {
+        let options = [];
 
-    $.ajax({
-        url: "/training/getTrainingsToBeDefined",
-        data: {teamId: teamId},
-        type: "GET",
-        dataType: "json",
-        success: function (data) {
-            trainingsToBeDefined = data;
+        $.ajax({
+            url: "/training/getTrainingsToBeDefined",
+            data: {teamId: teamId},
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                trainingsToBeDefined = data;
 
-            for (let x = 0; x < data.length; x++) {
-                const dateParts = data[x].readable_date.split(".");
-                const date = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+                for (let x = 0; x < data.length; x++) {
+                    const dateParts = data[x].readable_date.split(".");
+                    const date = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+                    const weekday = date.toLocaleString('en-US', {weekday: 'long'});
+                    let text;
 
-                // Get the localized weekday name
-                const weekday = date.toLocaleString('en-US', { weekday: 'long' });
+                    if (data[x].playercount == -1) {
+                        text = `${weekday}, ${data[x].readable_date} - fixed (${data[x].starttime} - ${data[x].endtime})`;
+                    } else {
+                        text = `${weekday}, ${data[x].readable_date} - proposed (${data[x].playercount} player(s) available)`;
+                    }
 
-                if (data[x].playercount == -1) {
-                    options += `<option value="${data[x].epochdate}" data-secondvalue="${data[x].fixedtrainings_id}">${weekday}, ${data[x].readable_date} - fixed (${data[x].starttime} - ${data[x].endtime})</option>`;
-                } else {
-                    options += `<option value="${data[x].epochdate}" data-secondvalue="${data[x].fixedtrainings_id}">${weekday}, ${data[x].readable_date} - proposed (${data[x].playercount} player(s) available)</option>`;
+                    options.push({
+                        "value": data[x].epochdate.toString(),
+                        "text": text,
+                        "secondvalue": data[x].fixedtrainings_id.toString()
+                    });
                 }
+                resolve(options);
+            },
+            error: function (data) {
+                if (data.responseJSON && data.responseJSON.redirect) {
+                    window.location.href = data.responseJSON.redirect;
+                }
+                console.log(data);
+                reject(data);
             }
-
-            callback(options);
-        },
-        error: function (data) {
-            if (data.responseJSON && data.responseJSON.redirect) {
-                window.location.href = data.responseJSON.redirect;
-            }
-            console.log(data);
-        }
+        });
     });
 }
 

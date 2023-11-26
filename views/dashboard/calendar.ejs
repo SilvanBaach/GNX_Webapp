@@ -190,9 +190,10 @@
         <h3 class="md:text-2xl mt-8 md:mb-0 mb-5 text-xl font-bold font-orbitron text-white">Upcoming
             Trainings
         </h3>
-        <%- include('../components/buttondefault', {type: 'button', id: 'manageTrainings', text: 'Manage Trainings', icon: 'ri-tools-fill', customClasses: 'mt-6'}) %>
-
-        <div class="mt-6 bg-grey-level2 p-4 max-w-[700px]">
+        <%if(user.team.account_fk === user.id ) {%>
+        <%- include('../components/buttondefault', {type: 'button', id: 'manageLink', text: 'Manage Trainings', icon: 'ri-tools-fill', customClasses: 'mt-6'}) %>
+        <%}%>
+        <div class="mt-6 bg-grey-level2 p-4 max-w-[700px] mb-6">
             <%- include('../components/table', {id: 'nextTrainings', bodyId: 'ntData', headers: [{text: 'Date'}, {text: 'Start Time'}, {text: 'End Time'}, {text: 'Duration'}]}) %>
         </div>
 
@@ -222,6 +223,11 @@
             currentDate = new Date();
             buildCalendar(currentDate);
         });
+
+        if(<%= user.team.account_fk %> === <%= user.id %>)
+        {
+            setupDefTrainingTimePopup(<%= user.team.id %>);
+        }
     });
 
     /**

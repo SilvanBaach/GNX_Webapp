@@ -6,8 +6,17 @@
 <div class="relative overflow-hidden rounded-md">
         <select id="<%= id %>" class="p-1 pl-2 pr-8 font-montserrat text-base text-almost-white appearance-none <%= width %> rounded-md outline-none"
                 onblur="reverseAnimationDropdown(this)" onchange="reverseAnimationDropdown(this)">
+
+                <% if(typeof defaultOption !== 'undefined'){%>
+                <option value="" disabled selected><%=defaultOption%></option>
+                <%}%>
+
                 <% options.forEach(option => { %>
-                        <option value="<%= option.value %>" class="font-montserrat text-almost-white text-base"><%= option.text %></option>
+                        <option value="<%= option.value %>" class="font-montserrat text-almost-white text-base"
+                                <%if(typeof option.secondvalue !== 'undefined'){%>
+                                data-secondvalue="<%=option.secondvalue%>"
+                                <%}%>
+                        ><%= option.text %></option>
                 <% }) %>
         </select>
         <div class="pointer-events-none absolute inset-y-0 right-0 pr-3 flex items-center text-almost-white">
