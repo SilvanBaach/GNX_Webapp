@@ -41,8 +41,8 @@ function returnFileList(subPath) {
 
                                 let thumbnailData = {};
                                 //If the file is png or jpg create a thumbnail
-                                if (stats.isFile() && (extension == 'png' || extension == 'jpg' || extension == 'jpeg')) {
-                                    thumbnailData = await thumbnailCreator.createThumbnailFromFile(path.join(filePath, file), 100, 100);
+                                if (stats.isFile() && (extension == 'png' || extension == 'jpg' || extension == 'jpeg' || extension == 'PNG' || extension == 'JPG' || extension == 'JPEG')) {
+                                    thumbnailData = await thumbnailCreator.createThumbnailFromFile(path.join(filePath, file), 500, 500);
                                 }
 
                                 //Add the file metadata to an array

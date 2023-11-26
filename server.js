@@ -65,7 +65,7 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 30 * 60 * 1000 } // Session will last 30 Minutes
+    cookie: { maxAge: 60 * 60 * 1000 * 24 * 90 } // Session will last 90 Days
 }));
 
 app.use(flash());
