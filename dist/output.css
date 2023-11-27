@@ -708,6 +708,10 @@ video {
   left: 50%;
 }
 
+.left-2 {
+  left: 0.5rem;
+}
+
 .left-4 {
   left: 1rem;
 }
@@ -738,6 +742,10 @@ video {
 
 .top-2 {
   top: 0.5rem;
+}
+
+.top-8 {
+  top: 2rem;
 }
 
 .top-\[60px\] {
@@ -847,6 +855,10 @@ video {
 .my-5 {
   margin-top: 1.25rem;
   margin-bottom: 1.25rem;
+}
+
+.-mt-2 {
+  margin-top: -0.5rem;
 }
 
 .mb-10 {
@@ -1174,6 +1186,10 @@ video {
 
 .w-1\/2 {
   width: 50%;
+}
+
+.w-1\/5 {
+  width: 20%;
 }
 
 .w-10 {
@@ -2402,11 +2418,6 @@ video {
 
 .bg-turquoise\/40 {
   background-color: rgb(49 199 205 / 0.4);
-}
-
-.bg-warning {
-  --tw-bg-opacity: 1;
-  background-color: rgb(242 148 35 / var(--tw-bg-opacity));
 }
 
 .bg-opacity-20 {

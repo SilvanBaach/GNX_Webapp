@@ -222,6 +222,17 @@ router.post('/setDiscordTag', checkNotAuthenticated, permissionCheck('home', 'ca
     });
 });
 
+/**
+ * GET route for the username of a user
+ */
+router.get('/getUsername/:id', checkNotAuthenticated, async (req, res) => {
+    getUserName(req.params.id).then((result) => {
+        res.status(200).send(result.rows);
+    }).catch(() => {
+        res.status(500).send({message: "There was an error getting the Username! Please try again later."});
+    });
+});
+
 /** Updates the information of a user in the database
  * This method is generic and can be used to update any field of the user
  * @param formData the data of the user
@@ -386,6 +397,14 @@ function deleteUser(username){
  */
 function getUsersToAssignRoleTo(roleId){
     return pool.query("SELECT id, username FROM account WHERE id NOT IN (SELECT COALESCE(account_fk,0) FROM role WHERE roletype_fk=$1)", [roleId]);
+}
+
+/**
+ * Gets all users that are not assigned to a specific role
+ * @returns {Promise<QueryResult<any>>}
+ */
+function getUserName(userId){
+    return pool.query(`SELECT username FROM account WHERE id = $1`, [userId]);
 }
 
 /**

@@ -87,9 +87,6 @@ function getDateFromDay(date, dayOfWeek) {
  */
 async function generateCalendar(users, currentDate, sessionUser, teamId, teamManagerId, isAdmin) {
     const today = new Date();
-    $(document).off('click', '#calBody .copy');
-    $(document).off('click', '#calBody .paste');
-    $(document).off('click', '#calBody .edit');
 
     //Creates the header of the table
     const calHeader = $("#calHeader");
@@ -239,29 +236,7 @@ async function generateCalendar(users, currentDate, sessionUser, teamId, teamMan
         calContainer.append(tr);
     }
 
-    $(document).on('click', '#calBody .copy', function(e) {
-        const row = $(this).closest('tr');
-        const username = row.find('td:first').text().trim();
-        const date = $(this).closest('td').attr('date');
-
-        copyDay(username, date, teamId);
-    });
-
-    $(document).on('click', '#calBody .paste', function(e) {
-        const row = $(this).closest('tr');
-        const username = row.find('td:first').text().trim();
-        const date = $(this).closest('td').attr('date');
-
-        pasteDay(username, date);
-    });
-
-    $(document).on('click', '#calBody .edit', function(e) {
-        const row = $(this).closest('tr');
-        const username = row.find('td:first').text().trim();
-        const date = $(this).closest('td').attr('date');
-
-        editDay(username, date, e, teamId);
-    });
+    registerActionIcons();
 
     //Make the Calendar draggable
     calContainer.find('tr').each(function() {
@@ -269,6 +244,39 @@ async function generateCalendar(users, currentDate, sessionUser, teamId, teamMan
         this.addEventListener('dragstart', dragStart);
         this.addEventListener('dragover', dragOver);
         this.addEventListener('drop', drop);
+    });
+}
+
+/**
+ * This function binds the edit copy and paste icons to the DOM Events
+ */
+function registerActionIcons(){
+    $(document).off('click', '.copy');
+    $(document).off('click', '.paste');
+    $(document).off('click', '.edit');
+
+    $(document).on('click', '.copy', function(e) {
+        const row = $(this).closest('tr');
+        const username = row.find('td:first').text().trim();
+        const date = $(this).closest('td').attr('date');
+
+        copyDay(username, date, teamId);
+    });
+
+    $(document).on('click', '.paste', function(e) {
+        const row = $(this).closest('tr');
+        const username = row.find('td:first').text().trim();
+        const date = $(this).closest('td').attr('date');
+
+        pasteDay(username, date);
+    });
+
+    $(document).on('click', '.edit', function(e) {
+        const row = $(this).closest('tr');
+        const username = row.find('td:first').text().trim();
+        const date = $(this).closest('td').attr('date');
+
+        editDay(username, date, e, teamId);
     });
 }
 
@@ -585,7 +593,7 @@ function saveDay(username, date, presenceType, from, until, comment) {
             const monthIndex = parseInt(parts[1], 10) - 1;
             const year = parseInt(parts[2], 10);
             const dateDat = new Date(year, monthIndex, day);
-            buildCalendar(dateDat);
+            buildCalendarBasedOnScreenSize(dateDat);
         }, error: function (data) {
             if (data.responseJSON && data.responseJSON.redirect) {
                 window.location.href = data.responseJSON.redirect;
@@ -621,8 +629,9 @@ async function getUsers(teamId) {
 /**
  * Builds the next training table for a team
  * @param teamId id of the team
+ * @param isMobile
  */
-function buildNextTrainingTable(teamId) {
+function buildNextTrainingTable(teamId, isMobile) {
     return new Promise((resolve, reject) => {
         const url = "/presence/nextTrainings/" + teamId;
         $.ajax({
@@ -630,7 +639,13 @@ function buildNextTrainingTable(teamId) {
             type: "GET",
             dataType: "json",
             success: function (data) {
-                const tableBody = $("#ntData");
+                let tableBody = undefined;
+                if(isMobile){
+                    tableBody = $("#ntDataM");
+                }else{
+                    tableBody = $("#ntData");
+                }
+
                 tableBody.empty();
 
                 if (data.length === 0) {
@@ -646,7 +661,12 @@ function buildNextTrainingTable(teamId) {
                         const tdUntil = $("<td></td>").text(training.endtime);
                         const tdDuration = $("<td></td>").text(training.duration);
 
-                        tr.append(tdDate).append(tdFrom).append(tdUntil).append(tdDuration);
+                        tr.append(tdDate).append(tdFrom).append(tdUntil)
+
+                        if(!isMobile){
+                            tr.append(tdDuration);
+                        }
+
                         tableBody.append(tr);
                     });
                 }
@@ -857,8 +877,10 @@ function crudFixedTraining(data, action){
 /**
  * Generates the calendar for the mobile view
  * @param currentDate
+ * @param data
  */
 async function buildCalendarMobile(currentDate, data) {
+    const today = new Date();
 
     //Build the header
     let tr = $('<tr></tr>').addClass("bg-grey-level2 text-white font-montserrat text-xl");
@@ -867,8 +889,14 @@ async function buildCalendarMobile(currentDate, data) {
 
         const dateStr = getDateFromDay(currentDate, day);
         const dayNumber = dateStr.split('.')[0];
+        const isToday = dateStr === formatDate(new Date());
 
         let td = $('<td></td>').addClass("text-center py-2 xs:px-4 px-2").text(dayNumber);
+
+        if (isToday) {
+            td.addClass("bg-turquoise/40");
+        }
+
         tr.append(td);
     });
 
@@ -888,10 +916,9 @@ async function buildCalendarMobile(currentDate, data) {
         const dateStr = getDateFromDay(currentDate, day);
         const dateOrg = new Date(getXDayOfWeek(currentDate, j - 2));
         const epoch = Math.floor(new Date(dateOrg.getFullYear(), dateOrg.getMonth(), dateOrg.getDate()).getTime() / 1000);
-        console.log(dateStr + " " + epoch);
 
         // Create the div and its content
-        let dayDiv = $('<div></div>').addClass("flex items-center justify-between px-[13px] py-1 border-t border-red-text bg-turquoise/40");
+        let dayDiv = $('<div></div>').addClass("flex items-center justify-between px-[13px] py-1 border-t border-red-text bg-turquoise/40").attr('date', dateStr);
 
         let leftDiv = $('<div></div>');
         let rightUl = $('<ul></ul>').addClass("flex");
@@ -900,14 +927,19 @@ async function buildCalendarMobile(currentDate, data) {
         leftDiv.append(`<h5 class="text-white font-montserrat text-base font-semibold">${day}, ${dateStr}</h5>`);
 
         // Right part with icons
-        const icons = ['ri-edit-line', 'ri-clipboard-line', 'ri-file-copy-2-line'];
+        const icons = [{icon: 'ri-edit-line', class: 'edit'}, {icon: 'ri-clipboard-line', class: 'copy'}, {icon: 'ri-file-copy-2-line', class: 'paste'}];
         icons.forEach(function (icon, index) {
             let li = $('<li></li>').addClass(index === 1 ? 'mx-[14px]' : '');
-            li.append(`<a href="#"><i class="${icon} font-normal text-sm text-white"></i></a>`);
+            li.append(`<a href="#"><i class="${icon.icon} ${icon.class} font-normal text-sm text-white"></i></a>`);
             rightUl.append(li);
         });
 
-        dayDiv.append(leftDiv).append(rightUl);
+        dayDiv.append(leftDiv)
+
+        if(dateOrg.getTime() >= today.getTime())
+        {
+            dayDiv.append(rightUl);
+        }
 
         // Append the day div to the container
         calContainer.append(dayDiv);
@@ -956,5 +988,30 @@ async function buildCalendarMobile(currentDate, data) {
 
             calContainer.append(userDiv);
         });
+    });
+
+    $(document).off('click', '.copy');
+    $(document).off('click', '.paste');
+    $(document).off('click', '.edit');
+
+    $(document).on('click', '.copy', function(e) {
+        let parentDiv = $(this).closest('div[date]');
+        let date = parentDiv.attr('date');
+
+        copyDay(data.sessionUser, date, teamId);
+    });
+
+    $(document).on('click', '.paste', function(e) {
+        let parentDiv = $(this).closest('div[date]');
+        let date = parentDiv.attr('date');
+
+        pasteDay(data.sessionUser, date);
+    });
+
+    $(document).on('click', '.edit', function(e) {
+        let parentDiv = $(this).closest('div[date]');
+        let date = parentDiv.attr('date');
+
+        editDay(data.sessionUser, date, e, teamId);
     });
 }

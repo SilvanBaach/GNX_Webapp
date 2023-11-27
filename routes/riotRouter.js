@@ -17,8 +17,8 @@ router.get('/getDDragonData', permissionCheck('championpool', 'canOpen'), async 
 /**
  * GET route for getting the championpool data
  */
-router.get('/getChampionpool',  checkNotAuthenticated, permissionCheck('championpool', 'canOpen'), function (req, res) {
-    getChampionpool().then((result) => {
+router.get('/getChampionpool/:teamId',  checkNotAuthenticated, permissionCheck('championpool', 'canOpen'), function (req, res) {
+    getChampionpool(req.params.teamId).then((result) => {
         res.status(200).send(result.rows);
     }).catch(() => {
         res.status(500).send({message: "There was an error getting the championpool data."});
@@ -43,8 +43,13 @@ router.post('/updateChampionpool', checkNotAuthenticated, permissionCheck('champ
     });
 });
 
-function getChampionpool() {
-    return pool.query(`SELECT * FROM championpool ORDER BY id`);
+/**
+ * Returns all championpool data from the database of one team
+ * @param teamId
+ * @returns {Promise<QueryResult<any>>}
+ */
+function getChampionpool(teamId) {
+    return pool.query(`SELECT * FROM championpool WHERE team_fk=$1 ORDER BY id`,[teamId]);
 }
 
 function updateOrInsertChampionpool(data) {

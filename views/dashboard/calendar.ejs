@@ -1,8 +1,7 @@
 <script src="/js/clientJS/teamCalendar.js"></script>
 
 <div class="bg-grey-level1 max-w-[1330px] xl:pr-4 lg:pr-0 pr-4 px-4 md:px-8 pt-6">
-    <h3 class="md:text-2xl mb-5 md:block hidden text-xl font-bold font-orbitron text-white"><%= user.team.displayname%> Team Calendar
-    </h3>
+    <h3 class="md:text-2xl mb-5 md:block hidden text-xl font-bold font-orbitron text-white"><%= user.team.displayname%> Team Calendar</h3>
     <div class="md:flex block md:mt-8 justify-between">
         <h4 class="text-2xl md:block hidden mb-5 font-bold font-montserrat text-white pt-5" id="currentWeekText"></h4>
         <div class="text-right items-center flex-1 md:justify-end justify-between w-full gap-4 hidden md:flex">
@@ -21,34 +20,25 @@
                 <table class="w-full sticky top-0">
                     <thead class="text-white font-montserrat text-xl font-normal bg-grey-level3">
                     <tr>
-                        <th scope="col" class="text-center py-2 xs:px-4 px-2">
-                            M
-                        </th>
-                        <th scope="col" class="text-center py-2 xs:px-4 px-2">
-                            T
-                        </th>
-                        <th scope="col" class="text-center py-2 xs:px-4 px-2">
-                            W
-                        </th>
-                        <th scope="col" class="text-center py-2 xs:px-4 px-2">
-                            T
-                        </th>
-                        <th scope="col" class="text-center py-2 xs:px-4 px-2">
-                            F
-                        </th>
-                        <th scope="col" class="text-center py-2 xs:px-4 px-2">
-                            S
-                        </th>
-                        <th scope="col" class="text-center py-2 xs:px-4 px-2">
-                            S
-                        </th>
+                        <th scope="col" class="text-center py-2 xs:px-4 px-2">M</th>
+                        <th scope="col" class="text-center py-2 xs:px-4 px-2">T</th>
+                        <th scope="col" class="text-center py-2 xs:px-4 px-2">W</th>
+                        <th scope="col" class="text-center py-2 xs:px-4 px-2">T</th>
+                        <th scope="col" class="text-center py-2 xs:px-4 px-2">F</th>
+                        <th scope="col" class="text-center py-2 xs:px-4 px-2">S</th>
+                        <th scope="col" class="text-center py-2 xs:px-4 px-2">S</th>
                     </tr>
                     </thead>
                     <tbody id="calendarTable"></tbody>
                 </table>
                 <div id="calBodyMobile"></div>
             </div>
-        </div> <!-- MOBILE -->
+
+            <h3 class=" mt-8 mb-5 text-xl font-bold font-orbitron text-white">Upcoming Trainings</h3>
+            <div class="mt-6 bg-grey-level2 p-4 max-w-[700px] mb-6">
+                <%- include('../components/table', {id: 'nextTrainings', bodyId: 'ntDataM', headers: [{text: 'Date'}, {text: 'Start'}, {text: 'End'}]}) %>
+            </div>
+        </div>
     </div>
     <div class="md:block hidden">
         <div class="relative overflow-x-auto">
@@ -63,14 +53,12 @@
                 </tbody>
             </table>
         </div>
-        <h3 class="md:text-2xl mt-8 md:mb-0 mb-5 text-xl font-bold font-orbitron text-white">Upcoming
-            Trainings
-        </h3>
+        <h3 class="md:text-2xl mt-8 md:mb-0 mb-5 text-xl font-bold font-orbitron text-white">Upcoming Trainings</h3>
         <%if(user.team.account_fk === user.id ) {%>
-        <%- include('../components/buttondefault', {type: 'button', id: 'manageLink', text: 'Manage Trainings', icon: 'ri-tools-fill', customClasses: 'mt-6'}) %>
+            <%- include('../components/buttondefault', {type: 'button', id: 'manageLink', text: 'Manage Trainings', icon: 'ri-tools-fill', customClasses: 'mt-6'}) %>
         <%}%>
         <div class="mt-6 bg-grey-level2 p-4 max-w-[700px] mb-6">
-            <%- include('../components/table', {id: 'nextTrainings', bodyId: 'ntData', headers: [{text: 'Date'}, {text: 'Start Time'}, {text: 'End Time'}, {text: 'Duration'}]}) %>
+            <%- include('../components/table', {id: 'nextTrainings', bodyId: 'ntData', headers: [{text: 'Date'}, {text: 'Start'}, {text: 'End'}, {text: 'Duration'}]}) %>
         </div>
 
     </div>
@@ -134,6 +122,10 @@
             // For mobile view
             const data = await getData(currentDate);
             buildCalendarMobile(currentDate, data);
+            buildNextTrainingTable(data.teamId,1).then(() => {
+                //document.querySelector('#loading-message-container').style.display = 'none';
+                //document.querySelector('.content').style.display = 'block';
+            });
         } else {
             // For desktop view
             buildCalendar(currentDate);
@@ -182,7 +174,8 @@
 
         generateCalendar(data.users, data.currentDate, data.sessionUser, data.teamId, data.teammanagerId, data.isAdmin);
 
-        buildNextTrainingTable(data.teamId).then(() => {
+
+        buildNextTrainingTable(data.teamId,0).then(() => {
             //document.querySelector('#loading-message-container').style.display = 'none';
             //document.querySelector('.content').style.display = 'block';
         });
