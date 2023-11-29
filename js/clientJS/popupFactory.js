@@ -55,7 +55,7 @@ class Popup {
                 `<div class="popup-flexbox pb-6">` +
                 `<p class="text-2xl font-montserrat text-almost-white font-bold">${title}</p>` +
                 `<a id="closeLink"><i class="ri-close-fill close"></i></a>` +
-                `<div class="flex items-center flex-col">`+
+                `<div class="flex items-center flex-col mt-6">`+
                 inputHTML +
                 `<div class="mt-6 cursor-pointer"></div>` +
                 closeBtn +
@@ -131,23 +131,22 @@ class Popup {
     displayYesNoPopup(imgSrc, title, text, buttonText1, buttonText2, buttonID1, buttonID2) {
         this.popupContainer.empty();
 
-        const newHTML = `<div class="w-[400px] bg-almost-white rounded-md fixed top-1/2 left-1/2 transform 
-                                -translate-x-1/2 -translate-y-1/2 scale-0 text-center justify-center 
-                                text-gray-500 visibility-[hidden] transition-transform duration-400 
-                                transition-top duration-400 transition-box-shadow duration-400 
-                                shadow-[0 0 0 99999px rgba(0,0,0,.5)] z-[9999]">
-            <img src="${imgSrc}" class="popup-img"/>` +
-            `<div class="popup-flexbox">` +
-            `<h2 style="margin-bottom: 10px">${title}</h2>` +
-            `<a id="closeLink"><i class="ri-close-fill close"></i></a>` +
-            `<p>${text}</p>` +
-            `<div class="button-container">` +
-            `<button type="button" id="${buttonID1}" class="default green ok-btn">${buttonText1}</button>` +
-            `<button type="button" id="${buttonID2}" class="default red ok-btn">${buttonText2}</button>` +
-            `</div>` +
-            `</div>` +
-            `</div>`;
-        this.popupContainer.append(newHTML);
+        $.when(
+            fetchButton('button', `${buttonID1}`, `${buttonText1}`, 'w-30', 'ri-check-line','mt-6 mb-6',undefined,'Error', undefined),
+            fetchButton('button', `${buttonID2}`, `${buttonText2}`, 'w-30', 'ri-close-line', 'mt-6 mb-6',undefined,'Success', undefined)
+        ).then((btn1, btn2) => {
+            const newHTML = `<img src="${imgSrc}" class="popup-img"/>` +
+                `<div class="popup-flexbox">` +
+                `<h2 style="margin-bottom: 10px">${title}</h2>` +
+                `<a id="closeLink"><i class="ri-close-fill close"></i></a>` +
+                `<p>${text}</p>` +
+                `<div class="button-container">` +
+                btn2[0] +
+                btn1[0] +
+                `</div>` +
+                `</div>`;
+            this.popupContainer.append(newHTML);
+        });
     }
 
     /**

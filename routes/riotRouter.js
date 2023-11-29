@@ -26,22 +26,61 @@ router.get('/getChampionpool/:teamId',  checkNotAuthenticated, permissionCheck('
 });
 
 /**
- * POST route for updating a team
+ * POST route for changing the champion order
  */
-router.post('/updateChampionpool', checkNotAuthenticated, permissionCheck('championpool', 'canOpen'), function (req, res) {
-    const formData = req.body;
+router.post('/changeChampionOrder/:id/:direction', checkNotAuthenticated, permissionCheck('championpool', 'canOpen'), function (req, res) {
+    const championpoolId = req.params.id;
+    const direction = req.params.direction;
 
-    updateOrInsertChampionpool(formData).then((result) => {
-        if (result.rowCount === 0) {
-            res.status(500).send({message: "There was an error updating the championpool! Please try again later."});
-        }else {
-            logMessage(`User ${req.user.username} updated the championpool`,LogLevel.INFO,req.user.id);
-            res.status(200).send({message: "Championpool updated successfully"});
-        }
+    changeChampionOrder(championpoolId, req.user.team.id,direction).then((result) => {
+        res.status(200).send({message: "Order updated successfully"});
+        logMessage(`User ${req.user.username} changed the order of the championpool`,LogLevel.INFO,req.user.id);
     }).catch(() => {
-        res.status(500).send({message: "There was an error updating the championpool! Please try again later."});
+        res.status(500).send({message: "There was an error updating the order! Please try again later."});
     });
 });
+
+/**
+ * POST route for deleting a champion from the championpool
+ */
+router.post('/deleteChampion/:id', checkNotAuthenticated, permissionCheck('championpool', 'canOpen'), function (req, res) {
+    const championpoolId = req.params.id;
+
+    deleteChampion(championpoolId).then((result) => {
+        res.status(200).send({message: "Champion deleted successfully"});
+        logMessage(`User ${req.user.username} deleted a champion from the championpool`,LogLevel.INFO,req.user.id);
+    }).catch(() => {
+        res.status(500).send({message: "There was an error deleting the champion! Please try again later."});
+    })
+});
+
+/**
+ * POST route adding a champion to the championpool
+ */
+router.post('/addChampion', checkNotAuthenticated, permissionCheck('championpool', 'canOpen'), function (req, res) {
+    const champion = req.body.champion;
+    const lane = req.body.lane;
+    const type = req.body.type;
+
+    addChampion(champion, lane, req.user.id, req.user.team.id, type).then((result) => {
+        res.status(200).send({message: "Champion added successfully"});
+        logMessage(`User ${req.user.username} added the champion ${champion} to the championpool`,LogLevel.INFO,req.user.id);
+    }).catch(() => {
+        res.status(500).send({message: "There was an error adding the champion! Please try again later."});
+    })
+});
+
+/**
+ * Inserts a champion into the championpool
+ * @param champion
+ * @param lane
+ * @param userId
+ * @param teamId
+ * @returns {Promise<QueryResult<any>>}
+ */
+function addChampion(champion, lane, userId, teamId, type) {
+    return pool.query(`INSERT INTO championpool (champion, lane, team_fk, "order", account_fk2, type) VALUES ($1, $2, $3, (SELECT COUNT(*) FROM championpool WHERE lane=$2 AND team_fk=$3 AND type=$5)+1, $4, $5)`, [champion, lane, teamId, userId, type]);
+}
 
 /**
  * Returns all championpool data from the database of one team
@@ -52,34 +91,67 @@ function getChampionpool(teamId) {
     return pool.query(`SELECT * FROM championpool WHERE team_fk=$1 ORDER BY id`,[teamId]);
 }
 
-function updateOrInsertChampionpool(data) {
-    let promises = [];
-    const array = data.championpoolData;
-    const existsPromise = checkIfChampionpoolEntryExists(array);
+/**
+ * Changes the order of the championpool
+ * @param championpoolId
+ * @param teamId
+ * @param direction 0=up 1=down
+ * @returns {Promise<QueryResult<any>>}
+ */
+function changeChampionOrder(championpoolId, teamId, direction) {
 
-    existsPromise.then((exists) => {
-        if (exists) {
-            // UPDATE or DELETE existing entry                                                                         // playerOfChampion, championpoolTableType, lane, row, championName, team
-            if (array[6].toString() === "true"){
-                promises.push(pool.query(`DELETE FROM championpool WHERE lane = $1 AND row = $2 AND type = $3`, [array[2], array[3], array[1]]));
-            }else{
-                promises.push(pool.query(`UPDATE championpool SET champion = $1 WHERE lane = $2 AND row = $3 AND type = $4`, [array[4], array[2], array[3], array[1]]));
-            }
-        } else {
-            // INSERT new entry
-            promises.push(pool.query(`INSERT INTO championpool (type, lane, row, champion) VALUES ($1, $2, $3, $4)`, [array[1], array[2], array[3], array[4]]));
-        }
-    }).catch((error) => {
-        // Handle any errors from the checkIfChampionpoolEntryExists function or pool.query
-        console.error("Error occurred:", error);
-    });
-    return Promise.all(promises);
+    let updateOrderQuery;
+    if (direction === "0") {
+         updateOrderQuery = `
+            WITH updated AS (
+                UPDATE championpool
+                    SET "order" = "order" - 1
+                    WHERE id = $1
+                    RETURNING "lane", "type", "order")
+            UPDATE championpool
+            SET "order" = "order" + 1
+            WHERE "lane" = (SELECT "lane" FROM updated)
+              AND "type" = (SELECT "type" FROM updated)
+              AND "team_fk" = $2
+              AND "order" = (SELECT "order" FROM updated)
+              AND id != $1;
+        `;
+    } else {
+        updateOrderQuery = `
+            WITH updated AS (
+                UPDATE championpool
+                    SET "order" = "order" + 1
+                    WHERE id = $1
+                    RETURNING "lane", "type", "order")
+            UPDATE championpool
+            SET "order" = "order" - 1
+            WHERE "lane" = (SELECT "lane" FROM updated)
+              AND "type" = (SELECT "type" FROM updated)
+              AND "team_fk" = $2
+              AND "order" = (SELECT "order" FROM updated)
+              AND id != $1;
+        `;
+    }
+    return pool.query(updateOrderQuery, [championpoolId, teamId]);
 }
 
-
-async function checkIfChampionpoolEntryExists(data) {
-    const result = await pool.query(`SELECT * FROM championpool WHERE type = $1 AND lane = $2 AND row = $3`, [data[1], data[2], data[3]]);
-    return result.rows.length > 0; // Return true if the query result has any rows, indicating an entry exists.
+/**
+ * Deletes a champion from the championpool and orders the rest of them again
+ * @param championpoolId
+ * @returns {Promise<QueryResult<any>>}
+ */
+function deleteChampion(championpoolId) {
+    return pool.query(`
+        WITH deleted AS (
+            DELETE FROM championpool WHERE id = $1 RETURNING "lane", "type", "team_fk", "order"
+        )
+        UPDATE championpool
+        SET "order" = "order" - 1
+        WHERE "lane" = (SELECT "lane" FROM deleted)
+          AND "type" = (SELECT "type" FROM deleted)
+          AND "team_fk" = (SELECT "team_fk" FROM deleted)
+          AND "order" > (SELECT "order" FROM deleted);
+    `, [championpoolId]);
 }
 
 module.exports = router;

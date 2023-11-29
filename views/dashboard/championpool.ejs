@@ -1,61 +1,94 @@
 <script src="/js/clientJS/championpool.js"></script>
 
-<div class="bg-grey-level1 xl:pr-4 lg:pr-0 pr-4 px-4 md:px-8 pt-6">
-    <div class="flex justify-between">
-        <div class="md:text-2xl md:block hidden text-xl font-bold font-orbitron text-white"><%= user.team.displayname%> Champion Pool</div>
-        <div class="bg-grey-level2 flex items-center p-1 space-x-2">
-            <div class="w-28 flex justify-center bg-grey-level3 rounded-md">
-                <p class="font-bold font-montserrat">Main</p>
+<div class="bg-grey-level1 pr-4 px-4 md:px-8 pt-6">
+    <div class="flex md:justify-between flex-col md:flex-row ">
+        <div class="text-2xl font-bold font-orbitron text-white"><%= user.team.displayname%> Champion Pool</div>
+        <div class="bg-grey-level2 flex items-center p-1 space-x-2 md:w-auto w-[350px] mt-4 md:mt-0">
+            <div class="tab w-28 flex justify-center bg-turquoise rounded-md cursor-pointer" data-mode="0">
+                <a><p class="font-bold font-montserrat">Main</p></a>
             </div>
-            <div class="w-28 flex justify-center">
-                <p class="font-bold font-montserrat">Practice</p>
+            <div class="tab w-28 flex justify-center cursor-pointer" data-mode="1">
+                <a><p class="font-bold font-montserrat">Practice</p></a>
             </div>
-            <div class="w-28 flex justify-center">
-                <p class="font-bold font-montserrat">Suggestion</p>
+            <div class="tab w-28 flex justify-center cursor-pointer" data-mode="2">
+                <a><p class="font-bold font-montserrat">Suggestion</p></a>
             </div>
         </div>
     </div>
 
-    <div class="bg-grey-level2 w-full mt-4 py-4 px-6">
+    <div class="bg-grey-level2 w-full mt-4 mb-4 py-4 px-6">
         <div class="flex justify-between items-center">
-            <p class="font-montserrat font-bold text-almost-white text-lg">Main Champions</p>
-            <%- include('../components/buttondefault', {type: 'button', id: 'addChampion', text: 'Add Champion', icon: 'ri-add-circle-line'}) %>
+            <p class="font-montserrat font-bold text-almost-white text-lg" id="title">Main</p>
+            <%- include('../components/buttondefault', {type: 'button', id: 'addChampion', text: 'Add', icon: 'ri-add-circle-line'}) %>
         </div>
-        <div class="flex w-full space-x-4 mt-4">
-            <div class="w-1/5 flex flex-col space-y-4" id="topDiv">
-                <div class="bg-grey-level3 px-2 py-4 flex justify-center">
-                    <p class="font-bold font-montserrat">Top Lane</p>
-                </div>
-            </div>
-            <div class="w-1/5 flex flex-col space-y-4" id="jungleDiv">
-                <div class="bg-grey-level3 px-2 py-4 flex justify-center">
-                    <p class="font-bold font-montserrat">Jungle</p>
-                </div>
-            </div>
-            <div class="w-1/5 flex flex-col space-y-4" id="midDiv">
-                <div class="bg-grey-level3 px-2 py-4 flex justify-center">
-                    <p class="font-bold font-montserrat">Mid Lane</p>
-                </div>
-            </div>
-            <div class="w-1/5 flex flex-col space-y-4" id="adcDiv">
-                <div class="bg-grey-level3 px-2 py-4 flex justify-center">
-                    <p class="font-bold font-montserrat">ADC</p>
-                </div>
-            </div>
-            <div class="w-1/5 flex flex-col space-y-4" id="supportDiv">
-                <div class="bg-grey-level3 px-2 py-4 flex justify-center">
-                    <p class="font-bold font-montserrat">Support</p>
-                </div>
-            </div>
+        <div class="flex flex-wrap mt-4">
+            <div class="flex-1 flex flex-col space-y-4 px-2 first:pl-0 last:pr-0" id="topDiv"></div>
+            <div class="flex-1 flex flex-col space-y-4 px-2 first:pl-0 last:pr-0" id="jungleDiv"></div>
+            <div class="flex-1 flex flex-col space-y-4 px-2 first:pl-0 last:pr-0" id="midDiv"></div>
+            <div class="flex-1 flex flex-col space-y-4 px-2 first:pl-0 last:pr-0" id="adcDiv"></div>
+            <div class="flex-1 flex flex-col space-y-4 px-2 first:pl-0 last:pr-0" id="supportDiv"></div>
         </div>
     </div>
 </div>
 
-<div id="popup-containerChampions" class="popup-container"></div>
+<style>
+    .select2-container--open .select2-dropdown {
+        z-index: 9999;
+    }
+
+    .select2-container--default .select2-results__options {
+        background-color: #3D3D3D;
+    }
+
+    .select2-container--default .select2-dropdown {
+        background-color: #3D3D3D;
+    }
+
+    .select2-container--default .select2-selection--single {
+        background-color: #3D3D3D;
+        border: 1px solid #2B2D30;
+    }
+
+    .select2-container .select2-selection--single .select2-selection__rendered {
+        color: #F5F6FA;
+        font-family: "montserrat" , sans-serif;
+        text-align: start;
+    }
+
+    .select2-container .select2-selection--single {
+        height: 32px;
+    }
+
+    .select2-container--default .select2-search--dropdown .select2-search__field {
+        border: 1px solid #2B2D30;
+    }
+
+    .select2-container--default .select2-results__option--disabled {
+        color: #F5F6FA;
+    }
+
+    .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+        background-color: #31C7CD;
+        color: black;
+    }
+
+</style>
+
+<div id="popup-containerAdd" class="popup-container"></div>
 <div id="popup-containerDelete" class="popup-container"></div>
+<div id="popup-containerEdit" class="popup-container"></div>
 
 <script>
     $(document).ready(function () {
        setupChampionpool(<%=user.team.id%>);
+
+       //Tab Handling
+        $('.tab').click(function() {
+            $('.tab').removeClass('bg-turquoise rounded-md');
+            $(this).addClass('bg-turquoise rounded-md');
+
+            let mode = $(this).data('mode');
+            buildChampionpoolTable(mode);
+        });
     });
 </script>
