@@ -30,7 +30,9 @@ module.exports = {
         '3': '0.75rem',
       },
         boxShadow: {
-            'dashboard': '5px 5px 9px 0px rgba(0,0,0,0.2);'
+            dashboard: "5px 5px 9px 0px rgba(0,0,0,0.2)",
+            shdaowxl: "4px 3px 4px 0px rgba(0,0,0,0.5)",
+            shdaow2xl: "7px 7px 7px 0px rgba(0,0,0,0.5)",
         },
     },
   },
