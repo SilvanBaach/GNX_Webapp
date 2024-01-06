@@ -1,10 +1,24 @@
+//Array with all available pages
+const pages = [
+    {id: "calendar", url: "/dashboard/calendar"},
+    {id: "fileshare", url: "/dashboard/fileshare"},
+    {id: "usermanagement", url: "/dashboard/usermanagement"},
+    {id: "teammanagement", url: "dashboard/teammanagement"},
+    {id: "rolemanagement", url: "dashboard/rolemanagement"},
+    {id: "championpool", url: "dashboard/championpool"},
+    {id: "apexstats", url: "dashboard/apexstats"},
+    {id: "changelog", url: "dashboard/changelog"},
+    {id: "trainingnotes", url: "dashboard/trainingNotes"},
+    {id: "home1", url: "/dashboard/home"},
+    {id: "settings", url: "/dashboard/settings"},
+];
+
 /**
  * Load the page with the given id
  * @param id the page id
- * @param pages the array of available pages
  * @returns {Promise<void>}
  */
-async function loadPage(id, pages) {
+async function loadPage(id) {
     $('#home-section').empty();
     const page = pages.find(p => p.id === id);
     if (!page) {

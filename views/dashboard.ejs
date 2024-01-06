@@ -150,23 +150,8 @@
 </body>
 
 <script>
-    //Array with all available pages
-    const pages = [
-        {id: "calendar", url: "/dashboard/calendar"},
-        {id: "fileshare", url: "/dashboard/fileshare"},
-        {id: "usermanagement", url: "/dashboard/usermanagement"},
-        {id: "teammanagement", url: "dashboard/teammanagement"},
-        {id: "rolemanagement", url: "dashboard/rolemanagement"},
-        {id: "championpool", url: "dashboard/championpool"},
-        {id: "apexstats", url: "dashboard/apexstats"},
-        {id: "changelog", url: "dashboard/changelog"},
-        {id: "trainingnotes", url: "dashboard/trainingNotes"},
-        {id: "home1", url: "/dashboard/home"},
-        {id: "settings", url: "/dashboard/settings"},
-    ];
-
     $(document).ready(function () {
-        loadPage('home1', pages)
+        loadPage('home1')
 
         $(function () {
             pages.forEach(page => {
@@ -176,7 +161,7 @@
                     if (!isAuthenticated) {
                         window.location.href = '/?type=error&message=Session expired, please login again';
                     } else {
-                        await loadPage(page.id, pages);
+                        await loadPage(page.id);
                     }
                 });
             });

@@ -13,7 +13,7 @@
                 <li class="text-base font-normal text-white">26.09 @ 19:00 - 21:30</li>
                 <li class="text-base font-normal text-white">26.09 @ 19:00 - 21:30</li>
             </ul>
-            <a href="#"
+            <a href="#" id="nextTrainings"
                class="sm:absolute sm:left-5 sm:bottom-4 text-turquoise text-base font-semibold flex items-center">Go to
                 team calendar <i
                         class="text-turquoise ml-2 ri-arrow-right-s-fill"></i></a>
@@ -25,9 +25,8 @@
             <p class="text-base font-normal text-white">LP Gain last 48 hours</p>
             <h3 class="text-success font-bold pt-2" style="font-size: 2.7rem">??? LP</h3>
             <a href="#"
-               class="sm:absolute sm:left-5 sm:bottom-4 text-turquoise text-base font-semibold flex items-center">Go to
-                team calendar <i
-                        class="text-turquoise ml-2 ri-arrow-right-s-fill"></i></a>
+               class="sm:absolute sm:left-5 sm:bottom-4 text-turquoise text-base font-semibold flex items-center">Go to Stats Page
+                <i class="text-turquoise ml-2 ri-arrow-right-s-fill"></i></a>
         </div>
     </div>
 
@@ -80,6 +79,11 @@
 
 <script>
     $(document).ready(function () {
-        getNextTrainings(<%= user.team.id %>)
+        getNextTrainings(<%= user.team.id %>);
+
+        $("#nextTrainings").click(function (e) {
+            e.preventDefault();
+            loadPage("calendar")
+        });
     });
 </script>
