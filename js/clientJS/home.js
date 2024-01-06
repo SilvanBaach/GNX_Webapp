@@ -1,3 +1,7 @@
+/**
+ * Displays the next 4 trainings of the team
+ * @param teamId
+ */
 function getNextTrainings(teamId) {
     const url = "/presence/nextTrainings/" + teamId;
     $.ajax({
@@ -5,33 +9,19 @@ function getNextTrainings(teamId) {
         type: "GET",
         dataType: "json",
         success: function (data) {
-            const tableBody = $("#training-column tbody");
+            const tableBody = $("#nextTrainingList");
             tableBody.empty();
 
-            const firstTwoTrainings = data.slice(0, 4); // Extract first two elements from the data array
+            const firstFourTrainings = data.slice(0, 4);
 
-            if (firstTwoTrainings.length === 0) {
-                const noDataText = $("<td></td>").attr('colspan', 4).addClass('no-data-found').text('NO DATA FOUND');
-                const tr = $("<tr></tr>").append(noDataText);
-                tableBody.append(tr);
-            } else {
-                firstTwoTrainings.forEach(function (training) {
-                    const tr = $("<tr></tr>");
-                    const tdDate = $("<td></td>").text(training.readable_date);
-                    const tdFrom = $("<td></td>").text(training.starttime);
-                    const tdUntil = $("<td></td>").text(training.endtime);
-                    const tdType = $("<td></td>");
-
-                    const statusIndicator = $("<div></div>").addClass("status-indicator");
-                    if (training.trainingtype === "fixed") {
-                        statusIndicator.addClass("status-green");
-                    } else {
-                        statusIndicator.addClass("status-orange");
-                    }
-                    tdType.append(statusIndicator)
-
-                    tr.append(tdDate).append(tdFrom).append(tdUntil).append(tdType);
-                    tableBody.append(tr);
+            if (firstFourTrainings.length === 0) {
+                tableBody.append('<li class="text-md font-bold text-btn-grey">NO DATA FOUND</li>')
+            }else{
+                firstFourTrainings.forEach(function (training) {
+                    let firstDotIndex = training.readable_date.indexOf('.');
+                    let secondDotIndex = training.readable_date.indexOf('.', firstDotIndex + 1);
+                    const li = $("<li></li>").text(training.readable_date.substring(0, secondDotIndex) + " @ " + training.starttime + " - " + training.endtime);
+                    tableBody.append(li);
                 });
             }
         },
@@ -41,30 +31,6 @@ function getNextTrainings(teamId) {
             }
         }
     });
-}
-
-/**
- * Setup of the Swiper picture gallery
- * @returns {Swiper}
- */
-function setupSwiper() {
-    const swiper = new Swiper('.swiper', {
-        // Optional parameters
-        direction: 'horizontal',
-        loop: true,
-
-        // Navigation arrows
-        pagination: {
-            el: '.swiper-pagination',
-        },
-
-        autoplay: {
-            delay: 3500, // time delay between slides change
-            disableOnInteraction: false, // continue autoplay after user interactions
-        }
-    });
-
-    return swiper;
 }
 
 /**

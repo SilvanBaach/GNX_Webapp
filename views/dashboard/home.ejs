@@ -1,115 +1,85 @@
-<div class="bg-grey-level1 sm:px-10 px-5 py-6">
-    <div class="max-w-[1250px] m-auto">
-        <h3 class="text-2xl font-bold font-orbitron text-white">Settings</h3>
-        <div class="lg:flex block gap-5 items-center justify-between pt-9">
-            <div class="lg:w-1/2 w-full">
-                <div
-                        class="md:flex lg:max-w-full max-w-[520px] lg:mr-auto lg:ml-0 mx-auto md:mb-5 mb-5 block items-center justify-between"
-                >
-                    <div class="bg-grey-level4 shadow-shdaow2xl xl:p-7 lg:p-4 p-5 rounded-md">
-                        <h4 class="xl:text-[22px] text-lg font-bold text-white pb-4">Upcoming Trainings</h4>
-                        <ul>
-                            <li class="text-base font-normal text-white">26.09 @ 19:00 - 21:30</li>
-                            <li class="text-base font-normal text-white">28.09 @ 19:00 - 22:00</li>
-                            <li class="text-base font-normal text-white">29.09 @ 19:00 - 18:45</li>
-                            <li class="text-base font-normal text-white">03.10 @ 19:30 - 23:59</li>
-                        </ul>
-                        <div class="pt-5">
-                            <a href="#" class="text-turquoise text-base font-semibold"
-                            >Go to team calendar <span class="ml-7">></span></a
-                            >
-                        </div>
-                    </div>
-                    <div class="bg-grey-level4 xl:p-7 lg:p-4 p-5 shadow-shdaow2xl rounded-md md:mt-0 mt-5">
-                        <h4 class="xl:text-[22px] text-lg font-bold text-white pb-4">Upcoming Trainings</h4>
-                        <p class="text-base font-normal text-white">LP Gain last 48 hours</p>
-                        <h3 class="text-success xl:text-[52px] lg:text-[40px] text-3xl font-bold lg:pt-3 pt-2">+43 LP</h3>
-                        <div class="pt-9">
-                            <a href="#" class="text-turquoise text-base font-semibold"
-                            >Go to Stats Page <span class="ml-7">></span></a
-                            >
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="xl:w-1/2 lg:w-[45%] w-full">
-                <img src="images/Visitors.png" class="lg:ml-auto mx-auto" alt="" />
-            </div>
+<script src="../../js/clientJS/home.js"></script>
+
+<div class="bg-grey-level1 max-w-[1330px] xl:pr-4 lg:pr-0 pr-4 px-4 md:px-8 py-6">
+    <h3 class="text-2xl mb-5 font-bold font-orbitron text-white">Dashboard</h3>
+
+    <div class="sm:flex sm:flex-row sm:w-full sm:gap-10 sm:items-stretch sm:h-52">
+        <div class="sm:relative shadow-shdaow2xl p-5 rounded-md w-60 sm:flex sm:flex-col"
+             style="background: linear-gradient(to bottom right, #1E1F22, #2B2D30)">
+            <h4 class="text-lg font-bold text-white pb-4">Upcoming Trainings</h4>
+            <ul class="pb-4" id="nextTrainingList">
+                <li class="text-base font-normal text-white">26.09 @ 19:00 - 21:30</li>
+                <li class="text-base font-normal text-white">26.09 @ 19:00 - 21:30</li>
+                <li class="text-base font-normal text-white">26.09 @ 19:00 - 21:30</li>
+                <li class="text-base font-normal text-white">26.09 @ 19:00 - 21:30</li>
+            </ul>
+            <a href="#"
+               class="sm:absolute sm:left-5 sm:bottom-4 text-turquoise text-base font-semibold flex items-center">Go to
+                team calendar <i
+                        class="text-turquoise ml-2 ri-arrow-right-s-fill"></i></a>
         </div>
-        <div class="md:flex block items-start justify-between md:pt-16 pt-5">
-            <div class="md:w-1/2 w-full xl:pr-0 md:pr-5 pr-0">
-                <h3 class="text-2xl font-bold font-orbitron text-white pb-8">Quick Links</h3>
-                <div class="xl:flex block items-center justify-between">
-                    <a href="#">
-                        <div class="bg-grey-level4 p-3 px-5 md:w-[263px] w-full shadow-shdaowxl rounded-md">
-                            <img src="images/clothing.svg" class="max-h-12 mx-auto" alt="" />
-                        </div>
-                    </a>
 
-                    <a href="#">
-                        <div class="bg-grey-level4 p-4 px-8 md:w-[263px] w-ffull xl:mt-0 mt-6 shadow-shdaowxl rounded-md">
-                            <img src="images/genitix-website.svg" class="max-h-12 mx-auto" alt="" />
-                        </div>
-                    </a>
-                </div>
-                <div class="bg-grey-level4 p-4 px-8 md:w-[263px] w-full shadow-shdaowxl rounded-md mt-8">
-                    <ul class="flex items-center justify-between">
-                        <li>
-                            <a href="#"><img src="images/x.svg" alt="" /></a>
-                        </li>
-                        <li>
-                            <a href="#"><img src="images/twitch.svg" alt="" /></a>
-                        </li>
-                        <li>
-                            <a href="#"><img src="images/instagram.svg" alt="" /></a>
-                        </li>
-                        <li>
-                            <a href="#"><img src="images/discord-icon.svg" alt="" /></a>
-                        </li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-2xl font-bold font-orbitron text-white pb-8 pt-12">Live Status</h3>
-                    <div class="bg-grey-level4 p-4 sm:px-8 px-5 xl:w-[550px] w-full shadow-shdaowxl rounded-md">
-                        <div class="xl:flex block items-center justify-between">
-                            <div class="flex items-center justify-between ] bg-grey-level2 p-3 rounded-2xl">
-                                <div class="flex items-center justify-start">
-                                    <img src="images/Kopie-1.svg" alt="" />
-                                    <p class="text-xs font-normal text-white pl-2">
-                                        Team Genetix Discord <br />
-                                        Online
-                                    </p>
-                                </div>
-
-                                <img src="images/green-circle.svg" class="ml-7" alt="" />
-                            </div>
-                            <div
-                                    class="flex items-center justify-between bg-grey-level2 p-3 rounded-2xl xl:ml-5 ml-0 xlg:mt-0 mt-5"
-                            >
-                                <div class="flex items-center justify-start">
-                                    <img src="images/Kopie-1.svg" alt="" />
-                                    <p class="text-xs font-normal text-white pl-2">
-                                        Webapplication <br />
-                                        Online
-                                    </p>
-                                </div>
-
-                                <img src="images/green-circle.svg" class="ml-7" alt="" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="md:w-1/2 w-full">
-                <div class="md:max-w-[525px] max-w-full md:ml-auto mr-auto">
-                    <h3 class="text-2xl font-bold font-orbitron text-white pb-8 md:mt-0 mt-5">Patchnotes</h3>
-                    <textarea
-                            class="bg-grey-level4 w-full lg:h-[400px] md:h-[350px] h-[200px] ml-auto shadow-shdaowxl p-5 focus:outline-none resize-none text-white placeholder:text-white"
-                            placeholder="Your message...
-                "
-                    ></textarea>
-                </div>
-            </div>
+        <div class="sm:relative p-5 shadow-shdaow2xl rounded-md w-60 mt-5 sm:mt-0 sm:flex sm:flex-col"
+             style="background: linear-gradient(to bottom right, #1E1F22, #2B2D30);">
+            <h4 class="text-lg font-bold text-white pb-4">Personal Performance</h4>
+            <p class="text-base font-normal text-white">LP Gain last 48 hours</p>
+            <h3 class="text-success font-bold pt-2" style="font-size: 2.7rem">??? LP</h3>
+            <a href="#"
+               class="sm:absolute sm:left-5 sm:bottom-4 text-turquoise text-base font-semibold flex items-center">Go to
+                team calendar <i
+                        class="text-turquoise ml-2 ri-arrow-right-s-fill"></i></a>
         </div>
     </div>
+
+    <h3 class="text-2xl mt-5 mb-5 font-bold font-orbitron text-white">Quick Links</h3>
+
+    <div class="sm:flex sm:flex-wrap sm:w-full sm:gap-10 sm:items-stretch">
+        <a href="https://store.teamgenetix.ch">
+            <div class="shadow-shdaowxl rounded-md w-80"
+                 style="background: linear-gradient(to bottom right, #1E1F22, #2B2D30);">
+                <img src="../../res/logo/clothing_logo.png" class="h-16 mx-auto" alt=""/>
+            </div>
+        </a>
+        <a href="https://www.teamgenetix.ch">
+            <div class="mt-6 sm:mt-0 shadow-shdaowxl rounded-md w-80"
+                 style="background: linear-gradient(to bottom right, #1E1F22, #2B2D30);">
+                <img src="../../res/logo/website.png" class="h-16 mx-auto" alt=""/>
+            </div>
+        </a>
+
+        <div class="px-5 py-3 shadow-shdaowxl rounded-md mt-6 sm:mt-0 w-80 sm:h-16"
+             style="background: linear-gradient(to bottom right, #1E1F22, #2B2D30);">
+            <ul class="flex items-center justify-between space-x-4">
+                <li>
+                    <a href="https://twitter.com/GenetixTeam"><img src="../../res/socialmedia/x_white.png" alt="" class="h-10"/></a>
+                </li>
+                <li>
+                    <a href="https://www.twitch.tv/teamgenetix_ch"><img src="../../res/socialmedia/twitch_white.png" alt="" class="h-10"/></a>
+                </li>
+                <li>
+                    <a href="https://www.instagram.com/genetix_ch"><img src="../../res/socialmedia/instagram_white.png" alt="" class="h-10"/></a>
+                </li>
+                <li>
+                    <a href="https://discord.gg/rgRncVNK"><img src="../../res/socialmedia/discord_white.png" alt="" class="h-10"/></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <h3 class="text-2xl font-bold font-orbitron text-white pb-5 mt-5">Patchnotes</h3>
+    <div class="shadow-shdaowxl rounded-md px-5 py-3 max-w-[600px]"
+         style="background: linear-gradient(to bottom right, #1E1F22, #2B2D30);">
+        <ul>
+            <li>
+                <p class="font-bold">27.01.2023 - v0.5.1</p>
+                <p>New UI</p>
+            </li>
+        </ul>
+    </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        getNextTrainings(<%= user.team.id %>)
+    });
+</script>

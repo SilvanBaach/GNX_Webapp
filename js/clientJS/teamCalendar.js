@@ -655,7 +655,7 @@ function buildNextTrainingTable(teamId, isMobile) {
                     tableBody.append(tr);
                 } else {
                     data.forEach(function (training) {
-                        const tr = $("<tr></tr>");
+                        const tr = $("<tr class='font-montserrat text-almost-white'></tr>");
                         const tdDate = $("<td></td>").text(training.readable_date);
                         const tdFrom = $("<td></td>").text(training.starttime);
                         const tdUntil = $("<td></td>").text(training.endtime);
