@@ -3,7 +3,7 @@
     <thead class="font-montserrat font-semibold text-almost-white text-base">
     <tr>
         <% headers.forEach(header => { %>
-            <th class="pl-2 pr-2"><%= header.text %></th>
+            <th class="pl-2 pr-2 <% if (typeof header.display !== 'undefined') { %> hidden <%=header.display%>:table-cell<%}%>"><%= header.text %></th>
         <% }) %>
     </tr>
     </thead>

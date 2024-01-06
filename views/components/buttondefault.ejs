@@ -4,11 +4,11 @@
     <% if (typeof width !== 'undefined') { %><%= width %><% } %> <% if (typeof customClasses !== 'undefined') { %><%= customClasses %><% } %>"
     style="will-change: transform; backface-visibility: hidden;">
     <% if (typeof icon !== 'undefined' && typeof iconPos !== 'undefined') { %>
-        <i class="<%= icon %> ri-lg mr-2"></i>
+        <i class="<%= icon %> ri-lg <% if (text.length > 0) {%>mr-2<%}%>"></i>
     <% } %>
     <%= text %>
     <% if (typeof icon !== 'undefined' && typeof iconPos === 'undefined') { %>
-        <i class="<%= icon %> ri-lg ml-2"></i>
+        <i class="<%= icon %> ri-lg <% if (text.length > 0) {%>ml-2 <%}%>"></i>
     <% } %>
     <div class="absolute bottom-0 left-0 w-full h-0.75 bg-btn-grey"></div>
     <% if (typeof btnType !== 'undefined') { %>

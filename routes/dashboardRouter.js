@@ -94,5 +94,12 @@ router.get('/trainingNotes', checkNotAuthenticated, permissionCheck('trainingnot
     res.render('dashboard/trainingnotes.ejs', { user: req.user });
 });
 
+/**
+ * GET training notes display page
+ */
+router.get('/trainingNotesDisplay', checkNotAuthenticated, permissionCheck('trainingnotes', 'canOpen'), (req, res) => {
+    res.render('dashboard/trainingnotes_display.ejs', { user: req.user });
+});
+
 
 module.exports = router;
