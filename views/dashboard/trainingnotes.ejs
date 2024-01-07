@@ -1,10 +1,10 @@
 <script src="../../js/clientJS/trainingnotes.js"></script>
 
-<div class="bg-grey-level1 max-w-[1330px] lg:pr-0 pr-4 px-4 md:px-8 py-6">
+<div class="m-4 md:m-8">
     <h3 class="text-2xl mb-5 font-bold font-orbitron text-white">Training Notes</h3>
     <%- include('../components/buttondefault', {type: 'button', id: 'newNote', text: 'New Note', icon: 'ri-file-add-line', btnType: 'Success'}) %>
 
-    <div class="bg-grey-level2 p-3 mt-5 md:mr-6">
+    <div class="bg-grey-level2 p-3 mt-5">
         <%- include('../components/table', {id: 'notes', bodyId: 'notesData', headers: [{text: 'Created at', display: 'sm'}, {text: 'Title'}, {text: 'Author'}, {text: 'Last Editor', display: 'md'}, {text: 'Last Edited', display: 'lg'}]}) %>
 
         <div class="flex justify-between items-center mt-4">

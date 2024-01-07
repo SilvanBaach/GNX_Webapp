@@ -1,7 +1,6 @@
 let allNotes = [];
 let currentPage = 1;
 const notesPerPage = 10;
-let currentNote = null;
 
 /**
  * Initializes the page
@@ -58,7 +57,7 @@ function displayNotes(notes){
         const button = $("<button></button>", {
             id: `note-btn-${note.id}`,
             click: function() {
-                currentNote = note;
+                localStorage.setItem('currentNote', JSON.stringify(note));
                 loadPage('trainingnotes_display');
             }
         });
@@ -78,7 +77,6 @@ function displayNotes(notes){
 function updatePaginationIndicator(currentPage, totalPages) {
     $('#pageIndicator').text(`Page ${currentPage} / ${totalPages}`);
 }
-
 
 /**
  * Loads the existing notes from the database

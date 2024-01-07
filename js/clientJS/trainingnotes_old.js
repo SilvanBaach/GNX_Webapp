@@ -170,49 +170,12 @@ async function displayTrainingNote(noteId) {
     //Load all the annotations
     allAnnotations = [];
 
-    const annotationPromises = currentNoteSections.map(async function (section) {
-        const data = await $.ajax({
-            url: '/trainingNotes/getAnnotations',
-            type: 'GET',
-            data: {sectionId: section.id},
-            dataType: 'json'
-        }).fail(data => {
-            if (data.responseJSON && data.responseJSON.redirect) {
-                window.location.href = data.responseJSON.redirect;
-            }
-            console.log("Error getting annotations:", data.responseJSON);
-        });
 
-        if (data) {
-            allAnnotations = allAnnotations.concat(data);
-        }
-    });
-
-    await Promise.all(annotationPromises);
 
     currentNoteSections.forEach(function (section) {
         currentSection = section;
         addSection(section.type, 0, section);
     });
-}
-
-/**
- * This function returns all sections for a training note
- * @param noteId
- * @returns {JQuery.jqXHR}
- */
-function getSections(noteId){
-    return $.ajax({
-        url: '/trainingNotes/getSections',
-        type: 'GET',
-        data: {noteId: noteId},
-        error: function(data) {
-            if (data.responseJSON && data.responseJSON.redirect) {
-                window.location.href = data.responseJSON.redirect;
-            }
-            console.log("Error fetching sections:", data.responseJSON);
-        }
-    })
 }
 
 /**
