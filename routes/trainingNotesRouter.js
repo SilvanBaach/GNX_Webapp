@@ -162,18 +162,6 @@ router.post('/uploadVideo/:id', checkNotAuthenticated, permissionCheck('training
 });
 
 /**
- * POST route for deleting a section
- */
-router.post('/deleteSection', checkNotAuthenticated, permissionCheck('trainingnotes', 'canOpen'), function (req, res) {
-    deleteSection(req.body.sectionId).then((result) => {
-        res.status(200).send({message: "Successfully deleted the section!"});
-    }).catch((err) => {
-        console.log("Error: " + err);
-        res.status(500).send({message: "There was an error deleting the Sections! Please try again later."});
-    });
-});
-
-/**
  * POST route for deleting a note
  */
 router.post('/delete', checkNotAuthenticated, permissionCheck('trainingnotes', 'canOpen'), function (req, res) {
@@ -186,60 +174,82 @@ router.post('/delete', checkNotAuthenticated, permissionCheck('trainingnotes', '
 });
 
 /**
- * DELETE route for deleting an annotation
+ * POST route for updating a whole training note
+ * It deletes all existing data and inserts all data again
  */
-router.delete('/deleteAnnotation', checkNotAuthenticated, permissionCheck('trainingnotes', 'canOpen'), function (req, res) {
-    deleteAnnotation(req.body.annotationId).then((result) => {
-        res.status(200).send({message: "Successfully deleted the annotation!"});
-    }).catch((err) => {
+router.post('/update', checkNotAuthenticated, permissionCheck('trainingnotes', 'canOpen'), async function (req, res) {
+    const sections = req.body.sections;
+    const annotations = req.body.annotations;
+    const note = req.body.note;
+    const teamId = req.body.note.team_fk;
+    const title = req.body.title;
+
+    if (note.creator_fk == undefined || note.creator_fk.length == 0) {
+        note.creator_fk = req.user.id;
+    }
+
+    if (note.created_ugly == undefined || note.created_ugly.length == 0) {
+        note.created_ugly = new Date();
+    }
+
+    if (req.user.team.id != teamId) {
+        res.status(403).send({message: "You are not allowed to edit this note!"});
+        return;
+    }
+
+    try {
+        await deleteNote(note.id);
+        const insertNoteResult = await insertNote(note, req.user.id, title);
+        const newNoteId = insertNoteResult.rows[0].id;
+
+        const sectionPromises = sections.map(async (section) => {
+            const insertSectionResult = await insertSection(section, newNoteId);
+            const sectionId = insertSectionResult.rows[0].id;
+
+            if (section.type == 4 && annotations != undefined && annotations.length > 0) {
+                const annotationPromises = annotations.map(annotation => {
+                    if (annotation.internalId === section.internalId) {
+                        return insertAnnotation(annotation, sectionId);
+                    }
+                });
+                await Promise.all(annotationPromises);
+            }
+        });
+
+        await Promise.all(sectionPromises);
+        res.status(200).send({message: "Successfully updated the note!", newNoteId: newNoteId});
+
+    } catch (err) {
         console.log("Error: " + err);
-        res.status(500).send({message: "There was an error deleting the annotation! Please try again later."});
-    });
+        res.status(500).send({message: "There was an error updating the note! Please try again later."});
+    }
 });
 
 /**
- * POST route for upserting sections of a Training Note
+ * Inserts a new Training note
  */
-router.post('/upsert', checkNotAuthenticated, permissionCheck('trainingnotes', 'canOpen'), function (req, res) {
-    let allAnnotations = req.body.annotations;
-    upsertTrainingNote(req.body.note.title, req.user.id, req.body.note.id, req.user.team.id).then((returnedNoteId) => {
-        upsertSections(req.body.sections, returnedNoteId) // Pass the returnedNoteId here
-            .then(() => {
-                //Load all sections with the ids again ordered by order
-                getSections(returnedNoteId).then((result) => {
-                    if (allAnnotations && allAnnotations.length > 0) {
-                        const sections = result.rows;
-                        allAnnotations = allAnnotations.filter(annotation => {
-                            const section = sections.find(section => section.order === parseInt(annotation.internalId));
-                            if (section) {
-                                annotation.section_fk = section.id;
-                                return true;
-                            }
-                            return false;
-                        });
-                        upsertAnnotations(allAnnotations).then(() => {
-                            res.status(200).send({message: "Successfully upserted the note!"});
-                        }).catch((err) => {
-                            console.log("Error: " + err);
-                            res.status(500).send({message: "There was an error upserting the annotations of the note! Please try again later."});
-                        });
-                    }else{
-                        res.status(200).send({message: "Successfully upserted the note!"});
-                    }
-                }).catch((err) => {
-                    console.log("Error: " + err);
-                    res.status(500).send({message: "There was an error getting the Sections! Please try again later."});
-                });
-            })
-            .catch((err) => {
-                console.log("Error: " + err);
-                res.status(500).send({message: "There was an error updating the sections of the note! Please try again later."});
-            });
-    }).catch((err) => {
-        console.log("Error: " + err);
-        res.status(500).send({message: "There was an error upserting the training note! Please try again later."});
-    });
-});
+function insertNote(note, editor, title) {
+    return pool.query(`INSERT INTO trainingnotes (creator, editor, lastedited, title, created, team_fk) 
+                                        VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`, [note.creator_fk, editor, new Date(), title, note.created_ugly, note.team_fk]);
+}
+
+/**
+ * Inserts a new section
+ * @param section
+ * @param noteId
+ */
+function insertSection(section, noteId) {
+    return pool.query(`INSERT INTO section ("order", type, value, trainingnotes_fk) VALUES ($1, $2, $3, $4) RETURNING id`,[section.order, section.type, section.value, noteId]);
+}
+
+/**
+ * Inserts a new Annotation
+ * @param annotation
+ * @param sectionId
+ */
+function insertAnnotation(annotation, sectionId) {
+    return pool.query(`INSERT INTO annotation (time, text, section_fk, title) VALUES ($1, $2, $3, $4)`, [annotation.time, annotation.text, sectionId, annotation.title]);
+}
 
 /**
  * This function returns all training notes for a team
@@ -250,52 +260,12 @@ function getTrainingNotes(teamId) {
                               acc2.username                             AS editor,
                               TO_CHAR(created, 'DD.MM.YYYY HH24:MI')    AS created,
                               TO_CHAR(lastedited, 'DD.MM.YYYY HH24:MI') AS lastedited,
-                              title
+                              trainingnotes.creator AS creator_fk, title, team_fk, trainingnotes.created AS created_ugly
                        FROM trainingnotes
                                 LEFT JOIN account AS acc1 ON acc1.id = creator
                                 LEFT JOIN account AS acc2 ON acc2.id = editor
                        WHERE team_fk = $1
                        ORDER BY lastedited DESC`, [teamId]);
-}
-
-/**
- * This function upserts all sections for a training note
- */
-function upsertSections(sections = [], noteId) {
-    if (!sections.length) return Promise.resolve();
-
-    const promises = sections.map((section) => {
-        return new Promise((resolve, reject) => {
-            if (section.id) {
-                // Update section
-                pool.query(`UPDATE section
-                            SET value   = $1,
-                                "order" = $3
-                            WHERE id = $2`, [section.value, section.id, section.order], (err, results) => {
-                    if (err) {
-                        console.log("Error updating section: " + err);
-                        reject(err);
-                    } else {
-                        resolve();
-                    }
-                });
-            } else {
-                // Insert section
-                pool.query(`INSERT INTO section (trainingnotes_fk, type, value, "order")
-                            VALUES ($1, $2, $3,
-                                    $4)`, [noteId, section.type, section.value, section.order], (err, results) => {
-                    if (err) {
-                        console.log("Error inserting section: " + err);
-                        reject(err);
-                    } else {
-                        resolve();
-                    }
-                });
-            }
-        });
-    });
-
-    return Promise.all(promises);
 }
 
 /**
@@ -309,106 +279,19 @@ function getSections(noteId) {
 }
 
 /**
- * This function deletes a section
- * @param sectionId
- * @returns {Promise<QueryResult<any>>}
- */
-function deleteSection(sectionId) {
-    return new Promise((resolve, reject) => {
-        pool.query('DELETE FROM annotation WHERE section_fk = $1', [sectionId])
-            .then(() => {
-                return pool.query('DELETE FROM section WHERE id = $1', [sectionId]);
-            })
-            .then((result) => {
-                resolve(result);
-            })
-            .catch((err) => {
-                reject(err);
-            });
-    });
-}
-
-/**
- * This function updates a training note
- * @param title
- * @param editorId
- * @param noteId
- * @param teamId
- * @returns {Promise<QueryResult<any>>}
- */
-function upsertTrainingNote(title, editorId, noteId, teamId) {
-    return new Promise((resolve, reject) => {
-        if (noteId > 0) {
-            // Update
-            pool.query(`UPDATE trainingnotes
-                        SET title      = $1,
-                            editor     = $2,
-                            lastedited = NOW()
-                        WHERE id = $3
-                        RETURNING id`, [title, editorId, noteId], (err, results) => {
-                if (err) {
-                    console.log("Error updating training note: " + err);
-                    reject(err);
-                } else {
-                    resolve(results.rows[0].id); // Return the noteId
-                }
-            });
-        } else {
-            // Insert
-            pool.query(`INSERT INTO trainingnotes (title, editor, lastedited, creator, created, team_fk)
-                        VALUES ($1, $2, NOW(), $2, NOW(), $3)
-                        RETURNING id`, [title, editorId, teamId], (err, results) => {
-                if (err) {
-                    console.log("Error inserting training note: " + err);
-                    reject(err);
-                } else {
-                    resolve(results.rows[0].id); // Return the newly inserted noteId
-                }
-            });
-        }
-    });
-}
-
-/**
  * This function deletes a training note
  * It cascades to the sections
  * @param noteId
  */
 function deleteNote(noteId) {
-    return pool.query(`DELETE
-                       FROM section
-                       WHERE trainingnotes_fk = $1`, [noteId])
+    return pool.query(`DELETE FROM annotation WHERE section_fk IN (SELECT id FROM section WHERE trainingnotes_fk = $1)`, [noteId])
         .then(() => {
+            return pool.query(`DELETE FROM section WHERE trainingnotes_fk = $1`, [noteId])
+        }).then(() => {
             return pool.query(`DELETE
                                FROM trainingnotes
                                WHERE id = $1`, [noteId]);
         });
-}
-
-/**
- * Upserts annotations
- * @param annotations
- */
-function upsertAnnotations(annotations){
-    if (!annotations.length) return Promise.resolve();
-
-    const promises = annotations.map((annotation) => {
-        return new Promise((resolve, reject) => {
-                // Insert annotation
-                pool.query(`INSERT INTO annotation (section_fk, title, text, time)
-                            VALUES ($1, $2, $3,
-                                    $4)`, [annotation.section_fk, annotation.title, annotation.text, annotation.time], (err, results) => {
-                    if (err) {
-                        console.log("Error inserting annotation: " + err);
-                        reject(err);
-                    } else {
-                        resolve();
-                    }
-                });
-        });
-    });
-
-    return Promise.all(promises);
 }
 
 /**
@@ -417,13 +300,6 @@ function upsertAnnotations(annotations){
  */
 function getAnnotations(sectionId){
     return pool.query(`SELECT * FROM annotation WHERE section_fk = $1 ORDER BY TO_TIMESTAMP(time, 'HH24:MI:SS')`, [sectionId]);
-}
-
-/**
- * Deletes an annotation
- */
-function deleteAnnotation(annotationId){
-    return pool.query(`DELETE FROM annotation WHERE id = $1`, [annotationId]);
 }
 
 module.exports = router;

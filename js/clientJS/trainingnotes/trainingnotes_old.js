@@ -8,7 +8,7 @@ let allAnnotations = [];
 let sectionIndexToBeDeleted = null;
 let existingNotesPager = null;
 
-const popupDelSection = new Popup("popupContainerDelSection");
+
 const popupAddAnnotation = new Popup("popupContainerAddAnnotation");
 
 /**
@@ -39,30 +39,7 @@ function initTrainingNotes() {
     setupActionButtons();
 }
 
-/**
- * This function setups the action buttons for the sections
- */
-function setupActionButtons() {
-    $(document).off('click', '.section-action').on('click', '.section-action', function(e) {
-        e.preventDefault();
 
-        const sectionElement = $(this).closest('.section');
-        const sectionIndex = $("#sectionContainer .section").index(sectionElement);
-
-        getAllSectionValues();
-
-        if ($(this).children().hasClass('ri-arrow-up-line')) {
-            moveSectionUp(sectionIndex);
-            editNote();
-        } else if ($(this).children().hasClass('ri-arrow-down-line')) {
-            moveSectionDown(sectionIndex);
-            editNote();
-        } else if ($(this).children().hasClass('ri-close-circle-line')) {
-            sectionIndexToBeDeleted = sectionIndex;
-            popupDelSection.open(e);
-        }
-    });
-}
 
 /**
  * Builds the existing notes table
@@ -198,46 +175,9 @@ function editNote() {
     }
 }
 
-/**
- * This method writes all sections values from their respective fields into the currentNoteSections array
- */
-function getAllSectionValues(){
-    $.each(currentNoteSections, function(index, section) {
-        if (section.editor) {
-            section.value = section.editor.getHTMLCode();
-            section.editor = null;
-        }else if(section.fieldRef) {
-            let element = $(section.fieldRef);
-            section.value = element.val();
-        }
-    });
-}
 
-/**
- * Function which saves the note
- */
-function saveNote(){
-    getAllSectionValues();
 
-    for (let i = 0; i < currentNoteSections.length; i++) {
-        currentNoteSections[i].order = i+1;
-    }
 
-    currentNote.title = $("#editTitle").val();
-
-    upsertTrainingNote().then(() => {
-        $("#noteDisplayContainer").show();
-        $("#editNote").show();
-        $("#editBtnContainer").hide();
-        $("#editNoteContainer").hide();
-        $("#sectionDisplayContainer").empty();
-        $("#sectionContainer").empty();
-
-        buildExistingNodesTable();
-        currentNote = allNotes[0];
-        displayTrainingNote(currentNote.id);
-    });
-}
 
 /**
  * Function which opens the popup for adding a new section
@@ -259,118 +199,15 @@ function setupAddSectionPopup(){
     });
 }
 
-/**
- * Function which setups the popup for adding a new video annotation
- */
-function setupAddAnnotationPopup(){
-    popupAddAnnotation.displayInputPopupCustom('/res/others/plus.png','Add new Annotation','Add','btnAddAnnotation',
-        `<label class="input-label" for="annotationTitle">Title</label>
-                    <input type="text" id="annotationTitle" class="input-field"/>
-                    <label class="input-label" for="annotationText">Text</label>
-                    <textarea id="annotationText" class="input-field" rows="7" style="height: 100px; padding: 5px"></textarea>`);
 
-    $(".addAnnotation").off('click').click(function (e) {
-        currentInternalId = $(this).data('internalid');
-        $("#annotationTitle").val("");
-        $("#annotationText").val("");
 
-        // Pause the video player
-        const videoElement = $(this).closest('.section').find('video.video-player')[0];
-        if (videoElement) {
-            videoElement.pause();
-        }
 
-        popupAddAnnotation.open(e);
-    });
 
-    $("#btnAddAnnotation").off('click').click(function (e) {
-        popupAddAnnotation.close()
-        addAnnotation(e);
-    });
-}
 
-/**
- * Adds an annotation to the current section
- */
-function addAnnotation() {
-    const currentTime = getCurrentTime();
-    const title = $("#annotationTitle").val();
-    const text = $("#annotationText").val();
 
-    allAnnotations.push({internalId: currentInternalId, time: currentTime, title: title, text: text, section_fk: currentNoteSections[currentInternalId-1].id, id: ((allAnnotations.length+1)*-1)});
 
-    redrawAnnotations();
-}
 
-/**
- * Redraws all annotations of the current section
- */
-function redrawAnnotations() {
-    $("#annotationList" + currentInternalId).empty().append(getAnnotationHtml(currentNoteSections[currentInternalId-1].id, 1));
-}
 
-/**
- * Returns the current time of the video of the current video player
- */
-function getCurrentTime() {
-    if (currentInternalId) {
-        const videoElement = document.querySelector(`#video${currentInternalId}`);
-        return formatTime(videoElement.currentTime);
-    }
-
-    return '00:00:00';
-}
-
-/**
- * Formats the current time of the player in the format hh:mm:ss
- * @param seconds
- * @returns {string}
- */
-function formatTime(seconds) {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = Math.floor(seconds % 60);
-
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-}
-
-/**
- * Function which opens the popup for deleting a new section
- */
-function setupDelSectionPopup(){
-    popupDelSection.displayYesNoPopup('/res/others/alert.png','Delete Section','Do you really want to delete this section?','No','Yes','btnNoDelSection', 'btnYesDelSection')
-
-    $("#btnNoDelSection").click(function () {
-        popupDelSection.close()
-    });
-
-    $("#btnYesDelSection").click(function () {
-        deleteSection(sectionIndexToBeDeleted)
-        sectionIndexToBeDeleted = null;
-        popupDelSection.close()
-    });
-}
-
-/**
- * Function which setups the popup for deleting a note
- */
-function setupDelNotePopup(){
-    const popupDelNote = new Popup("popupContainerDelNote");
-    popupDelNote.displayYesNoPopup('/res/others/alert.png','Delete Note','Do you really want to delete this note?','No','Yes','btnNoDelNote', 'btnYesDelNote')
-
-    $("#deleteNote").click(function (e) {
-        popupDelNote.open(e);
-    });
-
-    $("#btnNoDelNote").click(function () {
-        popupDelNote.close()
-    });
-
-    $("#btnYesDelNote").click(function () {
-        deleteNote();
-        popupDelNote.close()
-    });
-}
 
 /**
  * This function adds a new section to the note
@@ -676,75 +513,6 @@ function setupDelAnnotationButton(){
 }
 
 /**
- * This function uploads a video
- */
-function uploadVideo(internalSectionId){
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'video/mp4';
-
-    input.onchange = function() {
-        const file = this.files[0];
-        if(file) {
-            const formData = new FormData();
-            formData.append('video', file);
-
-            const myUUID = uuidv4();
-            currentNoteSections[internalSectionId-1].value = myUUID;
-
-            const progressBarContainer = $(`#uploadBtn-${internalSectionId}`).next('.progress-bar-container');
-            const progressBarFill = progressBarContainer.find('.progress-bar-fill');
-            const percentageText = progressBarFill.find('.percentage');
-
-            $.ajax({
-                url: '/trainingNotes/uploadVideo/' + myUUID,
-                type: 'POST',
-                data: formData,
-                cache: false,
-                contentType: false,
-                processData: false,
-                xhr: function() {
-                    let xhr = new window.XMLHttpRequest();
-                    xhr.upload.addEventListener("progress", function(evt) {
-                        if (evt.lengthComputable) {
-                            let percentComplete = evt.loaded / evt.total;
-                            percentComplete = parseInt(percentComplete * 100);
-                            progressBarFill.width(percentComplete + '%');
-                            percentageText.text(percentComplete + '%');
-                            if (percentComplete === 100) {
-                                progressBarContainer.hide();
-                            }
-                        }
-                    }, false);
-                    return xhr;
-                },
-                beforeSend: function() {
-                    progressBarContainer.show();
-                    progressBarFill.width('0%');
-                    percentageText.text('0%');
-                },
-                success: function(data) {
-                    displaySuccess(data.message);
-                    editNote();
-                },
-                error: function(data) {
-                    if (data.responseJSON && data.responseJSON.redirect) {
-                        window.location.href = data.responseJSON.redirect;
-                    }
-                    if (data.status === 413) {
-                        displayError(data.responseJSON.message)
-                    }else {
-                        console.log("Error uploading the video:", data.responseJSON);
-                    }
-                }
-            });
-        }
-    }
-
-    input.click();
-}
-
-/**
  * This function upserts a training note with all its sections
  */
 function upsertTrainingNote() {
@@ -785,29 +553,7 @@ function getActionHtml(){
             </div>`
 }
 
-/**
- * Function to move a section up
- * @param index
- */
-function moveSectionUp(index) {
-    if (index > 0) {
-        const tmp = currentNoteSections[index];
-        currentNoteSections[index] = currentNoteSections[index - 1];
-        currentNoteSections[index - 1] = tmp;
-    }
-}
 
-/**
- * Function to move a section down
- * @param index
- */
-function moveSectionDown(index) {
-    if (index < currentNoteSections.length - 1) {
-        const tmp = currentNoteSections[index];
-        currentNoteSections[index] = currentNoteSections[index + 1];
-        currentNoteSections[index + 1] = tmp;
-    }
-}
 
 /**
  * Function to delete a section
@@ -833,41 +579,6 @@ function deleteSection(index) {
     }
 
     editNote();
-}
-
-/**
- * This function deletes the current note
- */
-function deleteNote(){
-    if (currentNote && currentNote.id > 0) {
-        $.ajax({
-            url: '/trainingNotes/delete',
-            type: 'POST',
-            data: {noteId: currentNote.id},
-            success: function (data) {
-                displaySuccess(data.message);
-                currentNote = null;
-                currentNoteSections = [];
-                currentSection = null;
-
-                $("#editNoteContainer").hide();
-                $("#editBtnContainer").hide();
-                $("#nothingPlaceholder").show();
-                buildExistingNodesTable();
-            },
-            error: function (data) {
-                if (data.responseJSON && data.responseJSON.redirect) {
-                    window.location.href = data.responseJSON.redirect;
-                }
-                console.log("Error deleting note: ", data.responseJSON);
-            }
-        });
-    }else{
-        $("#editNoteContainer").hide();
-        $("#nothingPlaceholder").show();
-        $("#editNote").hide();
-        $("#editBtnContainer").hide();
-    }
 }
 
 /**

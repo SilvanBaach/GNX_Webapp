@@ -12,6 +12,7 @@ const pages = [
     {id: "home1", url: "/dashboard/home"},
     {id: "settings", url: "/dashboard/settings"},
     {id: "trainingnotes_display", url: "/dashboard/trainingNotesDisplay"},
+    {id: "trainingnotes_edit", url: "/dashboard/trainingNotesEdit"},
 ];
 
 /**
@@ -77,6 +78,13 @@ function fetchButton(type, id, text, width, icon, customClasses, iconPos, btnTyp
  */
 function fetchDropdown(id, width, options, defaultOption) {
     return $.get(`/renderDropdown?id=${id}&width=${width}&options=${options}&defaultOption=${defaultOption}`);
+}
+
+/**
+ * Loads a textarea from the Server
+ */
+function fetchTextarea(id, width, value) {
+    return $.get(`/renderTextarea?id=${id}&width=${width}&value=${value}`);
 }
 
 /**

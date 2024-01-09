@@ -15,11 +15,15 @@ async function initPage() {
        loadPage('trainingnotes');
     });
 
+    $('#editNote').click(function() {
+        localStorage.setItem('currentNote', JSON.stringify(currentNote));
+        loadPage('trainingnotes_edit');
+    });
+
     allNoteSections = await getSections(currentNote.id);
     allAnnotations = await fetchAnnotations(allNoteSections);
 
     allNoteSections.forEach(function(section) {
-        console.log(section);
        displaySection(section);
     });
 }
@@ -82,45 +86,17 @@ function addRichTextSection(value){
  * This function adds a video section
  */
 function addVideoSection(value, sectionId){
-    return `<div class="section">
-                        <div class="w-full flex flex-col mb-6 2xl:flex-row">
+    return `<div class="w-full flex flex-col mb-6 2xl:flex-row section">
                             <video class="w-full max-w-[800px] video-player" controls>
                                 <source src="/trainingNotes/getVideo/${value}" type="video/mp4">
                             </video>
                             <div class="w-full flex flex-col 2xl:ml-4">
                                 <p class="font-bold font-montserrat text-almost-white mt-4 2xl:mt-0 mb-2">Annotations</p>
                                 <div class="w-full flex flex-col">
-                                    ${getAnnotationHtml(sectionId)}
+                                    ${getAnnotationHtml(sectionId, allAnnotations)}
                                 </div>
                             </div>
-                        </div>
-                    </div>`;
-}
-
-/**
- * This function returns the html for all existing annotations
- * @param sectionId
- */
-function getAnnotationHtml(sectionId){
-    let html = '';
-    allAnnotations.forEach(function (annotation) {
-        if (annotation.section_fk === sectionId){
-            html += `<div class="bg-grey-level2 flex flex-col p-3 mb-3 w-full max-w-[500px]">
-                        <div class="flex flex-row">
-                            <a href="" class="text-almost-white play hover:text-turquoise" id="playButton" data-time="${annotation.time}"><i class="ri-play-circle-line ri-xl"></i></a>
-                            <p class="italic ml-4">${annotation.time}</p>
-                            <p class="font-bold ml-4">${annotation.title}</p>
-                        </div>
-                        <p class="font-montserrat text-almost-white ml-10 mt-3">${annotation.text}</p>
-                    </div>`
-        }
-    });
-
-    if (html === ''){
-        html = '<p style="color: #5C5C5C">NO ANNOTATIONS FOUND</p>'
-    }
-
-    return html;
+                        </div>`;
 }
 
 /**
@@ -142,52 +118,5 @@ function setupPlayButton(){
 
 }
 
-/**
- * This function returns all sections for a training note
- * @param noteId
- * @returns {JQuery.jqXHR}
- */
-function getSections(noteId){
-    return $.ajax({
-        url: '/trainingNotes/getSections',
-        type: 'GET',
-        data: {noteId: noteId},
-        error: function(data) {
-            if (data.responseJSON && data.responseJSON.redirect) {
-                window.location.href = data.responseJSON.redirect;
-            }
-            console.log("Error fetching sections:", data.responseJSON);
-        }
-    })
-}
 
-/**
- * This function returns all annotations for all sections of a training note
- * @param sections
- * @returns {Promise<void>}
- */
-async function fetchAnnotations(sections) {
-    let allAnnotations = [];
-
-    const annotationPromises = sections.map(async function (section) {
-        const data = await $.ajax({
-            url: '/trainingNotes/getAnnotations',
-            type: 'GET',
-            data: {sectionId: section.id},
-            dataType: 'json'
-        }).fail(data => {
-            if (data.responseJSON && data.responseJSON.redirect) {
-                window.location.href = data.responseJSON.redirect;
-            }
-            console.log("Error getting annotations:", data.responseJSON);
-        });
-
-        if (data) {
-            allAnnotations = allAnnotations.concat(data);
-        }
-    });
-
-    await Promise.all(annotationPromises);
-    return allAnnotations;
-}
 

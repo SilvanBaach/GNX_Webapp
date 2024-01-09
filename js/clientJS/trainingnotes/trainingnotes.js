@@ -25,6 +25,11 @@ function initPage(){
             displayNotesForPage(currentPage);
         }
     });
+
+    $('#newNote').click(function() {
+        localStorage.removeItem('currentNote');
+        loadPage('trainingnotes_edit')
+    });
 }
 
 /**

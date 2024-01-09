@@ -1,6 +1,6 @@
 const {pool} = require("../../js/serverJS/database/dbConfig.js");
 const util = require('util');
-const {isPasswordSecure} = require('../../js/clientJS/passwordChecker.js');
+const {isPasswordSecure} = require('../clientJS/utility/passwordChecker.js');
 
 /**
  * Checks if a registration code is valid

@@ -238,4 +238,19 @@ app.get('/renderDropdown', (req, res) => {
     });
 });
 
+/**
+ * GET routes for rendering a single textarea
+ */
+app.get('/renderTextarea', (req, res) => {
+    let { id, width, value } = req.query;
+
+    id = id === 'undefined' ? undefined : id;
+    width = width === 'undefined' ? undefined : width;
+    value = value === 'undefined' ? undefined : value;
+
+    res.render('components/textarea.ejs', {
+        id, width, value
+    });
+});
+
 module.exports = app;
