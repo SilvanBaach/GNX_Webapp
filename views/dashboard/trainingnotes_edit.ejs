@@ -5,11 +5,6 @@
     <div class="xl:flex xl:flex-row xl:justify-between">
         <h3 class="text-2xl font-bold font-orbitron text-white" id="title">Edit Note XYZ</h3>
 
-        <div class="flex-row gap-5 mb-6 mt-4 xl:mt-0 hidden sm:flex">
-            <%- include('../components/buttondefault', {type: 'button', id: 'delNote', text: 'Delete Note', icon: 'ri-delete-bin-2-line', customClasses: 'h-10', btnType: 'Error'}) %>
-            <%- include('../components/buttondefault', {type: 'button', id: 'saveNote', text: 'Save Note', icon: 'ri-save-line', customClasses: 'h-10', btnType: 'Success'}) %>
-            <%- include('../components/buttondefault', {type: 'button', id: 'closeNote', text: 'Close Note', icon: 'ri-close-circle-line', customClasses: 'h-10'}) %>
-        </div>
         <div class="flex flex-row gap-5 mb-6 mt-4 xl:mt-0 sm:hidden">
             <%- include('../components/buttondefault', {type: 'button', id: 'delNote', text: '', icon: 'ri-delete-bin-2-line', customClasses: 'h-10', btnType: 'Error'}) %>
             <%- include('../components/buttondefault', {type: 'button', id: 'saveNote', text: '', icon: 'ri-save-line', customClasses: 'h-10', btnType: 'Success'}) %>

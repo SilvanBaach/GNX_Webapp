@@ -127,9 +127,9 @@ async function buildChampionpoolTable(mode) {
             const arrowUpIcon = $('<i>', {class: "ri-arrow-up-line ri-lg absolute top-1 left-2 up cursor-pointer"});
             const arrowDownIcon = $('<i>', {class: "ri-arrow-down-line ri-lg absolute top-8 left-2 down cursor-pointer"});
             const closeIcon = $('<i>', {class: "ri-close-line ri-lg absolute right-2 top-1 delete cursor-pointer"});
-            const editIcon = $('<i>', {class: "ri-edit-line ri-lg absolute right-2 top-8 edit cursor-pointer"});
+            //const editIcon = $('<i>', {class: "ri-edit-line ri-lg absolute right-2 top-8 edit cursor-pointer"});
 
-            championDiv.append(nameP, img, editedByP, arrowUpIcon, arrowDownIcon, closeIcon, editIcon);
+            championDiv.append(nameP, img, editedByP, arrowUpIcon, arrowDownIcon, closeIcon/*, editIcon*/);
             fatherDiv.append(championDiv);
 
         }
@@ -155,7 +155,7 @@ function registerIconEvents() {
     $(document).off('click', '.up')
     $(document).off('click', '.down')
     $(document).off('click', '.delete')
-    $(document).off('click', '.edit')
+    //$(document).off('click', '.edit')
 
     $(document).on('click', '.up', function(e) {
         const championDiv = $(this).closest('.bg-grey-level3');
@@ -194,19 +194,20 @@ function registerIconEvents() {
 
     $(document).on('click', '.delete', function(e) {
         const championDiv = $(this).closest('.bg-grey-level3');
+
         const championName = championDiv.find('p.font-bold.font-montserrat').text();
         championToDelete = championpoolData.find((champion) => champion.champion === championName);
 
         delPopup.open(e);
     });
 
-    $(document).on('click', '.edit', function(e) {
+    /*$(document).on('click', '.edit', function(e) {
         const championDiv = $(this).closest('.bg-grey-level3');
         const championName = championDiv.find('p.font-bold.font-montserrat').text();
         championToEdit = championpoolData.find((champion) => champion.champion === championName);
 
         editPopup.open(e);
-    });
+    });*/
 }
 
 /**
@@ -216,10 +217,10 @@ function setupEditPopup() {
     editPopup = new Popup("popup-containerEdit");
 
     $.when(
-        fetchDropdown('lane', 'w-64', '[{"value": "1", "text": "Top Lane"}, {"value": "2", "text": "Jungle"}, {"value": "3", "text": "Mid Lane"}, {"value": "4", "text": "ADC"}, {"value": "5", "text": "Support"}]', 'Select a Lane'),
+        fetchDropdown('lane2', 'w-64', '[{"value": "1", "text": "Top Lane"}, {"value": "2", "text": "Jungle"}, {"value": "3", "text": "Mid Lane"}, {"value": "4", "text": "ADC"}, {"value": "5", "text": "Support"}]', 'Select a Lane'),
     ).then(function(dropdown) {
         editPopup.displayInputPopupCustom('/res/others/question_blue.png', 'Edit Champion', 'Save', 'btnEditChampion',
-            `<select id="champions" class="font-montserrat select2-component champions w-64">
+            `<select id="champions2" class="font-montserrat select2-component champions w-64">
                         <option value="" disabled selected>Select a Champion</option>
                    </select>` +
             `<div class="mt-4">` +
@@ -231,8 +232,8 @@ function setupEditPopup() {
             return {id: item[0], text: item[0], imageUrl: item[1]};
         });
 
-        waitForElement('#champions', function () {
-            $("#champions").select2({
+        waitForElement('#champions2', function () {
+            $("#champions2").select2({
                 data: data,
                 templateResult: function (item) {
                     if (!item.id) {
@@ -247,8 +248,8 @@ function setupEditPopup() {
 
         waitForElement('#btnEditChampion', function () {
             $('#btnEditChampion').click(function (e) {
-                const championName = $("#champions").val();
-                const lane = $("#lane").val();
+                const championName = $("#champions2").val();
+                const lane = $("#lane2").val();
 
                 if (championName === null || lane === null) {
                     displayError("Please select a champion and a lane!");
@@ -260,7 +261,7 @@ function setupEditPopup() {
                     sortData();
                     buildChampionpoolTable(mode);
                 });
-                addPopup.close();
+                editPopup.close();
             });
         });
     });

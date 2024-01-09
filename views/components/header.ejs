@@ -60,9 +60,10 @@
             window.location.href = "/login/logout";
         });
 
-        $("#settingLink").click(() => {
-            loadPage('settings', [{id: "settings", url: "/dashboard/settings"}]);
-            hidePopup(); // Hide the popup on click
+        $(document).off('click', '#settingLink').on('click', '#settingLink', function(e) {
+            e.preventDefault();
+            loadPage('settings');
+            hidePopup(); // Hide the popup on click*/
         });
     });
 </script>

@@ -198,7 +198,7 @@ async function generateCalendar(users, currentDate, sessionUser, teamId, teamMan
                 }
 
                 // All other columns
-                let tdActions = $("<td></td>").addClass("px-3 py-4 bg-grey-level2").attr("date", presenceData ? formatDate(new Date(presenceData.date * 1000)) : "");
+                let tdActions = $("<td></td>").addClass("px-3 py-4 bg-grey-level2").attr("date", presenceData ? formatDate(new Date(presenceData.date * 1000)) : formatDate(dateOrg));
                 let divRelative = $("<div></div>").addClass("relative");
                 let ulIcons = $("<ul></ul>").addClass("text-end");
 
@@ -413,11 +413,10 @@ async function editDay(username, date, e, teamId) {
             '<div class="flex flex-col" id="sub-data-container">' +
             '</div>'
         );
-
-        waitForElement('#presenceType', function() {
             //Add event listener to select box
-            $("#presenceType").change(function () {
-                const presenceType = $(this).val();
+            $(document).on('change', '#presenceType', function () {
+                let presenceType = $(this).val();
+
                 if (presenceType === "0") {
                     //Add from until fields
                     $("#sub-data-container").empty().html('' +
@@ -435,15 +434,17 @@ async function editDay(username, date, e, teamId) {
                 }
             });
 
-            if (elementWithUsername) {
-                $('#presenceType').val(elementWithUsername.state).trigger('change');
-                if (elementWithUsername.state === 0) {
-                    $("#from").val(elementWithUsername.from);
-                    $("#until").val(elementWithUsername.until);
-                } else if (elementWithUsername.state === 3 || elementWithUsername.state === 2) {
-                    $("#comment").val(elementWithUsername.comment);
+            $(document).ready(function () {
+                if (elementWithUsername) {
+                    $('#presenceType').val(elementWithUsername.state).trigger('change');
+                    if (elementWithUsername.state === 0) {
+                        $("#from").val(elementWithUsername.from);
+                        $("#until").val(elementWithUsername.until);
+                    } else if (elementWithUsername.state === 3 || elementWithUsername.state === 2) {
+                        $("#comment").val(elementWithUsername.comment);
+                    }
                 }
-            }
+            });
         });
 
         //Add event listener to save button
@@ -477,7 +478,7 @@ async function editDay(username, date, e, teamId) {
         });
 
         popup.open(e);
-    });
+
 }
 
 /**

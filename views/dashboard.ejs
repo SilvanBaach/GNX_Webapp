@@ -154,17 +154,21 @@
 
 <script>
     $(document).ready(function () {
-        loadPage('trainingnotes')
-
         $(function () {
             pages.forEach(page => {
                 $('#' + page.id).click(async function (e) {
+
                     e.preventDefault();
                     const isAuthenticated = await checkSessionStatus();
                     if (!isAuthenticated) {
                         window.location.href = '/?type=error&message=Session expired, please login again';
                     } else {
+                        console.log($(this).attr('id'));
                         await loadPage(page.id);
+                        if (window.innerWidth < 1024) {
+                            $("#navBar").addClass("hidden lg:block").removeClass("absolute z-50 w-full top-0");
+                            $("#menu").toggleClass("ri-menu-line ri-close-line");
+                        }
                     }
                 });
             });
@@ -175,6 +179,8 @@
 
             $("#menu").toggleClass("ri-menu-line ri-close-line");
         });
+
+        loadPage('home1')
     });
 </script>
 </html>
