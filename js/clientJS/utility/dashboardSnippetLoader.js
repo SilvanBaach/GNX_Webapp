@@ -21,9 +21,6 @@ const pages = [
  * @returns {Promise<void>}
  */
 async function loadPage(id) {
-
-    console.log('Loading page:', id);
-    console.trace()
     $('#home-section').empty();
     const page = pages.find(p => p.id === id);
     if (!page) {

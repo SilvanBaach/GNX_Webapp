@@ -31,6 +31,7 @@ const {checkAuthenticated} = require('./js/serverJS/sessionChecker.js');
 const riotRouter = require('./routes/riotRouter.js');
 const calendarRouter = require('./routes/calendarRouter.js');
 const wooCommereceRouter = require('./routes/wooCommerceRouter.js');
+const patchnotesRouter = require('./routes/patchnotesRouter.js');
 const riot = require('./js/serverJS/riot.js');
 const {logMessage, LogLevel} = require('./js/serverJS/logger.js');
 const {sendTrainingDataReminders} = require("./js/serverJS/discordBot");
@@ -76,15 +77,16 @@ app.use(passport.initialize());
  * CLEAN UP JOB FOR EXPIRED SESSIONS
  */
 cron.schedule('0 3 * * *', function() {
-    pool.query('DELETE FROM "session" WHERE "expire" < NOW()', (err) => {
+    pool.query('DELETE FROM "session" WHERE "expire" < NOW() OR "sess"::jsonb ->> \'passport\' IS NULL', (err) => {
         if (err) {
             console.log(err);
         } else {
-            logMessage('Expired sessions cleaned up', LogLevel.INFO, null)
-            console.log('Expired sessions cleaned up');
+            logMessage('Expired and user-less sessions cleaned up', LogLevel.INFO, null)
+            console.log('Expired and user-less sessions cleaned up');
         }
     });
 });
+
 
 /**
  * WOO COMMERCE WEBHOOK
@@ -156,6 +158,7 @@ app.use('/training', trainingRouter);
 app.use('/calendar', calendarRouter);
 app.use('/wooCommerce', wooCommereceRouter);
 app.use('/trainingNotes', trainingNotesRouter);
+app.use('/patchnotes', patchnotesRouter);
 
  /**
  * MAIN ROUTES

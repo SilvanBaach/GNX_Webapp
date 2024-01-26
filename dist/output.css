@@ -3542,10 +3542,6 @@ input:checked + .slider {
     display: table-cell;
   }
 
-  .sm\:hidden {
-    display: none;
-  }
-
   .sm\:h-16 {
     height: 4rem;
   }

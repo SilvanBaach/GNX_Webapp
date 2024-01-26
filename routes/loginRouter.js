@@ -24,7 +24,6 @@ module.exports = (passport) => {
 
     /**
      * GET login page
-     * Param: teamname - the teamname of the team the user wants to log in to
      */
     router.get('/', checkAuthenticated, (req, res) => {
         res.render('login');

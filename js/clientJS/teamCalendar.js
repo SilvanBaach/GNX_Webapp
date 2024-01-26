@@ -80,13 +80,14 @@ function getDateFromDay(date, dayOfWeek) {
  * @param users the users of the team for which a row is generated
  * @param currentDate the current date (is the start date of the calendar)
  * @param sessionUser the user who is currently logged in
- * @param teamId the id of the team
+ * @param lTeamId the id of the team
  * @param teamManagerId the id of the team manager
  * @param isAdmin
  * @returns {Promise<void>}
  */
-async function generateCalendar(users, currentDate, sessionUser, teamId, teamManagerId, isAdmin) {
+async function generateCalendar(users, currentDate, sessionUser, lTeamId, teamManagerId, isAdmin) {
     const today = new Date();
+    teamId = lTeamId;
 
     //Creates the header of the table
     const calHeader = $("#calHeader");
@@ -112,7 +113,7 @@ async function generateCalendar(users, currentDate, sessionUser, teamId, teamMan
     $("#currentWeekText").text("Week " + formatDate(getMondayOfWeek(currentDate)) + " - " + formatDate(getSundayOfCurrentWeek(currentDate)));
 
     //Load data from monday to sunday
-    const teamData = await getDataFromTeam(getMondayOfWeek(currentDate), getSundayOfCurrentWeek(currentDate), teamId)
+    const teamData = await getDataFromTeam(getMondayOfWeek(currentDate), getSundayOfCurrentWeek(currentDate), lTeamId)
 
     //Sort users based on calendar order
     for (let x = 0; x < users.length; x++) {
@@ -383,6 +384,7 @@ async function getPresenceFromDateAndUsername(date, username, teamId) {
     const year = parseInt(parts[2], 10);
     const dateDat = new Date(year, monthIndex, day);
     const teamData = await getDataFromTeam(dateDat, dateDat, teamId)
+
     return teamData.find((element) => element.username === username);
 }
 

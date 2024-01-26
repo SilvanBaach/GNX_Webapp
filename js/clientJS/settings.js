@@ -26,6 +26,10 @@ function setupSettingsPage() {
             street: $('#street').val(),
             city: $('#city').val(),
             zip: $('#zipcode').val(),
+            steam: $('#steam').val(),
+            origin: $('#origin').val(),
+            riotgames: $('#riotgames').val(),
+            discord: $('#discord').val(),
             trainingdatareminder: $('#dcNotiYes').is(':checked') ? 1 : 0
         };
 
@@ -61,6 +65,7 @@ function updateUserInfo(formData) {
         data: formData,
         success: function (response) {
             displaySuccess(response.message);
+            checkLinkedAccounts(formData.discord, formData.steam, formData.origin, formData.riotgames)
 
             if (formData.username !== $('#usernameBig').text()) {
                 $('#usernameBig').text(formData.username);
@@ -283,3 +288,31 @@ function updateShopButton(wpUserId) {
     }
 }
 
+/**
+ * This function checks the linked accounts
+ */
+function checkLinkedAccounts(discord, steam, origin, riotgames){
+    checkDiscordLinking(discord);
+    //Here we can add more checks
+}
+
+/**
+ * This function checks if the discord account is linked correctly
+ */
+function checkDiscordLinking(discord){
+    $.ajax({
+        url: '/discordbot/isDiscordNameValid',
+        type: 'GET',
+        data: { username: discord },
+        success: function(response) {
+            // Handle success response
+            if (!response.isValid) {
+                displayError('Your discord name is not valid, please change it in your profile settings!')
+            }
+        },
+        error: function(xhr, status, error) {
+            // Handle error response
+            console.error('Error occurred: ' + error);
+        }
+    });
+}

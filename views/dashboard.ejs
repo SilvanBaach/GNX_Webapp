@@ -163,7 +163,6 @@
                     if (!isAuthenticated) {
                         window.location.href = '/?type=error&message=Session expired, please login again';
                     } else {
-                        console.log($(this).attr('id'));
                         await loadPage(page.id);
                         if (window.innerWidth < 1024) {
                             $("#navBar").addClass("hidden lg:block").removeClass("absolute z-50 w-full top-0");
@@ -181,6 +180,22 @@
         });
 
         loadPage('home1')
+
+        $.ajax({
+            url: '/discordbot/isDiscordNameValid',
+            type: 'GET',
+            data: { username: '<%= user.discord %>' },
+            success: function(response) {
+                // Handle success response
+                if (!response.isValid) {
+                    displayError('Your discord name is not valid, please change it in your profile settings!')
+                }
+            },
+            error: function(xhr, status, error) {
+                // Handle error response
+                console.error('Error occurred: ' + error);
+            }
+        });
     });
 </script>
 </html>

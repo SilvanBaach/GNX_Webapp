@@ -15,11 +15,12 @@ function initialize(passport) {
 
     /**
      * This function authenticates the user
+     * @param req the request
      * @param username the username of the user
      * @param password the password of the user
      * @param done
      */
-    const authenticateUser = (username, password, done) => {
+    const authenticateUser = (req, username, password, done) => {
         console.log("Authenticating user: " + username)
         pool.query(
             `SELECT account.id, username, password, loginattempts, blocked FROM account WHERE username = $1`,
@@ -38,7 +39,7 @@ function initialize(passport) {
                         return done(null, false, { message: "This User is blocked! Please contact staff." });
                     }
 
-                    bcrypt.compare(password, user.password, (err, isMatch) => {
+                    bcrypt.compare(password, user.password, async (err, isMatch) => {
                         if (err) {
                             console.log(err);
                         }
@@ -47,13 +48,17 @@ function initialize(passport) {
                             //Reset bad login attempts
                             resetBadLoginAttempts(user.id)
                             logMessage(`User ${username} logged in!`, LogLevel.INFO, user.id)
+
+                            // Clear other sessions
+                            await clearOtherSessions(user.id, req.session.id);
+
                             return done(null, user);
                         } else {
                             //password is incorrect
                             //Add a bad login attempt to the database
                             addBadLoginAttempt(user.id, user.loginattempts)
                             logMessage(`User ${username} tried to login but password is incorrect!`, LogLevel.WARNING, user.id)
-                            return done(null, false, { message: "Password is incorrect" });
+                            return done(null, false, {message: "Password is incorrect"});
                         }
                     });
                 } else {
@@ -72,7 +77,7 @@ function initialize(passport) {
      */
     passport.use(
         new LocalStrategy(
-            { usernameField: "username", passwordField: "password" },
+            { usernameField: "username", passwordField: "password", passReqToCallback: true },
             authenticateUser
         )
     );
@@ -178,6 +183,27 @@ function resetBadLoginAttempts(userId){
             }
         }
     );
+}
+
+/**
+ * This function clears all sessions for a user except the current one
+ */
+async function clearOtherSessions(userId, currentSessionId) {
+    try {
+        const deleteQuery = `
+            DELETE FROM session
+            WHERE (sess -> 'passport' ->> 'user')::INTEGER = $1
+            AND sid != $2
+        `;
+
+        // Execute the query and capture the result
+        const result = await pool.query(deleteQuery, [userId, currentSessionId]);
+
+        // Print the result to the console
+        console.log("Sessions cleared:", result.rowCount); // This will print the number of rows deleted
+    } catch (err) {
+        console.error('Error clearing other sessions:', err);
+    }
 }
 
 module.exports = {initialize}

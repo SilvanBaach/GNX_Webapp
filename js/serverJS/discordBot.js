@@ -252,12 +252,26 @@ const sendMessageToChannel = async (channelId, message) => {
     }
 };
 
+/**
+ * Checks if a given Discord username exists in the guild
+ * @param discordUsername
+ * @returns {Promise<boolean>}
+ */
+const doesUserExist = async (discordUsername) => {
+    let guild = client.guilds.cache.get(guildId);
+    if (!guild) throw new Error('Invalid Guild ID or the bot is not a member of the guild.');
+
+    const members = await guild.members.fetch();
+    return members.some(member => member.user.username === discordUsername);
+};
+
 module.exports = {
     getCurrentDiscordMembers,
     sendMessageToUser,
     sendTrainingDataReminders,
     setupDiscordBot,
     sendWelcomeMessage,
-    sendMessageToChannel
+    sendMessageToChannel,
+    doesUserExist
 };
 

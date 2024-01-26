@@ -240,7 +240,7 @@ router.get('/getUsername/:id', checkNotAuthenticated, async (req, res) => {
  * @returns {Promise<*>}
  */
 async function updateUser(formData, userId) {
-    const fields = ['fullName', 'email', 'phone', 'username', 'street', 'city', 'zip', 'steam', 'origin', 'riotgames', 'battlenet','resetpasswordtoken','resetpasswordexpires', 'blocked', 'discord','trainingdatareminder','wpuserid','wptoken','wprefreshtoken'];
+    const fields = ['fullName', 'email', 'phone', 'username', 'street', 'city', 'zip', 'steam', 'origin', 'riotgames', 'resetpasswordtoken','resetpasswordexpires', 'blocked', 'discord','trainingdatareminder','wpuserid','wptoken','wprefreshtoken'];
     const updates = [];
     delete formData.password;
 

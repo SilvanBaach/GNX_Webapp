@@ -117,3 +117,35 @@ function setupDiscordPopup(discordTag) {
         insertDiscordNamePopup.open();
     }
 }
+
+/**
+ * Displays the latest 4 patchnotes
+ */
+function displayPatchNotes() {
+    $.ajax({
+        url: '/patchnotes/latest',
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            $('#patchNotesContainer').empty();
+
+            data.forEach(function(patchNote) {
+                const formattedDate = new Date(patchNote.date).toLocaleDateString(); // Format the date
+                const patchNoteHtml = `
+                        <ul class="mb-4">
+                            <li>
+                                <p class="font-bold">${formattedDate} - ${patchNote.version}</p>
+                                <p>${patchNote.text.replace(/\n/g, '<br>')}</p>
+                            </li>
+                        </ul>
+                `;
+                $('#patchNotesContainer').append(patchNoteHtml);
+            });
+        },
+        error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
+        }
+    });
+}
