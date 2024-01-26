@@ -1,0 +1,28 @@
+<div class="bg-grey-level1 max-w-[1330px] xl:pr-4 lg:pr-0 pr-4 px-4 md:px-8 py-6">
+
+    <h3 class="text-2xl mb-5 font-bold font-orbitron text-white">Gamedays / Results</h3>
+    <%- include('../components/buttondefault', {type: 'button', id: 'newReport', text: 'Report new Gameday', icon: 'ri-file-edit-line', btnType: 'Success'}) %>
+
+    <div class="bg-grey-level2 w-full p-4 mt-4">
+        <div class="flex flex-row justify-between">
+            <p class="font-montserrat font-bold text-lg text-almost-white">Reported Gamedays</p>
+            <div class="flex flex-row gap-4 items-center">
+                <p class="font-montserrat text-almost-white">Show Past</p>
+                <%- include('../components/toggle', {id: 'showPast', value: 0}) %>
+            </div>
+        </div>
+
+        <div class="bg-grey-level3 mt-4">
+            <%- include('../components/table', {id: 'gamedays', bodyId: 'gamedaysData', headers: [{text: 'Date', display: 'sm'}, {text: 'Title'}, {text: 'Description'}, {text: 'Location', display: 'md'}, {text: 'Wishes', display: 'lg'}, {text: 'Report Result', display: 'lg'}]}) %>
+        </div>
+    </div>
+</div>
+
+<div class="popup-container" id="popup-container-addNewGameday"></div>
+
+<script>
+    $(document).ready(function() {
+        //displayGamedays();
+        //setupAddGamedayPopup();
+    });
+</script>

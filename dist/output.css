@@ -902,6 +902,10 @@ video {
   margin-left: 70px;
 }
 
+.mr-1 {
+  margin-right: 0.25rem;
+}
+
 .mr-2 {
   margin-right: 0.5rem;
 }
@@ -952,10 +956,6 @@ video {
 
 .mt-\[14px\] {
   margin-top: 14px;
-}
-
-.mr-1 {
-  margin-right: 0.25rem;
 }
 
 .box-border {
@@ -1263,10 +1263,6 @@ video {
 
 .w-px {
   width: 1px;
-}
-
-.w-56 {
-  width: 14rem;
 }
 
 .min-w-\[270px\] {
@@ -3598,12 +3594,12 @@ input:checked + .slider {
     gap: 2.5rem;
   }
 
-  .sm\:gap-5 {
-    gap: 1.25rem;
-  }
-
   .sm\:gap-4 {
     gap: 1rem;
+  }
+
+  .sm\:gap-5 {
+    gap: 1.25rem;
   }
 
   .sm\:whitespace-normal {

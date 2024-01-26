@@ -13,6 +13,7 @@ const pages = [
     {id: "settings", url: "/dashboard/settings"},
     {id: "trainingnotes_display", url: "/dashboard/trainingNotesDisplay"},
     {id: "trainingnotes_edit", url: "/dashboard/trainingNotesEdit"},
+    {id: "gameday", url: "/dashboard/gameday"},
 ];
 
 /**

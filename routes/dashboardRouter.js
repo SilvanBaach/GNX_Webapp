@@ -108,5 +108,13 @@ router.get('/trainingNotesEdit', checkNotAuthenticated, permissionCheck('trainin
     res.render('dashboard/trainingnotes_edit.ejs', { user: req.user });
 });
 
+/**
+ * GET game day page
+ */
+router.get('/gameday', checkNotAuthenticated, permissionCheck('gameday', 'canOpen'), (req, res) => {
+    res.render('dashboard/gameday.ejs', { user: req.user });
+});
+
+
 
 module.exports = router;
