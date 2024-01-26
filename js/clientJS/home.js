@@ -149,3 +149,42 @@ function displayPatchNotes() {
         }
     });
 }
+
+/**
+ * Generates a new coupon code
+ */
+function generateNewCouponCode() {
+    $.ajax({
+        url: '/wooCommerce/generateCouponCode',
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+            displaySuccess('Your coupon code has been generated successfully!');
+            $('#couponCode').text(data.couponCode);
+        },
+        error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
+        }
+    })
+}
+
+/**
+ * Displays the latest coupon code
+ */
+function displayLatestCouponCode(){
+    $.ajax({
+        url: '/wooCommerce/getLatestCouponCode',
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            $('#couponCode').text(data.couponCode);
+        },
+        error: function (data) {
+            if (data.responseJSON && data.responseJSON.redirect) {
+                window.location.href = data.responseJSON.redirect;
+            }
+        }
+    })
+}

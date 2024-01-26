@@ -954,6 +954,10 @@ video {
   margin-top: 14px;
 }
 
+.mr-1 {
+  margin-right: 0.25rem;
+}
+
 .box-border {
   box-sizing: border-box;
 }
@@ -1259,6 +1263,10 @@ video {
 
 .w-px {
   width: 1px;
+}
+
+.w-56 {
+  width: 14rem;
 }
 
 .min-w-\[270px\] {
@@ -3592,6 +3600,10 @@ input:checked + .slider {
 
   .sm\:gap-5 {
     gap: 1.25rem;
+  }
+
+  .sm\:gap-4 {
+    gap: 1rem;
   }
 
   .sm\:whitespace-normal {

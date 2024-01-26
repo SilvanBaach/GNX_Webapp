@@ -125,172 +125,73 @@ ${message}
 });
 
 /**
- * POST route for linking the webapp to the woocommerce shop
+ * POST route for generating a coupon
  */
-router.post('/linkShopAccount', checkNotAuthenticated, permissionCheck('settings', 'canOpen'), async (req, res) => {
-    const username = req.body.username;
-    const password = req.body.password;
-
+router.post('/generateCouponCode', checkNotAuthenticated, permissionCheck('home', 'canOpen'), async (req, res) => {
     try {
-        const response = await axios.post('https://store.teamgenetix.ch/oauth/token', {
-            grant_type: 'password',
-            username,
-            password,
-            client_id: process.env.OAUTH_CLIENT_ID,
-            client_secret: process.env.OAUTH_CLIENT_SECRET,
-        }, {
-            headers: {
-                REFERER: process.env.OAUTH_REFER_URI,
-                Authorization: 'Basic ' + Buffer.from(process.env.OAUTH_CLIENT_ID + ':' + process.env.OAUTH_CLIENT_SECRET).toString('base64')
-            }
-        });
-
-        // Request the user's profile data using the token
-        const userProfileResponse = await axios.get('https://store.teamgenetix.ch/wp-json/wp/v2/users/me', {
-            headers: {
-                Authorization: 'Bearer ' + response.data.access_token
-            }
-        });
-
-        const wpUserId = userProfileResponse.data.id;
-        const token = encryptLogic.encrypt(response.data.access_token);
-        const refreshToken = encryptLogic.encrypt(response.data.refresh_token);
-
-        userRouter.updateUser({wpuserid: wpUserId, wptoken: token, wprefreshtoken: refreshToken}, req.user.id).then(() => {
-            logMessage(`User ${req.user.username} has successfully linked with GNX Clothing!`, LogLevel.INFO, req.user.id,)
-            res.status(200).json({ message: "Successfully linked with GNX Clothing!"});
-        }).catch(() => {
-            console.error("Error updating user with woocommerce data!");
-            res.status(400).json({ message: "Error updating user with woocommerce data!"});
-        });
-
-    } catch (error) {
-        console.error("Error getting OAuth token!" + error);
-        res.status(400).json({ message: "Error authenticating with the shop. " + error.response.data.error_description});
-    }
-});
-
-/**
- * GET route for retrieving a coupon code for the user
- */
-router.get('/getCouponCode', checkNotAuthenticated, permissionCheck('settings', 'canOpen'), async (req, res) => {
-    try {
-        let accessToken = encryptLogic.decrypt(req.user.wptoken);
-        const refreshToken = encryptLogic.decrypt(req.user.wprefreshtoken);
-        const wpUserId = req.user.wpuserid;
-
-        if (!await testAccessToken(accessToken)) {
-            accessToken = await refreshAccessToken(refreshToken, req.user.id);
-            if (!accessToken) {
-                res.status(401).json({ error: 'Failed to refresh token' });
-                return;
-            }
-        }
-
-        const userEmail = await getUserEmailByWpId(wpUserId, accessToken);
-
-        if (!userEmail) {
-            res.status(400).json({ error: 'User email not found' });
-            return;
-        }
+        const couponCode = generateCouponCode();
+        let expirationDate = new Date();
+        expirationDate.setHours(expirationDate.getHours() + 24);
+        const formattedExpiryDate = expirationDate.toISOString().split('T')[0];
 
         const couponData = {
-            code: generateCouponCode(),
+            code: couponCode,
             discount_type: 'percent',
             amount: `${req.user.team.salepercentage}`,
             individual_use: true,
-            email_restrictions: [userEmail]
+            date_expires: `${formattedExpiryDate}`,
+            apply_before_tax: true,
+            exclude_sale_items: true,
+            usage_limit: 1,
         };
 
-        const response = await wooCommerce.postAsync('coupons', couponData);
-        if (response.statusCode === 201) {
-            res.json(JSON.parse(response.body));
-        } else {
-            res.status(response.statusCode).json(JSON.parse(response.body));
-        }
+        const response = await wooCommerce.post('coupons', couponData);
+        insertCouponCode(req.user.id, formattedExpiryDate, couponCode);
+        res.json({success: true, couponCode: couponCode});
     } catch (error) {
-        res.status(500).json({ error: 'Something went wrong' });
+        console.error('Error generating coupon:', error);
+        res.status(500).json({success: false, message: 'Error generating coupon'});
     }
 });
 
 /**
- * Generates a new coupon code string
+ * GET route for getting the current coupon code
+ */
+router.get('/getLatestCouponCode', checkNotAuthenticated, permissionCheck('home', 'canOpen'), (req, res) => {
+    getLatestCouponCode(req.user.id).then((result) => {
+        if (result.rows.length === 0) {
+            res.status(200).json({success: true, couponCode: '-'});
+        } else {
+            res.status(200).json({success: true, couponCode: result.rows[0].code});
+        }
+    }).catch(() => {
+        res.status(500).json({success: false, message: 'Error getting coupon code'});
+    });
+});
+
+/**
+ * Generates a unique coupon code
  * @returns {string}
  */
 function generateCouponCode() {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = 'GNX-';
-    for (let i = 0; i < 7; i++) {
-        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    const charactersLength = characters.length;
+    for (let i = 0; i < 6; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
 }
 
 /**
- * Returns the email of a given user by wp id
- * @param wpUserId
- * @param accessToken
- * @returns {Promise<*|null>}
- */
-async function getUserEmailByWpId(wpUserId, accessToken) {
-    try {
-        const response = await axios.get(`https://store.teamgenetix.ch/wp-json/wp/v2/users/${wpUserId}`, {
-            headers: {
-                'Authorization': `Bearer ${accessToken}`
-            }
-        });
-
-        if (response.data && response.data.email) {
-            return response.data.email;
-        } else {
-            return null;
-        }
-    } catch (error) {
-        console.error(`Failed to get user email: ${error}`);
-        return null;
-    }
-}
-
-/**
- * Refreshes the access token using the refresh token
- * @param refreshToken
+ * Inserts the coupon code into the database
  * @param userId
- * @returns {Promise<*|null>}
+ * @param expDate
+ * @param code
+ * @returns {Promise<QueryResult<any>>}
  */
-async function refreshAccessToken(refreshToken, userId) {
-    try {
-        const response = await axios.post('https://store.teamgenetix.ch/oauth/token', {
-            grant_type: 'refresh_token',
-            refresh_token: refreshToken,
-            client_id: process.env.OAUTH_CLIENT_ID,
-            client_secret: process.env.OAUTH_CLIENT_SECRET
-        });
-
-        pool.query(`UPDATE account SET wptoken = $1, wprefreshtoken = $2 WHERE id = $3`, [response.data.access_token, response.data.refresh_token, userId], (err) => {
-            return response.data.access_token;
-        });
-    } catch (error) {
-        console.error(`Failed to refresh token: ${error}`);
-        return null;
-    }
-}
-
-/**
- * Tests if the access token is still valid
- * @param accessToken
- * @returns {Promise<boolean>}
- */
-async function testAccessToken(accessToken) {
-    try {
-        const response = await axios.get('https://store.teamgenetix.ch/wp-json/wp/v2/users/me', {
-            headers: {
-                'Authorization': `Bearer ${accessToken}`
-            }
-        });
-        return response.status === 200;
-    } catch (error) {
-        return false;
-    }
+function insertCouponCode(userId, expDate, code){
+    return pool.query('INSERT INTO couponcodes (account_fk, expirydate, code, creationdate) VALUES ($1, $2, $3, NOW())', [userId, expDate, code]);
 }
 
 /**
@@ -301,6 +202,15 @@ async function testAccessToken(accessToken) {
 function formatDate(dateString) {
     const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
     return new Date(dateString).toLocaleDateString('de-DE', options);
+}
+
+/**
+ * Returns the latest valid coupon code
+ * @param userId
+ * @returns {Promise<QueryResult<any>>}
+ */
+function getLatestCouponCode(userId){
+    return pool.query('SELECT * FROM couponcodes WHERE account_fk = $1 AND expirydate > NOW() ORDER BY creationdate DESC LIMIT 1', [userId]);
 }
 
 module.exports = router;
