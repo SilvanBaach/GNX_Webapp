@@ -188,3 +188,58 @@ function displayLatestCouponCode(){
         }
     })
 }
+
+/**
+ * Setup of the Link Shop Popup
+ */
+function setupLinkShopPopup(){
+    const shopPopup = new Popup("popup-container-linkshop");
+
+    let renderedHtml = '';
+    $.when(
+        fetchEntryField('text', 'usernameShop', 'usernameShop', 'w-52', ''),
+        fetchEntryField('password', 'passwordShop', 'passwordShop', 'w-52', '')
+    ).then(function(field1, field2) {
+        renderedHtml += `<label for="usernameShop" class="input-label">Username</label>`
+        renderedHtml += field1[0];
+        renderedHtml += `<label for="passwordShop" class="input-label">Password</label>`
+        renderedHtml += field2[0];
+
+        shopPopup.displayInputPopupCustom("/res/others/plus.png", "Link your shop account", "Link", "btnLinkShop", renderedHtml);
+    });
+
+    $("#linkShop").click(function (e) {
+        $("#usernameShop").val('');
+        $("#passwordShop").val('');
+        shopPopup.open(e);
+    });
+
+    $(document).on('click', '#btnLinkShop', function() {
+        const username = $('#usernameShop').val();
+        const password = $('#passwordShop').val();
+
+        $.ajax({
+            url: '/wooCommerce/linkShop',
+            method: 'POST',
+            data: {
+                username: username,
+                password: password
+            },
+            success: function(response) {
+                if (response.success) {
+                    displaySuccess(response.message);
+                }else{
+                    displayError(response.message);
+                }
+
+                shopPopup.close();
+            },
+            error: function(data) {
+                if (data.responseJSON && data.responseJSON.redirect) {
+                    window.location.href = data.responseJSON.redirect;
+                }
+                displayError(data.responseJSON.message);
+            }
+        });
+    });
+}

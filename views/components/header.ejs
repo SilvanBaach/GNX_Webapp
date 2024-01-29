@@ -4,12 +4,19 @@
     </div>
 
     <div class="absolute w-full h-16 bg-opacity-50 bg-header-cover-grey flex justify-center items-center z-10">
-        <img src="/res/logo/logo_white_widescape.png" alt="Genetix Logo" class="h-14 hidden sm:block">
+        <img src="/res/logo/logo_white_widescape.png" alt="Genetix Logo" class="h-14 hidden md:block">
     </div>
 
     <% if (typeof userIcon !== 'undefined') { %>
         <div class="absolute right-2 flex top-1 pt-2 pb-2 pl-2 items-center hover:bg-turquoise hover:bg-opacity-20 transition duration-700 ease-in-out z-40" id="userPopupHeader">
             <div class="bg-opacity-20 transition duration-100 ease-in-out w-full h-full absolute" id="userPopupBg"></div>
+            <% if (user.membership_fk && user.membership_fk == 1) {%>
+                <img src="../../res/genetix+/tierIII.png" class="rounded-full w-10 h-10 mr-3" alt="Tier III"/>
+            <%} else if (user.membership_fk && user.membership_fk == 2) {%>
+                <img src="../../res/genetix+/tierII.png" class="rounded-full w-10 h-10 mr-3" alt="Tier II"/>
+            <%} else if (user.membership_fk == 3){%>
+                <img src="../../res/genetix+/tierI.png" class="rounded-full w-10 h-10 mr-3" alt="Tier I"/>
+            <%}%>
             <img src="<%= user.thumbnail %>" alt="User Image" class="rounded-full w-10 h-10">
             <div class="flex flex-row items-center ml-2">
                 <span class="font-semibold text-base text-almost-white"><%= user.username %></span>

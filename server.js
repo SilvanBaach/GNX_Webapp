@@ -92,6 +92,7 @@ cron.schedule('0 3 * * *', function() {
  * WOO COMMERCE WEBHOOK
  */
 //wooCommerceIntegration.addCreateOrderWebhook();
+wooCommerceIntegration.updateSubscriptionTable();
 
 /**
  * Get the newest DDragonData from the Riot API every morning at 3:00 AM

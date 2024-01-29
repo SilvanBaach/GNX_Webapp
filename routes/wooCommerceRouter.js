@@ -64,38 +64,6 @@ Billing Information:
 });
 
 /**
- * POST route for receiving an update on an order
- */
-router.post('/orderUpdated', (req, res) => {
-    const payload = req.body;
-
-    const orderId = payload.id;
-    const orderStatus = payload.status;
-    const dateModified = formatDate(payload.date_modified);
-    const total = payload.total;
-    const billing = payload.billing;
-
-    const message = `
-**<@&${staffRoleId}> Order Updated! 🔄**
-**Order ID:** ${orderId}
-**Status:** ${orderStatus}
-**Date Modified:** ${dateModified}
-**Total:** ${total}
-
-**Billing Information:**
-- **First Name:** ${billing.first_name}
-- **Last Name:** ${billing.last_name}
-- **Email:** ${billing.email}
-- **Phone:** ${billing.phone}
-`;
-
-    discordBot.sendMessageToChannel('1147985961955885168', message);
-    console.log('Sent Order Updated message to Discord');
-
-    res.sendStatus(200);
-});
-
-/**
  * POST route for receiving a new Contact Inquiry
  */
 router.post('/newContactInquiry', (req, res) => {
@@ -143,6 +111,7 @@ router.post('/generateCouponCode', checkNotAuthenticated, permissionCheck('home'
             apply_before_tax: true,
             exclude_sale_items: true,
             usage_limit: 1,
+            excluded_product_categories: [58] //Exclude the "Genetix+" category
         };
 
         const response = await wooCommerce.post('coupons', couponData);
@@ -168,6 +137,73 @@ router.get('/getLatestCouponCode', checkNotAuthenticated, permissionCheck('home'
         res.status(500).json({success: false, message: 'Error getting coupon code'});
     });
 });
+
+/**
+ * POST route for linking a shop to an account
+ */
+router.post('/linkShop', checkNotAuthenticated, permissionCheck('home', 'canOpen'), async (req, res) => {
+    try {
+        const {username, password} = req.body;
+
+        const tokenResponse = await axios.post('https://store.teamgenetix.ch/oauth/token', {
+            username: username,
+            password: password,
+            client_id: process.env.OAUTH_CLIENT_ID,
+            client_secret: process.env.OAUTH_CLIENT_SECRET,
+            grant_type: 'password'
+        });
+
+        const refreshToken = tokenResponse.data.refresh_token;
+        storeWPRefreshToken(refreshToken, req.user.id).then(() => {
+            res.status(200).json({success: true, message: 'Successfully linked shop account!'});
+        }).catch((e) => {
+            console.error('Error linking shop:', e);
+            res.status(500).json({success: false, message: 'Error linking shop account!'});
+        });
+    } catch (error) {
+        console.error('Error linking shop:', error);
+        res.status(500).send({message: 'Error during authentication! Please check your credentials.'});
+    }
+});
+
+/**
+ * GET route for retrieving subscription data
+ */
+router.get('/getLatestCouponCode', checkNotAuthenticated, permissionCheck('home', 'canOpen'), async (req, res) => {
+    try {
+        const result = await getRefreshTokenFromDB(req.user.id);
+        console.log(result.rows[0]);
+        const refreshToken = result.rows[0].wprefreshtoken;
+        if (!refreshToken || refreshToken.length < 5){
+            return res.status(401).send({message: 'You have not linked your shop account yet!'});
+        }
+
+        const accessToken = await refreshAccessToken(refreshToken);
+
+        if (!accessToken) {
+            return res.status(401).send('Unable to refresh access token');
+        }
+
+        const productsResponse = await axios.get(`${WC_API_URL}/products?category=58`, {
+            headers: { 'Authorization': `Bearer ${accessToken}` }
+        });
+
+        res.json(productsResponse.data);
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        res.status(500).send('Error fetching products from category 58');
+    }
+});
+
+/**
+ * Stores the wp refresh token in the database
+ * @param refreshToken
+ * @param userId
+ * @returns {Promise<QueryResult<any>>}
+ */
+function storeWPRefreshToken(refreshToken, userId) {
+    return pool.query('UPDATE account SET wprefreshtoken = $1 WHERE id = $2', [refreshToken, userId]);
+}
 
 /**
  * Generates a unique coupon code
