@@ -884,6 +884,7 @@ function crudFixedTraining(data, action){
  */
 async function buildCalendarMobile(currentDate, data) {
     const today = new Date();
+    teamId = parseInt(data.teamId);
 
     //Build the header
     let tr = $('<tr></tr>').addClass("bg-grey-level2 text-white font-montserrat text-xl");
@@ -910,7 +911,6 @@ async function buildCalendarMobile(currentDate, data) {
 
     //Load data from monday to sunday
     const teamData = await getDataFromTeam(getMondayOfWeek(currentDate), getSundayOfCurrentWeek(currentDate), teamId)
-
     let j = 0;
     daysOfWeek.forEach(function (day) {
         j++;
