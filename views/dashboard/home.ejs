@@ -47,6 +47,72 @@
         </div>
     </div>
 
+    <h3 class="text-2xl mt-5 mb-5 font-bold font-orbitron text-white">Genetix+</h3>
+    <div class="sm:flex sm:flex-row sm:w-full sm:gap-4 sm:items-stretch sm:h-60">
+
+        <div class="sm:relative p-5 shadow-shdaow2xl rounded-md w-60 mt-5 sm:mt-0 sm:flex sm:flex-col"
+             style="background: linear-gradient(to bottom right, #1E1F22, #2B2D30);">
+            <h4 class="text-lg font-bold text-white pb-4">Your Membership</h4>
+
+            <div class="flex flex-col justify-center">
+                <% if(user.subscription && user.subscription.id > 0) {%>
+                <% if (user.subscription.subscriptiondefinition_fk == "3") {%>
+                        <img src="../../res/genetix+/tierIII.png" class="h-20 mx-auto" alt="Tier III"/>
+                        <p class="font-montserrat text-almost-white text-center mt-3 font-bold">Supporter</p>
+                    <%} else if (user.subscription.subscriptiondefinition_fk == "2") {%>
+                        <img src="../../res/genetix+/tierII.png" class="h-20 mx-auto" alt="Tier II"/>
+                        <p class="font-montserrat text-almost-white text-center mt-3 font-bold">Member</p>
+                    <%} else if (user.subscription.subscriptiondefinition_fk == "1"){%>
+                        <img src="../../res/genetix+/tierI.png" class="h-20 mx-auto" alt="Tier I"/>
+                        <p class="font-montserrat text-almost-white text-center mt-3 font-bold">VIP</p>
+                    <%}%>
+
+                    <a href="https://store.teamgenetix.ch/my-account/"
+                       class="sm:absolute sm:left-5 sm:bottom-4 text-turquoise text-base font-semibold flex items-center">Manage Subscription
+                        <i class="text-turquoise ml-2 ri-arrow-right-s-fill"></i></a>
+
+                <%} else {%>
+                    <img src="../../res/genetix+/no_subscription.png" class="h-16 mx-auto" alt="No Subscription"/>
+                    <p class="font-montserrat text-almost-white text-center mt-3 font-bold">None</p>
+                    <p class="font-montserrat text-almost-white text-sm mt-3">Already subscribed?</p>
+                        <a href="#" id="linkShop"
+                           class="sm:absolute sm:left-5 sm:bottom-4 text-turquoise text-base font-semibold flex items-center">Link Shop Account
+                            <i class="text-turquoise ml-2 ri-arrow-right-s-fill"></i></a>
+                <%}%>
+            </div>
+        </div>
+
+        <% if(user.subscription === undefined){ %>
+            <div class="sm:relative p-5 shadow-shdaow2xl rounded-md w-[514px] mt-5 sm:mt-0 sm:flex sm:flex-col"
+                 style="background: linear-gradient(to bottom right, #1E1F22, #2B2D30);">
+                <h4 class="text-lg font-bold text-white pb-4">Consider upgrading to support our work!</h4>
+
+                <div class="flex flex-row justify-between">
+                    <div class="w-1/3 flex flex-col justify-center">
+                        <img src="../../res/genetix+/tierI.png" class="h-16 mx-auto" alt="Genetix+"/>
+                        <p class="font-montserrat font-bold text-center mt-2">VIP</p>
+                        <p class="font-montserrat text-center">19.90 / Month</p>
+                    </div>
+                    <div class="w-1/3 flex flex-col justify-center">
+                        <img src="../../res/genetix+/tierII.png" class="h-16 mx-auto" alt="Genetix+"/>
+                        <p class="font-montserrat font-bold text-center mt-2">Member</p>
+                        <p class="font-montserrat text-center">9.90 / Month</p>
+                    </div>
+                    <div class="w-1/3 flex flex-col justify-center">
+                        <img src="../../res/genetix+/tierIII.png" class="h-16 mx-auto" alt="Genetix+"/>
+                        <p class="font-montserrat font-bold text-center mt-2">Supporter</p>
+                        <p class="font-montserrat text-center">4.90 / Month</p>
+                    </div>
+                </div>
+
+                <a href="https://store.teamgenetix.ch/product-category/genetix/"
+                   class="sm:absolute sm:left-5 sm:bottom-4 text-turquoise text-base font-semibold flex items-center">Get a Subscription
+                    <i class="text-turquoise ml-2 ri-arrow-right-s-fill"></i></a>
+            </div>
+        <% } %>
+
+    </div>
+
     <h3 class="text-2xl mt-5 mb-5 font-bold font-orbitron text-white">Quick Links</h3>
 
     <div class="sm:flex sm:flex-wrap sm:w-full sm:gap-10 sm:items-stretch">
@@ -88,11 +154,16 @@
     </div>
 </div>
 
+<div class="popup-container" id="popup-container-linkshop"></div>
+
 <script>
     $(document).ready(function () {
+        console.log(<%- JSON.stringify(user.subscription) %>);
+
         getNextTrainings(<%= user.team.id %>);
         displayPatchNotes();
         displayLatestCouponCode();
+        setupLinkShopPopup();
 
         $("#nextTrainings").click(function (e) {
             e.preventDefault();
