@@ -950,10 +950,6 @@ video {
   margin-top: 1.5rem;
 }
 
-.mt-7 {
-  margin-top: 1.75rem;
-}
-
 .mt-8 {
   margin-top: 2rem;
 }
@@ -1121,6 +1117,10 @@ video {
   height: 5rem;
 }
 
+.h-24 {
+  height: 6rem;
+}
+
 .h-3 {
   height: 0.75rem;
 }
@@ -1271,6 +1271,10 @@ video {
 
 .w-\[95px\] {
   width: 95px;
+}
+
+.w-auto {
+  width: auto;
 }
 
 .w-full {
@@ -3456,6 +3460,10 @@ input:checked + .slider {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
+.hover\:cursor-pointer:hover {
+  cursor: pointer;
+}
+
 .hover\:bg-turquoise:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(49 199 205 / var(--tw-bg-opacity));
@@ -3477,6 +3485,10 @@ input:checked + .slider {
 .hover\:text-turquoise:hover {
   --tw-text-opacity: 1;
   color: rgb(49 199 205 / var(--tw-text-opacity));
+}
+
+.hover\:underline:hover {
+  text-decoration-line: underline;
 }
 
 .before\:hover\:text-center:hover::before {

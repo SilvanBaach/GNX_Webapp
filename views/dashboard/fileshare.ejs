@@ -1,43 +1,28 @@
 <script src="/js/clientJS/fileshareClient.js"></script>
 
-<div class="title-container">
-    <p class="title">Fileshare</p>
-</div>
+<div class="bg-grey-level1 xl:pr-4 lg:pr-0 pr-4 px-4 md:px-8 py-6">
+    <h3 class="text-2xl mb-5 font-bold font-orbitron text-white">Fileshare</h3>
 
-<div class="path-container" id="path-container">
-    <div class="header-container">
-        <div class="path-text-container" id="path-text-container"></div>
-        <div class="button-container">
-            <% if (user.fileshare && user.fileshare.canModify) { %>
-                <form action="" method="post" enctype="multipart/form-data" id="upload-form">
-
-                    <label class="default" for="file">Upload
-                        <i class="ri-upload-2-fill upload-icon"></i>
-                        <input type="file" name="file" id="file" multiple="multiple">
-                    </label>
-
-                </form>
-                <button class="default green new-folder" id="new-folder" type="button">New Folder
-                    <i class="ri-folder-add-fill upload-icon"></i>
-                </button>
-            <% } %>
-        </div>
+    <div class="flex flex-row gap-4 mb-4">
+        <%- include('../components/buttondefault', {type: 'button', id: 'upload', text: 'Upload', icon: 'ri-upload-line', inputId: 'file'}) %>
+        <%- include('../components/buttondefault', {type: 'button', id: 'new-folder', text: 'New Folder', icon: 'ri-folder-add-fill'}) %>
     </div>
+
+    <div class="bg-grey-level2 font-montserrat text-almost-white text-lg p-3 mb-4" id="path-text-container"></div>
+
+    <div class="flex flex-wrap gap-4" id="fileshare-container"></div>
 </div>
 
-<div class="fileshare-container" id="fileshare-container"></div>
 <div class="popup-container" id="popup-container-new-folder"></div>
 <div class="popup-container" id="popup-container-delete"></div>
 <div class="popup-container" id="popup-container-rename"></div>
 
 <script>
     $(document).ready(function () {
-        checkPermissions()
-
         //Popup setup
-        const delPopup = deletePopupSetup();
-        const newFolderPopup = newFolderPopupSetup();
-        const renamePopup = renamePopupSetup();
+        //const delPopup = deletePopupSetup();
+        //const newFolderPopup = newFolderPopupSetup();
+        //const renamePopup = renamePopupSetup();
 
         //Basic loading of fileshare when site is loaded
         removeFileShareContent();
@@ -45,37 +30,37 @@
         getFileListFromServer();
 
         //Handles click event of directory-link
-        $(document).off('click', '#directory-link').on('click', '#directory-link', function (e) {
+        /*$(document).off('click', '#directory-link').on('click', '#directory-link', function (e) {
             extendSubDir($(this).text());
             removeFileShareContent();
             getFileListFromServer();
-        });
+        });*/
 
         //If a link in the path bar gets clicked
-        $(document).off('click', '#path-link').on('click', '#path-link', function (e) {
+        /*$(document).off('click', '#path-link').on('click', '#path-link', function (e) {
             loadFolder($(this).data('path'));
-        });
+        });*/
 
         //Delete file or folder
-        $(document).off('click', '#delete-file').on('click', '#delete-file', function (e) {
+        /*$(document).off('click', '#delete-file').on('click', '#delete-file', function (e) {
             setDelPath($(this).data('path'));
             delPopup.open(e);
-        });
+        });*/
 
         //Rename File
-        $(document).off('click', '#rename-file').on('click', '#rename-file', function (e) {
+        /*$(document).off('click', '#rename-file').on('click', '#rename-file', function (e) {
             setDelPath($(this).data('path'));
             $('#newFileName').val('');
             renamePopup.open(e);
-        });
+        });*/
 
         //create new folder
-        $("#new-folder").click(function (e) {
+        /*$("#new-folder").click(function (e) {
             newFolderPopup.open(e);
-        });
+        });*/
 
         //Upload file
-        $("#file").on("change", function () {
+        /*$("#file").on("change", function () {
             if ($("#file")[0].files.length > 10) {
                 displayError('You can only upload 10 files at a time!');
             } else {
@@ -84,7 +69,7 @@
                     uploadFiles(new FormData(this))
                 })).submit();
             }
-        });
+        });*/
 
     });
 </script>

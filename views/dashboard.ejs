@@ -93,7 +93,7 @@
                     <a class="text-almost-white font-semibold font-montserrat ml-4">Apex Statistics</a>
                 </div>
             <% } %>-->
-                <!--
+
             <% if (user.fileshare && user.fileshare.canOpen) { %>
                 <div class="flex items-center w-full pl-4 py-4 group hover:bg-turquoise hover:bg-opacity-20 relative cursor-pointer"
                      id="fileshare">
@@ -102,7 +102,7 @@
                     <i class="ri-file-cloud-line ri-xl text-almost-white ml-4"></i>
                     <a class="text-almost-white font-semibold font-montserrat ml-4">Fileshare</a>
                 </div>
-            <% } %>-->
+            <% } %>
 
                 <!--
             <% if (user.usermanagement && user.usermanagement.canOpen) { %>
@@ -179,7 +179,7 @@
             $("#menu").toggleClass("ri-menu-line ri-close-line");
         });
 
-        loadPage('home1')
+        loadPage('fileshare')
 
         $.ajax({
             url: '/discordbot/isDiscordNameValid',

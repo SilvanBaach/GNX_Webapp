@@ -4,29 +4,10 @@ let canDownload = false;
 let canModify = false;
 
 /**
- * This function is called when the document is ready
- * It checks the permissions of the user
- */
-function checkPermissions() {
-    return new Promise((resolve, reject) => {
-        hasPermission('fileshare', 'canDownload')
-            .then(canDownload => {
-                hasPermission('fileshare', 'canModify')
-                    .then(canModify => {
-                        resolve({canDownload, canModify});
-                    })
-                    .catch(error => reject(error));
-            })
-            .catch(error => reject(error));
-    });
-}
-
-/**
  * This function removes all the content from the file share
  */
 function removeFileShareContent(){
-    //Removes all the file elements from the fileshare-container
-    $("#fileshare-container").empty().append($('<div id="loading-message-container"><div id="loading-message"></div></div>'));
+    $("#fileshare-container").empty();
 }
 
 /**
@@ -35,7 +16,7 @@ function removeFileShareContent(){
 function resetPathBar(){
     $("#path-text-container").empty()
         .append("<i class='ri-arrow-right-s-line path-separator'></i>")
-        .append("<a class='path-text' id='path-link' data-path='root'>File Share</a>")
+        .append("<a class='hover:text-turquoise hover:underline hover:cursor-pointer' id='path-link' data-path='root'>File Share</a>")
     subDir = 'root';
 }
 
@@ -52,15 +33,9 @@ function getFileListFromServer(){
         success: function(data) {
             const files = data;
             removeFileShareContent();
-            checkPermissions().then((permissions) => {
-                canDownload = permissions.canDownload;
-                canModify = permissions.canModify;
                 $.each(files, function (index, file) {
                     appendFileLayout(file);
                 });
-
-                $('#loading-message-container').remove();
-            });
         },
         error: function(data) {
             if (data.responseJSON && data.responseJSON.redirect) {
@@ -77,13 +52,13 @@ function getFileListFromServer(){
 async function appendFileLayout(file) {
     //Defining new DOM Objects
     const fileshareContainer = $('#fileshare-container');
-    const fileContainer = $('<div>').addClass('file');
+    const fileContainer = $('<div>').addClass('bg-grey-level2 p-3 flex justify-center flex-col w-48');
     const deleteContainer = $('<div>').addClass('delete-container');
     const removeLink = $('<a>').addClass('remove').attr('id', 'delete-file');
     const closeIcon = $('<i>').addClass('ri-close-line').addClass('ri-xl');
     const rename = $('<a>').addClass('rename').attr('id', 'rename-file');
     const renameIcon = $('<i>').addClass('ri-edit-fill').addClass('ri-lg');
-    const fileImage = $('<img>').addClass('file-image');
+    const fileImage = $('<img>').addClass('h-20');
 
     //Append those DOM Objects to the correct parent
     removeLink.append(closeIcon);
