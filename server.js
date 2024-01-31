@@ -36,6 +36,7 @@ const riot = require('./js/serverJS/riot.js');
 const {logMessage, LogLevel} = require('./js/serverJS/logger.js');
 const {sendTrainingDataReminders} = require("./js/serverJS/discordBot");
 const trainingNotesRouter = require("./routes/trainingNotesRouter");
+const {updateSubscriptionTable} = require("./js/serverJS/wooCommerceIntegration");
 
 /**
  * MIDDLEWARE
@@ -134,6 +135,13 @@ cron.schedule('0 3 * * *', async function() {
 cron.schedule('0 10 * * *', function() {
     console.log("Sending training data reminders...");
     sendTrainingDataReminders();
+});
+
+/**
+ * Updates the Subscription Table every 30 minutes
+ */
+cron.schedule('*/30 * * * *', function() {
+    updateSubscriptionTable();
 });
 
 /**

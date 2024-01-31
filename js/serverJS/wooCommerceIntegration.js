@@ -6,55 +6,51 @@ const axios = require('axios');
 const {pool} = require("./database/dbConfig");
 const {logMessage, LogLevel} = require('./logger.js');
 
-const consumerKey = process.env.WOOCOMMERECE_CONSUM_KEY;
-const consumerSecret = process.env.WOOCOMMERECE_CONSUM_SECRET;
-const hashSecret = process.env.WOOCOMMERECE_HASH_SECRET;
-
-/**
- * This function creates a webhook in our WooCommerce store
- * It calls us back when an order is created
- */
-function addCreateOrderWebhook(){
-
-    const data = {
-        name: 'Order Created',
-        topic: 'order.created',
-        delivery_url: 'https://webapp.teamgenetix.ch/wooCommerce/orderCreated',
-        secret: hashSecret,
-    };
-
-    const config = {
-        headers: {
-            'Authorization': 'Basic ' + Buffer.from(`${consumerKey}:${consumerSecret}`).toString('base64')
-        }
-    };
-
-    axios.post('https://store.teamgenetix.ch/wp-json/wc/v3/webhooks', data, config)
-        .then((response) => {
-            console.log('Webhook Created: ', response.data);
-        })
-        .catch((error) => {
-            console.error('Error creating webhook: ', error);
-        });
-}
-
 /**
  * This function updates the subscription table based on shop data
  */
 async function updateSubscriptionTable() {
-    const result = await pool.query('SELECT id, wprefreshtoken FROM account WHERE LENGTH(wprefreshtoken) > 5');
-    for (const row of result.rows) {
-        const accessToken = await refreshAccessToken(row.wprefreshtoken, row.id);
-        if (accessToken.length > 5) {
-            // Get all orders made by the user
-            const ordersResponse = await axios.get(`https://store.teamgenetix.ch/wp-json/wc/v3/orders`, {
-                headers: { 'Authorization': `Bearer ${accessToken}` }
+    axios.get('https://store.teamgenetix.ch/wp-json/gnxstore/v1/orders/', {
+        params: {
+            username: process.env.WP_USERNAME,
+            password: process.env.WP_PASSWORD
+        }
+    })
+        .then(async function (response) {
+            const orders = response.data;
+            const filteredOrders = orders.filter(order => {
+                return order.status === 'wc-active' && order.type === 'hf_shop_subscription';
             });
 
-            const orders = ordersResponse.data;
-            console.log(orders);
-        }
-    }
+            await pool.query('TRUNCATE TABLE "subscription"');
+
+            for (const order of filteredOrders) {
+                try {
+                    // Get all products of this order
+                    const productsResponse = await axios.get(`https://store.teamgenetix.ch/wp-json/gnxstore/v1/orderproducts/`, {
+                        params: {
+                            order_id: order.parent_order_id,
+                            username: process.env.WP_USERNAME,
+                            password: process.env.WP_PASSWORD
+                        }
+                    });
+
+                    const products = productsResponse.data;
+                    const subscriptionDefinition = await pool.query('SELECT id FROM subscriptiondefinition WHERE wpproductid = $1', [products[0].product_id]);
+
+                    await pool.query('INSERT INTO subscription (account_fk, wporderid, wpemail, paymentdate, nextpaymentdate, subscriptiondefinition_fk) VALUES ((SELECT id FROM account WHERE wpuserid = $1), $2, $3, $4, $5, $6)', [order.customer_id, order.id, order.billing_email, order.paid_date, order.next_payment, subscriptionDefinition.rows[0].id]);
+
+                } catch (error) {
+                    console.error(`Error fetching products for order ${order.id}: `, error);
+                }
+            }
+
+            console.log('Subscription table updated');
+
+        })
+        .catch(function (error) {
+            console.error("Error fetching orders: ", error);
+        });
 }
 
 /**
@@ -81,6 +77,5 @@ async function refreshAccessToken(refreshToken, userId) {
 
 
 module.exports = {
-    addCreateOrderWebhook,
     updateSubscriptionTable
 }

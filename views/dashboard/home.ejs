@@ -55,14 +55,14 @@
             <h4 class="text-lg font-bold text-white pb-4">Your Membership</h4>
 
             <div class="flex flex-col justify-center">
-                <% if(user.membership_fk && user.membership_fk > 0) {%>
-                <% if (user.membership_fk == 1) {%>
+                <% if(user.subscription && user.subscription.id > 0) {%>
+                <% if (user.subscription.subscriptiondefinition_fk == "3") {%>
                         <img src="../../res/genetix+/tierIII.png" class="h-20 mx-auto" alt="Tier III"/>
                         <p class="font-montserrat text-almost-white text-center mt-3 font-bold">Supporter</p>
-                    <%} else if (user.membership_fk == 2) {%>
+                    <%} else if (user.subscription.subscriptiondefinition_fk == "2") {%>
                         <img src="../../res/genetix+/tierII.png" class="h-20 mx-auto" alt="Tier II"/>
                         <p class="font-montserrat text-almost-white text-center mt-3 font-bold">Member</p>
-                    <%} else if (user.membership_fk == 3){%>
+                    <%} else if (user.subscription.subscriptiondefinition_fk == "1"){%>
                         <img src="../../res/genetix+/tierI.png" class="h-20 mx-auto" alt="Tier I"/>
                         <p class="font-montserrat text-almost-white text-center mt-3 font-bold">VIP</p>
                     <%}%>
@@ -82,7 +82,7 @@
             </div>
         </div>
 
-        <% if(!user.membership_fk || user.membership_fk == 0){ %>
+        <% if(user.subscription === undefined){ %>
             <div class="sm:relative p-5 shadow-shdaow2xl rounded-md w-[514px] mt-5 sm:mt-0 sm:flex sm:flex-col"
                  style="background: linear-gradient(to bottom right, #1E1F22, #2B2D30);">
                 <h4 class="text-lg font-bold text-white pb-4">Consider upgrading to support our work!</h4>
@@ -158,6 +158,8 @@
 
 <script>
     $(document).ready(function () {
+        console.log(<%- JSON.stringify(user.subscription) %>);
+
         getNextTrainings(<%= user.team.id %>);
         displayPatchNotes();
         displayLatestCouponCode();

@@ -232,7 +232,6 @@ function setupLinkShopPopup(){
                     displayError(response.message);
                 }
 
-                shopPopup.close();
             },
             error: function(data) {
                 if (data.responseJSON && data.responseJSON.redirect) {
@@ -240,6 +239,22 @@ function setupLinkShopPopup(){
                 }
                 displayError(data.responseJSON.message);
             }
+        }).then(function() {
+            $.ajax({
+                url: '/wooCommerce/updateSubscriptions',
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 2000);
+                },
+                error: function (data) {
+                    if (data.responseJSON && data.responseJSON.redirect) {
+                        window.location.href = data.responseJSON.redirect;
+                    }
+                }
+            })
         });
     });
 }

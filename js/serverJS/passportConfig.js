@@ -1,8 +1,8 @@
 const LocalStrategy = require("passport-local").Strategy;
-const { pool } = require("./database/dbConfig.js");
-const { getUserFields } = require("../../routes/userRouter.js");
+const {pool} = require("./database/dbConfig.js");
+const {getUserFields} = require("../../routes/userRouter.js");
 const bcrypt = require("bcrypt");
-const { logMessage, LogLevel } = require("./logger.js");
+const {logMessage, LogLevel} = require("./logger.js");
 
 const MAX_LOGIN_ATTEMPTS = 5;
 
@@ -36,7 +36,7 @@ function initialize(passport) {
                     //Is the User Blocked?
                     if (user.blocked) {
                         logMessage(`User ${username} tried to login but is blocked!`, LogLevel.WARNING, user.id)
-                        return done(null, false, { message: "This User is blocked! Please contact staff." });
+                        return done(null, false, {message: "This User is blocked! Please contact staff."});
                     }
 
                     bcrypt.compare(password, user.password, async (err, isMatch) => {
@@ -77,7 +77,7 @@ function initialize(passport) {
      */
     passport.use(
         new LocalStrategy(
-            { usernameField: "username", passwordField: "password", passReqToCallback: true },
+            {usernameField: "username", passwordField: "password", passReqToCallback: true},
             authenticateUser
         )
     );
@@ -107,28 +107,35 @@ function initialize(passport) {
                 }
                 user.team = result.rows[0];
 
-                pool.query('SELECT * FROM teamtype WHERE id=$1', [user.team.teamtype_fk], function (err, result) {
+                pool.query('SELECT * FROM subscription LEFT JOIN subscriptiondefinition ON subscriptiondefinition.id = subscription.subscriptiondefinition_fk WHERE account_fk = $1 LIMIT 1', [user.id], function (err, result) {
                     if (err) {
                         return done(err);
                     }
-                    user.teamtype = result.rows[0];
+                    user.subscription = result.rows[0];
 
-                    pool.query(`SELECT permissiontype.location, permissiontype.permission FROM role
+                    pool.query('SELECT * FROM teamtype WHERE id=$1', [user.team.teamtype_fk], function (err, result) {
+                        if (err) {
+                            return done(err);
+                        }
+                        user.teamtype = result.rows[0];
+
+                        pool.query(`SELECT permissiontype.location, permissiontype.permission FROM role
                         LEFT JOIN roletype ON roletype.id = role.roletype_fk
                         LEFT JOIN permission ON "permission".roletype_fk = roletype.id
                         LEFT JOIN permissiontype ON permissiontype.id = "permission".permissiontype_fk
                         WHERE roletype.id IS NOT NULL AND (role.team_fk = $2 OR role.account_fk = $1)
                         GROUP BY permissiontype.location, permissiontype.permission`, [user.id, user.team.id], function (err, result) {
-                        if (err) {
-                            return done(err);
-                        }
+                            if (err) {
+                                return done(err);
+                            }
 
-                        result.rows.forEach(function (row) {
-                            user[row.location] = user[row.location] || {};
-                            user[row.location][row.permission] = true;
+                            result.rows.forEach(function (row) {
+                                user[row.location] = user[row.location] || {};
+                                user[row.location][row.permission] = true;
+                            });
+
+                            return done(null, results.rows[0]);
                         });
-
-                        return done(null, results.rows[0]);
                     });
                 });
             });
@@ -142,7 +149,7 @@ function initialize(passport) {
  * @param userId the id of the user
  * @param loginAttempts the number of bad login attempts before this one
  */
-function addBadLoginAttempt(userId, loginAttempts){
+function addBadLoginAttempt(userId, loginAttempts) {
     const badLoginAttempts = loginAttempts + 1;
     if (badLoginAttempts >= MAX_LOGIN_ATTEMPTS) {
         //Block the user
@@ -155,7 +162,7 @@ function addBadLoginAttempt(userId, loginAttempts){
                 }
             }
         );
-    }else{
+    } else {
         //Just add the bad login attempt
         pool.query(
             `UPDATE account SET loginattempts = $1 WHERE id = $2`,
@@ -173,7 +180,7 @@ function addBadLoginAttempt(userId, loginAttempts){
  * Resets the bad login attempts for a user
  * @param userId the id of the user
  */
-function resetBadLoginAttempts(userId){
+function resetBadLoginAttempts(userId) {
     pool.query(
         `UPDATE account SET loginattempts = 0 WHERE id = $1`,
         [userId],

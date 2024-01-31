@@ -8,10 +8,9 @@ const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 const staffRoleId = '951561165283160094';
 const axios = require('axios');
 const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
-const userRouter = require("./userRouter");
-const encryptLogic = require("../js/serverJS/encryptLogic");
 const WooCommerceAPI = require('woocommerce-api');
 const {pool} = require("../js/serverJS/database/dbConfig");
+const {updateSubscriptionTable} = require("../js/serverJS/wooCommerceIntegration");
 
 /**
  * WooCommerce API configuration for admin
@@ -116,6 +115,8 @@ router.post('/generateCouponCode', checkNotAuthenticated, permissionCheck('home'
 
         const response = await wooCommerce.post('coupons', couponData);
         insertCouponCode(req.user.id, formattedExpiryDate, couponCode);
+
+        logMessage(`User ${req.user.username} generated a coupon code`, LogLevel.INFO, req.user.id)
         res.json({success: true, couponCode: couponCode});
     } catch (error) {
         console.error('Error generating coupon:', error);
@@ -139,6 +140,15 @@ router.get('/getLatestCouponCode', checkNotAuthenticated, permissionCheck('home'
 });
 
 /**
+ * GET route for updating the subscription Table
+ */
+router.get('/updateSubscriptions', checkNotAuthenticated, permissionCheck('home', 'canOpen'), async (req, res) => {
+    await updateSubscriptionTable()
+    logMessage(`User ${req.user.username} updated the subscription table`, LogLevel.INFO, req.user.id)
+    res.status(200).json({success: true, message: 'Subscription table updated'});
+});
+
+/**
  * POST route for linking a shop to an account
  */
 router.post('/linkShop', checkNotAuthenticated, permissionCheck('home', 'canOpen'), async (req, res) => {
@@ -153,8 +163,17 @@ router.post('/linkShop', checkNotAuthenticated, permissionCheck('home', 'canOpen
             grant_type: 'password'
         });
 
+        const wpUserResponse = await axios.get('https://store.teamgenetix.ch/wp-json/wp/v2/users/me', {
+            headers: {
+                'Authorization': `Bearer ${tokenResponse.data.access_token}`
+            }
+        });
+
         const refreshToken = tokenResponse.data.refresh_token;
-        storeWPRefreshToken(refreshToken, req.user.id).then(() => {
+        const wpUserId = wpUserResponse.data.id;
+
+        storeWPRefreshToken(refreshToken, req.user.id, wpUserId).then(() => {
+            logMessage(`User ${req.user.username} linked their shop account`, LogLevel.INFO, req.user.id)
             res.status(200).json({success: true, message: 'Successfully linked shop account!'});
         }).catch((e) => {
             console.error('Error linking shop:', e);
@@ -201,8 +220,8 @@ router.get('/getLatestCouponCode', checkNotAuthenticated, permissionCheck('home'
  * @param userId
  * @returns {Promise<QueryResult<any>>}
  */
-function storeWPRefreshToken(refreshToken, userId) {
-    return pool.query('UPDATE account SET wprefreshtoken = $1 WHERE id = $2', [refreshToken, userId]);
+function storeWPRefreshToken(refreshToken, userId, wpUserId) {
+    return pool.query('UPDATE account SET wprefreshtoken = $1, wpuserid = $3 WHERE id = $2', [refreshToken, userId, wpUserId]);
 }
 
 /**
