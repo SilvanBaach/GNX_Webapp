@@ -36,6 +36,7 @@
     "fs-extra": "^11.1.1",
     "fullcalendar": "^6.1.8",
     "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.9.1",
     "node-cron": "^3.0.2",
     "node-fetch": "^3.3.1",
     "nodemailer": "^6.9.1",
