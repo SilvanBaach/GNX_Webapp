@@ -20,9 +20,9 @@
 <script>
     $(document).ready(function () {
         //Popup setup
-        //const delPopup = deletePopupSetup();
-        //const newFolderPopup = newFolderPopupSetup();
-        //const renamePopup = renamePopupSetup();
+        const delPopup = deletePopupSetup();
+        const newFolderPopup = newFolderPopupSetup();
+        const renamePopup = renamePopupSetup();
 
         //Basic loading of fileshare when site is loaded
         removeFileShareContent();
@@ -30,16 +30,16 @@
         getFileListFromServer();
 
         //Handles click event of directory-link
-        /*$(document).off('click', '#directory-link').on('click', '#directory-link', function (e) {
+        $(document).off('click', '#directory-link').on('click', '#directory-link', function (e) {
             extendSubDir($(this).text());
             removeFileShareContent();
             getFileListFromServer();
-        });*/
+        });
 
         //If a link in the path bar gets clicked
-        /*$(document).off('click', '#path-link').on('click', '#path-link', function (e) {
+        $(document).off('click', '#path-link').on('click', '#path-link', function (e) {
             loadFolder($(this).data('path'));
-        });*/
+        });
 
         //Delete file or folder
         /*$(document).off('click', '#delete-file').on('click', '#delete-file', function (e) {
@@ -55,21 +55,24 @@
         });*/
 
         //create new folder
-        /*$("#new-folder").click(function (e) {
+        $("#new-folder").click(function (e) {
             newFolderPopup.open(e);
-        });*/
+        });
 
         //Upload file
-        /*$("#file").on("change", function () {
+        $("#file").on("change", function (e) {
             if ($("#file")[0].files.length > 10) {
                 displayError('You can only upload 10 files at a time!');
             } else {
-                $("#upload-form").on('submit', (function (e) {
-                    e.preventDefault();
-                    uploadFiles(new FormData(this))
-                })).submit();
+                e.preventDefault();
+                let files = $("#file")[0].files;
+                let data = new FormData();
+                for (let i = 0; i < files.length; i++) {
+                    data.append('file', files[i]);
+                }
+                uploadFiles(data);
             }
-        });*/
+        });
 
     });
 </script>

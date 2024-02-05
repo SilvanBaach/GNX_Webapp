@@ -27,14 +27,21 @@ class Popup {
     displayInputPopup(imgSrc, title, buttonText, buttonID, inputID) {
         this.popupContainer.empty();
 
-        const newHTML = `<img src="${imgSrc}" class="popup-img"/>` +
-            `<div class="popup-flexbox">` +
-            `<h2>${title}</h2>` +
-            `<a id="closeLink"><i class="ri-close-fill close"></i></a>` +
-            `<input type="text" id="${inputID}" class="input-field"/>` +
-            `<button type="button" id="${buttonID}" class="default green ok-btn">${buttonText}</button>` +
-            `</div>`;
-        this.popupContainer.append(newHTML);
+        $.when(
+            fetchButton('button', `${buttonID}`, `${buttonText}`, '', 'ri-check-line',undefined,undefined,'Success', undefined),
+            fetchEntryField('text', `${inputID}`, `${inputID}`, '')
+        ).then((okBtn, inputField) => {
+            const newHTML = `<img src="${imgSrc}" class="popup-img"/>` +
+                `<div class="popup-flexbox pb-6">` +
+                `<p class="text-2xl font-montserrat text-almost-white font-bold">${title}</p>` +
+                `<a id="closeLink"><i class="ri-close-fill close"></i></a>` +
+                `<div class="w-40 flex flex-col>` +
+                inputField[0] +
+                okBtn[0] +
+                `</div>` +
+                `</div>`;
+            this.popupContainer.append(newHTML);
+        });
     }
 
     /**

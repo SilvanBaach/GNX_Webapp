@@ -52,28 +52,22 @@ function getFileListFromServer(){
 async function appendFileLayout(file) {
     //Defining new DOM Objects
     const fileshareContainer = $('#fileshare-container');
-    const fileContainer = $('<div>').addClass('bg-grey-level2 p-3 flex justify-center flex-col w-48');
-    const deleteContainer = $('<div>').addClass('delete-container');
-    const removeLink = $('<a>').addClass('remove').attr('id', 'delete-file');
-    const closeIcon = $('<i>').addClass('ri-close-line').addClass('ri-xl');
-    const rename = $('<a>').addClass('rename').attr('id', 'rename-file');
-    const renameIcon = $('<i>').addClass('ri-edit-fill').addClass('ri-lg');
-    const fileImage = $('<img>').addClass('h-20');
+    const fileContainer = $('<div>').addClass('bg-grey-level2 p-3 flex justify-center align-top flex-col w-56 relative');
+    const deleteContainer = $('<div>').addClass('absolute top-0 left-0 w-full h-8 p-2 flex justify-end');
+    const removeLink = $('<a>').attr('id', 'delete-file');
+    const closeIcon = $('<i>').addClass('ri-close-line ri-xl text-almost-white hover:text-error cursor-pointer');
+    const rename = $('<a>').attr('id', 'rename-file');
+    const renameIcon = $('<i>').addClass('ri-edit-fill text-almost-white hover:text-turquoise cursor-pointer');
+    const fileImage = $('<img>').addClass('h-28 object-contain mt-10');
 
     //Append those DOM Objects to the correct parent
+    rename.append(renameIcon);
+    deleteContainer.append(rename);
     removeLink.append(closeIcon);
     deleteContainer.append(removeLink);
 
-    rename.append(renameIcon);
-    deleteContainer.append(rename);
-
     fileContainer.append(deleteContainer);
     fileshareContainer.append(fileContainer);
-
-    if (!canModify) {
-        removeLink.css('visibility', 'hidden');
-        rename.css('visibility', 'hidden');
-    }
 
     if (file.type === 'directory') {
         fileImage.attr('src', '/res/fileIcons/folder.png');
@@ -85,32 +79,22 @@ async function appendFileLayout(file) {
 
     fileContainer.append(fileImage);
 
-    //<a class="copy tooltip"><span class="tooltiptext">Copy</span>
-    const fileNameElement = $('<p>').addClass('file-name').text(file.name);
-
-    const fileLink = $('<a>');
+    const fileLink = $('<a>').addClass('hover:text-turquoise hover:underline hover:cursor-pointer text-center text-almost-white font-montserrat mt-4 truncate').text(file.name);
 
     if (file.type === 'directory') {
         fileLink.attr('id', 'directory-link');
         removeLink.attr('data-path', `${subDir}$SLASH$${file.name}`);
         rename.attr('data-path', `${subDir}$SLASH$${file.name}`);
     } else {
-        if (canDownload) {
-            fileLink.attr('href', `/fileshare/download/${subDir}$SLASH$${file.name}`);
-        } else {
-            fileLink.css('pointer-events', 'none');
-            fileLink.css('color', 'grey');
-        }
+        fileLink.attr('href', `/fileshare/download/${subDir}$SLASH$${file.name}`);
         removeLink.attr('data-path', `${subDir}$SLASH$${file.name}`);
         rename.attr('data-path', `${subDir}$SLASH$${file.name}`);
     }
 
-    fileLink.append(fileNameElement);
-
     fileContainer.append(fileLink);
 
     if (file.type !== 'directory') {
-        const fileInfoElement = $('<p>').addClass('file-info').text(`${file.size} | ${file.lastModified}`);
+        const fileInfoElement = $('<p>').addClass('text-center text-sm font-montserrat text-btn-grey').text(`${file.size} | ${file.lastModified}`);
         fileContainer.append(fileInfoElement);
     }
 }
@@ -124,7 +108,7 @@ function extendSubDir(dirName){
     subDir += '$SLASH$' + dirName;
 
     $("#path-text-container").append("<i class='ri-arrow-right-s-line path-separator'></i>")
-            .append("<a class='path-text' id='path-link' data-path='"+ subDir +"'>" + dirName + "</a>")
+            .append("<a class='hover:text-turquoise hover:underline hover:cursor-pointer' id='path-link' data-path='"+ subDir +"'>" + dirName + "</a>")
 
     updateUploadRoute();
 }
