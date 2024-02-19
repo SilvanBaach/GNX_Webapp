@@ -141,7 +141,7 @@ cron.schedule('0 10 * * *', function() {
  * Updates the Subscription Table every 30 minutes
  */
 cron.schedule('*/30 * * * *', function() {
-    //updateSubscriptionTable();
+    updateSubscriptionTable();
 });
 
 /**
