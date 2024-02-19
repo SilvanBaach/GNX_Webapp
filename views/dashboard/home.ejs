@@ -74,10 +74,12 @@
                 <%} else {%>
                     <img src="../../res/genetix+/no_subscription.png" class="h-16 mx-auto" alt="No Subscription"/>
                     <p class="font-montserrat text-almost-white text-center mt-3 font-bold">None</p>
+                        <%if(!user.wpuserid){%>
                     <p class="font-montserrat text-almost-white text-sm mt-3">Already subscribed?</p>
                         <a href="#" id="linkShop"
                            class="sm:absolute sm:left-5 sm:bottom-4 text-turquoise text-base font-semibold flex items-center">Link Shop Account
                             <i class="text-turquoise ml-2 ri-arrow-right-s-fill"></i></a>
+                    <%}%>
                 <%}%>
             </div>
         </div>
@@ -163,7 +165,7 @@
         getNextTrainings(<%= user.team.id %>);
         displayPatchNotes();
         displayLatestCouponCode();
-        setupLinkShopPopup();
+        setupLinkShopPopup('home1');
 
         $("#nextTrainings").click(function (e) {
             e.preventDefault();

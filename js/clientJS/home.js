@@ -192,7 +192,7 @@ function displayLatestCouponCode(){
 /**
  * Setup of the Link Shop Popup
  */
-function setupLinkShopPopup(){
+function setupLinkShopPopup(pageToReload){
     const shopPopup = new Popup("popup-container-linkshop");
 
     let renderedHtml = '';
@@ -214,7 +214,7 @@ function setupLinkShopPopup(){
         shopPopup.open(e);
     });
 
-    $(document).on('click', '#btnLinkShop', function() {
+    $(document).off('click', '#btnLinkShop').on('click', '#btnLinkShop', function() {
         const username = $('#usernameShop').val();
         const password = $('#passwordShop').val();
 
@@ -246,7 +246,7 @@ function setupLinkShopPopup(){
                 dataType: "json",
                 success: function (data) {
                     setTimeout(function() {
-                        window.location.reload();
+                        loadPage(pageToReload);
                     }, 2000);
                 },
                 error: function (data) {

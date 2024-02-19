@@ -1,5 +1,6 @@
 <script src="/js/clientJS/utility/imgUploadToDB.js"></script>
 <script src="/js/clientJS/settings.js"></script>
+<script src="/js/clientJS/home.js"></script>
 
 <div class="bg-grey-level1 max-w-[1330px] xl:pr-4 lg:pr-0 pr-4 px-4 md:px-8 py-6">
     <div class="flex justify-between">
@@ -81,6 +82,31 @@
                             <%- include('../components/entryfield', {type: 'text', name: 'riotgames', id: 'riotgames', width: 'w-full', value: user.riotgames}) %>
                         </div>
                     </div>
+                    <div class="flex items-center justify-between mt-4">
+                        <%if(user.wpuserid){%>
+                        <div class="w-1/2 xl:pr-4 pr-2">
+                            <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Genetix Clothing</label>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <img src="/res/teamcalendar/present.png" alt="checkmark" class="h-6">
+                                    <p class="font-montserrat text-almost-white text-sm ml-2">Linked</p>
+                                </div>
+                                <a href="#" id="unlinkShop" class="text-error font-montserrat text-sm hover:underline">Unlink</a>
+                            </div>
+                        </div>
+                        <%} else {%>
+                                <div class="w-1/2 xl:pr-4 pr-2">
+                                    <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Genetix Clothing</label>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <img src="/res/teamcalendar/absent.png" alt="checkmark" class="h-6">
+                                            <p class="font-montserrat text-almost-white text-sm ml-2">Not Linked</p>
+                                        </div>
+                                        <a href="#" id="linkShop" class="text-success font-montserrat text-sm hover:underline">Link</a>
+                                    </div>
+                                </div>
+                        <%}%>
+                    </div>
                 </form>
             </div>
         </div>
@@ -129,12 +155,28 @@
 </div>
 
 <div id="popup-containerResetPassword" class="popup-container"></div>
+<div class="popup-container" id="popup-container-linkshop"></div>
 
 <script>
     $(document).ready(function () {
         setupSettingsPage();
         loadUserPicture();
         setupPWResetPopup();
+        setupLinkShopPopup('settings');
+
+        $('#unlinkShop').on('click', function() {
+            $.ajax({
+                url: '/wooCommerce/unlinkShop',
+                type: 'POST',
+                success: function (result) {
+                    displaySuccess(result.message);
+                    loadPage('settings');
+                },
+                error: function (error) {
+                    displayError(error.message);
+                }
+            });
+        });
 
         // Hover in and out function for the profile picture
         $('#userImageWrapper').hover(

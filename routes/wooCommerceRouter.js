@@ -186,6 +186,20 @@ router.post('/linkShop', checkNotAuthenticated, permissionCheck('home', 'canOpen
 });
 
 /**
+ * POST route for unlinking account
+ */
+router.post('/unlinkShop', checkNotAuthenticated, permissionCheck('home', 'canOpen'), async (req, res) => {
+    unlinkShopAccount(req.user.id).then(() => {
+        updateSubscriptionTable();
+        logMessage(`User ${req.user.username} unlinked their shop account`, LogLevel.INFO, req.user.id)
+        res.status(200).json({success: true, message: 'Successfully unlinked shop account!'});
+    }).catch((e) => {
+        console.error('Error unlinking shop:', e);
+        res.status(500).json({success: false, message: 'Error unlinking shop account!'});
+    });
+});
+
+/**
  * GET route for retrieving subscription data
  */
 router.get('/getLatestCouponCode', checkNotAuthenticated, permissionCheck('home', 'canOpen'), async (req, res) => {
@@ -213,6 +227,15 @@ router.get('/getLatestCouponCode', checkNotAuthenticated, permissionCheck('home'
         res.status(500).send('Error fetching products from category 58');
     }
 });
+
+/**
+ * Unlinks the shop account
+ * @param userId
+ * @returns {Promise<QueryResult<any>>}
+ */
+function unlinkShopAccount(userId){
+    return pool.query('UPDATE account SET wprefreshtoken = NULL, wpuserid = NULL WHERE id = $1', [userId]);
+}
 
 /**
  * Stores the wp refresh token in the database
