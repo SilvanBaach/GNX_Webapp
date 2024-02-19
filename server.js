@@ -36,6 +36,7 @@ const riot = require('./js/serverJS/riot.js');
 const {logMessage, LogLevel} = require('./js/serverJS/logger.js');
 const {sendTrainingDataReminders} = require("./js/serverJS/discordBot");
 const trainingNotesRouter = require("./routes/trainingNotesRouter");
+const gamedayRouter = require("./routes/gamedayRouter");
 const {updateSubscriptionTable} = require("./js/serverJS/wooCommerceIntegration");
 
 /**
@@ -168,6 +169,7 @@ app.use('/calendar', calendarRouter);
 app.use('/wooCommerce', wooCommereceRouter);
 app.use('/trainingNotes', trainingNotesRouter);
 app.use('/patchnotes', patchnotesRouter);
+app.use('/gameday', gamedayRouter);
 
  /**
  * MAIN ROUTES

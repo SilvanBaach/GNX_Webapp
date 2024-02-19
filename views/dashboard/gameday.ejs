@@ -1,28 +1,122 @@
-<div class="bg-grey-level1 max-w-[1330px] xl:pr-4 lg:pr-0 pr-4 px-4 md:px-8 py-6">
+<script src="/js/clientJS/gameday.js"></script>
+
+<div class="bg-grey-level1 xl:pr-4 lg:pr-0 pr-4 px-4 md:px-8 py-6">
 
     <h3 class="text-2xl mb-5 font-bold font-orbitron text-white">Gamedays / Results</h3>
     <%- include('../components/buttondefault', {type: 'button', id: 'newReport', text: 'Report new Gameday', icon: 'ri-file-edit-line', btnType: 'Success'}) %>
+    <!-- ADD NEW GAMEDAY FORM -->
+    <div class="bg-grey-level2 max-w-[500px] p-4 mt-4 hidden" id="reportDiv">
+        <p class="font-montserrat font-bold text-lg text-almost-white">Report new Gameday</p>
+        <form id="reportForm">
+            <div class="flex flex-col gap-4 mt-4">
+                <div class="flex flex-col gap-2">
+                    <label for="gamedayDate" class="font-montserrat text-almost-white">Date</label>
+                    <%- include('../components/entryfield', {type: 'datetime-local', name: 'date', id: 'date', width: 'w-full', required: 'true', noPastDates: 'true'}) %>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label for="gamedayTitle" class="font-montserrat text-almost-white">Title</label>
+                    <%- include('../components/entryfield', {type: 'text', name: 'title', id: 'title', width: 'w-full', required: 'true'}) %>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label for="gamedayDescription" class="font-montserrat text-almost-white">Description</label>
+                    <%- include('../components/textarea', {id: 'description', width: 'w-full', value: ''}) %>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label for="gamedayLocation" class="font-montserrat text-almost-white">Location</label>
+                    <%- include('../components/entryfield', {type: 'text', name: 'location', id: 'location', width: 'w-full', required: 'true'}) %>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label for="gamedayWishes" class="font-montserrat text-almost-white">Wishes</label>
+                    <%- include('../components/textarea', {id: 'wishes', width: 'w-full', value: ''}) %>
+                </div>
+                <div class="flex flex-row gap-4 items-center justify-end">
+                    <%- include('../components/buttondefault', {type: 'button', id: 'cancelNewGameday', text: 'Cancel', icon: 'ri-close-line', btnType: 'Error'}) %>
+                    <%- include('../components/buttondefault', {type: 'submit', id: 'submitNewGameday', text: 'Save', icon: 'ri-check-line', btnType: 'Success'}) %>
+                </div>
+            </div>
+        </form>
+    </div>
 
+    <!-- DISPLAY GAMEDAYS TABLE -->
     <div class="bg-grey-level2 w-full p-4 mt-4">
         <div class="flex flex-row justify-between">
             <p class="font-montserrat font-bold text-lg text-almost-white">Reported Gamedays</p>
             <div class="flex flex-row gap-4 items-center">
-                <p class="font-montserrat text-almost-white">Show Past</p>
+                <p class="font-montserrat text-almost-white">Show Reported</p>
                 <%- include('../components/toggle', {id: 'showPast', value: 0}) %>
             </div>
         </div>
 
-        <div class="bg-grey-level3 mt-4">
-            <%- include('../components/table', {id: 'gamedays', bodyId: 'gamedaysData', headers: [{text: 'Date', display: 'sm'}, {text: 'Title'}, {text: 'Description'}, {text: 'Location', display: 'md'}, {text: 'Wishes', display: 'lg'}, {text: 'Report Result', display: 'lg'}]}) %>
+        <div class="bg-grey-level2 mt-4">
+            <%- include('../components/table', {id: 'gamedays', bodyId: 'gamedaysData', headers: [{text: 'Date', width: '160px'}, {text: 'Title', width: '12%'}, {text: 'Description', display: 'md'}, {text: 'Location', width: '15%', display: 'sm'}, {text: 'Wishes', display: 'sm'}, {text: 'Actions', width: '175px'}]}) %>
+        </div>
+    </div>
+
+    <!-- REPORT RESULTS FORM -->
+    <div class="bg-grey-level2 p-4 mt-4 hidden" id="reportResultDiv">
+        <p class="font-montserrat font-bold text-lg text-almost-white" id="resultTitle">Report Result for Gameday XYZ</p>
+        <div>
+            <form id="resultReportForm" class="mt-4">
+                <div class="flex flex-row w-full gap-4">
+                    <div class="flex flex-col gap-2 w-1/2">
+                        <label for="result" class="font-montserrat text-almost-white">Result</label>
+                        <%- include('../components/entryfield', {type: 'text', name: 'result', id: 'result', width: 'w-full', required: 'true'}) %>
+                    </div>
+                    <div class="flex flex-col gap-2 w-1/2">
+                        <label for="comment" class="font-montserrat text-almost-white">Comment</label>
+                        <%- include('../components/entryfield', {type: 'text', name: 'comment', id: 'comment', width: 'w-full', required: 'true'}) %>
+                    </div>
+                </div>
+                <div class="flex flex-row gap-4 items-center justify-end mt-4">
+                    <%- include('../components/buttondefault', {type: 'button', id: 'cancelReport', text: 'Cancel', icon: 'ri-close-line', btnType: 'Error'}) %>
+                    <%- include('../components/buttondefault', {type: 'submit', id: 'submitReport', text: 'Submit', icon: 'ri-check-line', btnType: 'Success'}) %>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-<div class="popup-container" id="popup-container-addNewGameday"></div>
-
 <script>
     $(document).ready(function() {
-        //displayGamedays();
-        //setupAddGamedayPopup();
+        loadGamedays();
+
+        $('#newReport').click(function() {
+            $('#reportDiv').removeClass('hidden');
+            $('#newReport').addClass('hidden');
+        });
+
+        $('#cancelNewGameday').click(function() {
+            $('#reportDiv').addClass('hidden');
+            $('#newReport').removeClass('hidden');
+        });
+
+        $('#cancelReport').click(function() {
+            $('#reportResultDiv').addClass('hidden');
+        });
+
+        $('#resultReportForm').submit(function(e) {
+            e.preventDefault();
+            submitReport();
+        });
+
+        $('#showPast').change(function() {
+            loadGamedays();
+        });
+
+        $('#reportForm').submit(function(e) {
+            e.preventDefault();
+            submitNewGameday({
+                date: $('#date').val(),
+                title: $('#title').val(),
+                description: $('#description').val(),
+                location: $('#location').val(),
+                wishes: $('#wishes').val()
+            });
+
+            $(this).trigger("reset");
+            $('#reportDiv').addClass('hidden');
+            $('#newReport').removeClass('hidden');
+        });
+
     });
 </script>
