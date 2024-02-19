@@ -161,6 +161,9 @@ jobs:
             echo "OAUTH_CLIENT_ID=${{ secrets.OAUTH_CLIENT_ID }}" >> /home/genetix/.env
             echo "OAUTH_CLIENT_SECRET=${{ secrets.OAUTH_CLIENT_SECRET }}" >> /home/genetix/.env
             echo "OAUTH_REFER_URI=${{ secrets.OAUTH_REFER_URI }}" >> /home/genetix/.env
+            echo "WP_USERNAME=${{ secrets.WP_USERNAME }}" >> /home/genetix/.env
+            echo "WP_PASSWORD=${{ secrets.WP_PASSWORD }}" >> /home/genetix/.env
+
             docker compose -f /home/genetix/docker/docker-compose.yml up -d
 
       

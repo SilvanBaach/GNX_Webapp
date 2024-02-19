@@ -950,10 +950,6 @@ video {
   margin-top: 1.5rem;
 }
 
-.mt-7 {
-  margin-top: 1.75rem;
-}
-
 .mt-8 {
   margin-top: 2rem;
 }
@@ -3477,6 +3473,10 @@ input:checked + .slider {
 .hover\:text-turquoise:hover {
   --tw-text-opacity: 1;
   color: rgb(49 199 205 / var(--tw-text-opacity));
+}
+
+.hover\:underline:hover {
+  text-decoration-line: underline;
 }
 
 .before\:hover\:text-center:hover::before {
