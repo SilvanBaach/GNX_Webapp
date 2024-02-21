@@ -1,20 +1,19 @@
 /**
- * Initialize the page
+ * This function build the patchnote page
  */
 function initPage(){
-    loadOpenGamedayReports()
-    loadCurrentWebappVersion()
+    loadCurrentVersion()
 }
 
 /**
- * Loads the count of open gameday reports
+ * Loads the current webapp version and sets it in the input field
  */
-function loadOpenGamedayReports(){
+function loadCurrentVersion(){
     $.ajax({
         type: 'GET',
-        url: '/gameday/getOpenResultCount',
+        url: '/patchnotes/getCurrentVersion',
         success: function(response) {
-            $('#openGamedayReports').text(response.count);
+            $('#version').attr('placeholder', response[0].version);
         },
         error: function(data) {
             if (data.responseJSON && data.responseJSON.redirect) {
@@ -26,14 +25,19 @@ function loadOpenGamedayReports(){
 }
 
 /**
- * Loads the current webapp version
+ * Saves the new patchnote
+ * @param data
  */
-function loadCurrentWebappVersion(){
+function saveNewPatchnote(data){
     $.ajax({
-        type: 'GET',
-        url: '/patchnotes/getCurrentVersion',
+        type: 'POST',
+        url: '/patchnotes/add',
+        data: data,
         success: function(response) {
-            $('#currentVersion').text(response[0].version);
+            displaySuccess(response.message);
+            $('#version').val('');
+            $('#text').val('');
+            loadCurrentVersion();
         },
         error: function(data) {
             if (data.responseJSON && data.responseJSON.redirect) {

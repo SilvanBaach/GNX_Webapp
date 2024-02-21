@@ -42,6 +42,8 @@ function displayGamedays(gamedays) {
             const complete = $("<a href='#' id='complete'><i class='ri-check-line ri-xl text-success ml-2'></i></a>").click(function(){
                 if (gameday.result !== "Not reported"){
                     updateGamedayStatus(gameday.gamedayreportid);
+                    gameday.status = 1;
+                    displayDetails(gameday);
                 } else {
                     displayError("You cannot complete a gameday without a reported result!");
                 }
@@ -86,7 +88,7 @@ function updateGamedayStatus(gamedayreportid){
  */
 function displayDetails(gameday) {
     delete gameday.gamedayid;
-    delete gameday.gamedayreportid;
+    //delete gameday.gamedayreportid;
 
     let detailsSection = $('#gamedayDetails');
     detailsSection.empty();
@@ -127,8 +129,11 @@ function displayDetails(gameday) {
 
         const tdValue = $('<td class="break-words py-1"></td>').text(displayValue).addClass(customClass);
         customClass = '';
-        tr.append(tdKey).append(tdValue);
-        tbody.append(tr);
+
+        if(key !== 'gamedayreportid'){
+            tr.append(tdKey).append(tdValue);
+            tbody.append(tr);
+        }
     }
 
     detailsTable.append(tbody);

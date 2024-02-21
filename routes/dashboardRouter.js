@@ -137,6 +137,14 @@ router.get('/lolstats', checkNotAuthenticated, permissionCheck('lolstatspage', '
 });
 
 
+/**
+ * GET patchnotes page
+ */
+router.get('/patchnotes', checkNotAuthenticated, permissionCheck('adminpanel', 'canOpen'), (req, res) => {
+    res.render('dashboard/adminpanel/patchnotes.ejs', { user: req.user });
+});
+
+
 
 
 

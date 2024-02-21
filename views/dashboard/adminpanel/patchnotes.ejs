@@ -1,0 +1,42 @@
+<script src="/js/clientJS/adminpanel/patchnotes.js"></script>
+
+<div class="bg-grey-level1 xl:pr-4 lg:pr-0 pr-4 px-4 md:px-8 py-6">
+
+    <h3 class="text-2xl mb-5 font-bold font-orbitron text-white">Patchnotes</h3>
+
+    <div class="bg-grey-level2 p-4">
+        <p class="font-montserrat font-bold text-almost-white text-lg">Add new Patchnote</p>
+
+        <form id="patchnoteForm">
+            <div class="flex flex-col gap-4 mt-4">
+                <div class="flex flex-col gap-2">
+                    <label for="version" class="font-montserrat text-almost-white">Version</label>
+                    <%- include('../../components/entryfield', {type: 'text', name: 'version', id: 'version', width: 'w-64', required: 'true'}) %>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label for="text" class="font-montserrat text-almost-white">Text</label>
+                    <%- include('../../components/textarea', {id: 'text', width: 'w-full', value: '', required: 'true'}) %>
+                </div>
+                <div class="flex flex-row gap-4 items-center justify-end">
+                      <%- include('../../components/buttondefault', {type: 'submit', id: 'submitNewGameday', text: 'Publish', icon: 'ri-check-line', btnType: 'Success'}) %>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        initPage();
+
+        $('#patchnoteForm').submit(function(e) {
+            e.preventDefault();
+            let data = {
+                version: $('#version').val(),
+                text: $('#text').val()
+            }
+
+            saveNewPatchnote(data);
+        });
+    });
+</script>
