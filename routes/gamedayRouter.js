@@ -17,7 +17,7 @@ router.post('/new', checkNotAuthenticated, permissionCheck('gameday', 'canOpen')
     data.creator_fk = req.user.id;
 
     insertNewGameday(data).then(function (result) {
-        logMessage(LogLevel.INFO, `New Gameday added with the title ${data.title}`, req.user.id);
+        logMessage(`New Gameday added with the title ${data.title}`, LogLevel.INFO,  req.user.id);
         res.status(200).send({message: "Gameday successfully added!"});
     }).catch(function (error) {
         console.error(error);
@@ -54,7 +54,7 @@ router.get('/getNotReportedForTeam', checkNotAuthenticated, permissionCheck('gam
  */
 router.delete('/delete', checkNotAuthenticated, permissionCheck('gameday', 'canOpen'), function (req, res) {
     deleteGameday(req.body.id).then(function (result) {
-        logMessage(LogLevel.INFO, `Gameday with the id ${req.body.id} has been deleted`, req.user.id);
+        logMessage( `Gameday with the id ${req.body.id} has been deleted`, LogLevel.INFO, req.user.id);
         res.status(200).send({message: "Gameday successfully deleted!"});
     }).catch(function (error) {
         console.error(error);
@@ -70,7 +70,7 @@ router.post('/submitResult', checkNotAuthenticated, permissionCheck('gameday', '
     data.user_id = req.user.id;
 
     insertNewResult(data).then(function (result) {
-        logMessage(LogLevel.INFO, `New result added to gameday with the id ${data.gameday_id}`, req.user.id);
+        logMessage( `New result added to gameday with the id ${data.gameday_id}`, LogLevel.INFO, req.user.id);
         res.status(200).send({message: "Result successfully submitted!"});
     }).catch(function (error) {
         console.error(error);
