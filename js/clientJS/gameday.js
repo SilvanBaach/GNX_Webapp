@@ -26,6 +26,8 @@ function displayGamedays(gamedays) {
                currentGameday = gameday;
                $('#resultTitle').text("Report Result for Gameday " + gameday.title);
                $('#reportResultDiv').removeClass('hidden');
+               $('#result').val("");
+                $('#comment').val("");
             });
             if(!gameday.isreported){
                 tdButton.append(del).append(report);

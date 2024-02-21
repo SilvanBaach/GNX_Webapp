@@ -115,6 +115,21 @@ router.get('/gameday', checkNotAuthenticated, permissionCheck('gameday', 'canOpe
     res.render('dashboard/gameday.ejs', { user: req.user });
 });
 
+/**
+ * GET admin panel page
+ */
+router.get('/adminpanel', checkNotAuthenticated, permissionCheck('adminpanel', 'canOpen'), (req, res) => {
+    res.render('dashboard/adminpanel/adminpanel.ejs', { user: req.user });
+});
+
+/**
+ * GET gameday admin page
+ */
+router.get('/gamedayadmin', checkNotAuthenticated, permissionCheck('adminpanel', 'canOpen'), (req, res) => {
+    res.render('dashboard/adminpanel/gamedayadmin.ejs', { user: req.user });
+});
+
+
 
 
 module.exports = router;
