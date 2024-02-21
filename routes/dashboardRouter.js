@@ -129,6 +129,14 @@ router.get('/gamedayadmin', checkNotAuthenticated, permissionCheck('adminpanel',
     res.render('dashboard/adminpanel/gamedayadmin.ejs', { user: req.user });
 });
 
+/**
+ * GET patchnotes page
+ */
+router.get('/patchnotes', checkNotAuthenticated, permissionCheck('adminpanel', 'canOpen'), (req, res) => {
+    res.render('dashboard/adminpanel/patchnotes.ejs', { user: req.user });
+});
+
+
 
 
 

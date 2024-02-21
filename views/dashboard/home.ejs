@@ -160,8 +160,6 @@
 
 <script>
     $(document).ready(function () {
-        console.log(<%- JSON.stringify(user.subscription) %>);
-
         getNextTrainings(<%= user.team.id %>);
         displayPatchNotes();
         displayLatestCouponCode();
