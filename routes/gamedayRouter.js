@@ -117,7 +117,7 @@ function getOpenResultCount(){
  */
 router.post('/updateStatus', checkNotAuthenticated, permissionCheck('adminpanel', 'canOpen'), function (req, res) {
     updateGameDayReportStatus(req.body.gamedayreportid).then(function (result) {
-        logMessage(LogLevel.INFO, `Gameday report with the id ${req.body.id} has been updated`, req.user.id);
+        logMessage( `Gameday report with the id ${req.body.id} has been updated`, LogLevel.INFO, req.user.id);
         res.status(200).send({message: "Status successfully set to complete!"});
     }).catch(function (error) {
         console.error(error);
