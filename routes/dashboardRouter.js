@@ -129,6 +129,14 @@ router.get('/gamedayadmin', checkNotAuthenticated, permissionCheck('adminpanel',
     res.render('dashboard/adminpanel/gamedayadmin.ejs', { user: req.user });
 });
 
+/**
+ * GET lol stats page
+ */
+router.get('/lolstats', checkNotAuthenticated, permissionCheck('lolstatspage', 'canOpen'), (req, res) => {
+    res.render('dashboard/lolstats.ejs', { user: req.user });
+});
+
+
 
 
 
