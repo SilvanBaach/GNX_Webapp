@@ -43,7 +43,14 @@ const {updateSubscriptionTable} = require("./js/serverJS/wooCommerceIntegration"
  * MIDDLEWARE
  */
 app.set('view engine', 'ejs');
-app.use(express.static(__dirname + '/'));
+console.log(__dirname);
+app.use('/dist', express.static(__dirname + '/dist'));
+app.use('/css', express.static(__dirname + '/css'));
+app.use('/fonts', express.static(__dirname + '/fonts'));
+app.use('/html', express.static(__dirname + '/html'));
+app.use('/js/clientJS', express.static(__dirname + '/js/clientJS'));
+app.use('/res', express.static(__dirname + '/res'));
+app.use('/richtexteditor', express.static(__dirname + '/richtexteditor'));
 app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit: '50mb', extended: true}));
 
