@@ -958,14 +958,6 @@ video {
   margin-top: 14px;
 }
 
-.-mt-2 {
-  margin-top: -0.5rem;
-}
-
-.-mt-4 {
-  margin-top: -1rem;
-}
-
 .box-border {
   box-sizing: border-box;
 }
@@ -1283,6 +1275,14 @@ video {
 
 .w-px {
   width: 1px;
+}
+
+.w-\[12\%\] {
+  width: 12%;
+}
+
+.w-\[200px\] {
+  width: 200px;
 }
 
 .min-w-\[270px\] {
