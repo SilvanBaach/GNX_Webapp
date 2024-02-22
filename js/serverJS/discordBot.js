@@ -207,6 +207,39 @@ Your Team Genetix Bot 🤖
 }
 
 /**
+ * This function sends a message to all users who did not report the gameday result after 24hrs
+ */
+async function sendGamedayReportReminder() {
+    const query = util.promisify(pool.query).bind(pool);
+    const result = await query(`SELECT gameday.id, title, account.discord, account.username FROM gameday
+                                LEFT JOIN account ON account.id = gameday.creator_fk
+                                WHERE NOT EXISTS (SELECT * FROM gamedayreport WHERE gamedayreport.gameday_fk = gameday.id) AND date + INTERVAL '24 hours' <= NOW() `);
+
+    if (result.rows.length > 0) {
+        result.rows.forEach((row) => {
+            console.log(`Sending training data reminder to ${row.username}...`);
+            sendMessageToUser(row.discord, `Hey there, ${row.username} 👋
+            
+❗ We noticed that you have not logged any results for the Gameday «${row.title}» ❗
+
+:point_right: Please visit https://webapp.teamgenetix.ch and insert the result as soon as possible.
+
+Your Team Genetix Bot 🤖
+            `)
+        });
+
+        let userString = "";
+        result.rows.forEach((row) => {
+            userString += row.username + ", "
+        });
+
+        logMessage(`Sent gameday result reporting reminder to the following users: ${userString}`, LogLevel.INFO, null)
+    } else {
+        logMessage(`No users found for gameday result reporting reminder`, LogLevel.INFO, null)
+    }
+}
+
+/**
  * This function sends a welcome message to a new user
  */
 function sendWelcomeMessage(discordUsername) {
@@ -272,6 +305,7 @@ module.exports = {
     setupDiscordBot,
     sendWelcomeMessage,
     sendMessageToChannel,
-    doesUserExist
+    doesUserExist,
+    sendGamedayReportReminder
 };
 

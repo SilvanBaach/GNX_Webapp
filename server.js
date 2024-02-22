@@ -34,7 +34,7 @@ const wooCommereceRouter = require('./routes/wooCommerceRouter.js');
 const patchnotesRouter = require('./routes/patchnotesRouter.js');
 const riot = require('./js/serverJS/riot.js');
 const {logMessage, LogLevel} = require('./js/serverJS/logger.js');
-const {sendTrainingDataReminders} = require("./js/serverJS/discordBot");
+const {sendTrainingDataReminders, sendGamedayReportReminder} = require("./js/serverJS/discordBot");
 const trainingNotesRouter = require("./routes/trainingNotesRouter");
 const gamedayRouter = require("./routes/gamedayRouter");
 const {updateSubscriptionTable} = require("./js/serverJS/wooCommerceIntegration");
@@ -136,6 +136,8 @@ cron.schedule('0 3 * * *', async function() {
 cron.schedule('0 10 * * *', function() {
     console.log("Sending training data reminders...");
     sendTrainingDataReminders();
+    console.log("Sending Gamedayreport reminders...");
+    sendGamedayReportReminder();
 });
 
 /**

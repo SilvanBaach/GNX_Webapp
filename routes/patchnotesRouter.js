@@ -46,7 +46,6 @@ router.post('/add', checkNotAuthenticated, permissionCheck('adminpanel', 'canOpe
  * @param data
  */
 function addNewPatchnote(data){
-    console.log(data);
     return pool.query('INSERT INTO patchnotes (version, date, text) VALUES ($1, NOW(), $2)', [data.version, data.text]);
 }
 /**
