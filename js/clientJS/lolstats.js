@@ -12,6 +12,7 @@ async function initPage(uId, rId) {
     });
 
     const isRiotIdValid = await checkIfRiotIdIsValid(riotId);
+    setupAddPlayerPopup();
 
     if(!isRiotIdValid) {
         $('#invalidRiotId').removeClass('hidden')
@@ -23,7 +24,7 @@ async function initPage(uId, rId) {
         $('#validRiotId').removeClass('hidden')
     }
 
-    const playerCard1 = await buildPlayerCard();
+    const playerCard1 = await buildPlayerCard(true);
     $('#playerCardContainer').append(playerCard1);
 
     $('#loading').addClass('hidden')
@@ -56,7 +57,7 @@ function checkIfRiotIdIsValid(riotId) {
  * Builds the player card
  * @returns {string}
  */
-async function buildPlayerCard() {
+async function buildPlayerCard(ownPlayerCard = false) {
     const icon = await getSummonerIcon();
     let summonerInfo = await getSummonerInfo();
     let rankInfo = summonerInfo.summonerInfo.rankInfo[0];
@@ -89,11 +90,15 @@ async function buildPlayerCard() {
     let progressTextWin = $('<p>').text(`${rankInfo.wins} W`).addClass('text-sm font-montserrat font-bold ml-2');
     let progressTextLoose = $('<p>').text(`${rankInfo.losses} L`).addClass('text-sm font-montserrat font-bold mr-2');
     let winRate = $('<p>').text(`${winrate}%`).addClass('text-almost-white text-sm font-montserrat font-semibold ml-4 mt-2 italic').addClass(customColor);
+    let removeIconLink = $('<a>').attr('href', '#').addClass('absolute top-0 right-0 p-2 hover:cursor-pointer').append($('<i>').addClass('ri-close-line ri-lg text-error w-6 h-6'));
 
     mainContainer.append(summonerIcon).append(levelContainer.append(levelText)).append(summonerName).append(rankRoleContainer.append(rankIcon)
         .append(roleIcon)).append(rankedText)
-        .append(progressMainContainer.append(progressContainer.append(progressFill).append(progressTextContainer.append(progressTextWin).append(progressTextLoose))).append(winRate));
+        .append(progressMainContainer.append(progressContainer.append(progressFill).append(progressTextContainer.append(progressTextWin).append(progressTextLoose))).append(winRate))
 
+    if(!ownPlayerCard) {
+        mainContainer.append(removeIconLink);
+    }
     return mainContainer;
 }
 
@@ -134,5 +139,36 @@ function getSummonerInfo(){
                 reject(new Error('Error getting summoner name: ' + textStatus));
             }
         });
+    });
+}
+
+/**
+ * This function sets up the add player popup
+ */
+function setupAddPlayerPopup(){
+    const addPlayerPopup = new Popup("popupContainerAddPlayer");
+
+    $.when(
+        fetchEntryField('text', 'name', 'name', 'w-40', ''),
+        fetchEntryField('text', 'tagline', 'tagline', 'w-20', '')
+    ).then(function(field1, field2) {
+        let renderedHtml = `<label for="name" class="font-montserrat text-almost-white">Enter Riot-ID</label>
+                                    <div class="flex gap-4 items-center mt-4">
+                                        ${field1[0]}
+                                        <p class="font-montserrat text-lg font-semibold">#</p>
+                                        ${field2[0]}
+                                    </div>`
+
+        addPlayerPopup.displayInputPopupCustom("/res/others/plus.png", "Add new Player", "Add", "btnAddPlayer", renderedHtml);
+    });
+
+    $("#addPlayer").click(function (e) {
+        $('#name').val('');
+        $('#tagline').val('');
+        addPlayerPopup.open(e)
+    });
+
+    $(document).on('click', '#btnAddPlayer', function() {
+        addPlayerPopup.close();
     });
 }

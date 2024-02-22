@@ -1,8 +1,15 @@
 <script src="/js/clientJS/lolstats.js"></script>
 
-<div class="bg-grey-level1 xl:pr-4 lg:pr-0 pr-4 px-4 md:px-8 py-6">
+<div class="bg-grey-level1 pr-4 px-4 md:px-8 py-6">
 
-    <h3 class="text-2xl mb-5 font-bold font-orbitron text-white">LoL Statistics</h3>
+    <div class="flex sm:flex-row flex-col sm:justify-between sm:items-center mb-5">
+        <h3 class="text-2xl font-bold font-orbitron text-white">LoL Statistics</h3>
+        <div class="flex items-center mt-4 sm:mt-0 sm:gap-4">
+            <p class="font-montserrat text-almost-white text-lg font-semibold hidden sm:block">Timeperiod</p>
+            <%- include('../components/dropdown', {id: 'timeInterval', options: [{value: 1, text: "Last 48hrs"}, {value: 2, text: "Last 7 days"}, {value: 3, text: "Last 14 days"}, {value: 4, text: "Last Month"}], width: 'w-48'}) %>
+            <%- include('../components/buttondefault', {type: 'button', id: 'addPlayer', text: '', icon: 'ri-user-add-line', btnType: 'Success'}) %>
+        </div>
+    </div>
 
     <div id="invalidRiotId" class="hidden">
         <p class="font-montserrat font-bold text-xl md:text-2xl text-error text-center">Your Riot-ID seems to be invalid!</p>
@@ -22,7 +29,7 @@
         <img src="/res/others/loading_animation.gif" alt="loading animation" class="w-24"/>
     </div>
 </div>
-
+<div class="popup-container" id="popupContainerAddPlayer"></div>
 <script>
     $(document).ready(function () {
         const data = {
