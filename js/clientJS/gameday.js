@@ -15,7 +15,7 @@ function displayGamedays(gamedays) {
             const tr = $("<tr></tr>");
             const tdDate = $("<td></td>").text(formattedDate)
             const tdTitle = $("<td></td>").text(gameday.title);
-            const tdDescription = $("<td></td>").text(gameday.description).addClass("hidden md:table-cell");
+            const tdDescription = $("<td></td>").text(gameday.description.length > 60 ? gameday.description.substring(0, 60) + "..." : gameday.description).addClass("hidden md:table-cell");
             const tdLocation = $("<td></td>").text(gameday.location).addClass("hidden sm:table-cell");
             const tdWishes = $("<td></td>").text(gameday.wishes).addClass("hidden sm:table-cell");
             const tdButton = $("<td></td>");

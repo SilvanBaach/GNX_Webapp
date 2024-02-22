@@ -163,6 +163,7 @@ jobs:
             echo "OAUTH_REFER_URI=${{ secrets.OAUTH_REFER_URI }}" >> /home/genetix/.env
             echo "WP_USERNAME=${{ secrets.WP_USERNAME }}" >> /home/genetix/.env
             echo "WP_PASSWORD=${{ secrets.WP_PASSWORD }}" >> /home/genetix/.env
+            echo "RIOT_API_KEY=${{ secrets.RIOT_API_KEY }}" >> /home/genetix/.env
 
             docker compose -f /home/genetix/docker/docker-compose.yml up -d
 

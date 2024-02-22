@@ -1,6 +1,6 @@
 <script src="/js/clientJS/gameday.js"></script>
 
-<div class="bg-grey-level1 xl:pr-4 lg:pr-0 pr-4 px-4 md:px-8 py-6">
+<div class="bg-grey-level1 pr-4 px-4 md:px-8 py-6">
 
     <h3 class="text-2xl mb-5 font-bold font-orbitron text-white">Gamedays / Results</h3>
     <%- include('../components/buttondefault', {type: 'button', id: 'newReport', text: 'Report new Gameday', icon: 'ri-file-edit-line', btnType: 'Success'}) %>
@@ -64,7 +64,7 @@
                     </div>
                     <div class="flex flex-col gap-2 w-1/2">
                         <label for="comment" class="font-montserrat text-almost-white">Comment</label>
-                        <%- include('../components/entryfield', {type: 'text', name: 'comment', id: 'comment', width: 'w-full', required: 'true'}) %>
+                        <%- include('../components/entryfield', {type: 'text', name: 'comment', id: 'comment', width: 'w-full'}) %>
                     </div>
                 </div>
                 <div class="flex flex-row gap-4 items-center justify-end mt-4">
