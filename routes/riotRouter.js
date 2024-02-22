@@ -4,6 +4,7 @@ const riot = require('../js/serverJS/riot.js')
 const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
 const {pool} = require("../js/serverJS/database/dbConfig");
 const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
+const axios = require('axios');
 
 
 /**
@@ -12,6 +13,40 @@ const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 router.get('/getDDragonData', permissionCheck('championpool', 'canOpen'), async (req, res) => {
     const championData = await riot.getDDragonDataFromProject();
     res.send(championData);
+});
+
+/**
+ * GET route to check if a riot id is valid
+ */
+router.get('/isRiotIdValid', permissionCheck('home', 'canOpen'), async (req, res) => {
+    const riotId = req.query.riotId;
+    const [ingameName, tagLine] = riotId.split('#');
+
+    try {
+        const response = await axios.get(`https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${encodeURIComponent(ingameName)}/${encodeURIComponent(tagLine)}`, {
+            headers: {
+                "X-Riot-Token": process.env.RIOT_API_KEY
+            }
+        });
+        return res.status(200).send({ isValid: true });
+    } catch (error) {
+        if (error.response) {
+            // Check for a 404 status code specifically indicating that the player was not found
+            if (error.response.status === 404 && error.response.data && error.response.data.status && error.response.data.status.message.includes('No results found for player with riot id')) {
+                // Player not found, return isValid: false
+                return res.status(200).send({ isValid: false });
+            } else {
+                // For other errors, return the error details
+                console.error('Error response data:', error.response.data);
+                console.error('Error response status:', error.response.status);
+                console.error('Error response headers:', error.response.headers);
+                return res.status(error.response.status).send({ message: 'Error getting data from the Riot API', details: error.response.data });
+            }
+        } else {
+            console.error('Error message:', error.message);
+            return res.status(500).send({ message: 'There was an error processing your request.' });
+        }
+    }
 });
 
 /**
