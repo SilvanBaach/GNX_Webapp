@@ -4,16 +4,13 @@ let riotId = '';
  * This function is called when the page is loaded.
  */
 async function initPage(uId, rId) {
-
-    $.ajax({
+    /*$.ajax({
         type: 'GET',
-        url: '/riot/test2',
+        url: '/riot/getMatchHistory',
         success: function(data) {
             console.log(data);
         },
-    })
-
-
+    })*/
     userId = uId;
     riotId = rId;
 
