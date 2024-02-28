@@ -6,7 +6,9 @@ const {pool} = require("../js/serverJS/database/dbConfig");
 const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
 const axios = require('axios');
 const {getAccountInfo, getSummonerInfo, getSummonerIcon} = require("../js/serverJS/riot");
-
+const puppeteer = require('puppeteer');
+const fs = require('fs');
+const path = require('path');
 
 /**
  * GET DDragon Data from project
@@ -55,6 +57,60 @@ router.get('/isRiotIdValid', permissionCheck('home', 'canOpen'), async (req, res
         res.status(500).send({message: "There was an error checking the Riot ID"});
     });
 });
+
+/**
+ * GET route for getting the match history
+ */
+router.get('/getMatchHistory', checkNotAuthenticated, permissionCheck('championpool', 'canOpen'), async function (req, res) {
+    const riotName = 'Sh0jin'; //TODO
+    const riotTag = 'bird' //TODO
+    let latestDate = new Date();
+    latestDate.setDate(latestDate.getDate() - 14); //TODO
+
+    const browser = await puppeteer.launch({ headless: false });
+    const page = await browser.newPage();
+    await page.goto(`https://www.op.gg/summoners/euw/${riotName}-${riotTag}`, { waitUntil: 'networkidle0' });
+
+    // Set up a response listener for the specific API endpoint
+    page.on('response', async (response) => {
+        // Check if the response URL is the one from the "Load More" action
+        if (response.url().startsWith('https://op.gg/api/v1.0/internal/bypass/games/euw/summoners/')) {
+            const data = await response.json(); // Assuming the response is JSON
+            // ... do something with the data, such as saving it to a file
+            const filePath = path.join(require('os').homedir(), 'Desktop', 'gamesData.json');
+            fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+        }
+    });
+
+    // Click the "Show More" button
+    const selector = 'button.more';
+    await page.waitForSelector(selector, { visible: true }); // Ensure the button is loaded
+    await page.click(selector);
+
+    // Wait for the selector that indicates new content is loaded. You need to identify what changes in the page.
+    //await page.waitForSelector('selector-of-new-content', { visible: true });
+    await waitForTimeout(10000); // Wait for 5 seconds (just an example, you can use any other method to wait for the new content to load)
+
+    // Retrieve the content of the webpage after the new content is loaded
+    const content = await page.content();
+
+    await browser.close();
+
+    let startIndex = content.indexOf('<script id="__NEXT_DATA__" type="application/json">') + '<script id="__NEXT_DATA__" type="application/json">'.length;
+    let endIndex = content.indexOf('</script>', startIndex);
+    let jsonStr = content.substring(startIndex, endIndex);
+
+    // Remove everything before the JSON data
+    const jsonData = jsonStr.slice(jsonStr.indexOf('{'), jsonStr.lastIndexOf('}') + 1);
+    const filePath = path.join(require('os').homedir(), 'Desktop', 'content.json');
+    fs.writeFileSync(filePath, content, 'utf8');
+    // Return the HTML content to the client
+    res.status(200).send({message: "Success", data: JSON.parse(jsonData).props.pageProps.games});
+});
+
+function waitForTimeout(duration) {
+    return new Promise(resolve => setTimeout(resolve, duration));
+}
 
 /**
  * GET route for getting the championpool data

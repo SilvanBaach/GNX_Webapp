@@ -4,6 +4,16 @@ let riotId = '';
  * This function is called when the page is loaded.
  */
 async function initPage(uId, rId) {
+
+    $.ajax({
+        type: 'GET',
+        url: '/riot/test2',
+        success: function(data) {
+            console.log(data);
+        },
+    })
+
+
     userId = uId;
     riotId = rId;
 
@@ -79,9 +89,8 @@ async function buildPlayerCard(ownPlayerCard = false) {
     let summonerName = $('<p>').text(summonerInfo.name).addClass('text-center text-white text-xl font-semibold font-montserrat mt-2 font-bold');
     let levelContainer = $('<div>').addClass('mx-auto mt-1 w-12 z-10');
     let levelText = $('<p>').text(summonerInfo.summonerLevel).addClass('text-white text-center text-sm font-semibold font-montserrat font-bold bg-grey-level1 rounded-3xl p-0.5');
-    let rankRoleContainer = $('<div>').addClass('flex justify-center items-center gap-8 mt-2 mx-auto w-full');
+    let rankRoleContainer = $('<div>').addClass('flex justify-center items-center gap-8 mt-4 mx-auto w-full');
     let rankIcon = $('<img>').attr('src', `/res/riot/ranks/${rankInfo.tier}.png`).addClass('w-10 h-10 bg-grey-level1 rounded-full pt-1 pr-1 pl-1');
-    let roleIcon = $('<img>').attr('src', `/res/riot/roles/mid.png`).addClass('w-10 h-10 bg-grey-level1 rounded-full p-[6px]');
     let rankedText = $('<p>').text(`${rankInfo.tier.charAt(0) + rankInfo.tier.slice(1).toLowerCase()} ${rankInfo.rank} - ${rankInfo.leaguePoints} LP`).addClass('text-almost-white text-center text-sm font-semibold font-montserrat font-bold mt-6');
     let progressMainContainer = $('<div>').addClass('flex justify-between items-center mt-2 mx-auto w-full');
     let progressContainer = $('<div>').addClass('relative items-center flex mt-2 mx-auto w-full bg-error rounded-2xl h-5');
@@ -92,8 +101,7 @@ async function buildPlayerCard(ownPlayerCard = false) {
     let winRate = $('<p>').text(`${winrate}%`).addClass('text-almost-white text-sm font-montserrat font-semibold ml-4 mt-2 italic').addClass(customColor);
     let removeIconLink = $('<a>').attr('href', '#').addClass('absolute top-0 right-0 p-2 hover:cursor-pointer').append($('<i>').addClass('ri-close-line ri-lg text-error w-6 h-6'));
 
-    mainContainer.append(summonerIcon).append(levelContainer.append(levelText)).append(summonerName).append(rankRoleContainer.append(rankIcon)
-        .append(roleIcon)).append(rankedText)
+    mainContainer.append(summonerIcon).append(levelContainer.append(levelText)).append(summonerName).append(rankRoleContainer.append(rankIcon)).append(rankedText)
         .append(progressMainContainer.append(progressContainer.append(progressFill).append(progressTextContainer.append(progressTextWin).append(progressTextLoose))).append(winRate))
 
     if(!ownPlayerCard) {
