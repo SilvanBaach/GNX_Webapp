@@ -71,12 +71,29 @@
         background-color: #31C7CD;
         color: black;
     }
+    #loading-message {
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid var(--midnight-blue);
+        border-radius: 50%;
+        width: 80px;
+        height: 80px;
+        animation: spin 1s linear infinite;
+    }
+
+    #loading-message-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 30vh;
+        width: 100%;
+    }
 
 </style>
 
 <div id="popup-containerAdd" class="popup-container"></div>
 <div id="popup-containerDelete" class="popup-container"></div>
 <div id="popup-containerEdit" class="popup-container"></div>
+<div id="loading-message-container"><div id="loading-message"></div></div>
 
 <script>
     $(document).ready(function () {
