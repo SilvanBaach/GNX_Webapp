@@ -16,7 +16,7 @@
         </div>
     </div>
 
-    <div class="bg-grey-level2 w-full mt-4 mb-4 py-4 px-6">
+    <div class="bg-grey-level2 w-full mt-4 mb-4 py-4 px-6 hidden" id="content">
         <div class="flex justify-between items-center">
             <p class="font-montserrat font-bold text-almost-white text-lg" id="title">Main</p>
             <%- include('../components/buttondefault', {type: 'button', id: 'addChampion', text: 'Add', icon: 'ri-add-circle-line'}) %>
@@ -71,12 +71,14 @@
         background-color: #31C7CD;
         color: black;
     }
-
 </style>
 
 <div id="popup-containerAdd" class="popup-container"></div>
 <div id="popup-containerDelete" class="popup-container"></div>
 <div id="popup-containerEdit" class="popup-container"></div>
+<div id="loading" class="flex justify-center items-center mt-64">
+    <img src="/res/others/loading_animation.gif" alt="loading animation" class="w-24"/>
+</div>
 
 <script>
     $(document).ready(function () {

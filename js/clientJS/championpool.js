@@ -58,6 +58,7 @@ function sortData(){
  * @param mode 0=Main 1=Practice 2=Suggestion
  */
 async function buildChampionpoolTable(mode) {
+    showLoadingAnimation();
 
     const topDiv = $("#topDiv").empty();
     const jungleDiv = $("#jungleDiv").empty();
@@ -146,6 +147,9 @@ async function buildChampionpoolTable(mode) {
     });
 
     registerIconEvents();
+
+    // Hide the loading animation and show the championpool table
+    hideLoadingAnimation()
 }
 
 /**
@@ -528,4 +532,20 @@ async function getChampionpoolData(teamId) {
     });
 
     return championpoolData;
+}
+
+/**
+ * Hides the championpool table and displays a loading animation
+ */
+function showLoadingAnimation(){
+    $("#content").addClass("hidden").removeClass("block");
+    $("#loading").removeClass("hidden").addClass("flex");
+}
+
+/**
+ * Hides the loading animation and displays the championpool table
+ */
+function hideLoadingAnimation() {
+    $("#loading").removeClass("flex").addClass("hidden");
+    $("#content").addClass("block").removeClass("hidden");
 }
