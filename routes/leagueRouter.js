@@ -136,6 +136,50 @@ router.get('/getChampionpool/:teamId',  checkNotAuthenticated, permissionCheck('
 });
 
 /**
+ * GET route for getting the lolstats page definition of a user
+ */
+router.get('/getLolstatsDefinition',  checkNotAuthenticated, permissionCheck('lolstatspage', 'canOpen'), function (req, res) {
+    getLolStatsConfig(req.user).then((result) => {
+        res.status(200).send(result.rows[0]);
+    }).catch((err) => {
+        console.log(err);
+        res.status(500).send({message: "There was an error getting the lolstats config."});
+    });
+});
+
+/**
+ * POST route for adding a new user to the lolstats definition
+ */
+router.post('/addPlayerToLolstatsDefinition',  checkNotAuthenticated, permissionCheck('lolstatspage', 'canOpen'), function (req, res) {
+    const riotId = req.body.riotId;
+    const order = req.body.order;
+
+    appendUserToLolstatsDefinition(req.user.id, riotId, order).then((result) => {
+        logMessage(`User ${req.user.username} added an Account to his Lolstats Page definition`,LogLevel.INFO,req.user.id);
+        res.status(200).send({message: "User added successfully"});
+    }).catch((err) => {
+        console.log(err);
+        res.status(500).send({message: "There was an error updating the lolstats config."});
+    });
+});
+
+/**
+ * POST route for removing a user from the lolstats defintion
+ */
+router.post('/removePlayerFromLolstatsDefinition',  checkNotAuthenticated, permissionCheck('lolstatspage', 'canOpen'), function (req, res) {
+    const riotId = req.body.riotId;
+    const order = req.body.order;
+
+    removeUserFromLolstatsDefinition(req.user.id, riotId, order).then((result) => {
+        logMessage(`User ${req.user.username} removed an Account to his Lolstats Page definition`,LogLevel.INFO,req.user.id);
+        res.status(200).send({message: "User removed successfully"});
+    }).catch((err) => {
+        console.log(err);
+        res.status(500).send({message: "There was an error updating the lolstats config."});
+    });
+});
+
+/**
  * POST route for changing the champion order
  */
 router.post('/changeChampionOrder/:id/:direction', checkNotAuthenticated, permissionCheck('championpool', 'canOpen'), function (req, res) {
@@ -191,6 +235,52 @@ router.post('/addChampion', checkNotAuthenticated, permissionCheck('championpool
 function addChampion(champion, lane, userId, teamId, type) {
     return pool.query(`INSERT INTO championpool (champion, lane, team_fk, "order", account_fk2, type) VALUES ($1, $2, $3, (SELECT COUNT(*) FROM championpool WHERE lane=$2 AND team_fk=$3 AND type=$5)+1, $4, $5)`, [champion, lane, teamId, userId, type]);
 }
+
+/**
+ * Returns the lolstats config of a user
+ * If there is no config, it will insert a new one
+ * @param user
+ */
+function getLolStatsConfig(user) {
+    return pool.query(`SELECT * FROM lolstatsdefinition WHERE account_fk=$1`,[user.id])
+        .then(result => {
+            if (result.rows.length === 0) {
+                let pagesetup = '[{"order": 1, "riotid": "' + user.riotgames + '"}]';
+                return pool.query(`INSERT INTO lolstatsdefinition (account_fk, pagesetup) VALUES ($1, $2) RETURNING *`, [user.id, pagesetup]);
+            }
+            return result;
+        });
+}
+
+/**
+ * This function appends a new account to the lol stats definition
+ * @param userId
+ * @param riotId
+ * @param order
+ * @returns {Promise<QueryResult<any>>}
+ */
+async function appendUserToLolstatsDefinition(userId, riotId, order) {
+    const result = await pool.query(`SELECT pagesetup FROM lolstatsdefinition WHERE account_fk=$1`, [userId]);
+    let pagesetupArray = result.rows[0].pagesetup;
+    pagesetupArray.push({ order, riotid: riotId });
+    pagesetupArray.sort((a, b) => a.order - b.order); // Ensure the array is sorted by order
+    return await pool.query(`UPDATE lolstatsdefinition SET pagesetup=$1 WHERE account_fk=$2`, [JSON.stringify(pagesetupArray), userId]);
+}
+
+/**
+ * This function removes a user from the lol stats definition
+ * @param userId
+ * @param riotId
+ * @param order
+ * @returns {Promise<QueryResult<any>>}
+ */
+async function removeUserFromLolstatsDefinition(userId, riotId, order) {
+    const result = await pool.query(`SELECT pagesetup FROM lolstatsdefinition WHERE account_fk=$1`, [userId]);
+    let pagesetupArray = result.rows[0].pagesetup;
+    pagesetupArray = pagesetupArray.filter(item => !(item.riotid === riotId && item.order === order));
+    return await pool.query(`UPDATE lolstatsdefinition SET pagesetup=$1 WHERE account_fk=$2`, [JSON.stringify(pagesetupArray), userId]);
+}
+
 
 /**
  * Returns all championpool data from the database of one team

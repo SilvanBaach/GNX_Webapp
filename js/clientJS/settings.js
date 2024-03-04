@@ -235,7 +235,7 @@ function checkLinkedAccounts(discord, steam, origin, riotgames){
  */
 function checkRiotLinking(riotgames){
     $.ajax({
-        url: '/riot/isRiotIdValid',
+        url: '/league/isRiotIdValid',
         type: 'GET',
         data: { riotId: riotgames },
         success: function(response) {

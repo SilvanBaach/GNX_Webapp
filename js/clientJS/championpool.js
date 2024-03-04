@@ -355,7 +355,7 @@ function addChampion(championName, lane) {
         let currentTabMode = $('.tab.bg-turquoise').data('mode');
 
         $.ajax({
-            url: "/riot/addChampion",
+            url: "/league/addChampion",
             type: "POST",
             dataType: "json",
             data: {
@@ -383,7 +383,7 @@ function addChampion(championName, lane) {
  */
 function deleteChampion() {
     $.ajax({
-        url: "/riot/deleteChampion/" + championToDelete.id,
+        url: "/league/deleteChampion/" + championToDelete.id,
         type: "POST",
         dataType: "json",
         success: function (data) {
@@ -410,7 +410,7 @@ function deleteChampion() {
 function updateOrder(championpoolId, direction) {
     return new Promise((resolve, reject) => {
         $.ajax({
-            url: "/riot/changeChampionOrder/" + championpoolId + "/" + direction,
+            url: "/league/changeChampionOrder/" + championpoolId + "/" + direction,
             type: "POST",
             dataType: "json",
             success: function (data) {
@@ -474,7 +474,7 @@ function getUserName(id) {
 async function getDDragonData() {
     let dDragonData = null;
     await $.ajax({
-        url: "/riot/getDDragonData/",
+        url: "/league/getDDragonData/",
         type: "GET",
         dataType: "json",
         success: function (data) {
@@ -514,7 +514,7 @@ function getChampionNameAndPictureFromDDragon(dDragon){
 async function getChampionpoolData(teamId) {
     let championpoolData = null;
     await $.ajax({
-        url: "/riot/getChampionpool/" + teamId,
+        url: "/league/getChampionpool/" + teamId,
         type: "GET",
         dataType: "json",
         success: function (data) {
