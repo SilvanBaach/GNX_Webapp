@@ -78,7 +78,7 @@ router.get('/getMatchHistory', checkNotAuthenticated, permissionCheck('lolstatsp
     let latestDate = new Date();
     latestDate.setDate(latestDate.getDate() - req.query.days);
 
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
     const page = await browser.newPage();
     await page.goto(`https://www.op.gg/summoners/euw/${riotName}-${riotTag}`);
 
