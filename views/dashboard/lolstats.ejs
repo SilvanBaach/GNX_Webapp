@@ -6,7 +6,7 @@
         <h3 class="text-2xl font-bold font-orbitron text-white">LoL Statistics</h3>
         <div class="flex items-center mt-4 sm:mt-0 gap-4">
             <p class="font-montserrat text-almost-white text-lg font-semibold hidden sm:block">Timeperiod</p>
-            <%- include('../components/dropdown', {id: 'timeInterval', options: [{value: 1, text: "Last 48hrs"}, {value: 2, text: "Last 7 days"}, {value: 3, text: "Last 14 days"}, {value: 4, text: "Last Month"}], width: 'w-48'}) %>
+            <%- include('../components/dropdown', {id: 'timeInterval', options: [{value: 2, text: "Last 48hrs"}, {value: 7, text: "Last 7 days"}, {value: 14, text: "Last 14 days"}, {value: 30, text: "Last Month"}], width: 'w-48'}) %>
             <%- include('../components/buttondefault', {type: 'button', id: 'addPlayer', text: '', icon: 'ri-user-add-line', btnType: 'Success'}) %>
         </div>
     </div>

@@ -4,11 +4,8 @@ const riot = require('../js/serverJS/riot.js')
 const {checkNotAuthenticated, permissionCheck} = require("../js/serverJS/sessionChecker");
 const {pool} = require("../js/serverJS/database/dbConfig");
 const {logMessage, LogLevel} = require('../js/serverJS/logger.js');
-const axios = require('axios');
 const {getAccountInfo, getSummonerInfo, getSummonerIcon} = require("../js/serverJS/riot");
 const puppeteer = require('puppeteer');
-const fs = require('fs');
-const path = require('path');
 
 /**
  * GET DDragon Data from project
@@ -18,6 +15,20 @@ router.get('/getDDragonData', permissionCheck('championpool', 'canOpen'), async 
     res.send(championData);
 });
 
+/**
+ * GET champion name from id
+ */
+router.get('/getChampionById/:id', permissionCheck('lolstatspage', 'canOpen'), async (req, res) => {
+    const championData = await riot.getDDragonData();
+    const championId = req.params.id;
+    const champions = Object.values(championData.data);
+    const champion = champions.find(champ => champ.key === championId);
+    if (champion) {
+        res.json({ name: champion.id });
+    } else {
+        res.status(404).send('Champion not found');
+    }
+});
 
 /**
  * GET lol player icon
@@ -62,10 +73,10 @@ router.get('/isRiotIdValid', permissionCheck('home', 'canOpen'), async (req, res
  * GET route for getting the match history
  */
 router.get('/getMatchHistory', checkNotAuthenticated, permissionCheck('lolstatspage', 'canOpen'), async function (req, res) {
-    const riotName = 'Sh0jin'; //TODO
-    const riotTag = 'bird'; //TODO
+    const riotName = req.query.name
+    const riotTag = req.query.tag
     let latestDate = new Date();
-    latestDate.setDate(latestDate.getDate() - 100);
+    latestDate.setDate(latestDate.getDate() - req.query.days);
 
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
@@ -88,27 +99,34 @@ router.get('/getMatchHistory', checkNotAuthenticated, permissionCheck('lolstatsp
                 isOlder = true;
             }
 
+            // Before sending response, deduplicate dataParts by game.id
+            let uniqueGamesMap = new Map();
+            dataParts.forEach(game => {
+                uniqueGamesMap.set(game.id, game);
+            });
+            let uniqueDataParts = Array.from(uniqueGamesMap.values());
+
+            // Deduplicate and filter by date and SOLORANKED game type
+            let filteredAndDeduplicatedData = uniqueDataParts.filter(game => {
+                const gameDate = new Date(game.created_at);
+                return gameDate > latestDate && game.queue_info.game_type === 'SOLORANKED';
+            });
+
             if (isOlder || responseCount > 10) {
                 await browser.close();
 
-                // Filter out games newer than latestDate
-                let filteredData = dataParts.filter(game => {
-                    const gameDate = new Date(game.created_at);
-                    return gameDate < latestDate;
-                });
-
-                res.status(200).send(filteredData);
+                // Send deduplicated and filtered data
+                res.status(200).send(filteredAndDeduplicatedData);
             } else {
-                // Check if the "Show More" button is available
+                // Check for more games if the "Show More" button is available
                 const loadMoreButton = await page.$('button.more');
                 if (loadMoreButton) {
                     await loadMoreButton.click();
                 } else {
                     // No more "Show More" button, so no more games to load
-                    console.log(dataParts)
                     await browser.close();
 
-                    res.status(200).send(dataParts);
+                    res.status(200).send(filteredAndDeduplicatedData);
                 }
             }
         }
@@ -245,7 +263,7 @@ function getLolStatsConfig(user) {
     return pool.query(`SELECT * FROM lolstatsdefinition WHERE account_fk=$1`,[user.id])
         .then(result => {
             if (result.rows.length === 0) {
-                let pagesetup = '[{"order": 1, "riotid": "' + user.riotgames + '"}]';
+                let pagesetup = '[{"order": 1, "riotid": "[MYSELF]"}]';
                 return pool.query(`INSERT INTO lolstatsdefinition (account_fk, pagesetup) VALUES ($1, $2) RETURNING *`, [user.id, pagesetup]);
             }
             return result;
@@ -277,10 +295,18 @@ async function appendUserToLolstatsDefinition(userId, riotId, order) {
 async function removeUserFromLolstatsDefinition(userId, riotId, order) {
     const result = await pool.query(`SELECT pagesetup FROM lolstatsdefinition WHERE account_fk=$1`, [userId]);
     let pagesetupArray = result.rows[0].pagesetup;
-    pagesetupArray = pagesetupArray.filter(item => !(item.riotid === riotId && item.order === order));
-    return await pool.query(`UPDATE lolstatsdefinition SET pagesetup=$1 WHERE account_fk=$2`, [JSON.stringify(pagesetupArray), userId]);
-}
 
+    // Filter out the item
+    pagesetupArray = pagesetupArray.filter(item => !(item.riotid == riotId && item.order == order));
+
+    // Reassign the order starting from 1 to n
+    pagesetupArray = pagesetupArray.map((item, index) => ({
+        ...item,
+        order: index + 1 // This assumes the rest of the item object should remain unchanged
+    }));
+
+    return pool.query(`UPDATE lolstatsdefinition SET pagesetup=$1 WHERE account_fk=$2`, [JSON.stringify(pagesetupArray), userId]);
+}
 
 /**
  * Returns all championpool data from the database of one team

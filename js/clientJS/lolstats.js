@@ -1,4 +1,5 @@
 let playerCardCount = 0;
+let currentTimeFrame = 2;
 
 /**
  * This function is called when the page is loaded.
@@ -10,21 +11,36 @@ async function initPage(userId, riotId) {
         loadPage('settings')
     });
 
-    const definition = await fetchLolstatsDefinitions();
-    let pagesetup = definition.pagesetup
+    $('#timeInterval').change(function () {
+        currentTimeFrame = $('#timeInterval').val();
+        $('#loading').removeClass('hidden');
+        $('#validRiotId').addClass('hidden');
+        $('#playerCardContainer').empty();
+        buildPage(riotId);
+    });
 
     const isRiotIdValid = await checkIfRiotIdIsValid(riotId);
 
-    if(!isRiotIdValid) {
+    if (!isRiotIdValid) {
         $('#invalidRiotId').removeClass('hidden')
         $('#validRiotId').addClass('hidden')
         $('#loading').addClass('hidden')
         return;
-    }else{
+    } else {
         $('#invalidRiotId').addClass('hidden')
     }
 
     setupAddPlayerPopup();
+
+    buildPage(riotId);
+}
+
+/**
+ * This function is called to build the content of the page
+ */
+async function buildPage(riotId) {
+    const definition = await fetchLolstatsDefinitions();
+    let pagesetup = definition.pagesetup
 
     pagesetup = pagesetup.sort((a, b) => a.order - b.order);
     playerCardCount = pagesetup.length;
@@ -39,17 +55,8 @@ async function initPage(userId, riotId) {
     }
 
     $('#loading').addClass('hidden');
-    $('#validRiotId').removeClass('hidden')
-
-    /*$.ajax({
-    type: 'GET',
-    url: '/league/getMatchHistory',
-    success: function(data) {
-        console.log(data);
-    },
-})*/
+    $('#validRiotId').removeClass('hidden');
 }
-
 
 /**
  * This function fetches the definitions for the lolstats page
@@ -81,15 +88,15 @@ function checkIfRiotIdIsValid(riotId) {
         $.ajax({
             type: 'GET',
             url: '/league/isRiotIdValid',
-            data: { riotId: riotId },
-            success: function(data) {
-                if(data.isValid === 'true') {
+            data: {riotId: riotId},
+            success: function (data) {
+                if (data.isValid === 'true') {
                     resolve(true);
                 } else {
                     resolve(false);
                 }
             },
-            error: function(jqXHR, textStatus, errorThrown) {
+            error: function (jqXHR, textStatus, errorThrown) {
                 reject(new Error('Error checking Riot ID validity: ' + textStatus));
             }
         });
@@ -108,18 +115,18 @@ async function buildPlayerCard(ownPlayerCard = false, riotId, order) {
     let winrate;
     let customColor;
     let rankedText;
+    let matchHistory;
 
-    try{
+    try {
         icon = await getSummonerIcon(riotId);
         summonerInfo = await getSummonerInfo(riotId);
         rankInfo = summonerInfo.summonerInfo.rankInfo[0];
         summonerInfo = summonerInfo.summonerInfo.summonerInfo;
-    }catch (e) {
-        console.error(e);
+    } catch (e) {
         let mainContainer = $('<div>').addClass('relative bg-grey-level2 w-64 p-4 flex items-center');
         let infoText = $('<p>').text(`The Player with Riot-ID "${riotId}" does not exist!`).addClass('text-center text-error text-lg font-semibold font-montserrat mt-2');
         let removeIconLink = $('<a>').attr('href', '#').addClass('absolute top-0 right-0 p-2 hover:cursor-pointer').append($('<i>').addClass('ri-close-line ri-lg text-error w-6 h-6'));
-        removeIconLink.click(function(e) {
+        removeIconLink.click(function (e) {
             e.preventDefault();
             removePlayer(order, riotId);
         });
@@ -128,23 +135,44 @@ async function buildPlayerCard(ownPlayerCard = false, riotId, order) {
     }
 
     if (rankInfo == undefined || rankInfo.queueType !== 'RANKED_SOLO_5x5') {
+        rankInfo = {};
         rankInfoFound = false;
         rankInfo.tier = 'NO_DATA'
         rankedText = 'No Data Found'
-    }else{
+        rankInfo.wins = 0
+        rankInfo.losses = 0
+        winrate = 0
+    } else {
         rankedText = `${rankInfo.tier.charAt(0) + rankInfo.tier.slice(1).toLowerCase()} ${rankInfo.rank} - ${rankInfo.leaguePoints} LP`
         winrate = Math.round(100 / (rankInfo.wins + rankInfo.losses) * rankInfo.wins);
         customColor = '';
         if (winrate >= 50) {
             customColor = 'text-success'
-        }else{
+        } else {
             customColor = 'text-error'
         }
+
+        //Fetch match history
+        const name = riotId.split('#')[0];
+        const tag = riotId.split('#')[1];
+        const days = currentTimeFrame;
+        matchHistory = await $.ajax({
+            type: 'GET',
+            url: '/league/getMatchHistory',
+            data: {name: name, tag: tag, days: days},
+            success: function (data) {
+                return data;
+            },
+            error: function (data) {
+                if (data.responseJSON && data.responseJSON.redirect) {
+                    window.location.href = data.responseJSON.redirect;
+                }
+                displayError(data.responseJSON.message);
+            }
+        })
     }
 
-    console.log(summonerInfo);
-    console.log(rankInfo);
-
+    let mainMainContainer = $('<div>').addClass('flex w-64 flex-col gap-3 main');
     let mainContainer = $('<div>').addClass('relative bg-grey-level2 w-64 p-4');
     let summonerIcon = $('<img>').attr('src', icon.icon).addClass('w-32 h-32 rounded-full mx-auto z-0');
     let summonerName = $('<p>').text(summonerInfo.name).addClass('text-center text-white text-xl font-semibold font-montserrat mt-2 font-bold');
@@ -152,7 +180,7 @@ async function buildPlayerCard(ownPlayerCard = false, riotId, order) {
     let levelText = $('<p>').text(summonerInfo.summonerLevel).addClass('text-white text-center text-sm font-semibold font-montserrat font-bold bg-grey-level1 rounded-3xl p-0.5');
     let rankRoleContainer = $('<div>').addClass('flex justify-center items-center gap-8 mt-4 mx-auto w-full');
     let rankIcon = $('<img>').attr('src', `/res/riot/ranks/${rankInfo.tier}.png`).addClass('w-10 h-10 bg-grey-level1 rounded-full pr-1 pl-1');
-    if(rankInfoFound) {
+    if (rankInfoFound) {
         rankIcon.addClass('pt-1')
     }
     let rankedTextSpan = $('<p>').text(`${rankedText}`).addClass('text-almost-white text-center text-sm font-semibold font-montserrat font-bold mt-6');
@@ -164,20 +192,105 @@ async function buildPlayerCard(ownPlayerCard = false, riotId, order) {
     let progressTextLoose = $('<p>').text(`${rankInfo.losses} L`).addClass('text-sm font-montserrat font-bold mr-2');
     let winRate = $('<p>').text(`${winrate}%`).addClass('text-almost-white text-sm font-montserrat font-semibold ml-4 mt-2 italic').addClass(customColor);
     let removeIconLink = $('<a>').attr('href', '#').addClass('absolute top-0 right-0 p-2 hover:cursor-pointer').append($('<i>').addClass('ri-close-line ri-lg text-error w-6 h-6'));
-    removeIconLink.click(function(e) {
+    removeIconLink.click(function (e) {
         e.preventDefault();
+        const order = $(this).closest('div.main').index() + 1;
+        console.log(order);
         removePlayer(order, riotId);
     });
 
-    mainContainer.append(summonerIcon).append(levelContainer.append(levelText)).append(summonerName).append(rankRoleContainer.append(rankIcon)).append(rankedTextSpan)
-    if(rankInfoFound) {
-        mainContainer.append(progressMainContainer.append(progressContainer.append(progressFill).append(progressTextContainer.append(progressTextWin).append(progressTextLoose))).append(winRate))
+    let matchPlayed = 0;
+    let chmapionArray = [];
+    if (matchHistory){
+        matchPlayed = matchHistory.length;
+        chmapionArray = await getMostPlayedChampions(matchHistory);
     }
 
-    if(!ownPlayerCard) {
+    let soloQContainer = $('<div>').addClass('bg-grey-level2 w-64 p-2 flex flex-col');
+    let soloQText = $('<p>').text('Game Count').addClass('text-center text-white font-semibold font-montserrat');
+    let soloQValue = $('<p>').text(matchPlayed).addClass('text-center text-success font-semibold font-montserrat text-xl');
+
+    let championsContainer = $('<div>').addClass('bg-grey-level2 w-64 p-2 flex flex-col');
+    let championsText = $('<p>').text('Most played Champions').addClass('text-center text-white font-semibold font-montserrat');
+    let imgContainer = $('<div>').addClass('flex justify-center items-center gap-4 mt-2');
+    chmapionArray.forEach(function (champion) {
+        let img1 = $('<img>').attr('src', 'https://ddragon.leagueoflegends.com/cdn/14.4.1/img/champion/' + champion + '.png').addClass('w-8 h-8 rounded-full');
+        imgContainer.append(img1);
+    });
+
+    if(chmapionArray.length === 0) {
+        let img1 = $('<img>').attr('src', '/res/riot/ranks/NO_DATA.png').addClass('w-8 h-8');
+        imgContainer.append(img1);
+    }
+
+    let lpGainContainer = $('<div>').addClass('bg-grey-level2 w-64 p-2 flex flex-col');
+    let lpGainText = $('<p>').text('LP Gain').addClass('text-center text-white font-semibold font-montserrat');
+    let lpGainValue = $('<p>').text('+ ??? LP').addClass('text-center text-success font-semibold font-montserrat text-xl');
+
+    mainContainer.append(summonerIcon).append(levelContainer.append(levelText)).append(summonerName).append(rankRoleContainer.append(rankIcon)).append(rankedTextSpan)
+    mainContainer.append(progressMainContainer.append(progressContainer.append(progressFill).append(progressTextContainer.append(progressTextWin).append(progressTextLoose))).append(winRate))
+
+    if (!ownPlayerCard) {
         mainContainer.append(removeIconLink);
     }
-    return mainContainer;
+
+    mainMainContainer.append(mainContainer).append(soloQContainer.append(soloQText).append(soloQValue)).append(championsContainer.append(championsText).append(imgContainer))
+        //.append(lpGainContainer.append(lpGainText).append(lpGainValue));
+
+    return mainMainContainer;
+}
+
+/**
+ * This function fetches the most played champions
+ * @param matchHistory
+ */
+async function getMostPlayedChampions(matchHistory) {
+    // Count the occurrences of each champion_id in the matchHistory
+    const championCount = matchHistory.reduce((acc, match) => {
+        const championId = match.myData.champion_id;
+        acc[championId] = (acc[championId] || 0) + 1;
+        return acc;
+    }, {});
+
+    // Sort champion IDs by their play count
+    const sortedChampionIds = Object.entries(championCount)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([championId, _]) => championId);
+
+    // Fetch champion names for the top 3 (or fewer) champion IDs
+    const championNames = [];
+    for (let championId of sortedChampionIds) {
+        // Assuming fetchChampionNameById is a function that utilizes the route '/getChampionById' to fetch a champion's name by its ID
+        const championName = await fetchChampionNameById(championId);
+        championNames.push(championName);
+    }
+
+    return championNames;
+}
+
+/**
+ * This function fetches the champion name by its ID
+ * @param championId
+ * @returns {Promise<*>}
+ */
+async function fetchChampionNameById(championId) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: 'GET',
+            url: '/league/getChampionById/' + championId,
+            success: function (data) {
+                resolve(data.name);
+            },
+            error: function (data) {
+                if (data.responseJSON && data.responseJSON.redirect) {
+                    window.location.href = data.responseJSON.redirect;
+                }
+                displayError(data.responseJSON.message);
+                reject(new Error('Error fetching champion name: ' + data.responseJSON.message));
+            }
+        })
+    });
 }
 
 /**
@@ -189,13 +302,13 @@ function removePlayer(order, riotId) {
     $.ajax({
         type: 'POST',
         url: '/league/removePlayerFromLolstatsDefinition',
-        data: { riotId: riotId, order: order},
-        success: function(data) {
+        data: {riotId: riotId, order: order},
+        success: function (data) {
             $(`#playerCardContainer > div:nth-child(${order})`).remove();
             playerCardCount--;
             displaySuccess(data.message);
         },
-        error: function(data) {
+        error: function (data) {
             if (data.responseJSON && data.responseJSON.redirect) {
                 window.location.href = data.responseJSON.redirect;
             }
@@ -213,11 +326,11 @@ function getSummonerIcon(riotId) {
         $.ajax({
             type: 'GET',
             url: '/league/getPlayerIcon',
-            data: { riotId: riotId },
-            success: function(data) {
+            data: {riotId: riotId},
+            success: function (data) {
                 resolve(data);
             },
-            error: function(jqXHR, textStatus, errorThrown) {
+            error: function (jqXHR, textStatus, errorThrown) {
                 reject(new Error('Error getting summoner icon: ' + textStatus));
             }
         });
@@ -228,16 +341,16 @@ function getSummonerIcon(riotId) {
  * Fetches the summoner info from a player
  * @returns {Promise<unknown>}
  */
-function getSummonerInfo(riotId){
+function getSummonerInfo(riotId) {
     return new Promise((resolve, reject) => {
         $.ajax({
             type: 'GET',
             url: '/league/getSummonerInfo',
-            data: { riotId: riotId },
-            success: function(data) {
+            data: {riotId: riotId},
+            success: function (data) {
                 resolve(data);
             },
-            error: function(jqXHR, textStatus, errorThrown) {
+            error: function (jqXHR, textStatus, errorThrown) {
                 reject(new Error('Error getting summoner name: ' + textStatus));
             }
         });
@@ -247,13 +360,13 @@ function getSummonerInfo(riotId){
 /**
  * This function sets up the add player popup
  */
-function setupAddPlayerPopup(){
+function setupAddPlayerPopup() {
     const addPlayerPopup = new Popup("popupContainerAddPlayer");
 
     $.when(
         fetchEntryField('text', 'name', 'name', 'w-40', ''),
         fetchEntryField('text', 'tagline', 'tagline', 'w-20', '')
-    ).then(function(field1, field2) {
+    ).then(function (field1, field2) {
         let renderedHtml = `<label for="name" class="font-montserrat text-almost-white">Enter Riot-ID</label>
                                     <div class="flex gap-4 items-center mt-4">
                                         ${field1[0]}
@@ -268,38 +381,38 @@ function setupAddPlayerPopup(){
         $('#name').val('');
         $('#tagline').val('');
 
-        if (playerCardCount+1 > 7) {
+        if (playerCardCount + 1 > 7) {
             displayError('You can only add 7 players!')
-        }else{
+        } else {
             addPlayerPopup.open(e)
         }
     });
 
-    $(document).off('click', '#btnAddPlayer').on('click', '#btnAddPlayer', function() {
+    $(document).off('click', '#btnAddPlayer').on('click', '#btnAddPlayer', function () {
         let riotId = $('#name').val() + '#' + $('#tagline').val();
-        checkIfRiotIdIsValid(riotId).then(function(isValid){
-            if(isValid) {
+        checkIfRiotIdIsValid(riotId).then(function (isValid) {
+            if (isValid) {
                 $.ajax({
                     type: 'POST',
                     url: '/league/addPlayerToLolstatsDefinition',
-                    data: { riotId: riotId, order: playerCardCount+1 },
+                    data: {riotId: riotId, order: playerCardCount + 1},
                     success: function (data) {
-                        displayInfo('Please be patient while we are adding the new user...');
-                        buildPlayerCard(false, riotId, playerCardCount+1).then(function(playerCard){
+                        displayInfo('Please be patient while we are adding the new user...', 5000);
+                        buildPlayerCard(false, riotId, playerCardCount + 1).then(function (playerCard) {
                             $('#playerCardContainer').append(playerCard);
                             playerCardCount++;
                             displaySuccess(data.message);
                             addPlayerPopup.close();
                         });
                     },
-                    error: function(data) {
+                    error: function (data) {
                         if (data.responseJSON && data.responseJSON.redirect) {
                             window.location.href = data.responseJSON.redirect;
                         }
                         displayError(data.responseJSON.message);
                     }
                 });
-            }else{
+            } else {
                 displayError('This Riot-ID is not valid!');
             }
         });
