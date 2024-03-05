@@ -130,6 +130,14 @@ router.get('/gamedayadmin', checkNotAuthenticated, permissionCheck('adminpanel',
 });
 
 /**
+ * GET lol stats page
+ */
+router.get('/lolstats', checkNotAuthenticated, permissionCheck('lolstatspage', 'canOpen'), (req, res) => {
+    res.render('dashboard/lolstats.ejs', { user: req.user });
+});
+
+
+/**
  * GET patchnotes page
  */
 router.get('/patchnotes', checkNotAuthenticated, permissionCheck('adminpanel', 'canOpen'), (req, res) => {

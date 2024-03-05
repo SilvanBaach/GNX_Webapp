@@ -225,7 +225,30 @@ function updateShopButton(wpUserId) {
  */
 function checkLinkedAccounts(discord, steam, origin, riotgames){
     checkDiscordLinking(discord);
+    checkRiotLinking(riotgames);
     //Here we can add more checks
+}
+
+/**
+ * This function checks if the riot account is linked correctly
+ * @param riotgames
+ */
+function checkRiotLinking(riotgames){
+    $.ajax({
+        url: '/league/isRiotIdValid',
+        type: 'GET',
+        data: { riotId: riotgames },
+        success: function(response) {
+            // Handle success response
+            if (!response.isValid) {
+                displayError('Your Riot-ID is not valid, please change it in your profile settings!')
+            }
+        },
+        error: function(xhr, status, error) {
+            // Handle error response
+            console.error('Error occurred: ' + error);
+        }
+    });
 }
 
 /**

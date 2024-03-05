@@ -1,11 +1,11 @@
 /**
  * Displays Toast Messages with the given message
  */
-function displayInfo(message)
+function displayInfo(message, duration = 3000)
 {
     Toastify({
         text: message,
-        duration: 3000,
+        duration: duration,
         newWindow: true,
         close: true,
         gravity: "top",
@@ -17,11 +17,11 @@ function displayInfo(message)
     }).showToast();
 }
 
-function displayError(message)
+function displayError(message, duration = 3000)
 {
     Toastify({
         text: message,
-        duration: 3000,
+        duration: duration,
         newWindow: true,
         close: true,
         gravity: "top",
