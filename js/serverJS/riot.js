@@ -3,11 +3,24 @@ const axios = require('axios');
  * Get the data from the dDragon API
  * @returns {Promise<*>}
  */
-const getDDragonDataFromRiot = async () =>
-{
+const getDDragonDataFromRiot = async () => {
+    let latestVersion;
+
+    // Get the latest version
+    await fetch('https://ddragon.leagueoflegends.com/api/versions.json')
+        .then(response => response.json())
+        .then(data => {
+            // Extracting the latest version
+            latestVersion = data[0]; // Assuming the first element in the array is the latest version
+            console.log('Latest DDragon version:', latestVersion);
+        })
+        .catch(error => {
+            console.error('Error fetching DDragon version:', error);
+        });
 
     let dDragonData;
-    await axios.get('http://ddragon.leagueoflegends.com/cdn/13.14.1/data/en_US/champion.json')
+    // Fetch champion data using the latest version
+    await axios.get(`http://ddragon.leagueoflegends.com/cdn/${latestVersion}/data/en_US/champion.json`)
         .then(response => {
             dDragonData = response.data;
         })
@@ -17,6 +30,18 @@ const getDDragonDataFromRiot = async () =>
 
     return dDragonData;
 }
+
+
+fetch('https://ddragon.leagueoflegends.com/api/versions.json')
+    .then(response => response.json())
+    .then(data => {
+        // Extracting the latest version
+        const latestVersion = data[0]; // Assuming the first element in the array is the latest version
+        console.log('Latest DDragon version:', latestVersion);
+    })
+    .catch(error => {
+        console.error('Error fetching DDragon version:', error);
+    });
 
 /**
  * Get the dDragon data from the project
