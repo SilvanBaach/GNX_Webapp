@@ -34,7 +34,7 @@ const wooCommereceRouter = require('./routes/wooCommerceRouter.js');
 const patchnotesRouter = require('./routes/patchnotesRouter.js');
 const riot = require('./js/serverJS/riot.js');
 const {logMessage, LogLevel} = require('./js/serverJS/logger.js');
-const {sendTrainingDataReminders, sendGamedayReportReminder} = require("./js/serverJS/discordBot");
+const {sendTrainingDataReminders, sendGamedayReportReminder, sendWeeklyLoLReport} = require("./js/serverJS/discordBot");
 const trainingNotesRouter = require("./routes/trainingNotesRouter");
 const gamedayRouter = require("./routes/gamedayRouter");
 const {updateSubscriptionTable} = require("./js/serverJS/wooCommerceIntegration");
@@ -153,6 +153,20 @@ cron.schedule('0 10 * * *', function() {
 cron.schedule('*/30 * * * *', function() {
     updateSubscriptionTable();
 });
+
+/**
+ * Sends LoL game stats of the players
+ */
+//*/3 * * * *
+//cron.schedule('50 0 * * 1', function() {
+
+console.log("Sending weekly LoL games report...");
+sendWeeklyLoLReport()
+cron.schedule('02 21 * * *', function() {
+    console.log("Sending weekly LoL games report...");
+    sendWeeklyLoLReport()
+});
+
 
 /**
  * ROUTERS

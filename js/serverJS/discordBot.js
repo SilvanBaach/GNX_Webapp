@@ -297,6 +297,72 @@ const doesUserExist = async (discordUsername) => {
     const members = await guild.members.fetch();
     return members.some(member => member.user.username === discordUsername);
 };
+const axios = require('axios');
+
+const sendWeeklyLoLReport = async () => {
+    const players = [
+        { name: 'ÐJ4NGÕ', tag: 'EUW' },
+        { name: 'GNX Void', tag: 'EUW' },
+        { name: 'Nalai', tag: '666' },
+        { name: 'Jodaru', tag: 'GNX' }
+    ];
+
+    const days = 24;
+
+    let matchHistoryLengthDJ4NGO = 0;
+    let matchHistoryLengthGNXVoid = 0;
+    let matchHistoryLengthNalai = 0;
+    let matchHistoryLengthJodaru = 0;
+
+    for (const player of players) {
+        const { name, tag } = player;
+        try {
+            const response = await axios.get('/league/getMatchHistory', {
+                params: { name, tag, days }
+            });
+
+            const matchHistory = response.data;
+
+            switch(name) {
+                case 'ÐJ4NGÕ':
+                    matchHistoryLengthDJ4NGO = matchHistory.length;
+                    break;
+                case 'GNX Void':
+                    matchHistoryLengthGNXVoid = matchHistory.length;
+                    break;
+                case 'Nalai':
+                    matchHistoryLengthNalai = matchHistory.length;
+                    break;
+                case 'Jodaru':
+                    matchHistoryLengthJodaru = matchHistory.length;
+                    break;
+                default:
+                    break;
+            }
+        } catch (error) {
+            console.error(`Error fetching match history for ${name}#${tag}:`, error);
+        }
+    }
+
+    console.log("Match History Length for ÐJ4NGÕ:", matchHistoryLengthDJ4NGO);
+    console.log("Match History Length for GNX Void:", matchHistoryLengthGNXVoid);
+    console.log("Match History Length for Nalai:", matchHistoryLengthNalai);
+    console.log("Match History Length for Jodaru:", matchHistoryLengthJodaru);
+
+    let msgString = "SoloQ Stats:\n";
+    msgString += `Rene: ${matchHistoryLengthGNXVoid}/24\n`;
+    msgString += `Dom: ${matchHistoryLengthNalai}/24\n`;
+    msgString += `Stefano: ${matchHistoryLengthDJ4NGO}/24\n`;
+    msgString += `Joel: ${matchHistoryLengthJodaru}/24`;
+
+    sendMessageToChannel('1215383342950912000', msgString)
+};
+
+
+/**
+ * Send weekly LoL ranked games played report
+ */
+
 
 module.exports = {
     getCurrentDiscordMembers,
@@ -306,6 +372,7 @@ module.exports = {
     sendWelcomeMessage,
     sendMessageToChannel,
     doesUserExist,
-    sendGamedayReportReminder
+    sendGamedayReportReminder,
+    sendWeeklyLoLReport
 };
 
