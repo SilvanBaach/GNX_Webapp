@@ -27,7 +27,7 @@ services:
       - /home/genetix/docker/caddy/logs/:/var/log/
 
   wordpress:
-    image: wordpress:php7.4-fpm
+    image: wordpress:php7.4
     container_name: docker-wordpress-1
     links:
       - mariadb:mysql
