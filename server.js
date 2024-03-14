@@ -38,6 +38,8 @@ const {sendTrainingDataReminders, sendGamedayReportReminder} = require("./js/ser
 const trainingNotesRouter = require("./routes/trainingNotesRouter");
 const gamedayRouter = require("./routes/gamedayRouter");
 const {updateSubscriptionTable} = require("./js/serverJS/wooCommerceIntegration");
+const {join} = require("path");
+const cors = require('cors');
 
 /**
  * MIDDLEWARE
@@ -81,6 +83,7 @@ app.use(session({
 app.use(flash());
 app.use(passport.session());
 app.use(passport.initialize());
+app.use(cors());
 
 /**
  * CLEAN UP JOB FOR EXPIRED SESSIONS
@@ -194,6 +197,28 @@ app.get('/register', (req, res) => {
 
 app.get('/error', (req, res) => {
     res.render('error');
+});
+
+app.post('/temp', (req, res) => {
+    const data = req.body;
+
+    // Define the file path - adjust the path as necessary for your needs
+    // To save on the Desktop, you would typically use something like:
+    // const filePath = path.join('/Users/YourUsername/Desktop', 'data.json');
+    // Make sure to replace 'YourUsername' with your actual username.
+    // Below is an example path for saving within the project directory for demonstration.
+    const filePath = join(__dirname, 'New.json');
+
+    // Write the file
+    fs.writeFile(filePath, JSON.stringify(data, null, 2), (err) => {
+        if (err) {
+            console.error('Failed to save the file:', err);
+            return res.status(500).send('Error saving data');
+        }
+
+        console.log('Data saved successfully');
+        res.send('Data received and saved');
+    });
 });
 
 /**
