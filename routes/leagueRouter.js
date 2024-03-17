@@ -19,7 +19,7 @@ router.get('/getDDragonData', permissionCheck('championpool', 'canOpen'), async 
  * GET champion name from id
  */
 router.get('/getChampionById/:id', permissionCheck('lolstatspage', 'canOpen'), async (req, res) => {
-    const championData = await riot.getDDragonData();
+    const championData = await riot.getDDragonDataFromProject();
     const championId = req.params.id;
     const champions = Object.values(championData.data);
     const champion = champions.find(champ => champ.key === championId);
