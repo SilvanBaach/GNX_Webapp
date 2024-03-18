@@ -37,7 +37,9 @@ const {logMessage, LogLevel} = require('./js/serverJS/logger.js');
 const {sendTrainingDataReminders, sendGamedayReportReminder, sendWeeklyLoLReport} = require("./js/serverJS/discordBot");
 const trainingNotesRouter = require("./routes/trainingNotesRouter");
 const gamedayRouter = require("./routes/gamedayRouter");
+const cronjobRouter = require("./routes/cronjobRouter");
 const {updateSubscriptionTable} = require("./js/serverJS/wooCommerceIntegration");
+const cronManager = require('./js/serverJS/cron/cronManager.js');
 
 /**
  * MIDDLEWARE
@@ -96,6 +98,7 @@ cron.schedule('0 3 * * *', function() {
     });
 });
 
+cronManager.registerCronJobs();
 
 /**
  * WOO COMMERCE WEBHOOK
@@ -155,20 +158,6 @@ cron.schedule('*/30 * * * *', function() {
 });
 
 /**
- * Sends LoL game stats of the players
- */
-//*/3 * * * *
-//cron.schedule('50 0 * * 1', function() {
-
-console.log("Sending weekly LoL games report...");
-sendWeeklyLoLReport()
-cron.schedule('02 21 * * *', function() {
-    console.log("Sending weekly LoL games report...");
-    sendWeeklyLoLReport()
-});
-
-
-/**
  * ROUTERS
  */
 app.use('/login', loginRouter(passport));
@@ -185,7 +174,7 @@ app.use('/roletype', roleTypeRouter);
 app.use('/teammembership', teammembershipRouter);
 app.use('/permission', permissionRouter);
 app.use('/discordbot', discordBotRouter(client, guildId));
-app.use('/league', leagueRouter);
+app.use('/league', leagueRouter.router);
 app.use('/logs', logRouter);
 app.use('/training', trainingRouter);
 app.use('/calendar', calendarRouter);
@@ -193,6 +182,7 @@ app.use('/wooCommerce', wooCommereceRouter);
 app.use('/trainingNotes', trainingNotesRouter);
 app.use('/patchnotes', patchnotesRouter);
 app.use('/gameday', gamedayRouter);
+app.use('/cronjob', cronjobRouter);
 
  /**
  * MAIN ROUTES

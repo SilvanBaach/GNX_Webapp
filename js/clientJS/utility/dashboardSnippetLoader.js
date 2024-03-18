@@ -18,6 +18,7 @@ const pages = [
     {id: "gamedayadmin", url: "/dashboard/gamedayadmin"},
     {id: "lolstats", url: "/dashboard/lolstats"},
     {id: "patchnotes", url: "/dashboard/patchnotes"},
+    {id: "cronjob", url: "/dashboard/cronjob"},
 ];
 
 /**
