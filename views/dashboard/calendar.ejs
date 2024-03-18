@@ -105,7 +105,8 @@
             buildCalendarBasedOnScreenSize(currentDate);
         }
 
-        if(<%= user.team.account_fk %> === <%= user.id %>)
+        const teamManagerId = '<%= user.team.account_fk %>';
+        if(teamManagerId && teamManagerId === <%= user.id %>)
         {
             setupDefTrainingTimePopup(<%= user.team.id %>);
         }
