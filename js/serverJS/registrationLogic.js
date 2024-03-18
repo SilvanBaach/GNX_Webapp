@@ -82,7 +82,7 @@ async function checkUserRegistration(code, username, email, password, password2)
     //Check if password is secure
     const isSecure = isPasswordSecure(password);
     if (!isSecure) {
-        errors.push({message: "Password is not secure enough"});
+        errors.push({message: "Password is not secure enough! 1 Uppercase, 1 Lowercase, 1 Number required"});
     }
 
     //Check if registration code is valid
