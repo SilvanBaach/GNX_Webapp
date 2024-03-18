@@ -127,7 +127,7 @@ function displayDetails(gameday) {
             customClass = 'text-error';
         }
 
-        const tdValue = $('<td class="break-words py-1"></td>').text(displayValue).addClass(customClass);
+        const tdValue = $('<td class="break-all py-1"></td>').text(displayValue).addClass(customClass);
         customClass = '';
 
         if(key !== 'gamedayreportid'){

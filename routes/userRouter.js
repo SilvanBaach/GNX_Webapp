@@ -246,6 +246,9 @@ async function updateUser(formData, userId) {
 
     fields.forEach(field => {
         if (formData[field] !== undefined) {
+            if (formData['zip'] === ''){
+                formData['zip'] = null;
+            }
             updates.push(`${field} = $${updates.length + 1}`);
         }
     });
@@ -254,7 +257,7 @@ async function updateUser(formData, userId) {
         const query = `UPDATE account
                        SET ${updates.join(', ')}
                        WHERE id = $${updates.length + 1}`;
-        const values = Object.values(formData).filter(val => val !== undefined && val !== null);
+        const values = Object.values(formData).filter(val => val !== undefined);
         pool.query(query, [...values, parseInt(userId)], (err, result) => {
             if (err) {
                 console.log(err);

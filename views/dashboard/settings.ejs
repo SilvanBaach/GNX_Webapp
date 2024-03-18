@@ -44,9 +44,11 @@
                             <%- include('../components/entryfield', {type: 'text', name: 'city', id: 'city', width: 'w-full', value: user.city}) %>
                         </div>
                     </div>
-                    <div class="md:w-1/2 xl:pr-4 md:pr-2 mt-2 md:mt-0">
-                        <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Zip Code</label>
-                        <%- include('../components/entryfield', {type: 'number', name: 'zip', id: 'zipcode', width: 'w-full', value: user.zip}) %>
+                    <div class="flex md:items-center justify-between mt-4 flex-col md:flex-row w-full">
+                        <div class="md:w-1/2 xl:pr-4 md:pr-2 mt-2 md:mt-0">
+                            <label class="xl:text-base text-sm font-montserrat font-semibold text-white">Zip Code</label>
+                            <%- include('../components/entryfield', {type: 'number', name: 'zip', id: 'zipcode', width: 'w-full', value: user.zip}) %>
+                        </div>
                     </div>
                 </form>
             </div>

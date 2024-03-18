@@ -120,7 +120,7 @@ async function buildPlayerCard(ownPlayerCard = false, riotId, order) {
     try {
         icon = await getSummonerIcon(riotId);
         summonerInfo = await getSummonerInfo(riotId);
-        rankInfo = summonerInfo.summonerInfo.rankInfo[0];
+        rankInfo = summonerInfo.summonerInfo.rankInfo.find(element => element.queueType === "RANKED_SOLO_5x5");
         summonerInfo = summonerInfo.summonerInfo.summonerInfo;
     } catch (e) {
         let mainContainer = $('<div>').addClass('relative bg-grey-level2 w-64 p-4 flex items-center');

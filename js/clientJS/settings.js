@@ -115,7 +115,7 @@ function setupPWResetPopup(){
             return;
         }
         if (!isPasswordSecure(password1)) {
-            displayError("Password is not secure enough!");
+            displayError("Password is not secure enough! 8 Characters, 1 Uppercase, 1 Lowercase, 1 Number required!");
             return;
         }
 
