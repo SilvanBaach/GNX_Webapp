@@ -78,7 +78,7 @@ router.get('/getMatchHistory', checkNotAuthenticated, permissionCheck('lolstatsp
     let latestDate = new Date();
     latestDate.setDate(latestDate.getDate() - req.query.days);
 
-    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+    const browser = await puppeteer.launch({ headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
     const page = await browser.newPage();
     await page.goto(`https://www.op.gg/summoners/euw/${riotName}-${riotTag}`);
 
@@ -135,7 +135,7 @@ router.get('/getMatchHistory', checkNotAuthenticated, permissionCheck('lolstatsp
     // Click the "Solo/Duo Ranked" button
     try {
         const selector = 'button[value="SOLORANKED"]';
-        await page.waitForSelector(selector, { visible: true });
+        await page.waitForSelector(selector);
         await page.click(selector);
     } catch {
         console.log('Solo/Duo Ranked button not found');
