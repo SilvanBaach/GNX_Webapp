@@ -182,7 +182,7 @@ app.use('/wooCommerce', wooCommereceRouter);
 app.use('/trainingNotes', trainingNotesRouter);
 app.use('/patchnotes', patchnotesRouter);
 app.use('/gameday', gamedayRouter);
-app.use('/cronjob', cronjobRouter);
+app.use('/cronjob', cronjobRouter.router);
 
  /**
  * MAIN ROUTES

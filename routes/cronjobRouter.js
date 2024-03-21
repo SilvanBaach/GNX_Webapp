@@ -32,6 +32,18 @@ router.get('/getDefinitions', checkNotAuthenticated, permissionCheck('adminpanel
 });
 
 /**
+ * GET route for getting all existing cronjobs
+ */
+router.get('/getCronjobs', checkNotAuthenticated, permissionCheck('adminpanel', 'canOpen'), function (req, res) {
+    getExistingCronjobs().then(function (result) {
+        res.status(200).send(result.rows);
+    }).catch(function (error) {
+        console.error(error);
+        res.status(500).send({message: "There was an error getting the cronjobs! Please try again later."});
+    });
+});
+
+/**
  * Returns the count of the cronjobs
  * @returns {Promise<QueryResult<any>>}
  */
@@ -47,4 +59,12 @@ function getDefinitions(){
     return pool.query('SELECT * FROM cronjobdefinition');
 }
 
-module.exports = router;
+/**
+ * Returns all existing cronjobs
+ * @returns {Promise<QueryResult<any>>}
+ */
+function getExistingCronjobs(){
+    return pool.query('SELECT *, (SELECT displayname FROM cronjobdefinition WHERE cronjobdefinition.id = cronjobs.cronjobdefinition_fk) FROM cronjobs');
+}
+
+module.exports = {router, getExistingCronjobs};

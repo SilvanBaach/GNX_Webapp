@@ -189,73 +189,54 @@ router.post('/addChampion', checkNotAuthenticated, permissionCheck('championpool
  * @param days
  * @returns {Promise<void>}
  */
-async function getMatchHistory(riotName, riotTag,days) {
-    let latestDate = new Date();
-    latestDate.setDate(latestDate.getDate() - days);
+async function getMatchHistory(riotName, riotTag, days) {
+    return new Promise(async (resolve, reject) => {
+        let latestDate = new Date();
+        latestDate.setDate(latestDate.getDate() - days);
 
-    const browser = await puppeteer.launch({headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox']});
-    const page = await browser.newPage();
-    await page.goto(`https://www.op.gg/summoners/euw/${riotName}-${riotTag}`);
+        const browser = await puppeteer.launch({headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox']});
+        const page = await browser.newPage();
+        await page.goto(`https://www.op.gg/summoners/euw/${riotName}-${riotTag}`);
 
-    let dataParts = [];
-    let isOlder = false;
-    let responseCount = 0;
+        let dataParts = [];
+        let isOlder = false;
 
-    // Set up a response listener for the specific API endpoint
-    page.on('response', async (response) => {
-        if (response.url().startsWith('https://op.gg/api/v1.0/internal/bypass/games/euw/summoners/')) {
-            const json = await response.json();
-            dataParts.push(...json.data); // Flatten the data structure
-            responseCount++;
+        page.on('response', async (response) => {
+            if (response.url().startsWith('https://lol-web-api.op.gg/api/v1.0/internal/bypass/games/euw/summoners/')) {
+                const json = await response.json();
+                dataParts.push(...json.data);
 
-            // Check if the latest game is older than the latestDate
-            const createdAt = new Date(json.data[json.data.length - 1].created_at);
-            if (createdAt < latestDate) {
-                isOlder = true;
-            }
+                const createdAt = new Date(json.data[json.data.length - 1].created_at);
+                if (createdAt < latestDate) {
+                    isOlder = true;
+                }
 
-            // Before sending response, deduplicate dataParts by game.id
-            let uniqueGamesMap = new Map();
-            dataParts.forEach(game => {
-                uniqueGamesMap.set(game.id, game);
-            });
-            let uniqueDataParts = Array.from(uniqueGamesMap.values());
+                let uniqueGamesMap = new Map();
+                dataParts.forEach(game => uniqueGamesMap.set(game.id, game));
+                let uniqueDataParts = Array.from(uniqueGamesMap.values());
 
-            // Deduplicate and filter by date and SOLORANKED game type
-            let filteredAndDeduplicatedData = uniqueDataParts.filter(game => {
-                const gameDate = new Date(game.created_at);
-                return gameDate > latestDate && game.queue_info.game_type === 'SOLORANKED';
-            });
+                let filteredAndDeduplicatedData = uniqueDataParts.filter(game => {
+                    const gameDate = new Date(game.created_at);
+                    return gameDate > latestDate && game.queue_info.game_type === 'SOLORANKED';
+                });
 
-            if (isOlder || responseCount > 10) {
-                await browser.close();
-
-                // Send deduplicated and filtered data
-                return filteredAndDeduplicatedData;
-            } else {
-                // Check for more games if the "Show More" button is available
-                const loadMoreButton = await page.$('button.more');
-                if (loadMoreButton) {
-                    await loadMoreButton.click();
-                } else {
-                    // No more "Show More" button, so no more games to load
+                if (isOlder || uniqueDataParts.length > dataParts.length) { // Assume more games have been loaded and checked
                     await browser.close();
-
-                    return filteredAndDeduplicatedData;
+                    resolve(filteredAndDeduplicatedData);
                 }
             }
+        });
+
+        try {
+            const selector = 'button[value="SOLORANKED"]';
+            await page.waitForSelector(selector);
+            await page.click(selector);
+        } catch (error) {
+            console.log('Solo/Duo Ranked button not found', error);
+            await browser.close();
+            reject('Solo/Duo Ranked button not found');
         }
     });
-
-    // Click the "Solo/Duo Ranked" button
-    try {
-        const selector = 'button[value="SOLORANKED"]';
-        await page.waitForSelector(selector);
-        await page.click(selector);
-    } catch {
-        console.log('Solo/Duo Ranked button not found');
-        return [];
-    }
 }
 
 /**
@@ -396,4 +377,4 @@ function deleteChampion(championpoolId) {
     `, [championpoolId]);
 }
 
-module.exports = {router, getMatchHistory};
+module.exports = {router, getMatchHistory, getAccountInfo};
