@@ -135,6 +135,14 @@ router.get('/gamedayadmin', checkNotAuthenticated, permissionCheck('adminpanel',
 router.get('/lolstats', checkNotAuthenticated, permissionCheck('lolstatspage', 'canOpen'), (req, res) => {
     res.render('dashboard/lolstats.ejs', { user: req.user });
 });
+/**
+ * GET valorant stats page
+ */
+router.get('/valorantstats', checkNotAuthenticated, permissionCheck('home', 'canOpen'), (req, res) => {
+    res.render('dashboard/valorantstats.ejs', { user: req.user });
+});
+
+
 
 
 /**

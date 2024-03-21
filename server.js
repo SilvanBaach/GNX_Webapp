@@ -29,6 +29,7 @@ const discordBotRouter = require('./routes/discordBotRouter.js');
 const discordBot = require('./js/serverJS/discordBot.js');
 const {checkAuthenticated} = require('./js/serverJS/sessionChecker.js');
 const leagueRouter = require('./routes/leagueRouter.js');
+const valorantRouter = require('./routes/valorantRouter.js');
 const calendarRouter = require('./routes/calendarRouter.js');
 const wooCommereceRouter = require('./routes/wooCommerceRouter.js');
 const patchnotesRouter = require('./routes/patchnotesRouter.js');
@@ -172,6 +173,7 @@ app.use('/teammembership', teammembershipRouter);
 app.use('/permission', permissionRouter);
 app.use('/discordbot', discordBotRouter(client, guildId));
 app.use('/league', leagueRouter);
+app.use('/valorant', valorantRouter);
 app.use('/logs', logRouter);
 app.use('/training', trainingRouter);
 app.use('/calendar', calendarRouter);
@@ -179,6 +181,7 @@ app.use('/wooCommerce', wooCommereceRouter);
 app.use('/trainingNotes', trainingNotesRouter);
 app.use('/patchnotes', patchnotesRouter);
 app.use('/gameday', gamedayRouter);
+
 
  /**
  * MAIN ROUTES

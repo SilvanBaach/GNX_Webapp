@@ -1,0 +1,24 @@
+<script src="/js/clientJS/valorantStats.js"></script>
+
+<div class="bg-grey-level1 pr-4 px-4 md:px-8 py-6">
+    <button id="myButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Click Me
+    </button>
+</div>
+
+<script>
+    $(document).ready(function () {
+        const data = {
+            id: '<%= user.id %>',
+            riotId: '<%= user.riotgames %>'
+        }
+
+        initPage();
+
+        // Button click event handler
+        $('#myButton').click(function() {
+            // Add your button click logic here
+            alert('Button clicked!');
+        });
+    });
+</script>
