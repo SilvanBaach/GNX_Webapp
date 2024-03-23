@@ -152,8 +152,11 @@ router.get('/patchnotes', checkNotAuthenticated, permissionCheck('adminpanel', '
     res.render('dashboard/adminpanel/patchnotes.ejs', { user: req.user });
 });
 
-
-
-
+/**
+ * GET cronjob page
+ */
+router.get('/cronjob', checkNotAuthenticated, permissionCheck('adminpanel', 'canOpen'), (req, res) => {
+    res.render('dashboard/adminpanel/cronjob.ejs', { user: req.user });
+});
 
 module.exports = router;
