@@ -175,7 +175,7 @@ app.use('/roletype', roleTypeRouter);
 app.use('/teammembership', teammembershipRouter);
 app.use('/permission', permissionRouter);
 app.use('/discordbot', discordBotRouter(client, guildId));
-app.use('/valorant', valorantRouter);
+app.use('/valorant', valorantRouter.router);
 app.use('/league', leagueRouter.router);
 app.use('/logs', logRouter);
 app.use('/training', trainingRouter);

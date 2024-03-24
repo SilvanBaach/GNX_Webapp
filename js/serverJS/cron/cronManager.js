@@ -4,7 +4,7 @@
 const cronJobRouter = require("../../../routes/cronjobRouter");
 const cron = require('node-cron');
 
-let availableCronJobs = [{name: 'cSendLoLStatsInfo', id: 1}];
+let availableCronJobs = [{name: 'cSendLoLStatsInfo', id: 1}, {name: 'cSendValorantStatsInfo', id: 3}];
 let taskList = [];
 
 /**
@@ -14,14 +14,16 @@ async function registerCronJobs() {
     let cronJobs = await cronJobRouter.getExistingCronjobs();
     cronJobs = cronJobs.rows;
 
-    let id = 1;
+    let id = 3;
     cronJobs.forEach(cronJob => {
         let cronJobDefinition = availableCronJobs.find(availableCronJob => availableCronJob.id === cronJob.cronjobdefinition_fk);
         if (cronJobDefinition) {
             const TaskClass = require(`./jobs/${cronJobDefinition.name}`);
             let taskInstance = new TaskClass(cronJob);
             taskInstance = setTaskParams(taskInstance, cronJob, cronJobDefinition.name)
-            taskInstance.execute();
+            if(cronJobDefinition.name === 'cSendValorantStatsInfo'){
+                taskInstance.execute();
+            }
             /*const scheduledTask = cron.schedule(cronJob.executioninterval, () => {
                 taskInstance.execute();
             }, {
@@ -48,6 +50,13 @@ function setTaskParams(taskClass, cronJob, cronJobName){
             taskClass.setDiscordChannelId(cronJob.discordchannelid);
             taskClass.setTeamId(cronJob.team_fk);
             taskClass.setRoleId(cronJob.discordroleid);
+            break;
+
+        case 'cSendValorantStatsInfo':
+            taskClass.setDiscordChannelId(cronJob.discordchannelid);
+            taskClass.setTeamId(cronJob.team_fk);
+            taskClass.setRoleId(cronJob.discordroleid);
+            console.log(cronJob.discordroleid)
             break;
     }
 
