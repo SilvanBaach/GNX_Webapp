@@ -64,6 +64,7 @@ const guildId = "951559378354450483";
 const client = new DiscordBot.Client({intents: 3276799});
 client.login(process.env.DISCORD_TOKEN).then(() => {
     discordBot.setupDiscordBot(guildId, client);
+    cronManager.registerCronJobs();
 });
 
 /**
@@ -98,8 +99,6 @@ cron.schedule('0 3 * * *', function() {
         }
     });
 });
-
-cronManager.registerCronJobs();
 
 /**
  * WOO COMMERCE WEBHOOK

@@ -54,8 +54,6 @@ class cSendValorantStatsInfo {
         try {
             const users = await this.getUsers();
             const currentWeek = this.getCurrentWeek();
-            // Wait for 10 seconds
-            await new Promise(resolve => setTimeout(resolve, 3000));
 
             this.sendStartMessage(currentWeek);
             // Get match history and calculate stats for each player
@@ -93,9 +91,9 @@ class cSendValorantStatsInfo {
                         }
                     });
                     // Output mode-wise stats for this player
-                    message += `__**Total games played for ${riotId}:**__\n`;
+                    message += `**${riotId}:**\n`;
                     Object.keys(modeStats).forEach(mode => {
-                        message += `${mode}: Total Games: ${modeStats[mode].games}\n`;
+                        message += `${mode}: ${modeStats[mode].games}\n`;
                     });
 
                     // Check requirements for this player
@@ -108,18 +106,18 @@ class cSendValorantStatsInfo {
                     let unmetRequirements = [];
 
                     if (teamDeathmatchTotal + deathmatchTotal < this.DmTdmGames) {
-                        unmetRequirements.push(`**Both Team Deathmatch and Deathmatch must have at least ${this.DmTdmGames} games played**`);
+                        unmetRequirements.push(`**TDM + DM :x: **`);
                         requirementsMet = false;
                     }
                     if (competitiveTotal + premierTotal < this.CompPremierGames) {
-                        unmetRequirements.push(`**Both Team Competitive and Premiere must have at least ${this.CompPremierGames} games played**`);
+                        unmetRequirements.push(`**Competitive + Premier :x:**`);
                         requirementsMet = false;
                     }
 
                     if (requirementsMet) {
-                        message += `**Congratulations! All requirements are met. Keep it up!**\n`;
+                        message += `**Congratulations! All requirements are met. Keep it up! :white_check_mark: :white_check_mark: **\n`;
                     } else {
-                        message += `*The following requirements are not met*:\n${unmetRequirements.join("\n")}\n`;
+                        message += `*Not all requirements were met*:\n${unmetRequirements.join("\n")}\n`;
                     }
                 } else {
                     message += `Match history data not found for ${riotId}\n`;
@@ -135,6 +133,9 @@ class cSendValorantStatsInfo {
     }
     sendStartMessage(currentWeek){
         let message = `🔥 **Week ${currentWeek} Valorant Stats Report** 🔥\n\n`;
+        message += 'These are the requirements:\n'
+        message += `*Both Team Competitive and Premiere must have at least ${this.CompPremierGames} games played*\n`
+        message += `*Both Team Deathmatch and Deathmatch must have at least ${this.DmTdmGames} games played*`
         discordBot.sendMessageToChannel(this.discordChannelId, message);
     }
 
